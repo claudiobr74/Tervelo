@@ -1,0 +1,18 @@
+query SearchCanonicalExercises($needle: String!) {
+  exercise_aliases(where: { alias: { _ilike: $needle } }, limit: 40) {
+    alias
+    canonical_exercise_id
+    canonical_exercise {
+      id
+      name_pt
+      description
+      movement_pattern_id
+    }
+  }
+  canonical_exercises(where: { name_pt: { _ilike: $needle } }, limit: 40) {
+    id
+    name_pt
+    description
+    movement_pattern_id
+  }
+}

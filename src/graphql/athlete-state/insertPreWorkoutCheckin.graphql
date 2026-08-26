@@ -1,0 +1,39 @@
+mutation InsertPreWorkoutCheckin(
+  $training_session_id: uuid
+  $status: String!
+  $sleep_quality: smallint
+  $energy: smallint
+  $muscle_recovery: smallint
+  $stress: smallint
+  $has_pain: Boolean
+  $pain_region: String
+  $pain_intensity: String
+  $pain_worsens_with_movement: Boolean
+  $pain_blocks_planned_exercise: String
+  $has_planned_time: Boolean
+  $available_minutes: Int
+  $client_mutation_id: uuid!
+) {
+  insert_pre_workout_checkins_one(
+    object: {
+      training_session_id: $training_session_id
+      status: $status
+      sleep_quality: $sleep_quality
+      energy: $energy
+      muscle_recovery: $muscle_recovery
+      stress: $stress
+      has_pain: $has_pain
+      pain_region: $pain_region
+      pain_intensity: $pain_intensity
+      pain_worsens_with_movement: $pain_worsens_with_movement
+      pain_blocks_planned_exercise: $pain_blocks_planned_exercise
+      has_planned_time: $has_planned_time
+      available_minutes: $available_minutes
+      client_mutation_id: $client_mutation_id
+    }
+  ) {
+    id
+    status
+    checked_in_at
+  }
+}

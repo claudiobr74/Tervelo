@@ -1,0 +1,68 @@
+table:
+  name: heart_rate_sessions
+  schema: public
+object_relationships:
+  - name: wearable_device
+    using:
+      foreign_key_constraint_on: wearable_device_id
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-user-id
+      columns:
+        - training_session_id
+        - wearable_device_id
+        - started_at
+        - ended_at
+        - average_bpm
+        - maximum_bpm
+        - minimum_bpm
+        - sample_count
+        - sensor_coverage
+        - processing_version
+select_permissions:
+  - role: user
+    permission:
+      columns: &a2
+        - id
+        - user_id
+        - training_session_id
+        - wearable_device_id
+        - started_at
+        - ended_at
+        - average_bpm
+        - maximum_bpm
+        - minimum_bpm
+        - sample_count
+        - sensor_coverage
+        - processing_version
+        - created_at
+        - updated_at
+      filter: *a1
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a2
+      filter: &a3 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a2
+      filter: *a3
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a1
+      check: *a1
+      columns:
+        - ended_at
+        - average_bpm
+        - maximum_bpm
+        - minimum_bpm
+        - sample_count
+        - sensor_coverage

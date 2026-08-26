@@ -1,0 +1,13 @@
+mutation UpsertWeeklyReviewPreference($preference_value: String!) {
+  insert_athlete_preferences_one(
+    object: { preference_key: "weekly_coach_review_enabled", preference_value: $preference_value }
+    on_conflict: {
+      constraint: athlete_preferences_user_id_preference_key_key
+      update_columns: [preference_value]
+    }
+  ) {
+    id
+    preference_key
+    preference_value
+  }
+}
