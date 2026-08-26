@@ -92,7 +92,7 @@ export function coachReplyForPrompt(
     return {
       id: "evolucao",
       role: "coach",
-      body: `Sua evolução de força no Supino Reto está consistente: você fecha as séries com ${facts.repetitionsInReserve} repetições em reserva. Isso cabe um aumento de 2 kg, sem pular o teto de 92% da frequência cardíaca máxima.`,
+      body: `Sua evolução de força no Supino Reto está consistente: você fecha as séries com ${facts.repetitionsInReserve} repetições em reserva. Há margem para um aumento de 2 kg, sem pular o teto de 92% da frequência cardíaca máxima.`,
       sections: {
         observacao: `Carga atual ${facts.benchPressKg} kg; ${facts.repetitionsInReserve} repetições em reserva.`,
         interpretacao: "Há margem de progressão hipertrófica sem comprometer a recuperação.",
