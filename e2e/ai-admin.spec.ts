@@ -13,7 +13,7 @@ test("admin escolhe o agente de IA no contrato", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Inteligência Artificial (admin)" }).click();
   await expect(page).toHaveURL(/\/admin\/ai/);
-  await expect(page.getByRole("heading", { name: "Inteligência Artificial" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Inteligência Artificial", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Contrato da Inteligência Artificial" })).toBeVisible();
   await expect(page.getByRole("radio", { name: "Orquestrador" })).toBeChecked();
   await page.getByRole("radio", { name: "Recuperação" }).click();
