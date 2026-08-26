@@ -18,9 +18,6 @@ export function HeartRateSettingsScreen() {
             <h1 className="text-xl font-extrabold text-foreground">Treino e dispositivos</h1>
           </div>
         </div>
-        <p className="text-xs text-muted" title="FIGMA_PENDING">
-          Bloco de frequência cardíaca no Design System Tervelo. Consolidar com o Figma quando a seção for publicada.
-        </p>
         <HeartRateSettingsCard />
       </div>
     </AthleteAppShell>

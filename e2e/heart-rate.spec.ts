@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 async function loginPreview(page: import("@playwright/test").Page) {
-  await page.addInitScript(() => {
+  await page.goto("/login");
+  await page.evaluate(() => {
     window.localStorage.removeItem("tervelo-live-session");
     window.localStorage.removeItem("tervelo-set-result-queue");
     window.localStorage.removeItem("tervelo-heart-rate-enabled");
     window.localStorage.removeItem("tervelo-heart-rate-session");
   });
-  await page.goto("/login");
   await page.getByLabel("E-mail").fill("lucas.atleta@gmail.com");
   await page.getByLabel("Senha").fill("senha12345");
   await page.getByRole("button", { name: "Entrar" }).click();
@@ -40,7 +40,9 @@ test.describe("frequência cardíaca", () => {
       "aria-checked",
       "true",
     );
-    await expect(page.getByText("Incluir nas análises do Coach de IA")).toBeVisible();
+    await expect(
+      page.getByText("Este navegador não oferece conexão direta com frequencímetros Bluetooth."),
+    ).toBeVisible();
     await expect(page.getByText("O treino continuará funcionando normalmente.")).toBeVisible();
 
     await page.goto("/app/today");
@@ -58,5 +60,46 @@ test.describe("frequência cardíaca", () => {
     await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.getByRole("heading", { name: "Treino e dispositivos" })).toBeVisible();
+  });
+
+  test("captura settings e treino Light/Dark", async ({ page }) => {
+    const stamp = Date.now();
+    await loginPreview(page);
+    await page.goto("/app/settings");
+    await page.screenshot({
+      path: `/opt/cursor/artifacts/hr_settings_off_dark_390_${stamp}.png`,
+      fullPage: true,
+    });
+    await page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }).click();
+    await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+    await page.screenshot({
+      path: `/opt/cursor/artifacts/hr_settings_on_dark_390_${stamp}.png`,
+      fullPage: true,
+    });
+    await page.goto("/app/today");
+    await page.getByRole("button", { name: "Iniciar treino" }).click();
+    await page.getByRole("button", { name: "Começar exercício" }).click();
+    await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
+    await page.screenshot({
+      path: `/opt/cursor/artifacts/hr_workout_on_dark_390_${stamp}.png`,
+      fullPage: true,
+    });
+
+    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
+    await page.goto("/app/settings");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await page.screenshot({
+      path: `/opt/cursor/artifacts/hr_settings_on_light_390_${stamp}.png`,
+      fullPage: true,
+    });
+    await page.goto("/app/workout/exercise");
+    await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
+    await page.screenshot({
+      path: `/opt/cursor/artifacts/hr_workout_on_light_390_${stamp}.png`,
+      fullPage: true,
+    });
   });
 });

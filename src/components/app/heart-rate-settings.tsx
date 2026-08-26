@@ -50,8 +50,8 @@ export function HeartRateSettingsCard() {
           }`}
         >
           <span
-            className={`absolute top-0.5 size-6 rounded-full bg-foreground transition-transform ${
-              runtime.enabled ? "translate-x-5" : "translate-x-0.5"
+            className={`absolute top-0.5 size-6 rounded-full bg-background transition-transform ${
+              runtime.enabled ? "translate-x-[22px]" : "translate-x-0.5"
             }`}
           />
         </button>
