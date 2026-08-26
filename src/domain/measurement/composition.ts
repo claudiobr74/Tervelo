@@ -1,4 +1,4 @@
-import { effectiveHistory, type LongitudinalRow } from "./append-only";
+import { effectiveHistory, latestByTime, type LongitudinalRow } from "./append-only";
 
 export type CompositionPoint = LongitudinalRow & {
   weightKg?: number;
@@ -56,12 +56,17 @@ export function deltaInWindow(
   now: Date,
   days: number,
 ): number | null {
-  const windowed = inWindow(effectiveHistory(rows), now, days)
+  const effective = effectiveHistory(rows);
+  const latest = latestByTime(effective);
+  if (!latest) return null;
+  const current = latest[key];
+  if (typeof current !== "number") return null;
+  const windowed = inWindow(effective, now, days)
     .filter((row) => typeof row[key] === "number")
     .sort((left, right) => left.recordedAt.getTime() - right.recordedAt.getTime());
-  if (windowed.length < 2) return null;
-  const first = windowed[0][key];
-  const last = windowed[windowed.length - 1][key];
-  if (typeof first !== "number" || typeof last !== "number") return null;
-  return last - first;
+  const baseline = windowed[0];
+  const start = baseline?.[key];
+  if (typeof start !== "number") return null;
+  if (baseline.id === latest.id) return null;
+  return current - start;
 }

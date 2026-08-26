@@ -122,7 +122,7 @@ export function BodyMetricsScreen() {
             label="Peso Atual"
             value={latest?.weightKg !== undefined ? formatMeasure(latest.weightKg, "kg") : "—"}
             trend={
-              weightDelta !== null
+              weightDelta !== null && weightDelta !== 0
                 ? `${formatSignedDelta(round1(weightDelta), "kg")} ${period.deltaLabel}`
                 : undefined
             }
@@ -131,7 +131,7 @@ export function BodyMetricsScreen() {
             label="Gordura Corporal"
             value={latest?.bodyFatPercent !== undefined ? formatPercent(latest.bodyFatPercent) : "—"}
             trend={
-              fatDelta !== null
+              fatDelta !== null && fatDelta !== 0
                 ? `${formatSignedDelta(round1(fatDelta), "")}% ${period.deltaLabel}`
                 : undefined
             }
