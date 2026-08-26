@@ -27,7 +27,6 @@ function SliderField({
   label: string;
   onChange: (value: number) => void;
 }) {
-  const fill = ((value - 1) / 4) * 100;
   return (
     <article className="flex flex-col gap-2.5 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
       <div className="flex items-center justify-between gap-3">
@@ -36,7 +35,6 @@ function SliderField({
       </div>
       <div className="relative flex h-4 items-center">
         <div className="absolute inset-x-0 h-1.5 rounded-full bg-border" />
-        <div className="absolute left-0 h-1.5 rounded-full bg-brand" style={{ width: `${fill}%` }} />
         <input
           type="range"
           min={1}

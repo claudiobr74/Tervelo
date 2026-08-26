@@ -27,11 +27,8 @@ function emit() {
   for (const listener of listeners) listener();
 }
 
-function daysAgoIso(days: number, hours = 8): string {
-  const date = new Date();
-  date.setHours(hours, 0, 0, 0);
-  date.setDate(date.getDate() - days);
-  return date.toISOString();
+function daysAgoIso(days: number): string {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString();
 }
 
 function seedCheckin(
@@ -55,7 +52,7 @@ function seedMeasurement(
   return {
     id,
     userId: PREVIEW_TRAINING_USER_ID,
-    measuredAt: daysAgoIso(daysAgo, 7),
+    measuredAt: daysAgoIso(daysAgo),
     source: "user",
     ...values,
   };
@@ -79,28 +76,28 @@ function seedState(): LongitudinalState {
       seedCheckin("seed-r3", 2, { ...DEFAULT_SCORES, energy: 5, perceivedRecovery: 4 }),
     ],
     measurements: [
-      seedMeasurement("seed-m365", 365, {
+      seedMeasurement("seed-m365", 360, {
         weightKg: 80,
         bodyFatPercent: 18,
         waistCm: 88,
         rightArmCm: 36.5,
         rightThighCm: 58,
       }),
-      seedMeasurement("seed-m180", 180, {
+      seedMeasurement("seed-m180", 170, {
         weightKg: 80.8,
         bodyFatPercent: 17.4,
         waistCm: 87,
         rightArmCm: 37,
         rightThighCm: 59,
       }),
-      seedMeasurement("seed-m90", 90, {
+      seedMeasurement("seed-m90", 85, {
         weightKg: 81.4,
         bodyFatPercent: 16.9,
         waistCm: 86,
         rightArmCm: 37.4,
         rightThighCm: 59.5,
       }),
-      seedMeasurement("seed-m30", 30, {
+      seedMeasurement("seed-m30", 29, {
         weightKg: 82.1,
         bodyFatPercent: 16.6,
         waistCm: 85,
@@ -151,6 +148,9 @@ function hydrate() {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
   cached = readStored();
+  if (!window.localStorage.getItem(LONGITUDINAL_KEY)) {
+    window.localStorage.setItem(LONGITUDINAL_KEY, JSON.stringify(cached));
+  }
 }
 
 const SERVER_SEED: LongitudinalState = seedState();
