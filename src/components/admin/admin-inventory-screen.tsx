@@ -33,7 +33,7 @@ export function AdminInventoryScreen() {
     <AdminShell
       title="Inventário da Academia"
       subtitle="Configure o maquinário disponível fisicamente na sua unidade."
-      libraryItem="Inventário da Academia"
+      active="Inventário da Academia"
     >
       <div className="grid grid-cols-[280px_minmax(0,1fr)] gap-6">
         <div className="flex flex-col gap-4">

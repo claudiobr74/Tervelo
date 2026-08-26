@@ -26,7 +26,7 @@ export function AdminEquipmentScreen() {
     <AdminShell
       title="Biblioteca de Equipamentos"
       subtitle="Anatomia biomecânica dos aparelhos de musculação"
-      libraryItem="Equipamentos"
+      active="Equipamentos"
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">

@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–9 neste repositório (Phase 9 neste branch).
+Veredito atual: **READY_WITH_FIXES**. Phases 0–10 neste repositório (Phase 10 neste branch).
 
 ---
 
@@ -50,7 +50,7 @@ Cobre o contrato em `/admin/ai` (escolha de agente no modo administrar) e o pipe
 | 7 | Recovery + Body + Progress — **MÓDULO ALUNO** | `2:499`, `2:1122`, `2:1025` | concluída neste branch |
 | 8 | Nutrition — **MÓDULO ALUNO** | `2:817` / `15:1436` | concluída neste branch |
 | 9 | AI — **MÓDULO ALUNO** (coach) + contrato admin | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | concluída neste branch |
-| 10 | Admin | 7 screens Dark + Light | UI sim; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
+| 10 | Admin | 7 screens Dark + Light | concluída neste branch; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
 | 11 | Hardening | conforme telas existentes | após fluxos reais |
 | 12 | Vercel | app navegável | só com critérios da spec |
 
@@ -216,7 +216,11 @@ Nesta pré-visualização: UI do coach (`/app/coach`, `/app/coach/ajuste`) + con
 
 ## 12. Phase 10 — Admin
 
-Desktop-first. Screens: dashboard, usuários, IA, auditoria, exercícios, equipamentos, inventário. Sidebar Dark ainda cita Treinamento, Nutrição e Configurações **sem screen** → `FIGMA_PENDING`. Proteção server-side + role Hasura. Sem UI genérica.
+Desktop-first (1440). Screens com node: dashboard `2:2503` / Light `15:6624`, usuários `2:2659` / `15:6757`, IA `2:2954` / `15:6902`, auditoria `2:3112` / `15:7015`, exercícios `10:7` / `15:7136`, equipamentos `10:201` / `15:7244`, inventário `10:377` / `15:7366`.
+
+Sidebar Dark ainda cita Treinamento, Nutrição e Configurações **sem screen** → `FIGMA_PENDING`. Detalhe do atleta sem frame. Proteção server-side (`src/proxy.ts`) + role Hasura. Sem UI genérica. Evidência: screenshots Light/Dark desktop; sem vídeo.
+
+Nesta pré-visualização: as 7 rotas com node. `audit_logs` no banco permanece leitura `super_admin`; a tela de auditoria usa recorte local. Sem atribuir `admin` pelo cliente.
 
 ---
 
@@ -266,6 +270,7 @@ Após Phase 1:
 | 7 | check-in de recuperação, composição append-only, e2e longitudinal |
 | 8 | check-in de nutrição no dia aberto, progresso de targets, e2e `/app/nutrition` |
 | 9 | contrato IA + escolha de agente no admin + recusa de fabricar dados |
+| 10 | dashboard / usuários / auditoria desktop, redirect sem papel admin |
 | 11 | e2e Playwright da spec §56 quando houver UI |
 
 ---

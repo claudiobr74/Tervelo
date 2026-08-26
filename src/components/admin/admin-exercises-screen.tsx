@@ -28,7 +28,7 @@ export function AdminExercisesScreen() {
     <AdminShell
       title="Biblioteca de Exercícios"
       subtitle="Padrões de movimento, variações e aparelhos canônicos — sem duplicar fabricante."
-      libraryItem="Exercícios"
+      active="Exercícios"
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">

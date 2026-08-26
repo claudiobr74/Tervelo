@@ -128,7 +128,7 @@ export function AdminAiScreen() {
   const activeTab = AI_ADMIN_TABS.find((item) => item.id === tab) ?? AI_ADMIN_TABS[0];
 
   return (
-    <AdminShell title="Inteligência Artificial" libraryItem="Inteligência Artificial">
+    <AdminShell title="Inteligência Artificial" active="Inteligência Artificial">
       <div className="flex items-start gap-6">
         <nav aria-label="Seções do contrato" className="flex w-[220px] shrink-0 flex-col gap-1">
           {AI_ADMIN_TABS.map((item) => {

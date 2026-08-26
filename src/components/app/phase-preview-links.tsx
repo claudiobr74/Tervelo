@@ -10,7 +10,9 @@ async function persist(session: unknown) {
 export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
   const router = useRouter();
 
-  async function openAdmin(path: "/admin/exercises" | "/admin/ai") {
+  async function openAdmin(
+    path: "/admin" | "/admin/users" | "/admin/audit" | "/admin/exercises" | "/admin/ai",
+  ) {
     await persist(
       previewSession({ displayName: "Lucas Mendes", email: "lucas.admin@tervelo.local" }, "admin"),
     );
@@ -22,11 +24,32 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 9 — Coach</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 10 — Admin</p>
       <div className="flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={() => openAdmin("/admin")}
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] bg-brand px-5 text-sm font-semibold text-on-brand"
+        >
+          Dashboard admin
+        </button>
+        <button
+          type="button"
+          onClick={() => openAdmin("/admin/users")}
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"
+        >
+          Usuários
+        </button>
+        <button
+          type="button"
+          onClick={() => openAdmin("/admin/audit")}
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"
+        >
+          Auditoria
+        </button>
         <a
           href="/app/coach"
-          className="inline-flex h-11 items-center rounded-[var(--radius-md)] bg-brand px-5 text-sm font-semibold text-on-brand"
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"
         >
           Coach
         </a>

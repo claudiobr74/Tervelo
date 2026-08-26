@@ -76,6 +76,9 @@ Rotas desta fase:
 - `/app/nutrition` — Figma `2:817`
 - `/app/coach` — Figma `2:944`
 - `/app/coach/ajuste` — Figma `10:2651`
+- `/admin` — Figma `2:2503`
+- `/admin/users` — Figma `2:2659`
+- `/admin/audit` — Figma `2:3112`
 - `/api/health` — liveness
 
 Scripts: `lint`, `typecheck`, `test` (Vitest), `test:e2e` (Playwright, fora do CI), `build`.
