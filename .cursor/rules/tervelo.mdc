@@ -1,0 +1,20 @@
+---
+description: Regras permanentes do produto TERVELO
+alwaysApply: true
+---
+
+# TERVELO
+
+- Backend oficial: **Nhost** (PostgreSQL, Hasura, Auth, Storage, Functions). Nunca Supabase ou Firebase.
+- UI definitiva só com node Figma + `get_design_context`. Sem node = `FIGMA_PENDING`, sem dashboard genérico.
+- Tokens CSS: Handoff `28:527` (`--bg-*`, `--surface-*`, `--brand-*`). Hex só em `globals.css`.
+- Fonte: Manrope. Ícones: Lucide 24px stroke 1.5.
+- Domínio em `src/domain` sem React e sem strings GraphQL.
+- Histórico longitudinal é append-only.
+- Secrets (`NHOST_ADMIN_SECRET`, chaves de IA) nunca no cliente nem no git.
+- Acesso: JWT `user` (atleta) e `admin` / `super_admin` (administrador). Admin só via `auth.user_roles` no SQL.
+- UI e copy em PT-BR; nomes por extenso (ex.: Repetições em reserva).
+- Vercel só na Phase 12.
+- Fases do app do atleta usam o prompt **TERVELO — MÓDULO ALUNO** (`docs/MODULO_ALUNO.md`): login, onboarding e `/app/*`. Admin é outro módulo (Phase 10).
+- Módulo de IA usa o prompt **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL** (`docs/IA_PROMPT_MESTRE.md`) e o addendum **TERVELO — ADDENDUM** (`docs/IA_ADDENDUM.md`): treino e nutrição no mesmo sistema longitudinal; `NUTRITION_CONTEXT` obrigatório quando houver dados.
+- Evidência das próximas fases do módulo aluno: **apenas screenshots das telas**. Sem gravação de vídeo.
