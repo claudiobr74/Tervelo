@@ -1,0 +1,333 @@
+"use client";
+
+import { useSyncExternalStore } from "react";
+import {
+  adjustRestTimer,
+  pauseRestTimer,
+  remainingSeconds,
+  restartRestTimer,
+  resumeRestTimer,
+  skipRestTimer,
+  startRestTimer,
+  tickRestTimer,
+  type RestTimer,
+} from "@/domain/timer/rest-timer";
+import { enqueueSetResult, type QueuedSetResult } from "@/domain/training/offline-queue";
+import {
+  currentExercise,
+  currentSet,
+  isSessionComplete,
+  restSecondsAfter,
+  type RecordedSet,
+  type SetPrescription,
+} from "@/domain/training/session";
+import { PREVIEW_TRAINING_USER_ID, PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+
+export const LIVE_SESSION_KEY = "tervelo-live-session";
+export const SET_RESULT_QUEUE_KEY = "tervelo-set-result-queue";
+
+export const previewWorkout = PREVIEW_WORKOUT;
+
+export type LiveStatus = "idle" | "active" | "resting" | "completed";
+export type AfterRecord = "exercise" | "rest" | "summary";
+
+type SerializedTimer = {
+  startedAt: string;
+  expectedEndAt: string;
+  durationSeconds: number;
+  pausedAt: string | null;
+  remainingAtPauseSeconds: number | null;
+  status: RestTimer["status"];
+};
+
+export type LiveSessionState = {
+  status: LiveStatus;
+  recorded: RecordedSet[];
+  timer: SerializedTimer | null;
+  startedAt: string | null;
+  completedAt: string | null;
+  loadKg: number;
+  reps: number;
+  rir: number;
+  boundSetId: string | null;
+  queue: QueuedSetResult[];
+};
+
+const IDLE: LiveSessionState = {
+  status: "idle",
+  recorded: [],
+  timer: null,
+  startedAt: null,
+  completedAt: null,
+  loadKg: 80,
+  reps: 8,
+  rir: 2,
+  boundSetId: null,
+  queue: [],
+};
+
+const listeners = new Set<() => void>();
+let cached: LiveSessionState = IDLE;
+let hydrated = false;
+
+function emit() {
+  for (const listener of listeners) listener();
+}
+
+function serializeTimer(timer: RestTimer): SerializedTimer {
+  return {
+    startedAt: timer.startedAt.toISOString(),
+    expectedEndAt: timer.expectedEndAt.toISOString(),
+    durationSeconds: timer.durationSeconds,
+    pausedAt: timer.pausedAt ? timer.pausedAt.toISOString() : null,
+    remainingAtPauseSeconds: timer.remainingAtPauseSeconds,
+    status: timer.status,
+  };
+}
+
+export function deserializeTimer(raw: SerializedTimer): RestTimer {
+  return {
+    startedAt: new Date(raw.startedAt),
+    expectedEndAt: new Date(raw.expectedEndAt),
+    durationSeconds: raw.durationSeconds,
+    pausedAt: raw.pausedAt ? new Date(raw.pausedAt) : null,
+    remainingAtPauseSeconds: raw.remainingAtPauseSeconds,
+    status: raw.status,
+  };
+}
+
+function inputsFromSet(set: SetPrescription): Pick<LiveSessionState, "loadKg" | "reps" | "rir" | "boundSetId"> {
+  return {
+    loadKg: set.suggestedWeightKg ?? set.targetWeightKg ?? set.previousWeightKg ?? 0,
+    reps: set.targetRepsMin,
+    rir: Math.min(4, Math.max(0, set.targetRepsInReserve)),
+    boundSetId: set.id,
+  };
+}
+
+function persist(next: LiveSessionState) {
+  cached = next;
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(LIVE_SESSION_KEY, JSON.stringify(next));
+    window.localStorage.setItem(SET_RESULT_QUEUE_KEY, JSON.stringify(next.queue));
+  }
+  emit();
+}
+
+function readStored(): LiveSessionState {
+  if (typeof window === "undefined") return IDLE;
+  try {
+    const raw = window.localStorage.getItem(LIVE_SESSION_KEY);
+    if (!raw) return IDLE;
+    const parsed = JSON.parse(raw) as Partial<LiveSessionState>;
+    return {
+      ...IDLE,
+      ...parsed,
+      recorded: Array.isArray(parsed.recorded) ? parsed.recorded : [],
+      queue: Array.isArray(parsed.queue) ? parsed.queue : [],
+    };
+  } catch {
+    return IDLE;
+  }
+}
+
+function hydrate() {
+  if (hydrated || typeof window === "undefined") return;
+  hydrated = true;
+  cached = readStored();
+}
+
+function withCurrentInputs(state: LiveSessionState): LiveSessionState {
+  if (state.status !== "active" && state.status !== "resting") return state;
+  if (isSessionComplete(PREVIEW_WORKOUT, state.recorded)) return state;
+  const set = currentSet(PREVIEW_WORKOUT, state.recorded);
+  if (state.boundSetId === set.id) return state;
+  return { ...state, ...inputsFromSet(set) };
+}
+
+export function getLiveSession(): LiveSessionState {
+  hydrate();
+  return cached;
+}
+
+export function getServerLiveSession(): LiveSessionState {
+  return IDLE;
+}
+
+export function subscribeLiveSession(listener: () => void): () => void {
+  hydrate();
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+export function startWorkout(): LiveSessionState {
+  hydrate();
+  if (cached.status === "active" || cached.status === "resting") {
+    return cached;
+  }
+  const first = currentSet(PREVIEW_WORKOUT, []);
+  const next: LiveSessionState = {
+    ...IDLE,
+    status: "active",
+    startedAt: new Date().toISOString(),
+    queue: cached.queue,
+    ...inputsFromSet(first),
+  };
+  persist(next);
+  return next;
+}
+
+function completeSession(state: LiveSessionState): LiveSessionState {
+  return {
+    ...state,
+    status: "completed",
+    timer: null,
+    completedAt: state.completedAt ?? new Date().toISOString(),
+  };
+}
+
+export function recordCurrentSet(): AfterRecord {
+  hydrate();
+  const session = PREVIEW_WORKOUT;
+  if (isSessionComplete(session, cached.recorded)) {
+    persist(completeSession(cached));
+    return "summary";
+  }
+  const exercise = currentExercise(session, cached.recorded);
+  const set = currentSet(session, cached.recorded);
+  const performedAt = new Date().toISOString();
+  const recorded: RecordedSet = {
+    setId: set.id,
+    sessionExerciseId: exercise.id,
+    clientMutationId: crypto.randomUUID(),
+    weightKg: cached.loadKg,
+    reps: cached.reps,
+    repsInReserve: set.methodKind === "warmup" ? null : cached.rir,
+    methodKind: set.methodKind,
+    performedAt,
+  };
+  const recordedAll = [...cached.recorded, recorded];
+  const queued = enqueueSetResult(cached.queue, {
+    clientMutationId: recorded.clientMutationId,
+    userId: PREVIEW_TRAINING_USER_ID,
+    setId: recorded.setId,
+    weightKg: recorded.weightKg ?? undefined,
+    reps: recorded.reps,
+    repsInReserve: recorded.repsInReserve ?? undefined,
+    methodKind: recorded.methodKind,
+    performedAt,
+  });
+  if (isSessionComplete(session, recordedAll)) {
+    persist(completeSession({ ...cached, recorded: recordedAll, queue: queued, timer: null }));
+    return "summary";
+  }
+  const rest = restSecondsAfter(session, recordedAll);
+  if (rest && rest > 0) {
+    persist({
+      ...cached,
+      recorded: recordedAll,
+      queue: queued,
+      status: "resting",
+      timer: serializeTimer(startRestTimer(new Date(), rest)),
+      ...inputsFromSet(currentSet(session, recordedAll)),
+    });
+    return "rest";
+  }
+  persist({
+    ...cached,
+    recorded: recordedAll,
+    queue: queued,
+    status: "active",
+    timer: null,
+    ...inputsFromSet(currentSet(session, recordedAll)),
+  });
+  return "exercise";
+}
+
+function mutateTimer(map: (timer: RestTimer, now: Date) => RestTimer) {
+  hydrate();
+  if (!cached.timer) return;
+  const now = new Date();
+  const next = map(deserializeTimer(cached.timer), now);
+  persist({ ...cached, timer: serializeTimer(next) });
+}
+
+export function pauseOrResumeTimer() {
+  mutateTimer((timer, now) => (timer.status === "paused" ? resumeRestTimer(timer, now) : pauseRestTimer(timer, now)));
+}
+
+export function restartTimer() {
+  mutateTimer((timer, now) => restartRestTimer(timer, now));
+}
+
+export function adjustTimer(deltaSeconds: number) {
+  mutateTimer((timer, now) => adjustRestTimer(timer, now, deltaSeconds));
+}
+
+export function skipRest(): AfterRecord {
+  hydrate();
+  if (cached.timer) {
+    const skipped = skipRestTimer(deserializeTimer(cached.timer), new Date());
+    if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
+      persist(completeSession({ ...cached, timer: serializeTimer(skipped) }));
+      return "summary";
+    }
+    persist({
+      ...withCurrentInputs({ ...cached, status: "active", timer: serializeTimer(skipped) }),
+    });
+    return "exercise";
+  }
+  persist({ ...withCurrentInputs({ ...cached, status: "active", timer: null }) });
+  return "exercise";
+}
+
+export function beginNextSet(): AfterRecord {
+  hydrate();
+  if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
+    persist(completeSession(cached));
+    return "summary";
+  }
+  persist({ ...withCurrentInputs({ ...cached, status: "active", timer: null }) });
+  return "exercise";
+}
+
+export function tickTimer(now = new Date()) {
+  hydrate();
+  if (!cached.timer || cached.status !== "resting") return;
+  const ticked = tickRestTimer(deserializeTimer(cached.timer), now);
+  if (ticked.status === cached.timer.status && remainingSeconds(ticked, now) === remainingSeconds(deserializeTimer(cached.timer), now)) {
+    return;
+  }
+  persist({ ...cached, timer: serializeTimer(ticked) });
+}
+
+export function setLoadKg(value: number) {
+  hydrate();
+  persist({ ...cached, loadKg: Math.max(0, Math.round(value * 4) / 4) });
+}
+
+export function setReps(value: number) {
+  hydrate();
+  persist({ ...cached, reps: Math.max(0, Math.trunc(value)) });
+}
+
+export function setRir(value: number) {
+  hydrate();
+  persist({ ...cached, rir: Math.min(4, Math.max(0, value)) });
+}
+
+export function stepLoad(delta: number) {
+  hydrate();
+  setLoadKg(cached.loadKg + delta);
+}
+
+export function stepReps(delta: number) {
+  hydrate();
+  setReps(cached.reps + delta);
+}
+
+export function useLiveSession(): LiveSessionState {
+  return useSyncExternalStore(subscribeLiveSession, getLiveSession, getServerLiveSession);
+}

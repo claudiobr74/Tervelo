@@ -1,0 +1,41 @@
+table:
+  name: ai_contracts
+  schema: public
+insert_permissions:
+  - role: super_admin
+    permission:
+      check: &a1 {}
+      columns:
+        - slug
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - slug
+        - created_at
+      filter: *a1
+      limit: 20
+  - role: admin
+    permission:
+      columns:
+        - id
+        - slug
+        - created_at
+      filter: *a1
+      limit: 50
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - slug
+        - created_at
+      filter: *a1
+      limit: 50
+update_permissions:
+  - role: super_admin
+    permission:
+      filter: *a1
+      check: *a1
+      columns:
+        - slug
