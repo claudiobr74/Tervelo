@@ -1,0 +1,53 @@
+table:
+  name: training_programs
+  schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-user-id
+      columns:
+        - goal_id
+        - title
+        - status
+        - started_on
+        - source
+select_permissions:
+  - role: user
+    permission:
+      columns: &a2
+        - id
+        - user_id
+        - goal_id
+        - title
+        - status
+        - started_on
+        - source
+        - created_at
+        - updated_at
+      filter: *a1
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a2
+      filter: &a3 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a2
+      filter: *a3
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a1
+      check: *a1
+      columns:
+        - goal_id
+        - title
+        - status
+        - started_on
+        - source
