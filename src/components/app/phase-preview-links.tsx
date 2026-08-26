@@ -10,11 +10,11 @@ async function persist(session: unknown) {
 export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
   const router = useRouter();
 
-  async function openAdmin() {
+  async function openAdmin(path: "/admin/exercises" | "/admin/ai") {
     await persist(
       previewSession({ displayName: "Lucas Mendes", email: "lucas.admin@tervelo.local" }, "admin"),
     );
-    router.push("/admin/exercises");
+    router.push(path);
     router.refresh();
   }
 
@@ -68,10 +68,17 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
         </a>
         <button
           type="button"
-          onClick={openAdmin}
+          onClick={() => openAdmin("/admin/exercises")}
           className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-border px-5 text-sm font-semibold text-foreground"
         >
           Console admin (pré-visualização)
+        </button>
+        <button
+          type="button"
+          onClick={() => openAdmin("/admin/ai")}
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"
+        >
+          Inteligência Artificial (admin)
         </button>
       </div>
     </div>

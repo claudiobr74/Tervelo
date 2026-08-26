@@ -28,6 +28,14 @@ Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, mais busca/anilhas d
 
 ---
 
+## TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL
+
+Prompt do módulo de IA. Fonte: [`docs/IA_PROMPT_MESTRE.md`](IA_PROMPT_MESTRE.md).
+
+Cobre o contrato em `/admin/ai` (escolha de agente no modo administrar) e o pipeline. O coach do atleta permanece no MÓDULO ALUNO (Phase 9). Evidência: **apenas imagens** Light/Dark; admin é desktop-first. Sem vídeo.
+
+---
+
 ## 2. Ordem das fases
 
 | Fase | Nome | UI Figma | Pode começar |
@@ -184,7 +192,9 @@ Nav **Evolução** liga em `/app/progress`. Coach e Mais permanecem `FIGMA_PENDI
 
 ## 11. Phase 9 — AI
 
-**TERVELO — MÓDULO ALUNO** no coach do atleta (`2:944`). Contrato admin permanece fora deste módulo.
+**TERVELO — MÓDULO ALUNO** no coach do atleta (`2:944`).
+
+**TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL** no contrato admin (`/admin/ai`, `2:2954` / Light `15:6902`) e no pipeline de agentes. Escolha de agente no modo administrar (Figma não tem picker; a UI expõe os 8 agentes por extenso).
 
 ```text
 ai/agents/  ai/skills/  ai/policies/  ai/evaluators/
@@ -195,6 +205,8 @@ Fluxo: contexto → safety → programa → recovery → desempenho → strength
 Execução em **Nhost Functions** (chaves de modelo nunca no cliente). Rate limit. Audit (`ai_runs`, `ai_decisions`) sem chain-of-thought.
 
 Admin “Contrato da IA”: `2:2954` / Light `15:6902`. Coach atleta: `2:944`. Alteração pontual: `10:2651`. Versionamento de contrato no banco desde o schema.
+
+Nesta pré-visualização: UI do contrato + escolha de agente. Sem orquestração real (Function).
 
 ---
 
@@ -248,7 +260,7 @@ Após Phase 1:
 | 5 | inventário + anilhas |
 | 6 | persistência de série + idempotência |
 | 7 | check-in de recuperação, composição append-only, e2e longitudinal |
-| 9 | contrato IA + recusa de fabricar dados |
+| 9 | contrato IA + escolha de agente no admin + recusa de fabricar dados |
 | 11 | e2e Playwright da spec §56 quando houver UI |
 
 ---

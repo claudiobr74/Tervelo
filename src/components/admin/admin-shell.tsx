@@ -19,9 +19,9 @@ const LIBRARY = [
 ] as const;
 
 const AFTER = [
-  { href: null, label: "Inteligência Artificial", icon: "/icons/admin/cpu.svg" },
-  { href: null, label: "Configurações", icon: "/icons/admin/settings.svg" },
-  { href: null, label: "Auditoria", icon: "/icons/admin/shield.svg" },
+  { href: "/admin/ai", label: "Inteligência Artificial", icon: "/icons/admin/cpu.svg", pending: false },
+  { href: null, label: "Configurações", icon: "/icons/admin/settings.svg", pending: true },
+  { href: null, label: "Auditoria", icon: "/icons/admin/shield.svg", pending: true },
 ] as const;
 
 export function AdminShell({
@@ -31,8 +31,8 @@ export function AdminShell({
   children,
 }: {
   title: string;
-  subtitle: string;
-  libraryItem: (typeof LIBRARY)[number]["label"];
+  subtitle?: string;
+  libraryItem?: (typeof LIBRARY)[number]["label"] | "Inteligência Artificial";
   children: ReactNode;
 }) {
   return (
@@ -70,16 +70,30 @@ export function AdminShell({
               </Link>
             ))}
           </div>
-          {AFTER.map((item) => (
-            <span
-              key={item.label}
-              title={PENDING}
-              className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium text-muted"
-            >
-              <FigmaIcon src={item.icon} alt="" size={18} />
-              {item.label}
-            </span>
-          ))}
+          {AFTER.map((item) => {
+            const selected = item.label === libraryItem;
+            const className = `flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm ${
+              selected ? "border border-brand bg-brand-soft font-bold text-brand" : "font-medium text-muted"
+            }`;
+            const inner = (
+              <>
+                <FigmaIcon src={item.icon} alt="" size={18} />
+                {item.label}
+              </>
+            );
+            if (item.pending || !item.href) {
+              return (
+                <span key={item.label} title={PENDING} className={className}>
+                  {inner}
+                </span>
+              );
+            }
+            return (
+              <Link key={item.label} href={item.href} className={className}>
+                {inner}
+              </Link>
+            );
+          })}
         </nav>
         <div className="flex items-center gap-3 px-2">
           <span className="relative size-9 overflow-clip rounded-full">
@@ -96,7 +110,7 @@ export function AdminShell({
         <header className="flex items-center justify-between gap-4 px-8 py-5">
           <div>
             <h1 className="text-2xl font-extrabold">{title}</h1>
-            <p className="text-sm text-muted">{subtitle}</p>
+            {subtitle ? <p className="text-sm text-muted">{subtitle}</p> : null}
           </div>
           <div className="flex items-center gap-3 text-muted">
             <div className="flex w-56 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-3 py-2">

@@ -12,3 +12,9 @@ export { classifyRecovery, scoresFromSliders } from "./recovery/score";
 export { recoveryTrend } from "./recovery/trend";
 export { percentChange } from "./progress/change";
 export { METRIC_LABELS } from "./labels";
+export { AI_AGENTS, DEFAULT_AI_AGENT, agentLabel } from "./ai/agents";
+export {
+  AI_IDENTITY_PROMPT,
+  AI_POLICY_LOCKS,
+  DEFAULT_AI_AUTONOMY,
+} from "./ai/contract";

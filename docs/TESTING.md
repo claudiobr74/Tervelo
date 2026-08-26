@@ -19,3 +19,5 @@ Phase 6: Vitest cobre volume sem aquecimento, descanso de supersérie/drop e fil
 Phase 7: Vitest cobre mapeamento dos sliders (direita = melhor; dor/estresse invertidos no domínio), massa magra e delta append-only. Playwright cobre hoje → recuperação → confirmar → evolução → corpo, no viewport 390 e no tema claro.
 
 **TERVELO — MÓDULO ALUNO** (Phase 8+): evidência de UI só com screenshots das telas (Light e Dark, 390px). Vídeo não é necessário.
+
+**TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.

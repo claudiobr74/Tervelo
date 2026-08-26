@@ -9,7 +9,7 @@ src/lib/auth/            # papéis user/admin e matriz Hasura
 src/lib/nhost/           # adapters Nhost (borda)
 src/lib/theme.ts         # preferência de tema, sem Zustand
 src/graphql/<domínio>/   # documents GraphQL
-src/domain/              # regras puras (Phase 3): anilhas, timer, idade, append-only
+src/domain/              # regras puras (Phase 3+): anilhas, timer, idade, append-only, agentes de IA
 src/application/         # casos de uso + Zod + portas
 src/server/              # adaptadores (Nhost na Phase 4+; fakes em memória nos testes)
 nhost/                   # CLI Nhost
