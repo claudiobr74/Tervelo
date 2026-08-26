@@ -1,0 +1,65 @@
+table:
+  name: rest_timers
+  schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-user-id
+      columns:
+        - session_id
+        - session_exercise_id
+        - set_result_id
+        - started_at
+        - expected_end_at
+        - duration_seconds
+        - paused_at
+        - remaining_at_pause_seconds
+        - status
+select_permissions:
+  - role: user
+    permission:
+      columns: &a2
+        - id
+        - user_id
+        - session_id
+        - session_exercise_id
+        - set_result_id
+        - started_at
+        - expected_end_at
+        - duration_seconds
+        - paused_at
+        - remaining_at_pause_seconds
+        - status
+        - created_at
+        - updated_at
+      filter: *a1
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a2
+      filter: &a3 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a2
+      filter: *a3
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a1
+      check: *a1
+      columns:
+        - session_id
+        - session_exercise_id
+        - set_result_id
+        - started_at
+        - expected_end_at
+        - duration_seconds
+        - paused_at
+        - remaining_at_pause_seconds
+        - status

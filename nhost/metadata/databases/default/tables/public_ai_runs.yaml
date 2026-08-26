@@ -1,0 +1,28 @@
+table:
+  name: ai_runs
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns: &a1
+        - id
+        - user_id
+        - contract_version_id
+        - model
+        - status
+        - input_context_snapshot
+        - created_at
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a1
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a1
+      filter: *a2
+      limit: 500
