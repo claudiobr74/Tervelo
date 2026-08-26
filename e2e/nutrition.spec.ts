@@ -22,7 +22,7 @@ test.describe("nutrição", () => {
     await expect(page.getByText("/ 3.100 kcal")).toBeVisible();
     await expect(page.getByText("Proteínas")).toBeVisible();
     await expect(page.getByText("Café da manhã")).toBeVisible();
-    await expect(page.getByText("Lanche pré-treino")).toBeVisible();
+    await expect(page.getByText("Lanche pré-treino", { exact: true })).toBeVisible();
     await expect(page.getByText("Recomendações do nutricionista virtual")).toBeVisible();
     await page.getByRole("link", { name: "Mais" }).click();
     await expect(page).toHaveURL(/\/app\/nutrition/);
