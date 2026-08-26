@@ -1,0 +1,78 @@
+table:
+  name: exercise_sets
+  schema: public
+object_relationships:
+  - name: session_exercise
+    using:
+      foreign_key_constraint_on: session_exercise_id
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        session_exercise:
+          session:
+            user_id:
+              _eq: X-Hasura-User-Id
+      columns:
+        - session_exercise_id
+        - set_index
+        - target_reps_min
+        - target_reps_max
+        - target_weight_kg
+        - target_reps_in_reserve
+        - target_perceived_exertion
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - session_exercise_id
+        - set_index
+        - target_reps_min
+        - target_reps_max
+        - target_weight_kg
+        - target_reps_in_reserve
+        - target_perceived_exertion
+        - created_at
+      filter: *a1
+      limit: 200
+  - role: admin
+    permission:
+      columns:
+        - id
+        - session_exercise_id
+        - set_index
+        - target_reps_min
+        - target_reps_max
+        - target_weight_kg
+        - target_reps_in_reserve
+        - target_perceived_exertion
+        - created_at
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - session_exercise_id
+        - set_index
+        - target_reps_min
+        - target_reps_max
+        - target_weight_kg
+        - target_reps_in_reserve
+        - target_perceived_exertion
+        - created_at
+      filter: *a2
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a1
+      check: *a1
+      columns:
+        - set_index
+        - target_reps_min
+        - target_reps_max
+        - target_weight_kg
+        - target_reps_in_reserve
+        - target_perceived_exertion

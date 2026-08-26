@@ -1,0 +1,63 @@
+table:
+  name: profiles
+  schema: public
+object_relationships:
+  - name: user
+    using:
+      foreign_key_constraint_on: id
+  - name: athlete_profile
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: athlete_profiles
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - display_name
+        - locale
+        - theme_preference
+        - shortcuts_enabled
+        - created_at
+        - updated_at
+      filter: &a2
+        id:
+          _eq: X-Hasura-User-Id
+      limit: 1
+  - role: admin
+    permission:
+      columns:
+        - id
+        - display_name
+        - locale
+        - theme_preference
+        - shortcuts_enabled
+        - created_at
+        - updated_at
+      filter: &a1 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - display_name
+        - locale
+        - theme_preference
+        - shortcuts_enabled
+        - created_at
+        - updated_at
+      filter: *a1
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a2
+      check: *a2
+      columns:
+        - display_name
+        - locale
+        - theme_preference
+        - shortcuts_enabled

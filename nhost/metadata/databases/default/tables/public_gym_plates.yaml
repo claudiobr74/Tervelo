@@ -1,0 +1,49 @@
+table:
+  name: gym_plates
+  schema: public
+object_relationships:
+  - name: gym
+    using:
+      foreign_key_constraint_on: gym_id
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        gym:
+          owner_user_id:
+            _eq: X-Hasura-User-Id
+      columns: &a4
+        - gym_id
+        - weight_kg
+        - quantity
+select_permissions:
+  - role: user
+    permission:
+      columns: &a2
+        - id
+        - gym_id
+        - weight_kg
+        - quantity
+        - created_at
+      filter: *a1
+      limit: 200
+  - role: admin
+    permission:
+      columns: *a2
+      filter: &a3 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a2
+      filter: *a3
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a1
+      check: *a1
+      columns: *a4
+delete_permissions:
+  - role: user
+    permission:
+      filter: *a1

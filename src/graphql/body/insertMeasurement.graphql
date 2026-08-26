@@ -1,0 +1,10 @@
+mutation InsertBodyMeasurement($measured_at: timestamptz, $weight_kg: numeric, $body_fat_percent: numeric, $notes: String) {
+  insert_body_measurements_one(
+    object: { measured_at: $measured_at, weight_kg: $weight_kg, body_fat_percent: $body_fat_percent, notes: $notes }
+  ) {
+    id
+    measured_at
+    weight_kg
+    body_fat_percent
+  }
+}
