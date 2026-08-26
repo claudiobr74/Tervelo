@@ -6,7 +6,7 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) concluída: veredito **READY_WITH_FIXES**. Phase 1: app Next.js. Phase 2: Nhost versionado com acesso **usuário (atleta)** e **administrador**.
+Phase 0 (auditoria) concluída: veredito **READY_WITH_FIXES**. Phase 1: app Next.js. Phase 2: Nhost com acesso **usuário** e **administrador**. Phase 3: domínio puro (anilhas, timer, idade, Zod).
 
 UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md). Login/admin screens entram nas Phases 4 e 10.
 

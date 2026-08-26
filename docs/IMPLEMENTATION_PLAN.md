@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phase 1 Foundation e Phase 2 Nhost (roles user/admin) neste repositório.
+Veredito atual: **READY_WITH_FIXES**. Phases 0–2 neste repositório; Phase 3 (domínio) neste branch.
 
 ---
 
@@ -25,7 +25,7 @@ Veredito atual: **READY_WITH_FIXES**. Phase 1 Foundation e Phase 2 Nhost (roles 
 | 0 | Auditoria | inventário completo | concluída neste PR |
 | 1 | Foundation | tokens `28:527` + primitivos `2:2` | concluída neste PR |
 | 2 | Nhost | não | concluída neste branch |
-| 3 | Domain | não | sim |
+| 3 | Domain | não | concluída neste branch |
 | 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | UI mobile sim; `/forgot-password` não |
 | 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | sim |
 | 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | UI sim nos nodes |
@@ -94,28 +94,27 @@ Camadas em `src/` (nomes ajustáveis, responsabilidades não):
 
 ```text
 src/domain/          # regras puras, zero I/O
-src/application/     # casos de uso
+src/application/     # casos de uso + Zod
 src/server/repositories/
-src/server/services/
 ```
 
-Módulos:
+Módulos (primeira fatia nesta fase):
 
 | Módulo | Primeira fatia |
 | --- | --- |
-| athlete | perfil, idade derivada, preferências |
-| measurement | append-only |
-| gym | academias, membership, inventário |
+| athlete | idade derivada de `birth_date` |
+| measurement | append-only + `supersedes_id` |
+| gym | halteres lista ou min/max/incremento |
 | equipment | canônico vs modelo vs inventário |
-| exercise | canônico, variante, alias |
-| training | hierarquia programa → série |
-| timer | `started_at` / `expected_end_at` |
-| recovery | check-in + tendência |
-| nutrition | alvos e check-ins |
-| ai | contrato versionado + contexto estruturado |
-| plates | calculadora com testes extensivos |
+| exercise | aliases de busca, um canônico |
+| training | hierarquia; substituição não muta o programa |
+| timer | `expected_end_at - now`; pausa; −15/+15/+30 |
+| recovery | tendência só com janela (≥3 pontos) |
+| nutrition | nomes por extenso; dia aberto |
+| ai | não fabricar dados; publish só `super_admin` |
+| plates | carga → discos simétricos, menor quantidade, estoque |
 
-GraphQL operations tipadas por domínio; repositórios escondem Hasura.
+GraphQL: documents em `src/graphql/<domínio>/`. Codegen contra schema local fica para quando `nhost up` existir (Docker no operador). Tipos de domínio não dependem do codegen.
 
 ---
 
