@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–6 neste repositório (Phase 6 neste branch).
+Veredito atual: **READY_WITH_FIXES**. Phases 0–7 neste repositório (Phase 7 neste branch).
 
 ---
 
@@ -29,7 +29,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–6 neste repositório (Phase 6 n
 | 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | concluída neste branch |
 | 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | concluída neste branch |
 | 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | concluída neste branch |
-| 7 | Recovery + Body + Progress | `2:499`, `2:1122`, `2:1025` | UI sim nos nodes |
+| 7 | Recovery + Body + Progress | `2:499`, `2:1122`, `2:1025` | concluída neste branch |
 | 8 | Nutrition | `2:817` / `15:1436` | UI sim nos nodes |
 | 9 | AI | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | UI sim nos nodes |
 | 10 | Admin | 7 screens Dark + Light | UI sim; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
@@ -156,15 +156,23 @@ Rotas mobile (Dark = layout; Light = tokens): `/app/today` `2:15`, `/app/workout
 
 ---
 
-## 9. Phases 7–8 — Longitudinal + nutrição
+## 9. Phase 7 — Recovery + Body + Progress
 
-Append-only. IA usa tendências, não ponto único. Nomes por extenso na UI e nas respostas da IA.
+Append-only. IA usa tendências, não ponto único. Nomes por extenso na UI.
 
-Nodes: recuperação `2:499`, corpo `2:1122`, evolução `2:1025`, nutrição `2:817` / desktop `15:1436`.
+Rotas mobile (Dark = layout; Light = tokens): `/app/recovery` `2:499`, `/app/progress` `2:1025`, `/app/body` `2:1122`. Desktop `15:216` / `15:1706` fica para endurecer o layout largo; prioridade 390px.
+
+Nav **Evolução** liga em `/app/progress`. Coach e Mais permanecem `FIGMA_PENDING` (Phase 9+). Nutrição `/app/nutrition` é Phase 8.
 
 ---
 
-## 10. Phase 9 — AI
+## 10. Phase 8 — Nutrição
+
+Nodes: nutrição `2:817` / desktop `15:1436`.
+
+---
+
+## 11. Phase 9 — AI
 
 ```text
 ai/agents/  ai/skills/  ai/policies/  ai/evaluators/
@@ -178,19 +186,19 @@ Admin “Contrato da IA”: `2:2954` / Light `15:6902`. Coach atleta: `2:944`. A
 
 ---
 
-## 11. Phase 10 — Admin
+## 12. Phase 10 — Admin
 
 Desktop-first. Screens: dashboard, usuários, IA, auditoria, exercícios, equipamentos, inventário. Sidebar Dark ainda cita Treinamento, Nutrição e Configurações **sem screen** → `FIGMA_PENDING`. Proteção server-side + role Hasura. Sem UI genérica.
 
 ---
 
-## 12. Phase 11 — Hardening
+## 13. Phase 11 — Hardening
 
 Security review, testes de permission, a11y AA, offline do treino, observabilidade, performance.
 
 ---
 
-## 13. Phase 12 — Vercel
+## 14. Phase 12 — Vercel
 
 Somente quando:
 
@@ -203,7 +211,7 @@ Preview em PRs; Production em `main` após aprovação humana.
 
 ---
 
-## 14. Git
+## 15. Git
 
 Especificação: `main`, `develop`, `feature/*`, `fix/*`.
 
@@ -217,7 +225,7 @@ Após Phase 1:
 
 ---
 
-## 15. Testes por fase
+## 16. Testes por fase
 
 | Fase | Foco |
 | --- | --- |
@@ -227,12 +235,13 @@ Após Phase 1:
 | 4 | auth flows (integration) |
 | 5 | inventário + anilhas |
 | 6 | persistência de série + idempotência |
+| 7 | check-in de recuperação, composição append-only, e2e longitudinal |
 | 9 | contrato IA + recusa de fabricar dados |
 | 11 | e2e Playwright da spec §56 quando houver UI |
 
 ---
 
-## 16. Definition of Done (feature)
+## 17. Definition of Done (feature)
 
 Só “pronta” com: lógica, persistência, autorização, validação, testes, loading, error, empty, a11y, responsivo, Light, Dark, fidelidade Figma **quando o design existir**.
 

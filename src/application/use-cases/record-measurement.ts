@@ -19,6 +19,9 @@ export async function recordBodyMeasurement(
     source: data.source,
     weightKg: data.weightKg,
     bodyFatPercent: data.bodyFatPercent,
+    waistCm: data.waistCm,
+    rightArmCm: data.rightArmCm,
+    rightThighCm: data.rightThighCm,
     notes: data.notes,
     supersedesId: data.supersedesId,
   });

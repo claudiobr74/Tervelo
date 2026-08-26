@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const kg = z.number().finite().positive();
+const cm = z.number().finite().positive().max(300);
 const scale = z.int().min(1).max(5);
 
 export const bodyMeasurementInputSchema = z.object({
@@ -9,6 +10,9 @@ export const bodyMeasurementInputSchema = z.object({
   source: z.enum(["user", "coach", "device", "import"]).default("user"),
   weightKg: kg.optional(),
   bodyFatPercent: z.number().min(0).max(80).optional(),
+  waistCm: cm.optional(),
+  rightArmCm: cm.optional(),
+  rightThighCm: cm.optional(),
   notes: z.string().max(2000).optional(),
   supersedesId: z.uuid().optional(),
 });

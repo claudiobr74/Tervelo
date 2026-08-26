@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
@@ -67,7 +68,10 @@ export function TodayScreen() {
         </section>
 
         <div className="grid grid-cols-2 gap-3">
-          <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
+          <Link
+            href="/app/recovery"
+            className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4"
+          >
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold text-muted">Recuperação</p>
               <FigmaIcon src="/icons/shield.svg" alt="" size={14} className="text-success" />
@@ -76,7 +80,7 @@ export function TodayScreen() {
               <p className="text-2xl font-bold text-success">84%</p>
               <p className="text-xs text-muted">Pronto para alta carga</p>
             </div>
-          </article>
+          </Link>
           <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold text-muted">Nutrição</p>
@@ -87,7 +91,10 @@ export function TodayScreen() {
               <p className="text-xs text-muted">142g de proteína consumida</p>
             </div>
           </article>
-          <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
+          <Link
+            href="/app/body"
+            className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4"
+          >
             <p className="text-xs font-semibold text-muted">Peso e Composição</p>
             <div className="flex items-baseline gap-2">
               <p className="text-[22px] font-bold text-foreground">78,4 kg</p>
@@ -97,8 +104,11 @@ export function TodayScreen() {
               </span>
             </div>
             <p className="text-[11px] text-tertiary">Massa gorda está em 12,4%</p>
-          </article>
-          <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
+          </Link>
+          <Link
+            href="/app/progress"
+            className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4"
+          >
             <p className="text-xs font-semibold text-muted">Volume Total de Carga</p>
             <div className="flex h-7 items-end gap-1">
               {VOLUME_BARS.map((height, index) => (
@@ -110,7 +120,7 @@ export function TodayScreen() {
               ))}
             </div>
             <p className="text-[11px] text-muted">+4,2% aumento esta semana</p>
-          </article>
+          </Link>
         </div>
 
         <article className="flex items-center gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">

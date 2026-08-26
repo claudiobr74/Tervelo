@@ -5,8 +5,25 @@ export type MeasurementRecord = {
   source: string;
   weightKg?: number;
   bodyFatPercent?: number;
+  waistCm?: number;
+  rightArmCm?: number;
+  rightThighCm?: number;
   notes?: string;
   supersedesId?: string;
+};
+
+export type RecoveryCheckinRecord = {
+  id: string;
+  userId: string;
+  checkedInAt: string;
+  sleepQuality: number;
+  energy: number;
+  mood: number;
+  muscleSoreness: number;
+  discomfort: number;
+  stress: number;
+  perceivedRecovery: number;
+  notes?: string;
 };
 
 export type SetResultRecord = {
@@ -20,6 +37,10 @@ export type SetResultRecord = {
 
 export interface MeasurementRepository {
   insert(row: Omit<MeasurementRecord, "id">): Promise<MeasurementRecord>;
+}
+
+export interface RecoveryCheckinRepository {
+  insert(row: Omit<RecoveryCheckinRecord, "id">): Promise<RecoveryCheckinRecord>;
 }
 
 export interface SetResultRepository {

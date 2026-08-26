@@ -140,3 +140,28 @@ body {
 body {
   min-height: 100%;
 }
+
+.recovery-slider {
+  appearance: none;
+  background: transparent;
+  height: 16px;
+}
+
+.recovery-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--brand-primary);
+  border: 0;
+  cursor: pointer;
+}
+
+.recovery-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--brand-primary);
+  border: 0;
+  cursor: pointer;
+}

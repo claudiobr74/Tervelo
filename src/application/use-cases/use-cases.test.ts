@@ -2,8 +2,16 @@ import { describe, expect, it } from "vitest";
 import { calculateSessionPlates } from "./calculate-session-plates";
 import { searchExercisesUseCase } from "./search-exercises";
 import { recordBodyMeasurement } from "./record-measurement";
+import { recordRecoveryCheckin } from "./record-recovery-checkin";
 import { recordSetResult } from "./record-set-result";
-import type { MeasurementRecord, MeasurementRepository, SetResultRecord, SetResultRepository } from "../ports";
+import type {
+  MeasurementRecord,
+  MeasurementRepository,
+  RecoveryCheckinRecord,
+  RecoveryCheckinRepository,
+  SetResultRecord,
+  SetResultRepository,
+} from "../ports";
 
 const userId = "11111111-1111-4111-8111-111111111111";
 
@@ -12,6 +20,17 @@ function memoryMeasurements(): MeasurementRepository {
   return {
     async insert(row) {
       const created = { ...row, id: `m${rows.length + 1}` };
+      rows.push(created);
+      return created;
+    },
+  };
+}
+
+function memoryRecovery(): RecoveryCheckinRepository {
+  const rows: RecoveryCheckinRecord[] = [];
+  return {
+    async insert(row) {
+      const created = { ...row, id: `r${rows.length + 1}` };
       rows.push(created);
       return created;
     },
@@ -34,9 +53,31 @@ function memorySetResults(): SetResultRepository {
 
 describe("casos de uso", () => {
   it("grava medida via repositório em memória", async () => {
-    const result = await recordBodyMeasurement(memoryMeasurements(), { userId, weightKg: 80 });
+    const result = await recordBodyMeasurement(memoryMeasurements(), {
+      userId,
+      weightKg: 80,
+      waistCm: 84,
+    });
     expect(result.ok).toBe(true);
-    if (result.ok) expect(result.value.weightKg).toBe(80);
+    if (result.ok) {
+      expect(result.value.weightKg).toBe(80);
+      expect(result.value.waistCm).toBe(84);
+    }
+  });
+
+  it("grava check-in de recuperação append-only", async () => {
+    const result = await recordRecoveryCheckin(memoryRecovery(), {
+      userId,
+      sleepQuality: 4,
+      energy: 4,
+      mood: 4,
+      muscleSoreness: 2,
+      discomfort: 2,
+      stress: 2,
+      perceivedRecovery: 4,
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.value.perceivedRecovery).toBe(4);
   });
 
   it("resultado de série é idempotente no clientMutationId", async () => {

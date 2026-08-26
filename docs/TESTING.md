@@ -15,3 +15,5 @@ Permissions GraphQL contra `nhost up` ficam para o operador (Docker). Codegen Gr
 Phase 4: Playwright cobre login/cadastro visíveis e o redirect do onboarding sem sessão.
 
 Phase 6: Vitest cobre volume sem aquecimento, descanso de supersérie/drop e fila idempotente de `set_results`. Playwright cobre hoje → iniciar → registrar série → timer → pular.
+
+Phase 7: Vitest cobre mapeamento dos sliders (direita = melhor; dor/estresse invertidos no domínio), massa magra e delta append-only. Playwright cobre hoje → recuperação → confirmar → evolução → corpo, no viewport 390 e no tema claro.
