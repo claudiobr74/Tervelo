@@ -50,6 +50,26 @@ function readStoredPreference(): ThemePreference {
 
 const themeListeners = new Set<() => void>();
 
+let cachedClientSnapshot: ThemeSnapshot = SERVER_THEME_SNAPSHOT;
+
+function readClientSnapshot(): ThemeSnapshot {
+  const preference = readStoredPreference();
+  const resolved = resolveTheme(
+    preference,
+    window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+
+  if (
+    cachedClientSnapshot.preference === preference &&
+    cachedClientSnapshot.resolved === resolved
+  ) {
+    return cachedClientSnapshot;
+  }
+
+  cachedClientSnapshot = { preference, resolved };
+  return cachedClientSnapshot;
+}
+
 function emitThemeChange(): void {
   for (const listener of themeListeners) {
     listener();
@@ -60,11 +80,7 @@ export function getThemeSnapshot(): ThemeSnapshot {
   if (typeof window === "undefined") {
     return SERVER_THEME_SNAPSHOT;
   }
-  const preference = readStoredPreference();
-  return {
-    preference,
-    resolved: resolveTheme(preference, window.matchMedia("(prefers-color-scheme: dark)").matches),
-  };
+  return readClientSnapshot();
 }
 
 export function getServerThemeSnapshot(): ThemeSnapshot {

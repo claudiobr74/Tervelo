@@ -25,6 +25,7 @@ describe("DEFAULT_THEME_PREFERENCE", () => {
   it("é dark, conforme Foundations", () => {
     expect(DEFAULT_THEME_PREFERENCE).toBe("dark");
     expect(getServerThemeSnapshot()).toEqual({ preference: "dark", resolved: "dark" });
+    expect(getServerThemeSnapshot()).toBe(getServerThemeSnapshot());
   });
 });
 
