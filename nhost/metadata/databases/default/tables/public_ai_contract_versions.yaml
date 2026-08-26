@@ -1,0 +1,64 @@
+table:
+  name: ai_contract_versions
+  schema: public
+insert_permissions:
+  - role: super_admin
+    permission:
+      check: &a1 {}
+      columns:
+        - contract_id
+        - version
+        - author_user_id
+        - state
+        - config
+        - change_summary
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - contract_id
+        - version
+        - state
+        - config
+        - change_summary
+        - created_at
+      filter:
+        state:
+          _eq: published
+      limit: 20
+  - role: admin
+    permission:
+      columns:
+        - id
+        - contract_id
+        - version
+        - author_user_id
+        - state
+        - config
+        - change_summary
+        - created_at
+      filter: *a1
+      limit: 100
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - contract_id
+        - version
+        - author_user_id
+        - state
+        - config
+        - change_summary
+        - created_at
+      filter: *a1
+      limit: 100
+update_permissions:
+  - role: super_admin
+    permission:
+      filter: *a1
+      check: *a1
+      columns:
+        - state
+        - config
+        - change_summary

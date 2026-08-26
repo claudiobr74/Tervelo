@@ -1,0 +1,16 @@
+table:
+  name: audit_logs
+  schema: public
+select_permissions:
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - actor_user_id
+        - action
+        - entity_type
+        - entity_id
+        - payload
+        - created_at
+      filter: {}
+      limit: 200

@@ -1,0 +1,9 @@
+query GetOwnAthleteProfile {
+  athlete_profiles {
+    id
+    user_id
+    birth_date
+    height_cm
+    experience_level
+  }
+}
