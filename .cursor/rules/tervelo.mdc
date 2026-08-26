@@ -15,3 +15,5 @@ alwaysApply: true
 - Acesso: JWT `user` (atleta) e `admin` / `super_admin` (administrador). Admin só via `auth.user_roles` no SQL.
 - UI e copy em PT-BR; nomes por extenso (ex.: Repetições em reserva).
 - Vercel só na Phase 12.
+- Fases do app do atleta usam o prompt **TERVELO — MÓDULO ALUNO** (`docs/MODULO_ALUNO.md`): login, onboarding e `/app/*`. Admin é outro módulo (Phase 10).
+- Evidência das próximas fases do módulo aluno: **apenas screenshots das telas**. Sem gravação de vídeo.

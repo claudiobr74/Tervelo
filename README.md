@@ -47,6 +47,7 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Camadas do código |
 | [SECURITY.md](docs/SECURITY.md) | Secrets, roles, CI |
 | [TESTING.md](docs/TESTING.md) | Vitest, Playwright, CI |
+| [MODULO_ALUNO.md](docs/MODULO_ALUNO.md) | Prompt **TERVELO — MÓDULO ALUNO** (fases do atleta) |
 
 ## Stack
 

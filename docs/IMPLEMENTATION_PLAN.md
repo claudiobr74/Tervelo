@@ -18,6 +18,16 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–7 neste repositório (Phase 7 n
 
 ---
 
+## TERVELO — MÓDULO ALUNO
+
+Prompt das fases de produto do atleta (não admin). Fonte: [`docs/MODULO_ALUNO.md`](MODULO_ALUNO.md).
+
+Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, mais busca/anilhas do aluno na Phase 5). Phase 10 é o módulo admin.
+
+**Próximas fases:** evidência só com **imagens das telas** (Light/Dark, 390px). **Vídeo não é necessário.**
+
+---
+
 ## 2. Ordem das fases
 
 | Fase | Nome | UI Figma | Pode começar |
@@ -29,9 +39,9 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–7 neste repositório (Phase 7 n
 | 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | concluída neste branch |
 | 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | concluída neste branch |
 | 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | concluída neste branch |
-| 7 | Recovery + Body + Progress | `2:499`, `2:1122`, `2:1025` | concluída neste branch |
-| 8 | Nutrition | `2:817` / `15:1436` | UI sim nos nodes |
-| 9 | AI | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | UI sim nos nodes |
+| 7 | Recovery + Body + Progress — **MÓDULO ALUNO** | `2:499`, `2:1122`, `2:1025` | concluída neste branch |
+| 8 | Nutrition — **MÓDULO ALUNO** | `2:817` / `15:1436` | UI sim nos nodes |
+| 9 | AI — **MÓDULO ALUNO** (coach) + contrato admin | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | UI sim nos nodes |
 | 10 | Admin | 7 screens Dark + Light | UI sim; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
 | 11 | Hardening | conforme telas existentes | após fluxos reais |
 | 12 | Vercel | app navegável | só com critérios da spec |
@@ -158,7 +168,7 @@ Rotas mobile (Dark = layout; Light = tokens): `/app/today` `2:15`, `/app/workout
 
 ## 9. Phase 7 — Recovery + Body + Progress
 
-Append-only. IA usa tendências, não ponto único. Nomes por extenso na UI.
+**TERVELO — MÓDULO ALUNO.** Append-only. IA usa tendências, não ponto único. Nomes por extenso na UI.
 
 Rotas mobile (Dark = layout; Light = tokens): `/app/recovery` `2:499`, `/app/progress` `2:1025`, `/app/body` `2:1122`. Desktop `15:216` / `15:1706` fica para endurecer o layout largo; prioridade 390px.
 
@@ -168,11 +178,13 @@ Nav **Evolução** liga em `/app/progress`. Coach e Mais permanecem `FIGMA_PENDI
 
 ## 10. Phase 8 — Nutrição
 
-Nodes: nutrição `2:817` / desktop `15:1436`.
+**TERVELO — MÓDULO ALUNO.** Nodes: nutrição `2:817` / desktop `15:1436`. Evidência: screenshots das telas; sem vídeo.
 
 ---
 
 ## 11. Phase 9 — AI
+
+**TERVELO — MÓDULO ALUNO** no coach do atleta (`2:944`). Contrato admin permanece fora deste módulo.
 
 ```text
 ai/agents/  ai/skills/  ai/policies/  ai/evaluators/
