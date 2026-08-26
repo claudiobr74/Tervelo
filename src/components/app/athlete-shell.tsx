@@ -2,11 +2,11 @@ import Link from "next/link";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 
 const TABS = [
-  { href: "/", label: "Hoje", icon: "/icons/nav/hoje.svg", enabled: false },
-  { href: "/app/exercises", label: "Treino", icon: "/icons/nav/treino.svg", enabled: true },
-  { href: "/", label: "Evolução", icon: "/icons/nav/evolucao.svg", enabled: false },
-  { href: "/", label: "Coach", icon: "/icons/nav/coach.svg", enabled: false },
-  { href: "/", label: "Mais", icon: "/icons/nav/mais.svg", enabled: false },
+  { href: "/app/today", label: "Hoje", icon: "/icons/nav/hoje.svg", enabled: true },
+  { href: "/app/workout", label: "Treino", icon: "/icons/nav/treino.svg", enabled: true },
+  { href: "/app/today", label: "Evolução", icon: "/icons/nav/evolucao.svg", enabled: false },
+  { href: "/app/today", label: "Coach", icon: "/icons/nav/coach.svg", enabled: false },
+  { href: "/app/today", label: "Mais", icon: "/icons/nav/mais.svg", enabled: false },
 ] as const;
 
 export function AthleteBottomNav({ active = "Treino" }: { active?: (typeof TABS)[number]["label"] }) {
@@ -25,7 +25,7 @@ export function AthleteBottomNav({ active = "Treino" }: { active?: (typeof TABS)
         );
         if (!tab.enabled) {
           return (
-            <span key={tab.label} className={`${className} opacity-70`} title="Tela na Phase 6+">
+            <span key={tab.label} className={`${className} opacity-70`} title="Tela na Phase 7+">
               {inner}
             </span>
           );
@@ -40,11 +40,19 @@ export function AthleteBottomNav({ active = "Treino" }: { active?: (typeof TABS)
   );
 }
 
-export function AthleteAppShell({ children }: { children: React.ReactNode }) {
+export function AthleteAppShell({
+  children,
+  active = "Treino",
+  hideNav = false,
+}: {
+  children: React.ReactNode;
+  active?: (typeof TABS)[number]["label"];
+  hideNav?: boolean;
+}) {
   return (
     <div className="mx-auto flex h-dvh w-full max-w-[390px] flex-col bg-background">
       <div className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto">{children}</div>
-      <AthleteBottomNav />
+      {hideNav ? null : <AthleteBottomNav active={active} />}
     </div>
   );
 }

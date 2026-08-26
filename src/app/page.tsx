@@ -15,7 +15,7 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-6 px-6 py-16">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 5 — Catálogo</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 6 — Treino</p>
       <h1>
         <BrandLogo className="h-14 w-auto max-w-[240px]" />
       </h1>
@@ -33,7 +33,7 @@ export default async function HomePage() {
           <div className="flex flex-wrap gap-3">
             {onboardingDone ? (
               <p className="text-sm text-muted">
-                Onboarding concluído. O treino do dia entra na Phase 6 — esta home não é `/app/today`.
+                Onboarding concluído. O dashboard do atleta é /app/today.
               </p>
             ) : (
               <Link

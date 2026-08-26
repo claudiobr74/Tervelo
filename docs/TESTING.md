@@ -13,3 +13,5 @@ Phase 3 cobre calculadora de anilhas, timer por timestamp, idade derivada, appen
 Permissions GraphQL contra `nhost up` ficam para o operador (Docker). Codegen GraphQL idem.
 
 Phase 4: Playwright cobre login/cadastro visíveis e o redirect do onboarding sem sessão.
+
+Phase 6: Vitest cobre volume sem aquecimento, descanso de supersérie/drop e fila idempotente de `set_results`. Playwright cobre hoje → iniciar → registrar série → timer → pular.

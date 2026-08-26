@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–5 neste repositório (Phase 5 neste branch).
+Veredito atual: **READY_WITH_FIXES**. Phases 0–6 neste repositório (Phase 6 neste branch).
 
 ---
 
@@ -28,7 +28,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–5 neste repositório (Phase 5 n
 | 3 | Domain | não | concluída neste branch |
 | 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | concluída neste branch |
 | 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | concluída neste branch |
-| 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | UI sim nos nodes |
+| 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | concluída neste branch |
 | 7 | Recovery + Body + Progress | `2:499`, `2:1122`, `2:1025` | UI sim nos nodes |
 | 8 | Nutrition | `2:817` / `15:1436` | UI sim nos nodes |
 | 9 | AI | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | UI sim nos nodes |
@@ -152,7 +152,7 @@ Objetivo → Programa → Bloco → Semana → Sessão → Exercício → Série
 - Timer persistido; restante = `expected_end_at - now`
 - Offline: fila local idempotente para `set_results`
 
-UI de execução: `2:372`, timer `10:758` (−15/+15/+30, pausar, reiniciar, pular), supersérie `10:2584`, drop-set `15:1109`, aquecimento `10:2757`. Desktop de sessão: `15:570`. Sem frames de execução desktop detalhada.
+Rotas mobile (Dark = layout; Light = tokens): `/app/today` `2:15`, `/app/workout` `2:188`, `/app/workout/exercise` `2:372` (aquecimento `10:2757`, supersérie `10:2584`, drop-set `15:1109`), `/app/workout/rest` `10:758`, `/app/workout/summary` `2:428`. Nav atleta: Hoje / Treino / Evolução / Coach / Mais. FAB `15:1055` sem destino — omitido. Desktop de sessão `15:570` sem execução detalhada.
 
 ---
 
