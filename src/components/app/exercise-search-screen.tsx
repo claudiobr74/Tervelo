@@ -14,15 +14,31 @@ const FILTERS: { id: ExerciseSearchFilter; label: string }[] = [
 ];
 
 const FAVORITES_KEY = "tervelo-exercise-favorites";
+const EMPTY_FAVORITES: string[] = [];
+
+let cachedFavoritesRaw: string | null = null;
+let cachedFavorites: string[] = EMPTY_FAVORITES;
 
 function readFavorites(): string[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined") return EMPTY_FAVORITES;
   try {
     const raw = window.localStorage.getItem(FAVORITES_KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
+    if (raw === cachedFavoritesRaw) return cachedFavorites;
+    cachedFavoritesRaw = raw;
+    if (!raw) {
+      cachedFavorites = EMPTY_FAVORITES;
+      return cachedFavorites;
+    }
+    const parsed = JSON.parse(raw) as unknown;
+    cachedFavorites = Array.isArray(parsed) ? (parsed as string[]) : EMPTY_FAVORITES;
+    return cachedFavorites;
   } catch {
-    return [];
+    return EMPTY_FAVORITES;
   }
+}
+
+function getServerFavorites(): string[] {
+  return EMPTY_FAVORITES;
 }
 
 const favoriteListeners = new Set<() => void>();
@@ -42,7 +58,10 @@ function toggleFavorite(id: string) {
   const current = new Set(readFavorites());
   if (current.has(id)) current.delete(id);
   else current.add(id);
-  window.localStorage.setItem(FAVORITES_KEY, JSON.stringify([...current]));
+  const next = [...current];
+  cachedFavoritesRaw = JSON.stringify(next);
+  cachedFavorites = next;
+  window.localStorage.setItem(FAVORITES_KEY, cachedFavoritesRaw);
   emitFavorites();
 }
 
@@ -58,7 +77,7 @@ export function ExerciseSearchScreen() {
   const [query, setQuery] = useState("pux");
   const [filter, setFilter] = useState<ExerciseSearchFilter>("muscle");
   const [selectedId, setSelectedId] = useState("ex-puxada-alta");
-  const storedFavorites = useSyncExternalStore(subscribeFavorites, readFavorites, () => []);
+  const storedFavorites = useSyncExternalStore(subscribeFavorites, readFavorites, getServerFavorites);
   const catalog = useMemo(
     () => withFavorites(PREVIEW_EXERCISES, storedFavorites),
     [storedFavorites],
