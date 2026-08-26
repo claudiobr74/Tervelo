@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { PhasePreviewLinks } from "@/components/app/phase-preview-links";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
 import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
@@ -15,7 +16,9 @@ export default async function HomePage() {
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-6 px-6 py-16">
       <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 5 — Catálogo</p>
-      <h1 className="text-[length:var(--font-display)] leading-10 font-bold">TERVELO</h1>
+      <h1>
+        <BrandLogo className="h-14 w-auto max-w-[240px]" />
+      </h1>
       <p className="text-sm leading-5 text-muted">
         Scaffold interno. Login, cadastro e onboarding usam os nodes do Figma. Esta página não é a
         landing de marketing nem o treino do dia.

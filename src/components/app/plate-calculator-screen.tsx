@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
 import {
@@ -38,7 +39,7 @@ export function PlateCalculatorScreen() {
           <Link href="/app/exercises" aria-label="Voltar" className="size-6 text-foreground">
             <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
           </Link>
-          <p className="text-sm font-bold uppercase text-brand">TERVELO</p>
+          <BrandLogo className="h-7 w-auto max-w-[140px]" />
           <span className="size-6" />
         </div>
         <div className="flex flex-col gap-1">

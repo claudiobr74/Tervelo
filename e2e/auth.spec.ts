@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("login mostra marca, entrar e criar conta", async ({ page }) => {
   await page.goto("/login");
-  await expect(page.getByText("TERVELO")).toBeVisible();
+  await expect(page.getByRole("img", { name: "TERVELO" })).toBeVisible();
   await expect(page.getByText("Sua jornada para alta performance começa aqui.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Entrar" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Criar conta" })).toBeVisible();

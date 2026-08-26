@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { BrandLogo } from "@/components/brand/brand-logo";
 
 const PENDING = "FIGMA_PENDING — tela na Phase 10";
 
@@ -37,14 +38,9 @@ export function AdminShell({
   return (
     <div className="flex min-h-dvh bg-background text-foreground">
       <aside className="flex w-[260px] shrink-0 flex-col gap-7 border-r border-border px-4 py-6">
-        <div className="flex items-center gap-3">
-          <span className="flex size-9 items-center justify-center rounded-[var(--radius-md)] bg-brand text-lg font-extrabold text-on-brand">
-            T
-          </span>
-          <div className="flex flex-col gap-0.5">
-            <p className="text-lg font-extrabold">TERVELO</p>
-            <p className="text-[10px] font-semibold uppercase text-brand">Admin Console</p>
-          </div>
+        <div className="flex flex-col gap-1">
+          <BrandLogo className="h-9 w-auto max-w-[196px]" />
+          <p className="text-[10px] font-semibold uppercase text-brand">Admin Console</p>
         </div>
         <nav className="flex flex-1 flex-col gap-1.5">
           {NAV.map((item) => (

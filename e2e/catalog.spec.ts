@@ -50,7 +50,7 @@ test("login e busca funcionam no tema claro", async ({ page }) => {
   await page.goto("/login");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await expect(page.locator("html")).not.toHaveClass(/dark/);
-  await expect(page.getByText("TERVELO")).toBeVisible();
+  await expect(page.getByRole("img", { name: "TERVELO" })).toBeVisible();
   await loginPreview(page);
   await page.goto("/app/exercises");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
