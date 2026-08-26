@@ -57,13 +57,18 @@ function withFavorites(exercises: CatalogExercise[], ids: string[]): CatalogExer
 export function ExerciseSearchScreen() {
   const [query, setQuery] = useState("pux");
   const [filter, setFilter] = useState<ExerciseSearchFilter>("muscle");
+  const [selectedId, setSelectedId] = useState("ex-puxada-alta");
   const storedFavorites = useSyncExternalStore(subscribeFavorites, readFavorites, () => []);
   const catalog = useMemo(
     () => withFavorites(PREVIEW_EXERCISES, storedFavorites),
     [storedFavorites],
   );
   const results = searchCatalogExercises(catalog, query, filter);
-  const selected = results[0] ?? catalog.find((item) => item.id === "ex-puxada-alta") ?? catalog[0];
+  const selected =
+    results.find((item) => item.id === selectedId) ??
+    results[0] ??
+    catalog.find((item) => item.id === "ex-puxada-alta") ??
+    catalog[0];
 
   return (
     <AthleteAppShell>
@@ -112,14 +117,20 @@ export function ExerciseSearchScreen() {
             results.map((exercise) => (
               <div
                 key={exercise.id}
-                className="flex items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface p-3.5"
+                className={`flex items-center justify-between rounded-[var(--radius-lg)] border bg-surface p-3.5 ${
+                  selected?.id === exercise.id ? "border-brand" : "border-border"
+                }`}
               >
-                <div className="flex min-w-0 flex-col gap-1">
+                <button
+                  type="button"
+                  onClick={() => setSelectedId(exercise.id)}
+                  className="flex min-w-0 flex-1 flex-col gap-1 text-left"
+                >
                   <p className="text-sm font-bold text-foreground">{exercise.namePt}</p>
                   <p className="text-xs text-muted">
                     {exercise.primaryMuscle} • {exercise.equipmentName}
                   </p>
-                </div>
+                </button>
                 <button
                   type="button"
                   aria-label={exercise.favorite ? "Remover dos favoritos" : "Favoritar"}

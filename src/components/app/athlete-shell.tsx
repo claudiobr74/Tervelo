@@ -42,8 +42,8 @@ export function AthleteBottomNav({ active = "Treino" }: { active?: (typeof TABS)
 
 export function AthleteAppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[390px] flex-col justify-between bg-background">
-      <div className="flex min-h-0 w-full flex-1 flex-col">{children}</div>
+    <div className="mx-auto flex h-dvh w-full max-w-[390px] flex-col bg-background">
+      <div className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto">{children}</div>
       <AthleteBottomNav />
     </div>
   );

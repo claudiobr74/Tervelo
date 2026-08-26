@@ -11,10 +11,12 @@ async function loginPreview(page: import("@playwright/test").Page) {
 test("busca de exercícios filtra puxadas", async ({ page }) => {
   await loginPreview(page);
   await page.goto("/app/exercises");
-  await expect(page.getByRole("heading", { name: "Puxada Alta Aberta" })).toBeVisible();
+  await expect(page.getByLabel("Buscar exercício")).toHaveValue("pux");
+  await expect(page.getByText("Puxada Alta Aberta").first()).toBeVisible();
   await expect(page.getByText("Puxada Neutra")).toBeVisible();
   await page.getByLabel("Buscar exercício").fill("supino");
-  await expect(page.getByText("Supino Reto com Barra")).toBeVisible();
+  await expect(page.getByText("Supino Reto com Barra").first()).toBeVisible();
+  await expect(page.getByText("Puxada Neutra")).toHaveCount(0);
 });
 
 test("calculadora monta 100 kg com barra 20 kg", async ({ page }) => {
