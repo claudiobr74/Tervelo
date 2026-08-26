@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_THEME_PREFERENCE, isThemePreference, resolveTheme } from "@/lib/theme";
+import {
+  DEFAULT_THEME_PREFERENCE,
+  getServerThemeSnapshot,
+  isThemePreference,
+  resolveTheme,
+} from "@/lib/theme";
 
 describe("resolveTheme", () => {
   it("usa dark quando a preferência é dark", () => {
@@ -19,6 +24,7 @@ describe("resolveTheme", () => {
 describe("DEFAULT_THEME_PREFERENCE", () => {
   it("é dark, conforme Foundations", () => {
     expect(DEFAULT_THEME_PREFERENCE).toBe("dark");
+    expect(getServerThemeSnapshot()).toEqual({ preference: "dark", resolved: "dark" });
   });
 });
 

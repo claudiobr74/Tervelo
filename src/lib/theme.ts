@@ -26,4 +26,73 @@ export function applyResolvedTheme(resolved: ResolvedTheme): void {
   root.dataset.theme = resolved;
 }
 
+export type ThemeSnapshot = {
+  preference: ThemePreference;
+  resolved: ResolvedTheme;
+};
+
+export const SERVER_THEME_SNAPSHOT: ThemeSnapshot = {
+  preference: DEFAULT_THEME_PREFERENCE,
+  resolved: "dark",
+};
+
+function readStoredPreference(): ThemePreference {
+  if (typeof window === "undefined") {
+    return DEFAULT_THEME_PREFERENCE;
+  }
+  try {
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return isThemePreference(stored) ? stored : DEFAULT_THEME_PREFERENCE;
+  } catch {
+    return DEFAULT_THEME_PREFERENCE;
+  }
+}
+
+const themeListeners = new Set<() => void>();
+
+function emitThemeChange(): void {
+  for (const listener of themeListeners) {
+    listener();
+  }
+}
+
+export function getThemeSnapshot(): ThemeSnapshot {
+  if (typeof window === "undefined") {
+    return SERVER_THEME_SNAPSHOT;
+  }
+  const preference = readStoredPreference();
+  return {
+    preference,
+    resolved: resolveTheme(preference, window.matchMedia("(prefers-color-scheme: dark)").matches),
+  };
+}
+
+export function getServerThemeSnapshot(): ThemeSnapshot {
+  return SERVER_THEME_SNAPSHOT;
+}
+
+export function subscribeTheme(listener: () => void): () => void {
+  themeListeners.add(listener);
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  media.addEventListener("change", listener);
+  window.addEventListener("storage", listener);
+  return () => {
+    themeListeners.delete(listener);
+    media.removeEventListener("change", listener);
+    window.removeEventListener("storage", listener);
+  };
+}
+
+export function persistThemePreference(preference: ThemePreference): void {
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, preference);
+  } catch {
+    // persistência é best-effort
+  }
+  applyResolvedTheme(
+    resolveTheme(preference, window.matchMedia("(prefers-color-scheme: dark)").matches),
+  );
+  emitThemeChange();
+}
+
 export const THEME_BOOTSTRAP_SCRIPT = `(function(){try{var k=${JSON.stringify(THEME_STORAGE_KEY)};var d=${JSON.stringify(DEFAULT_THEME_PREFERENCE)};var p=localStorage.getItem(k)||d;if(p!=="light"&&p!=="dark"&&p!=="system")p=d;var dark=p==="dark"||(p==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var r=document.documentElement;r.classList.toggle("dark",dark);r.dataset.theme=dark?"dark":"light";}catch(e){document.documentElement.classList.add("dark");document.documentElement.dataset.theme="dark";}})();`;
