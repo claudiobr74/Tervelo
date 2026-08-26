@@ -6,9 +6,19 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) concluída: veredito **READY_WITH_FIXES**. Phase 1 (foundation) neste repositório: Next.js compilando, tokens Light/Dark, primitivos de UI, stub Nhost, testes e CI.
+Phase 0 (auditoria) concluída: veredito **READY_WITH_FIXES**. Phase 1: app Next.js. Phase 2: Nhost versionado com acesso **usuário (atleta)** e **administrador**.
 
-UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md) (`FIGMA_UI_PARTIAL`). Sem landing, login ou dashboard genérico nesta fase.
+UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md). Login/admin screens entram nas Phases 4 e 10.
+
+## Acesso
+
+| Acesso | Role JWT | Superfície (quando houver Figma) |
+| --- | --- | --- |
+| Usuário / atleta | `user` | `/app/*` |
+| Administrador | `admin` | `/admin/*` |
+| Super admin | `super_admin` | auditoria e contratos de IA |
+
+Admin **não** é criado no cadastro. Operador promove com SQL em `auth.user_roles` — ver [`nhost/README.md`](nhost/README.md).
 
 Detalhes da auditoria: [`docs/PRE_IMPLEMENTATION_AUDIT.md`](docs/PRE_IMPLEMENTATION_AUDIT.md).
 
@@ -41,7 +51,7 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 ## Stack
 
 - Frontend: Next.js 16 (App Router), TypeScript strict, Tailwind v4, CSS variables, Manrope, Lucide
-- Backend: **Nhost** (PostgreSQL, Hasura GraphQL, Auth, Storage, Functions) — stub na Phase 1
+- Backend: **Nhost** (PostgreSQL, Hasura GraphQL, Auth, Storage, Functions)
 - **Não** usar Supabase
 
 ## Desenvolvimento
@@ -49,7 +59,8 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 ```bash
 cp .env.example .env.local
 npm install
-npm run dev
+npm run dev          # frontend
+npm exec nhost -- up # backend local (Docker)
 ```
 
 Rotas desta fase:

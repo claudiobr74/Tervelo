@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phase 1 Foundation está neste PR (app compilável).
+Veredito atual: **READY_WITH_FIXES**. Phase 1 Foundation e Phase 2 Nhost (roles user/admin) neste repositório.
 
 ---
 
@@ -24,7 +24,7 @@ Veredito atual: **READY_WITH_FIXES**. Phase 1 Foundation está neste PR (app com
 | --- | --- | --- | --- |
 | 0 | Auditoria | inventário completo | concluída neste PR |
 | 1 | Foundation | tokens `28:527` + primitivos `2:2` | concluída neste PR |
-| 2 | Nhost | não | sim |
+| 2 | Nhost | não | concluída neste branch |
 | 3 | Domain | não | sim |
 | 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | UI mobile sim; `/forgot-password` não |
 | 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | sim |
@@ -82,7 +82,9 @@ Ver `NHOST_ARCHITECTURE.md`.
 - Trigger `auth.users` → `profiles`
 - Seeds controlados (músculos, categorias de equipamento — não milhares de exercícios ainda)
 
-Permissions testadas (integration).
+**Acesso:** atleta = JWT `user`; administrador = `admin` (e `super_admin` para auditoria/contratos). Promoção só via `auth.user_roles` no SQL.
+
+Permissions testadas (matriz Vitest). `nhost up` exige Docker no operador.
 
 ---
 

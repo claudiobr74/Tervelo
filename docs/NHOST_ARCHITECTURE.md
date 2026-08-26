@@ -115,6 +115,7 @@ Para tabelas com `user_id`:
 
 - `select` / `update` / `delete`: `_eq: X-Hasura-User-Id`
 - `insert`: `check` igual + `set.user_id = X-Hasura-User-Id`; colunas mínimas
+- Exceção: `gym_memberships` — o dono da academia insere `user_id` de outros atletas (sem preset de sessão)
 - Catálogo: `select` para `user`; `insert/update/delete` para `admin` / `super_admin`
 
 `set_results`: `update` de métricas **negado** para `user`.  
@@ -166,7 +167,7 @@ Rate limit: token bucket em tabela `ai_rate_limits` ou equivalente na Function (
 
 - `auth.user.locale.default = "pt"`
 - `auth.user.roles.default = "user"`
-- `auth.user.roles.allowed = ["user", "admin", "super_admin"]`
+- `auth.user.roles.allowed = ["user", "me", "admin", "super_admin"]` (`me` é o papel interno do Auth Nhost)
 - Email verification enabled
 - SMTP via `provider.smtp` (secrets no cloud, não no repo)
 - Hasura allowed roles alinhados
@@ -226,11 +227,11 @@ Hasura/Nhost logs no cloud. App: erros sem PII. `audit_logs` e `ai_decisions` pa
 
 ## 13. Checklist Phase 2
 
-- [ ] `nhost/` no git
-- [ ] Projeto local sobe (`nhost up`)
-- [ ] Trigger profile
-- [ ] Permissions `user` isolam atletas
-- [ ] Buckets criados
-- [ ] Codegen no CI (schema local ou secret de CI)
-- [ ] GitHub conectado ao cloud
-- [ ] Nenhum secret no repositório
+- [x] `nhost/` no git (`nhost.toml`, migrations, metadata, seeds, emails `pt`)
+- [ ] Projeto local sobe (`nhost up`) — requer Docker na máquina do operador
+- [x] Trigger profile (`auth.users` → `profiles` + `athlete_profiles`)
+- [x] Permissions `user` isolam atletas; `admin` lê operacional + escreve catálogo
+- [x] Buckets criados (`avatars`, `exercise-media`, `equipment-media`, `progress-media`, `documents`)
+- [ ] Codegen no CI (schema local ou secret de CI) — config na Phase 3 com `nhost up`
+- [ ] GitHub conectado ao cloud (`wqttndghxeybdppcfnol`)
+- [x] Nenhum secret no repositório (`.secrets` gitignored)

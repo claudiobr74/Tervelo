@@ -1,0 +1,43 @@
+table:
+  name: nutrition_targets
+  schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-user-id
+      columns:
+        - valid_from
+        - energy_kcal
+        - protein_g
+        - carbohydrate_g
+        - fat_g
+        - fluid_ml
+select_permissions:
+  - role: user
+    permission:
+      columns: &a2
+        - id
+        - user_id
+        - valid_from
+        - energy_kcal
+        - protein_g
+        - carbohydrate_g
+        - fat_g
+        - fluid_ml
+        - created_at
+      filter: *a1
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a2
+      filter: &a3 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a2
+      filter: *a3
+      limit: 500

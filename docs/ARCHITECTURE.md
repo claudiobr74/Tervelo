@@ -5,6 +5,7 @@ Camadas (Phase 1+):
 ```text
 src/app/                 # rotas Next.js App Router
 src/components/          # UI (tokens Figma)
+src/lib/auth/             # papéis user/admin e matriz Hasura
 src/lib/nhost/           # adapters Nhost (borda)
 src/lib/theme.ts         # preferência de tema, sem Zustand
 src/graphql/<domínio>/   # documents GraphQL (Phase 2+)

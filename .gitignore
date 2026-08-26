@@ -42,6 +42,7 @@ yarn-error.log*
 
 # nhost local
 .nhost/
+.secrets
 
 # typescript
 *.tsbuildinfo

@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     "e2e/**",
     "playwright.config.ts",
     "vitest.config.ts",
+    "scripts/**",
+    "functions/**",
   ]),
 ]);
 
