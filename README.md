@@ -6,7 +6,7 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma).
+Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma). Phase 11: frequência cardíaca opcional (Web Bluetooth real).
 
 UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md). Login/admin screens entram nas Phases 4 e 10.
 
@@ -50,6 +50,8 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 | [MODULO_ALUNO.md](docs/MODULO_ALUNO.md) | Prompt **TERVELO — MÓDULO ALUNO** (fases do atleta) |
 | [IA_PROMPT_MESTRE.md](docs/IA_PROMPT_MESTRE.md) | Prompt **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL** |
 | [IA_ADDENDUM.md](docs/IA_ADDENDUM.md) | **TERVELO — ADDENDUM** — integração treino e nutrição esportiva |
+| [HEART_RATE_IMPLEMENTATION_AUDIT.md](docs/HEART_RATE_IMPLEMENTATION_AUDIT.md) | Auditoria da Phase 11 (frequência cardíaca) |
+| [HEART_RATE_HARDWARE_VALIDATION.md](docs/HEART_RATE_HARDWARE_VALIDATION.md) | Checklist com frequencímetro BLE real |
 
 ## Stack
 
@@ -75,7 +77,7 @@ Rotas desta fase:
 - `/dev/tokens` — paleta e primitivos
 - `/app/nutrition` — Figma `2:817`
 - `/app/coach` — Figma `2:944`
-- `/app/coach/ajuste` — Figma `10:2651`
+- `/app/settings` — Treino e dispositivos (frequência cardíaca; `FIGMA_PENDING`)
 - `/admin` — Figma `2:2503`
 - `/admin/users` — Figma `2:2659`
 - `/admin/audit` — Figma `2:3112`

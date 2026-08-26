@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
+import { HeartRateWorkoutIndicator } from "@/components/app/heart-rate-indicator";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
   currentExercise,
@@ -230,6 +231,7 @@ export function ExerciseExecutionScreen() {
                 {isSuper ? "Supersérie" : exercise.namePt}
               </h1>
               <p className="text-base font-semibold text-brand">{subtitle}</p>
+              <HeartRateWorkoutIndicator />
             </div>
           </div>
 

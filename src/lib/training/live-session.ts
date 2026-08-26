@@ -12,6 +12,7 @@ import {
   tickRestTimer,
   type RestTimer,
 } from "@/domain/timer/rest-timer";
+import type { WorkoutTimelineEvent } from "@/domain/heart-rate/types";
 import { enqueueSetResult, type QueuedSetResult } from "@/domain/training/offline-queue";
 import {
   currentExercise,
@@ -46,6 +47,8 @@ export type LiveSessionState = {
   timer: SerializedTimer | null;
   startedAt: string | null;
   completedAt: string | null;
+  currentSetStartedAt: string | null;
+  events: WorkoutTimelineEvent[];
   loadKg: number;
   reps: number;
   rir: number;
@@ -59,6 +62,8 @@ const IDLE: LiveSessionState = {
   timer: null,
   startedAt: null,
   completedAt: null,
+  currentSetStartedAt: null,
+  events: [],
   loadKg: 80,
   reps: 8,
   rir: 2,
@@ -125,6 +130,7 @@ function readStored(): LiveSessionState {
       ...parsed,
       recorded: Array.isArray(parsed.recorded) ? parsed.recorded : [],
       queue: Array.isArray(parsed.queue) ? parsed.queue : [],
+      events: Array.isArray(parsed.events) ? parsed.events : [],
     };
   } catch {
     return IDLE;
@@ -167,11 +173,19 @@ export function startWorkout(): LiveSessionState {
   if (cached.status === "active" || cached.status === "resting") {
     return cached;
   }
+  const firstExercise = currentExercise(PREVIEW_WORKOUT, []);
   const first = currentSet(PREVIEW_WORKOUT, []);
+  const at = new Date().toISOString();
   const next: LiveSessionState = {
     ...IDLE,
     status: "active",
-    startedAt: new Date().toISOString(),
+    startedAt: at,
+    currentSetStartedAt: at,
+    events: [
+      { type: "SESSION_STARTED", at },
+      { type: "EXERCISE_STARTED", at, exerciseId: firstExercise.id },
+      { type: "SET_STARTED", at, setId: first.id, exerciseId: firstExercise.id },
+    ],
     queue: cached.queue,
     ...inputsFromSet(first),
   };
@@ -180,12 +194,35 @@ export function startWorkout(): LiveSessionState {
 }
 
 function completeSession(state: LiveSessionState): LiveSessionState {
+  const at = state.completedAt ?? new Date().toISOString();
+  const last = state.recorded.at(-1);
+  const extra: WorkoutTimelineEvent[] = [];
+  if (last) {
+    extra.push({ type: "EXERCISE_COMPLETED", at, exerciseId: last.sessionExerciseId, setId: last.setId });
+  }
+  extra.push({ type: "SESSION_COMPLETED", at });
   return {
     ...state,
     status: "completed",
     timer: null,
-    completedAt: state.completedAt ?? new Date().toISOString(),
+    completedAt: at,
+    currentSetStartedAt: null,
+    events: [...state.events, ...extra],
   };
+}
+
+function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelineEvent[] {
+  if (isSessionComplete(PREVIEW_WORKOUT, recorded)) return [];
+  const previous = recorded.at(-1);
+  const exercise = currentExercise(PREVIEW_WORKOUT, recorded);
+  const set = currentSet(PREVIEW_WORKOUT, recorded);
+  const events: WorkoutTimelineEvent[] = [];
+  if (previous && previous.sessionExerciseId !== exercise.id) {
+    events.push({ type: "EXERCISE_COMPLETED", at, exerciseId: previous.sessionExerciseId, setId: previous.setId });
+    events.push({ type: "EXERCISE_STARTED", at, exerciseId: exercise.id });
+  }
+  events.push({ type: "SET_STARTED", at, setId: set.id, exerciseId: exercise.id });
+  return events;
 }
 
 export function recordCurrentSet(): AfterRecord {
@@ -219,8 +256,12 @@ export function recordCurrentSet(): AfterRecord {
     methodKind: recorded.methodKind,
     performedAt,
   });
+  const timeline: WorkoutTimelineEvent[] = [
+    ...cached.events,
+    { type: "SET_COMPLETED", at: performedAt, setId: set.id, exerciseId: exercise.id },
+  ];
   if (isSessionComplete(session, recordedAll)) {
-    persist(completeSession({ ...cached, recorded: recordedAll, queue: queued, timer: null }));
+    persist(completeSession({ ...cached, recorded: recordedAll, queue: queued, timer: null, events: timeline }));
     return "summary";
   }
   const rest = restSecondsAfter(session, recordedAll);
@@ -231,6 +272,8 @@ export function recordCurrentSet(): AfterRecord {
       queue: queued,
       status: "resting",
       timer: serializeTimer(startRestTimer(new Date(), rest)),
+      events: [...timeline, { type: "REST_STARTED", at: performedAt, setId: set.id, exerciseId: exercise.id }],
+      currentSetStartedAt: null,
       ...inputsFromSet(currentSet(session, recordedAll)),
     });
     return "rest";
@@ -241,6 +284,8 @@ export function recordCurrentSet(): AfterRecord {
     queue: queued,
     status: "active",
     timer: null,
+    events: [...timeline, ...startNextSetEvents(recordedAll, performedAt)],
+    currentSetStartedAt: performedAt,
     ...inputsFromSet(currentSet(session, recordedAll)),
   });
   return "exercise";
@@ -268,28 +313,53 @@ export function adjustTimer(deltaSeconds: number) {
 
 export function skipRest(): AfterRecord {
   hydrate();
+  const at = new Date().toISOString();
+  const restDone: WorkoutTimelineEvent = { type: "REST_COMPLETED", at };
   if (cached.timer) {
     const skipped = skipRestTimer(deserializeTimer(cached.timer), new Date());
     if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
-      persist(completeSession({ ...cached, timer: serializeTimer(skipped) }));
+      persist(completeSession({ ...cached, timer: serializeTimer(skipped), events: [...cached.events, restDone] }));
       return "summary";
     }
     persist({
-      ...withCurrentInputs({ ...cached, status: "active", timer: serializeTimer(skipped) }),
+      ...withCurrentInputs({
+        ...cached,
+        status: "active",
+        timer: serializeTimer(skipped),
+        currentSetStartedAt: at,
+        events: [...cached.events, restDone, ...startNextSetEvents(cached.recorded, at)],
+      }),
     });
     return "exercise";
   }
-  persist({ ...withCurrentInputs({ ...cached, status: "active", timer: null }) });
+  persist({
+    ...withCurrentInputs({
+      ...cached,
+      status: "active",
+      timer: null,
+      currentSetStartedAt: at,
+      events: [...cached.events, restDone, ...startNextSetEvents(cached.recorded, at)],
+    }),
+  });
   return "exercise";
 }
 
 export function beginNextSet(): AfterRecord {
   hydrate();
+  const at = new Date().toISOString();
   if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
     persist(completeSession(cached));
     return "summary";
   }
-  persist({ ...withCurrentInputs({ ...cached, status: "active", timer: null }) });
+  persist({
+    ...withCurrentInputs({
+      ...cached,
+      status: "active",
+      timer: null,
+      currentSetStartedAt: at,
+      events: [...cached.events, { type: "REST_COMPLETED", at }, ...startNextSetEvents(cached.recorded, at)],
+    }),
+  });
   return "exercise";
 }
 

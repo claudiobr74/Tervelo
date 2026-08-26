@@ -53,7 +53,7 @@ Matriz de autonomia (nomes por extenso): progressão de carga → Confirmar; vol
 
 Complemento obrigatório: [`docs/IA_ADDENDUM.md`](IA_ADDENDUM.md) — integração treino + nutrição + composição + recuperação + aderência.
 
-Não substitui este prompt nem as regras protegidas de segurança. `NUTRITION_CONTEXT` é obrigatório quando houver dados nutricionais. QA 13–20 falha conflito grave.
+Não substitui este prompt nem as regras protegidas de segurança. `NUTRITION_CONTEXT` é obrigatório quando houver dados nutricionais. `HEART_RATE_CONTEXT` só existe se `heart_rate_enabled` e houver dados suficientes. QA 13–20 (nutrição) e 21–30 (frequência cardíaca) falham conflito grave.
 
 ## Evidência
 

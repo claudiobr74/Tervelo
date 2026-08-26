@@ -10,7 +10,7 @@ Este documento complementa o [PROMPT MESTRE](IA_PROMPT_MESTRE.md) existente.
 
 A partir desta versão, o Tervelo deve tratar:
 
-**TREINAMENTO + NUTRIÇÃO ESPORTIVA + COMPOSIÇÃO CORPORAL + RECUPERAÇÃO + ADERÊNCIA**
+**TREINAMENTO + NUTRIÇÃO ESPORTIVA + COMPOSIÇÃO CORPORAL + RECUPERAÇÃO + ADERÊNCIA + RESPOSTA CARDÍACA (quando habilitada)**
 
 como partes de um único sistema de acompanhamento longitudinal.
 
@@ -203,3 +203,15 @@ A IA deve operar segundo:
 **TREINO ↔ NUTRIÇÃO ↔ COMPOSIÇÃO CORPORAL ↔ RECUPERAÇÃO ↔ PERFORMANCE**
 
 Nenhum desses domínios deve ser interpretado isoladamente quando os demais possuírem dados relevantes.
+
+---
+
+## 23. Frequência cardíaca (Phase 11)
+
+Sinal complementar, controlado pelo atleta (`heart_rate_enabled`, default false).
+
+- Desligado: não gerar `HEART_RATE_CONTEXT`.
+- Ligado, com dados suficientes: resumo determinístico (`HeartRateAnalytics` em `src/domain/heart-rate/`), nunca raw samples no LLM.
+- Nunca usar isoladamente para carga, volume, falha, deload, hipertrofia, fadiga ou diagnóstico.
+- QA 21–30 em `src/domain/heart-rate/qa.ts`.
+

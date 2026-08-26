@@ -54,6 +54,7 @@ export const AI_POLICY_LOCKS = [
   "Isolamento por user_id. Rate limit na Function.",
   "Dados ausentes permanecem UNKNOWN; nunca estimar silenciosamente.",
   "Treino e nutrição não se interpretam isoladamente quando há dados relevantes nos dois.",
+  "Frequência cardíaca é complementar; nunca determina sozinha carga, volume, falha, deload, hipertrofia, fadiga ou diagnóstico.",
 ] as const;
 
 export const AI_ADMIN_TABS = [

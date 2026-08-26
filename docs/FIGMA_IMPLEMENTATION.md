@@ -378,6 +378,7 @@ Canvases: `2:2502` (4 telas Dark), `10:6` (bibliotecas/inventário Dark), `15:66
 | Academias do atleta | Sem tela |
 | Catálogo de equipamentos do atleta | Há busca de exercícios e substituição; sem catálogo próprio |
 | Settings do atleta (conta, tema, academia) | Perfil + `light-configuracoes-ia`; sidebar desktop “Configurações” sem frame |
+| Treino e dispositivos / frequência cardíaca | Sem frame; bloco em `/app/settings` no Design System até o Figma publicar |
 | Admin Treinamento / Nutrição / Configurações | Itens de menu sem screen |
 | Admin detalhe do atleta | Só card no protótipo FL.05 |
 | Auth/onboarding/execução desktop | Sem frames |

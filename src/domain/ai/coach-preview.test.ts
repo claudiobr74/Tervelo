@@ -56,4 +56,22 @@ describe("coach preview", () => {
     expect(coachProposalFeedback("accepted")).toContain("82 kg");
     expect(coachProposalFeedback("kept")).toContain("80 kg");
   });
+
+  it("só cita resposta cardíaca quando HEART_RATE_CONTEXT existe", () => {
+    const without = coachReplyForPrompt("Como está minha evolução?", previewCoachFacts);
+    expect(without.body).not.toContain("base isolada na frequência cardíaca");
+
+    const withHr = coachReplyForPrompt("Como está minha evolução?", {
+      ...previewCoachFacts,
+      heartRate: {
+        enabled: true,
+        session: { averageBpm: 118, maximumBpm: 157, minimumBpm: 90, coverage: 0.94, sampleCount: 400 },
+        recovery: { median60Seconds: 29, trend: "STABLE" },
+        comparability: { sameDevice: true, comparableSessions: 4 },
+        quality: "GOOD",
+      },
+    });
+    expect(withHr.body).toContain("resposta ao treinamento permanece consistente");
+    expect(withHr.body).not.toMatch(/overtraining/i);
+  });
 });

@@ -3,6 +3,8 @@ import {
   isUnknown,
   type NutritionContext,
 } from "@/domain/ai/nutrition-context";
+import type { HeartRateContext } from "@/domain/heart-rate/context";
+import { HEART_RATE_ANALYSIS_RULE } from "@/domain/heart-rate/context";
 
 export type CoachKnownFacts = {
   benchPressKg: number | null;
@@ -11,6 +13,7 @@ export type CoachKnownFacts = {
   recoveryLowerBodyBelowHabitual: boolean | null;
   lastTwoSessionsPerformanceDropped: boolean | null;
   nutrition: NutritionContext;
+  heartRate: HeartRateContext | null;
 };
 
 export const previewCoachFacts: CoachKnownFacts = {
@@ -20,6 +23,7 @@ export const previewCoachFacts: CoachKnownFacts = {
   recoveryLowerBodyBelowHabitual: true,
   lastTwoSessionsPerformanceDropped: true,
   nutrition: emptyNutritionContext(),
+  heartRate: null,
 };
 
 export const COACH_SUGGESTIONS = [
@@ -33,7 +37,7 @@ export type CoachProposalStatus = "pending" | "accepted" | "kept";
 
 export function requireKnownFacts(
   facts: CoachKnownFacts,
-  keys: Exclude<keyof CoachKnownFacts, "nutrition">[],
+  keys: Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate">[],
 ): { ok: true } | { ok: false; unknown: string[] } {
   const unknown: string[] = [];
   for (const key of keys) {
@@ -87,12 +91,13 @@ export function coachReplyForPrompt(
   }
 
   const nutritionRole = nutritionRoleCopy(facts.nutrition);
+  const heartRateRole = heartRateRoleCopy(facts.heartRate);
 
   if (prompt.includes("evolução")) {
     return {
       id: "evolucao",
       role: "coach",
-      body: `Sua evolução de força no Supino Reto está consistente: você fecha as séries com ${facts.repetitionsInReserve} repetições em reserva. Há margem para um aumento de 2 kg, sem pular o teto de 92% da frequência cardíaca máxima.`,
+      body: `Sua evolução de força no Supino Reto está consistente: você fecha as séries com ${facts.repetitionsInReserve} repetições em reserva. Há margem para um aumento de 2 kg, sem pular o teto de 92% da frequência cardíaca máxima.${heartRateRole ? ` ${heartRateRole}` : ""}`,
       sections: {
         observacao: `Carga atual ${facts.benchPressKg} kg; ${facts.repetitionsInReserve} repetições em reserva.`,
         interpretacao: "Há margem de progressão hipertrófica sem comprometer a recuperação.",
@@ -107,7 +112,7 @@ export function coachReplyForPrompt(
     return {
       id: "treino-mudou",
       role: "coach",
-      body: "O volume de agachamento caiu porque a recuperação de membros inferiores está abaixo do habitual e o desempenho caiu nas duas últimas sessões. É um ajuste temporário, não uma troca de objetivo.",
+      body: `O volume de agachamento caiu porque a recuperação de membros inferiores está abaixo do habitual e o desempenho caiu nas duas últimas sessões. É um ajuste temporário, não uma troca de objetivo.${heartRateRole ? ` ${heartRateRole}` : ""}`,
       sections: {
         observacao:
           "Recuperação de membros inferiores abaixo do habitual; desempenho das duas últimas sessões em queda.",
@@ -156,7 +161,18 @@ function nutritionRoleCopy(nutrition: NutritionContext): string {
   return parts.join(" ");
 }
 
-function requiredKeysForPrompt(prompt: string): Exclude<keyof CoachKnownFacts, "nutrition">[] {
+function heartRateRoleCopy(heartRate: HeartRateContext | null): string | null {
+  if (!heartRate || !heartRate.enabled) return null;
+  const trend = heartRate.recovery.trend;
+  if (trend === "SLOWER") {
+    return "A recuperação cardíaca entre séries ficou menos favorável nas sessões comparáveis; isso entra só como contexto, sem provar overtraining nem substituir carga, repetições ou esforço percebido.";
+  }
+  return "Sua resposta ao treinamento permanece consistente com as sessões recentes. Não há justificativa pelos dados atuais para alterar o planejamento com base isolada na frequência cardíaca.";
+}
+
+export { HEART_RATE_ANALYSIS_RULE };
+
+function requiredKeysForPrompt(prompt: string): Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate">[] {
   if (prompt.includes("evolução") || prompt.includes("carga")) {
     return ["benchPressKg", "proposedBenchPressKg", "repetitionsInReserve"];
   }

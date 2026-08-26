@@ -7,9 +7,9 @@ src/app/                 # rotas Next.js App Router
 src/components/          # UI (tokens Figma)
 src/lib/auth/            # papéis user/admin e matriz Hasura
 src/lib/nhost/           # adapters Nhost (borda)
-src/lib/theme.ts         # preferência de tema, sem Zustand
+src/lib/heart-rate/        # Web Bluetooth na borda; domínio não acessa navigator.bluetooth
 src/graphql/<domínio>/   # documents GraphQL
-src/domain/              # regras puras (Phase 3+): anilhas, timer, idade, append-only, agentes de IA
+src/domain/              # regras puras: anilhas, timer, idade, append-only, agentes de IA, parser/métricas de FC
 src/application/         # casos de uso + Zod + portas
 src/server/              # adaptadores (Nhost na Phase 4+; fakes em memória nos testes)
 nhost/                   # CLI Nhost

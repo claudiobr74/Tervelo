@@ -24,7 +24,7 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 10 — Admin</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 11 — Frequência cardíaca</p>
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
@@ -47,6 +47,12 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
         >
           Auditoria
         </button>
+        <a
+          href="/app/settings"
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"
+        >
+          Treino e dispositivos
+        </a>
         <a
           href="/app/coach"
           className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"

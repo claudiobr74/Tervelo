@@ -286,6 +286,18 @@ Resultado real, append-only.
 | `client_mutation_id` | uuid — **idempotência** offline |
 | Unique | `(client_mutation_id)` where not null |
 
+### Frequência cardíaca (Phase 11)
+
+Opcional. Pertence ao usuário. Sem identificadores Bluetooth.
+
+`wearable_devices`: `provider` (`web_bluetooth`), `display_name`, `device_type`, `last_connected_at`, `is_active`.
+
+`heart_rate_sessions`: âncora da sessão (`training_session_id` nullable), agregados (`average_bpm`, `maximum_bpm`, `minimum_bpm`, `sample_count`, `sensor_coverage`), `processing_version`.
+
+`heart_rate_samples`: append-only; `client_mutation_id` único por usuário; `exercise_id`/`set_id` em texto para correlacionar o cursor local; **não** entram em `ai_runs.input_context_snapshot`.
+
+Preferência `heart_rate_enabled` em `athlete_preferences` (default ausente = false).
+
 ### `rest_timers`
 
 Timer robusto (não só `setInterval`):
@@ -391,6 +403,7 @@ Não criar na Phase 2: `organizations`, `coach_client_links`, `teams` — docume
 | muscle_groups, muscles, movement_patterns | sim | |
 | canonical_exercises, exercise_variants, exercise_equipment, exercise_aliases | sim | |
 | training_* / session_exercises / exercise_sets / set_results | sim | |
+| wearable_devices / heart_rate_sessions / heart_rate_samples | sim | Phase 11; samples append-only |
 | exercise_substitutions | sim | |
 | rest_timers | sim | extra necessário |
 | nutrition_* | sim | |

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
+import { HeartRateWorkoutIndicator } from "@/components/app/heart-rate-indicator";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
   remainingSeconds,
@@ -106,6 +107,7 @@ export function RestTimerScreen() {
           <p className="text-sm text-muted">
             {lastExercise?.namePt ?? "Série"} • Série {ordinal ? `${Math.max(1, ordinal.current)} de ${ordinal.total}` : "—"}
           </p>
+          <HeartRateWorkoutIndicator compact />
         </div>
 
         <div className="flex flex-col items-center gap-8 py-4">

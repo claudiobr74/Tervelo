@@ -652,6 +652,107 @@ export const PUBLIC_TABLES: PublicTable[] = [
     ),
   },
   {
+    name: "wearable_devices",
+    kind: "athlete",
+    columns: [
+      "id", "user_id", "provider", "display_name", "device_type", "last_connected_at", "is_active",
+      "created_at", "updated_at",
+    ],
+    permissions: athleteOwn(
+      [
+        "id", "user_id", "provider", "display_name", "device_type", "last_connected_at", "is_active",
+        "created_at", "updated_at",
+      ],
+      { insert: true, update: ["display_name", "last_connected_at", "is_active"], delete: false },
+    ),
+  },
+  {
+    name: "heart_rate_sessions",
+    kind: "athlete",
+    columns: [
+      "id", "user_id", "training_session_id", "wearable_device_id", "started_at", "ended_at",
+      "average_bpm", "maximum_bpm", "minimum_bpm", "sample_count", "sensor_coverage",
+      "processing_version", "created_at", "updated_at",
+    ],
+    objectRelationships: [
+      { name: "wearable_device", column: "wearable_device_id" },
+    ],
+    permissions: athleteOwn(
+      [
+        "id", "user_id", "training_session_id", "wearable_device_id", "started_at", "ended_at",
+        "average_bpm", "maximum_bpm", "minimum_bpm", "sample_count", "sensor_coverage",
+        "processing_version", "created_at", "updated_at",
+      ],
+      {
+        insert: true,
+        update: ["ended_at", "average_bpm", "maximum_bpm", "minimum_bpm", "sample_count", "sensor_coverage"],
+        delete: false,
+      },
+    ),
+  },
+  {
+    name: "heart_rate_samples",
+    kind: "athlete",
+    columns: [
+      "id", "heart_rate_session_id", "user_id", "training_session_id", "exercise_id", "set_id",
+      "recorded_at", "bpm", "source", "is_valid", "quality", "quality_reason", "client_mutation_id",
+      "created_at",
+    ],
+    objectRelationships: [{ name: "heart_rate_session", column: "heart_rate_session_id" }],
+    permissions: [
+      {
+        role: "user",
+        operations: {
+          select: {
+            filter: OWN,
+            columns: [
+              "id", "heart_rate_session_id", "user_id", "training_session_id", "exercise_id", "set_id",
+              "recorded_at", "bpm", "source", "is_valid", "quality", "quality_reason", "client_mutation_id",
+              "created_at",
+            ],
+            limit: 5000,
+          },
+          insert: {
+            filter: OWN,
+            set: SET_USER,
+            columns: [
+              "id", "heart_rate_session_id", "training_session_id", "exercise_id", "set_id",
+              "recorded_at", "bpm", "source", "is_valid", "quality", "quality_reason", "client_mutation_id",
+            ],
+          },
+        },
+      },
+      {
+        role: "admin",
+        operations: {
+          select: {
+            filter: OPEN,
+            columns: [
+              "id", "heart_rate_session_id", "user_id", "training_session_id", "exercise_id", "set_id",
+              "recorded_at", "bpm", "source", "is_valid", "quality", "quality_reason", "client_mutation_id",
+              "created_at",
+            ],
+            limit: 2000,
+          },
+        },
+      },
+      {
+        role: "super_admin",
+        operations: {
+          select: {
+            filter: OPEN,
+            columns: [
+              "id", "heart_rate_session_id", "user_id", "training_session_id", "exercise_id", "set_id",
+              "recorded_at", "bpm", "source", "is_valid", "quality", "quality_reason", "client_mutation_id",
+              "created_at",
+            ],
+            limit: 5000,
+          },
+        },
+      },
+    ],
+  },
+  {
     name: "exercise_substitutions",
     kind: "training",
     columns: ["id", "session_exercise_id", "from_variant_id", "to_variant_id", "reason", "created_at"],

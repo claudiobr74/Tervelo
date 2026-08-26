@@ -26,6 +26,8 @@ Phase 9: Vitest cobre recusa de fabricar fatos UNKNOWN, seções integradas (Pap
 
 Phase 10: Vitest cobre filtro de usuários e faixa de aderência. Playwright cobre dashboard → usuários → auditoria no desktop (1440), Dark e Light. Atleta sem papel admin volta para a home.
 
+Phase 11: Vitest cobre parser BLE (8/16 bits, flags, inválidos), recuperação, associação temporal, batching/idempotência, toggle e `HEART_RATE_CONTEXT` condicional. Playwright cobre settings desligado → treino sem indicador; ligar o toggle; treino segue sem BLE. Screenshots 390 Light/Dark. Hardware real: `docs/HEART_RATE_HARDWARE_VALIDATION.md`.
+
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.
 
 **TERVELO — ADDENDUM**: Vitest cobre `NUTRITION_CONTEXT` UNKNOWN, ordem de ajuste e QA 13–20. Playwright cobre a aba Nutrição do contrato admin.

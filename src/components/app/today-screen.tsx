@@ -27,14 +27,16 @@ export function TodayScreen() {
             <h1 className="text-2xl font-bold text-foreground">Olá, Lucas.</h1>
             <p className="text-sm text-muted">Veja seu dia.</p>
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/catalog/admin-avatar.webp"
-            alt=""
-            width={40}
-            height={40}
-            className="size-10 rounded-full border border-border object-cover"
-          />
+          <Link href="/app/settings" className="size-10 shrink-0" aria-label="Configurações">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/catalog/admin-avatar.webp"
+              alt=""
+              width={40}
+              height={40}
+              className="size-10 rounded-full border border-border object-cover"
+            />
+          </Link>
         </header>
 
         <section className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">

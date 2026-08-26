@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–10 neste repositório (Phase 10 neste branch).
+Veredito atual: **READY_WITH_FIXES**. Phases 0–11 neste repositório (Phase 11 neste branch).
 
 ---
 
@@ -14,7 +14,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–10 neste repositório (Phase 10
 4. Histórico longitudinal nunca é sobrescrito.
 5. IA não inventa dados ausentes; memória vem do banco.
 6. Sem Supabase, Firebase ou secrets no cliente.
-7. Vercel só na Phase 12.
+7. Vercel só na Phase 13.
 
 ---
 
@@ -22,7 +22,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–10 neste repositório (Phase 10
 
 Prompt das fases de produto do atleta (não admin). Fonte: [`docs/MODULO_ALUNO.md`](MODULO_ALUNO.md).
 
-Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, mais busca/anilhas do aluno na Phase 5). Phase 10 é o módulo admin.
+Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9 e 11, mais busca/anilhas do aluno na Phase 5). Phase 10 é o módulo admin.
 
 **Próximas fases:** evidência só com **imagens das telas** (Light/Dark, 390px). **Vídeo não é necessário.**
 
@@ -51,8 +51,9 @@ Cobre o contrato em `/admin/ai` (escolha de agente no modo administrar) e o pipe
 | 8 | Nutrition — **MÓDULO ALUNO** | `2:817` / `15:1436` | concluída neste branch |
 | 9 | AI — **MÓDULO ALUNO** (coach) + contrato admin | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | concluída neste branch |
 | 10 | Admin | 7 screens Dark + Light | concluída neste branch; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
-| 11 | Hardening | conforme telas existentes | após fluxos reais |
-| 12 | Vercel | app navegável | só com critérios da spec |
+| 11 | Frequência cardíaca (Web Bluetooth real) | bloco Settings `FIGMA_PENDING`; overlay no treino | concluída neste branch |
+| 12 | Hardening | conforme telas existentes | após fluxos reais |
+| 13 | Vercel | app navegável | só com critérios da spec |
 
 ---
 
@@ -224,13 +225,23 @@ Nesta pré-visualização: as 7 rotas com node. `audit_logs` no banco permanece 
 
 ---
 
-## 13. Phase 11 — Hardening
+## 13. Phase 11 — Frequência cardíaca
+
+Recurso **opcional**. Default `heart_rate_enabled = false`. Sem Mock Provider. Provider real: `WebBluetoothHeartRateProvider` (Heart Rate Service / Heart Rate Measurement). Parser determinístico, estados além de connected/disconnected, buffer local + flush em lote, persistência Nhost (`wearable_devices`, `heart_rate_sessions`, `heart_rate_samples`), `HEART_RATE_CONTEXT` só quando habilitado e com dados suficientes.
+
+Settings: `/app/settings` (Treino e dispositivos). Figma não tem o bloco → Design System + `FIGMA_PENDING`. Workout: indicador discreto. Sem zonas para musculação. Sem VFC/ECG/diagnóstico.
+
+Evidência: screenshots Light/Dark 390px. Hardware real: [`HEART_RATE_HARDWARE_VALIDATION.md`](HEART_RATE_HARDWARE_VALIDATION.md). Auditoria: [`HEART_RATE_IMPLEMENTATION_AUDIT.md`](HEART_RATE_IMPLEMENTATION_AUDIT.md).
+
+---
+
+## 14. Phase 12 — Hardening
 
 Security review, testes de permission, a11y AA, offline do treino, observabilidade, performance.
 
 ---
 
-## 14. Phase 12 — Vercel
+## 15. Phase 13 — Vercel
 
 Somente quando:
 
@@ -243,7 +254,7 @@ Preview em PRs; Production em `main` após aprovação humana.
 
 ---
 
-## 15. Git
+## 16. Git
 
 Especificação: `main`, `develop`, `feature/*`, `fix/*`.
 

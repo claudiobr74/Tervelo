@@ -5,7 +5,7 @@ Prompt permanente das fases de produto do **atleta**. Não cobre o console admin
 ## Superfície
 
 - Login, cadastro, onboarding
-- App do aluno: `/app/*` (hoje, treino, recuperação, evolução, corpo, nutrição, coach)
+- App do aluno: `/app/*` (hoje, treino, recuperação, evolução, corpo, nutrição, coach, configurações de dispositivos)
 - Role JWT: `user`
 - Figma: `03 — Athlete Desktop` (`2:3`) e `04 — Athlete Mobile` (`2:4`)
 - Conteúdo atleta em max-width **390px**. Sem status bar iOS nem home indicator (D-016)
@@ -21,6 +21,7 @@ Prompt permanente das fases de produto do **atleta**. Não cobre o console admin
 | 7 | Recuperação, corpo e evolução |
 | 8 | Nutrição |
 | 9 | Coach / IA no app do aluno |
+| 11 | Frequência cardíaca (Web Bluetooth real, opcional) |
 
 ## Regras ao implementar
 

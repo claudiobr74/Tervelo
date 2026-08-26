@@ -12,6 +12,26 @@ import {
   type CoachPreviewMessage,
 } from "@/domain/ai/coach-preview";
 import { setCoachProposalStatus, useCoachProposal } from "@/lib/coach-proposal-store";
+import { getHeartRateEnabled } from "@/lib/heart-rate/preference-store";
+import { currentHeartRateDetails } from "@/lib/heart-rate/runtime";
+import { buildHeartRateContext } from "@/domain/heart-rate/context";
+import { metricsForSet, setWindowsFromTimeline } from "@/domain/heart-rate/metrics";
+import { getLiveSession } from "@/lib/training/live-session";
+
+function liveCoachFacts() {
+  const live = getLiveSession();
+  const details = currentHeartRateDetails();
+  const heartRate = buildHeartRateContext({
+    heartRateEnabled: getHeartRateEnabled(),
+    samples: details.samples,
+    startedAt: details.stored.startedAt ?? live.startedAt,
+    endedAt: details.stored.endedAt ?? live.completedAt,
+    setMetrics: setWindowsFromTimeline(live.events).map((window) => metricsForSet(details.samples, window)),
+    sameDevice: true,
+    comparableSessions: details.stats.sampleCount > 0 ? 1 : 0,
+  });
+  return { ...previewCoachFacts, heartRate };
+}
 
 const OPENING: CoachPreviewMessage = {
   id: "opening",
@@ -33,7 +53,7 @@ export function CoachScreen() {
       role: "athlete",
       body: prompt,
     };
-    const reply = coachReplyForPrompt(prompt, previewCoachFacts);
+    const reply = coachReplyForPrompt(prompt, liveCoachFacts());
     setThread((current) => [...current, athlete, { ...reply, id: `${reply.id}-${current.length}` }]);
   }
 

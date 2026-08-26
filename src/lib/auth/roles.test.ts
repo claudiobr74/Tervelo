@@ -51,6 +51,15 @@ describe("matriz Hasura", () => {
     expect(user?.operations.select).toBeDefined();
   });
 
+  it("heart_rate_samples é append-only para user", () => {
+    const table = PUBLIC_TABLES.find((item) => item.name === "heart_rate_samples");
+    const user = table?.permissions.find((p) => p.role === "user");
+    expect(user?.operations.insert).toBeDefined();
+    expect(user?.operations.update).toBeUndefined();
+    expect(user?.operations.delete).toBeUndefined();
+    expect(JSON.stringify(user?.operations.select?.filter)).toContain("X-Hasura-User-Id");
+  });
+
   it("body_measurements é append-only para user", () => {
     const table = PUBLIC_TABLES.find((item) => item.name === "body_measurements");
     const user = table?.permissions.find((p) => p.role === "user");
