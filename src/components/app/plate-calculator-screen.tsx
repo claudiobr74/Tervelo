@@ -35,7 +35,7 @@ export function PlateCalculatorScreen() {
     <AthleteAppShell>
       <header className="flex flex-col gap-3 px-6 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/app/exercises" aria-label="Voltar" className="size-6">
+          <Link href="/app/exercises" aria-label="Voltar" className="size-6 text-foreground">
             <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
           </Link>
           <p className="text-sm font-bold uppercase text-brand">TERVELO</p>
@@ -125,7 +125,7 @@ export function PlateCalculatorScreen() {
         ) : null}
 
         {nearest ? (
-          <div className="flex items-center gap-2.5 rounded-[var(--radius-lg)] border border-brand bg-[rgba(245,158,11,0.12)] p-3">
+          <div className="flex items-center gap-2.5 rounded-[var(--radius-lg)] border border-brand bg-brand-soft p-3 text-brand">
             <FigmaIcon src="/icons/alert-triangle.svg" alt="" size={16} />
             <p className="flex-1 text-xs text-foreground">
               Carga impossível neste inventário — Alternativa mais próxima:{" "}
@@ -138,7 +138,7 @@ export function PlateCalculatorScreen() {
         ) : null}
 
         {missingFine && exact.ok ? (
-          <div className="flex items-center gap-2.5 rounded-[var(--radius-lg)] border border-brand bg-[rgba(245,158,11,0.12)] p-3">
+          <div className="flex items-center gap-2.5 rounded-[var(--radius-lg)] border border-brand bg-brand-soft p-3 text-brand">
             <FigmaIcon src="/icons/alert-triangle.svg" alt="" size={16} />
             <p className="flex-1 text-xs text-foreground">
               Anilha de 1,25 kg não disponível neste ginásio. A montagem usa só o estoque real.

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { PhasePreviewLinks } from "@/components/app/phase-preview-links";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
 import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
 import { parseSessionCookie } from "@/lib/auth/session";
@@ -61,6 +62,10 @@ export default async function HomePage() {
       <Link href="/dev/tokens" className="text-sm font-semibold text-muted underline">
         Tokens de desenvolvimento
       </Link>
+      <section className="flex flex-col gap-2">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted">Aparência (scaffold)</p>
+        <ThemeToggle />
+      </section>
     </main>
   );
 }

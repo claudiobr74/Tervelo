@@ -42,4 +42,4 @@ export const AUTH_INPUT_CLASS =
   "h-auto min-h-[52px] w-full rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-[14px] text-[15px] text-foreground placeholder:text-tertiary outline-none transition-[border-color,box-shadow] duration-200 focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand disabled:opacity-50";
 
 export const PRIMARY_CTA_CLASS =
-  "inline-flex h-[52px] w-full items-center justify-center rounded-[var(--radius-lg)] bg-brand text-base font-bold text-on-brand shadow-[0px_4px_6px_rgba(0,0,0,0.2)] transition-colors duration-200 hover:bg-brand-accent disabled:opacity-50";
+  "inline-flex h-[52px] w-full items-center justify-center rounded-[var(--radius-lg)] bg-brand text-base font-bold text-on-brand shadow-md transition-colors duration-200 hover:bg-brand-accent disabled:opacity-50";

@@ -2,19 +2,31 @@ export function FigmaIcon({
   src,
   alt = "",
   size,
+  className = "",
 }: {
   src: string;
   alt?: string;
   size: number;
+  className?: string;
 }) {
   return (
     <span
-      className="relative inline-block shrink-0 overflow-clip"
-      style={{ width: size, height: size }}
-    >
-      {/* Asset exportado do Figma — não redesenhar o glifo. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} width={size} height={size} className="size-full object-contain" />
-    </span>
+      role={alt ? "img" : undefined}
+      aria-label={alt || undefined}
+      aria-hidden={alt ? undefined : true}
+      className={`relative inline-block shrink-0 bg-current ${className}`.trim()}
+      style={{
+        width: size,
+        height: size,
+        maskImage: `url(${src})`,
+        WebkitMaskImage: `url(${src})`,
+        maskSize: "contain",
+        WebkitMaskSize: "contain",
+        maskRepeat: "no-repeat",
+        WebkitMaskRepeat: "no-repeat",
+        maskPosition: "center",
+        WebkitMaskPosition: "center",
+      }}
+    />
   );
 }

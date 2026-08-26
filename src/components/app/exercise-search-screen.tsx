@@ -93,7 +93,7 @@ export function ExerciseSearchScreen() {
     <AthleteAppShell>
       <div className="flex flex-col gap-3 px-6 pb-3 pt-4">
         <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
-          <FigmaIcon src="/icons/search.svg" alt="" size={18} />
+          <FigmaIcon src="/icons/search.svg" alt="" size={18} className="text-muted" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -102,7 +102,7 @@ export function ExerciseSearchScreen() {
             placeholder="Buscar exercício"
           />
           {query ? (
-            <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca">
+            <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="text-muted">
               <FigmaIcon src="/icons/close.svg" alt="" size={18} />
             </button>
           ) : null}
@@ -117,7 +117,7 @@ export function ExerciseSearchScreen() {
                 onClick={() => setFilter(item.id)}
                 className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${
                   active
-                    ? "border-brand bg-[rgba(245,158,11,0.12)] text-brand"
+                    ? "border-brand bg-brand-soft text-brand"
                     : "border-border bg-surface text-muted"
                 }`}
               >
@@ -154,6 +154,7 @@ export function ExerciseSearchScreen() {
                   type="button"
                   aria-label={exercise.favorite ? "Remover dos favoritos" : "Favoritar"}
                   onClick={() => toggleFavorite(exercise.id)}
+                  className={exercise.favorite ? "text-brand" : "text-muted"}
                 >
                   <FigmaIcon
                     src={exercise.favorite ? "/icons/heart-filled.svg" : "/icons/heart.svg"}
@@ -173,6 +174,7 @@ export function ExerciseSearchScreen() {
                 src={selected.favorite ? "/icons/heart-filled.svg" : "/icons/heart.svg"}
                 alt=""
                 size={20}
+                className={selected.favorite ? "text-brand" : "text-muted"}
               />
             </div>
             {selected.imageSrc ? (

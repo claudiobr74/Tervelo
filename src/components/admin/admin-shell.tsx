@@ -58,7 +58,7 @@ export function AdminShell({
             </span>
           ))}
           <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-[rgba(245,158,11,0.1)] px-3 py-2.5">
+            <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-brand-soft px-3 py-2.5 text-brand">
               <FigmaIcon src="/icons/admin/book.svg" alt="" size={18} />
               <span className="text-sm font-semibold text-brand">Biblioteca</span>
             </div>
@@ -102,7 +102,7 @@ export function AdminShell({
             <h1 className="text-2xl font-extrabold">{title}</h1>
             <p className="text-sm text-muted">{subtitle}</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-muted">
             <div className="flex w-56 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-3 py-2">
               <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
               <span className="text-sm text-tertiary">Buscar...</span>

@@ -87,7 +87,7 @@ export function SignupForm() {
     <AuthShell footer={<AuthFooterLink prompt="Já tem uma conta?" href="/login" action="Fazer login" />}>
       <header className="flex flex-col gap-3 px-6 pb-5 pt-4">
         <div className="flex items-center justify-between">
-          <Link href="/login" aria-label="Voltar" className="size-6">
+          <Link href="/login" aria-label="Voltar" className="size-6 text-foreground">
             <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
           </Link>
           <span className="size-6" />
@@ -149,7 +149,7 @@ export function SignupForm() {
             aria-checked={accepted}
             onClick={() => setAccepted((value) => !value)}
             className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-[var(--radius-sm)] ${
-              accepted ? "bg-brand" : "border border-border bg-surface"
+              accepted ? "bg-brand text-on-brand" : "border border-border bg-surface"
             }`}
           >
             {accepted ? <FigmaIcon src="/icons/check.svg" alt="" size={12} /> : null}

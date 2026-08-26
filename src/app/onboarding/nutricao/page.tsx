@@ -78,7 +78,7 @@ export default function OnboardingNutricaoPage() {
                 </option>
               ))}
             </select>
-            <span className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2">
+            <span className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-muted">
               <FigmaIcon src="/icons/arrow-down.svg" alt="" size={16} />
             </span>
           </div>

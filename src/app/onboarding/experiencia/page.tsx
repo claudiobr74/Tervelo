@@ -55,7 +55,7 @@ export default function OnboardingExperienciaPage() {
           >
             <span
               className={`flex size-5 items-center justify-center rounded-[var(--radius-sm)] ${
-                draft[key] ? "bg-brand" : "border border-border bg-surface"
+                draft[key] ? "bg-brand text-on-brand" : "border border-border bg-surface"
               }`}
             >
               {draft[key] ? <FigmaIcon src="/icons/check.svg" alt="" size={12} /> : null}

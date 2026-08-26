@@ -46,7 +46,7 @@ export default function OnboardingMedidasPage() {
       skipHref="/onboarding/experiencia"
       onContinue={() => router.push("/onboarding/experiencia")}
     >
-      <div className="flex gap-2.5 rounded-[var(--radius-lg)] border border-brand/24 bg-brand/6 p-3">
+      <div className="flex gap-2.5 rounded-[var(--radius-lg)] border border-brand bg-brand-soft p-3 text-brand">
         <FigmaIcon src="/icons/info.svg" alt="" size={18} />
         <p className="flex-1 text-[13px] leading-[18px] text-brand">
           Opcional — você pode pular e preencher depois caso não saiba suas medidas de cabeça.
@@ -60,7 +60,7 @@ export default function OnboardingMedidasPage() {
           <Measure id="rarm" label="Braço Dir. (cm)" value={draft.rightArmCm} placeholder="39 cm" onChange={(rightArmCm) => update({ rightArmCm })} />
           <Measure id="larm" label="Braço Esq. (cm)" value={draft.leftArmCm} placeholder="38.5 cm" onChange={(leftArmCm) => update({ leftArmCm })} />
         </div>
-        <div className="flex h-[280px] w-[140px] shrink-0 flex-col items-center justify-center rounded-[var(--radius-xl)] border border-border bg-surface p-3">
+        <div className="flex h-[280px] w-[140px] shrink-0 flex-col items-center justify-center rounded-[var(--radius-xl)] border border-border bg-surface p-3 text-muted">
           <FigmaIcon src="/icons/body-placeholder.svg" alt="" size={70} />
           <p className="mt-3 text-center text-[11px] text-muted">Pontos de medição</p>
         </div>

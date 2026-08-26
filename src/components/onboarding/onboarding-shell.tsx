@@ -29,7 +29,7 @@ export function OnboardingShell({
       <div className="flex w-full flex-col">
         <header className="flex flex-col gap-3 px-6 pb-5 pt-4">
           <div className="flex items-center justify-between">
-            <Link href={backHref} aria-label="Voltar" className="size-6">
+            <Link href={backHref} aria-label="Voltar" className="size-6 text-foreground">
               <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
             </Link>
             <p className="text-sm font-semibold text-brand">Etapa {step} de 5</p>
@@ -74,7 +74,7 @@ export function ChoiceChip({
       onClick={onClick}
       className={`flex flex-1 items-center justify-center rounded-[var(--radius-lg)] border px-4 py-3 text-sm ${
         selected
-          ? "border-brand bg-brand/12 font-bold text-brand"
+          ? "border-brand bg-brand-soft font-bold text-brand"
           : "border-border bg-surface font-semibold text-muted"
       } ${className}`.trim()}
     >
@@ -98,7 +98,7 @@ export function ChoiceRow({
       onClick={onClick}
       className={`flex w-full items-center justify-between rounded-[var(--radius-lg)] border px-4 py-3.5 text-left text-sm ${
         selected
-          ? "border-brand bg-brand/12 font-bold text-brand"
+          ? "border-brand bg-brand-soft font-bold text-brand"
           : "border-border bg-surface font-medium text-foreground"
       }`}
     >

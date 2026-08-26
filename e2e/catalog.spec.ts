@@ -42,3 +42,17 @@ test("pré-visualização admin mostra anilha 1,25 kg zerada", async ({ page }) 
   await expect(page.getByText("1,25 kg", { exact: true })).toBeVisible();
   await expect(page.getByText(/1,25 kg com 0 un/)).toBeVisible();
 });
+
+test("login e busca funcionam no tema claro", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem("tervelo-theme", "light");
+  });
+  await page.goto("/login");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).not.toHaveClass(/dark/);
+  await expect(page.getByText("TERVELO")).toBeVisible();
+  await loginPreview(page);
+  await page.goto("/app/exercises");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.getByText("Puxada Alta Aberta").first()).toBeVisible();
+});

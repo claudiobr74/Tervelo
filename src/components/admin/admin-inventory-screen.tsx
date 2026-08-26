@@ -125,7 +125,7 @@ export function AdminInventoryScreen() {
                   className={`flex flex-col items-center rounded-[var(--radius-md)] px-3 py-2 ${
                     plate.quantity > 0
                       ? `${plateColorClass(plate.weightKg)} text-on-status`
-                      : "border border-brand bg-[rgba(245,158,11,0.12)] text-brand"
+                      : "border border-brand bg-brand-soft text-brand"
                   }`}
                 >
                   <span className="text-sm font-bold">

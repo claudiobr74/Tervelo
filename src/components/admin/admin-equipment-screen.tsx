@@ -30,7 +30,7 @@ export function AdminEquipmentScreen() {
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3 text-muted">
             <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
             <input
               value={query}
