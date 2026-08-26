@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculateSessionPlates } from "./calculate-session-plates";
+import { searchExercisesUseCase } from "./search-exercises";
 import { recordBodyMeasurement } from "./record-measurement";
 import { recordSetResult } from "./record-set-result";
 import type { MeasurementRecord, MeasurementRepository, SetResultRecord, SetResultRepository } from "../ports";
@@ -63,5 +64,14 @@ describe("casos de uso", () => {
       stock: [{ weightKg: 20, quantity: 4 }],
     });
     expect(result.ok).toBe(true);
+  });
+
+  it("busca de exercícios valida filtro", () => {
+    const result = searchExercisesUseCase(
+      [{ id: "1", namePt: "Puxada", primaryMuscle: "Costas", secondaryMuscles: [], equipmentName: "Polia", movementPattern: "Puxar vertical", aliases: ["pux"] }],
+      { query: "pux", filter: "muscle" },
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.value).toHaveLength(1);
   });
 });

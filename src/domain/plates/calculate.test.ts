@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { calculatePlates, platesSumKg, typicalPlateStock } from "./calculate";
+import {
+  calculatePlates,
+  listPlateAssemblies,
+  nearestPlateLoads,
+  platesSumKg,
+  typicalPlateStock,
+} from "./calculate";
 
 const stock = typicalPlateStock();
 
@@ -124,5 +130,25 @@ describe("calculadora de anilhas", () => {
       expect(result.value.perSideKg).toBe(20);
       expect(platesSumKg(result.value.perSide)).toBe(20);
     }
+  });
+
+  it("lista montagem mínima e alternativa com mais discos", () => {
+    const result = listPlateAssemblies({ targetKg: 100, barKg: 20, stock });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value[0].perSide).toEqual([{ weightKg: 20, count: 2 }]);
+      expect(result.value.length).toBeGreaterThan(1);
+      expect(platesSumKg(result.value[1].perSide)).toBe(40);
+      expect(result.value[1].perSide).not.toEqual([{ weightKg: 20, count: 2 }]);
+    }
+  });
+
+  it("sugere cargas vizinhas quando 1,25 kg falta no estoque", () => {
+    const noFine = stock.filter((item) => item.weightKg !== 1.25 && item.weightKg !== 0.5 && item.weightKg !== 1);
+    const exact = calculatePlates({ targetKg: 101.25, barKg: 20, stock: noFine });
+    expect(exact.ok).toBe(false);
+    const nearest = nearestPlateLoads({ targetKg: 101.25, barKg: 20, stock: noFine });
+    expect(nearest.below?.targetKg).toBe(100);
+    expect(nearest.above?.targetKg).toBe(105);
   });
 });

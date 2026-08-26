@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { PhasePreviewLinks } from "@/components/app/phase-preview-links";
 import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
 import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
 import { parseSessionCookie } from "@/lib/auth/session";
@@ -12,7 +13,7 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-6 px-6 py-16">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 4 — Auth</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 5 — Catálogo</p>
       <h1 className="text-[length:var(--font-display)] leading-10 font-bold">TERVELO</h1>
       <p className="text-sm leading-5 text-muted">
         Scaffold interno. Login, cadastro e onboarding usam os nodes do Figma. Esta página não é a
@@ -24,6 +25,7 @@ export default async function HomePage() {
             Sessão ativa{session.user?.displayName ? `: ${session.user.displayName}` : ""}.
             {session.preview ? " (pré-visualização local)" : ""}
           </p>
+          <PhasePreviewLinks hasSession />
           <div className="flex flex-wrap gap-3">
             {onboardingDone ? (
               <p className="text-sm text-muted">

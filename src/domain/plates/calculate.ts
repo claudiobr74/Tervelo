@@ -178,3 +178,73 @@ export function calculatePlates(input: {
 export function platesSumKg(plates: readonly PlateCount[]): number {
   return plates.reduce((sum, plate) => sum + plate.weightKg * plate.count, 0);
 }
+
+function assemblyKey(solution: PlateSolution): string {
+  return solution.perSide.map((plate) => `${plate.weightKg}x${plate.count}`).join("|");
+}
+
+function sameAssembly(a: PlateSolution, b: PlateSolution): boolean {
+  return assemblyKey(a) === assemblyKey(b);
+}
+
+/** Outras montagens simétricas, depois da de menor quantidade de discos. */
+export function listPlateAssemblies(
+  input: {
+    targetKg: number;
+    barKg: number;
+    stock: readonly PlateStock[];
+  },
+  limit = 3,
+): Result<PlateSolution[], PlateError> {
+  const primary = calculatePlates(input);
+  if (!primary.ok) return primary;
+  const found: PlateSolution[] = [primary.value];
+
+  for (const used of primary.value.perSide) {
+    if (found.length >= limit) break;
+    const reduced = input.stock.map((item) => {
+      if (item.weightKg !== used.weightKg) return item;
+      const maxPair = Math.max(0, used.count - 1) * 2;
+      return { ...item, quantity: Math.min(item.quantity, maxPair) };
+    });
+    const alternative = calculatePlates({ ...input, stock: reduced });
+    if (alternative.ok && !found.some((item) => sameAssembly(item, alternative.value))) {
+      found.push(alternative.value);
+    }
+  }
+
+  return ok(found);
+}
+
+export function nearestPlateLoads(input: {
+  targetKg: number;
+  barKg: number;
+  stock: readonly PlateStock[];
+}): { below: PlateSolution | null; above: PlateSolution | null } {
+  let below: PlateSolution | null = null;
+  let above: PlateSolution | null = null;
+  const targetGrams = toGrams(input.targetKg);
+  const minGrams = Math.max(toGrams(input.barKg), targetGrams - 40 * GRAMS);
+  const maxGrams = targetGrams + 40 * GRAMS;
+  const step = 500;
+  for (let grams = Math.ceil(minGrams / step) * step; grams <= maxGrams; grams += step) {
+    if (grams === targetGrams) continue;
+    const result = calculatePlates({ ...input, targetKg: fromGrams(grams) });
+    if (!result.ok) continue;
+    if (grams < targetGrams) {
+      below = result.value;
+    } else {
+      above = result.value;
+      break;
+    }
+  }
+  return { below, above };
+}
+
+export function plateColorClass(weightKg: number): string {
+  if (weightKg >= 20) return "bg-error";
+  if (weightKg >= 15) return "bg-brand";
+  if (weightKg >= 10) return "bg-info";
+  if (weightKg >= 5) return "bg-success";
+  return "bg-border-strong";
+}

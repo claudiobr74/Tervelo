@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
 import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
+import { parseSessionCookie, sessionHasAdminAccess } from "@/lib/auth/session-cookie";
 
 const PUBLIC_PREFIXES = ["/login", "/signup", "/dev", "/api/health", "/api/auth"];
 
@@ -12,7 +13,9 @@ function isPublic(pathname: string): boolean {
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const hasSession = Boolean(request.cookies.get(NHOST_SESSION_COOKIE)?.value);
+  const rawSession = request.cookies.get(NHOST_SESSION_COOKIE)?.value;
+  const session = parseSessionCookie(rawSession);
+  const hasSession = Boolean(rawSession);
   const onboardingDone = request.cookies.get(ONBOARDING_COOKIE)?.value === "done";
 
   if ((pathname === "/login" || pathname === "/signup") && hasSession) {
@@ -28,8 +31,13 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (pathname.startsWith("/admin") && !hasSession) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (pathname.startsWith("/admin")) {
+    if (!hasSession) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (!sessionHasAdminAccess(session)) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
   if (!isPublic(pathname) && pathname.startsWith("/onboarding") === false) {
@@ -40,5 +48,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|brand/|icons/).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|brand/|icons/|catalog/).*)"],
 };

@@ -1,6 +1,7 @@
 export { ageYearsFromBirthDate } from "./athlete/age";
 export { canUpdateMetrics, effectiveHistory, latestByTime } from "./measurement/append-only";
-export { calculatePlates, typicalPlateStock } from "./plates/calculate";
+export { calculatePlates, listPlateAssemblies, typicalPlateStock } from "./plates/calculate";
+export { searchCatalogExercises } from "./exercise/search";
 export {
   adjustRestTimer,
   remainingSeconds,

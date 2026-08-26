@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–3 neste repositório; Phase 4 (auth + onboarding Figma) neste branch.
+Veredito atual: **READY_WITH_FIXES**. Phases 0–5 neste repositório (Phase 5 neste branch).
 
 ---
 
@@ -27,7 +27,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–3 neste repositório; Phase 4 (
 | 2 | Nhost | não | concluída neste branch |
 | 3 | Domain | não | concluída neste branch |
 | 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | concluída neste branch |
-| 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | sim |
+| 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | concluída neste branch |
 | 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | UI sim nos nodes |
 | 7 | Recovery + Body + Progress | `2:499`, `2:1122`, `2:1025` | UI sim nos nodes |
 | 8 | Nutrition | `2:817` / `15:1436` | UI sim nos nodes |
