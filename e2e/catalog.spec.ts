@@ -39,6 +39,6 @@ test("pré-visualização admin mostra anilha 1,25 kg zerada", async ({ page }) 
   await page.getByRole("button", { name: "Console admin (pré-visualização)" }).click();
   await expect(page).toHaveURL(/\/admin\/exercises/);
   await page.getByRole("link", { name: "Inventário da Academia" }).click();
-  await expect(page.getByText("1,25 kg")).toBeVisible();
+  await expect(page.getByText("1,25 kg", { exact: true })).toBeVisible();
   await expect(page.getByText(/1,25 kg com 0 un/)).toBeVisible();
 });
