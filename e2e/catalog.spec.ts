@@ -32,3 +32,13 @@ test("admin sem papel volta para a home", async ({ page }) => {
   await page.goto("/admin/exercises");
   await expect(page).toHaveURL(/\/$/);
 });
+
+test("pré-visualização admin mostra anilha 1,25 kg zerada", async ({ page }) => {
+  await loginPreview(page);
+  await page.goto("/");
+  await page.getByRole("button", { name: "Console admin (pré-visualização)" }).click();
+  await expect(page).toHaveURL(/\/admin\/exercises/);
+  await page.getByRole("link", { name: "Inventário da Academia" }).click();
+  await expect(page.getByText("1,25 kg")).toBeVisible();
+  await expect(page.getByText(/1,25 kg com 0 un/)).toBeVisible();
+});

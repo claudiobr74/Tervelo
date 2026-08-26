@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { previewGymInventory } from "@/lib/catalog/preview-catalog";
 import { expandDumbbellWeights } from "@/domain/gym/dumbbells";
+import { plateColorClass } from "@/domain/plates/calculate";
 
 const GROUPS = [
   { id: "chest", label: "Peito", count: 12 },
@@ -25,7 +26,8 @@ export function AdminInventoryScreen() {
   const [saved, setSaved] = useState(false);
   const dumbbells = expandDumbbellWeights(gym.dumbbells);
 
-  const plateChips = [...gym.plates].sort((a, b) => a.weightKg - b.weightKg).filter((item) => item.quantity > 0);
+  const plateChips = [...gym.plates].sort((a, b) => a.weightKg - b.weightKg);
+  const missingPlates = plateChips.filter((item) => item.quantity === 0);
 
   return (
     <AdminShell
@@ -120,13 +122,27 @@ export function AdminInventoryScreen() {
               {plateChips.map((plate) => (
                 <div
                   key={plate.weightKg}
-                  className="flex flex-col items-center rounded-[var(--radius-md)] bg-brand px-3 py-2 text-on-brand"
+                  className={`flex flex-col items-center rounded-[var(--radius-md)] px-3 py-2 ${
+                    plate.quantity > 0
+                      ? `${plateColorClass(plate.weightKg)} text-on-status`
+                      : "border border-brand bg-[rgba(245,158,11,0.12)] text-brand"
+                  }`}
                 >
-                  <span className="text-sm font-bold">{plate.weightKg} kg</span>
+                  <span className="text-sm font-bold">
+                    {plate.weightKg.toLocaleString("pt-BR")} kg
+                  </span>
                   <span className="text-[11px]">{plate.quantity} un</span>
                 </div>
               ))}
             </div>
+            {missingPlates.length > 0 ? (
+              <p className="mt-2 text-xs text-muted">
+                {missingPlates
+                  .map((plate) => `${plate.weightKg.toLocaleString("pt-BR")} kg`)
+                  .join(", ")}{" "}
+                com 0 un — não entram na montagem da barra.
+              </p>
+            ) : null}
           </section>
           <section>
             <h2 className="mb-3 text-sm font-bold">Barras</h2>
