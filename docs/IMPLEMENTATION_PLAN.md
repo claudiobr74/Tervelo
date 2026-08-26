@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–2 neste repositório; Phase 3 (domínio) neste branch.
+Veredito atual: **READY_WITH_FIXES**. Phases 0–3 neste repositório; Phase 4 (auth + onboarding Figma) neste branch.
 
 ---
 
@@ -26,7 +26,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–2 neste repositório; Phase 3 (
 | 1 | Foundation | tokens `28:527` + primitivos `2:2` | concluída neste PR |
 | 2 | Nhost | não | concluída neste branch |
 | 3 | Domain | não | concluída neste branch |
-| 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | UI mobile sim; `/forgot-password` não |
+| 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | concluída neste branch |
 | 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | sim |
 | 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | UI sim nos nodes |
 | 7 | Recovery + Body + Progress | `2:499`, `2:1122`, `2:1025` | UI sim nos nodes |
@@ -120,11 +120,11 @@ GraphQL: documents em `src/graphql/<domínio>/`. Codegen contra schema local fic
 
 ## 6. Phase 4 — Auth + Onboarding
 
-Backend: signup, login, logout, verify email, reset password, session refresh, route guards server-side, roles.
+Backend: signup, login, logout, reset password (pelo e-mail do login), session cookie, `src/proxy.ts` nas rotas `/onboarding`, `/app`, `/admin`.
 
-UI definitiva **somente** com nodes da tabela em `FIGMA_IMPLEMENTATION.md`. `/forgot-password` permanece `FIGMA_PENDING`. Auth desktop: adaptar mobile + tokens, sem inventar landing.
+UI: `/login` `2:1428`, `/signup` `2:1478`, onboarding `2:1526`–`2:1765`. Sem status bar iOS (D-016). Google/Apple visíveis e **desabilitados** (D-017). `/forgot-password` permanece **FIGMA_PENDING**.
 
-Social login preparado em `nhost.toml`, desligado até haver providers. Botões Google/Apple existem no Figma (D-017).
+Com `NEXT_PUBLIC_NHOST_SUBDOMAIN=local` (sem Docker), o formulário válido abre sessão de pré-visualização para exercitar o fluxo.
 
 ---
 

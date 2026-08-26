@@ -6,7 +6,7 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) concluída: veredito **READY_WITH_FIXES**. Phase 1: app Next.js. Phase 2: Nhost com acesso **usuário** e **administrador**. Phase 3: domínio puro (anilhas, timer, idade, Zod).
+Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma).
 
 UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md). Login/admin screens entram nas Phases 4 e 10.
 
@@ -66,7 +66,10 @@ npm exec nhost -- up # backend local (Docker)
 Rotas desta fase:
 
 - `/` — scaffold interno (não é a landing de marketing)
-- `/dev/tokens` — paleta, tipografia, Button/Input/Card e tema claro/escuro/sistema
+- `/login` — Figma `2:1428`
+- `/signup` — Figma `2:1478`
+- `/onboarding/*` — perfil, medidas, experiência, objetivos, nutrição
+- `/dev/tokens` — paleta e primitivos
 - `/api/health` — liveness
 
 Scripts: `lint`, `typecheck`, `test` (Vitest), `test:e2e` (Playwright, fora do CI), `build`.

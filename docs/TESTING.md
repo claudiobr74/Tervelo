@@ -12,4 +12,4 @@ Phase 3 cobre calculadora de anilhas, timer por timestamp, idade derivada, appen
 
 Permissions GraphQL contra `nhost up` ficam para o operador (Docker). Codegen GraphQL idem.
 
-UI de produto: Playwright da spec só quando o fluxo Figma existir.
+Phase 4: Playwright cobre login/cadastro visíveis e o redirect do onboarding sem sessão.
