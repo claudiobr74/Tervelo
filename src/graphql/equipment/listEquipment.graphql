@@ -1,0 +1,23 @@
+query ListEquipment {
+  equipment(order_by: { name_pt: asc }, limit: 200) {
+    id
+    name_pt
+    resistance_system
+    starting_load_kg
+    increment_kg
+    category_id
+    equipment_models {
+      model_name
+      manufacturer_id
+    }
+  }
+  manufacturers {
+    id
+    name
+  }
+  equipment_categories {
+    id
+    slug
+    name_pt
+  }
+}

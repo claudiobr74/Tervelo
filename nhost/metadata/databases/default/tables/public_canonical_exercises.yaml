@@ -1,0 +1,55 @@
+table:
+  name: canonical_exercises
+  schema: public
+insert_permissions:
+  - role: admin
+    permission:
+      check: &a1 {}
+      columns: &a2
+        - name_pt
+        - description
+        - movement_pattern_id
+  - role: super_admin
+    permission:
+      check: *a1
+      columns: *a2
+select_permissions:
+  - role: user
+    permission:
+      columns: &a3
+        - id
+        - name_pt
+        - description
+        - movement_pattern_id
+        - created_at
+        - updated_at
+      filter: *a1
+      limit: 1000
+  - role: admin
+    permission:
+      columns: *a3
+      filter: *a1
+      limit: 1000
+  - role: super_admin
+    permission:
+      columns: *a3
+      filter: *a1
+      limit: 1000
+update_permissions:
+  - role: admin
+    permission:
+      filter: *a1
+      check: *a1
+      columns: *a2
+  - role: super_admin
+    permission:
+      filter: *a1
+      check: *a1
+      columns: *a2
+delete_permissions:
+  - role: admin
+    permission:
+      filter: *a1
+  - role: super_admin
+    permission:
+      filter: *a1

@@ -1,0 +1,29 @@
+mutation InsertBodyMeasurement(
+  $measured_at: timestamptz
+  $weight_kg: numeric
+  $body_fat_percent: numeric
+  $waist_cm: numeric
+  $right_arm_cm: numeric
+  $right_thigh_cm: numeric
+  $notes: String
+) {
+  insert_body_measurements_one(
+    object: {
+      measured_at: $measured_at
+      weight_kg: $weight_kg
+      body_fat_percent: $body_fat_percent
+      waist_cm: $waist_cm
+      right_arm_cm: $right_arm_cm
+      right_thigh_cm: $right_thigh_cm
+      notes: $notes
+    }
+  ) {
+    id
+    measured_at
+    weight_kg
+    body_fat_percent
+    waist_cm
+    right_arm_cm
+    right_thigh_cm
+  }
+}

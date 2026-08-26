@@ -1,0 +1,8 @@
+query GetOwnProfile {
+  profiles {
+    id
+    display_name
+    locale
+    theme_preference
+  }
+}
