@@ -52,6 +52,8 @@ export const AI_POLICY_LOCKS = [
   "Publicar contrato só com papel super_admin.",
   "Sem chain-of-thought em ai_decisions (só racional curto objetivo).",
   "Isolamento por user_id. Rate limit na Function.",
+  "Dados ausentes permanecem UNKNOWN; nunca estimar silenciosamente.",
+  "Treino e nutrição não se interpretam isoladamente quando há dados relevantes nos dois.",
 ] as const;
 
 export const AI_ADMIN_TABS = [

@@ -18,5 +18,7 @@ export {
   AI_POLICY_LOCKS,
   DEFAULT_AI_AUTONOMY,
 } from "./ai/contract";
+export { emptyNutritionContext, nutritionAdjustmentAction } from "./ai/nutrition-context";
+export { QA_ADDENDUM_CHECKS, auditIntegratedDecision } from "./ai/qa-addendum";
 export { NUTRITION_LABELS, energyFromMacros, isOpenNutritionDay } from "./nutrition/macros";
 export { mlToLiters, targetProgressPercent } from "./nutrition/progress";

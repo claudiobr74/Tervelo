@@ -49,6 +49,12 @@ Tom padrão: Técnico + Motivacional.
 
 Matriz de autonomia (nomes por extenso): progressão de carga → Confirmar; volume de treino → Auto; substituição de exercício → Sugerir; ajuste nutricional → Confirmar.
 
+## Addendum
+
+Complemento obrigatório: [`docs/IA_ADDENDUM.md`](IA_ADDENDUM.md) — integração treino + nutrição + composição + recuperação + aderência.
+
+Não substitui este prompt nem as regras protegidas de segurança. `NUTRITION_CONTEXT` é obrigatório quando houver dados nutricionais. QA 13–20 falha conflito grave.
+
 ## Evidência
 
 **Apenas imagens das telas** (Light e Dark). **Vídeo não é necessário.** Admin é desktop-first.

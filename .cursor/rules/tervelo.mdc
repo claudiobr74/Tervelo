@@ -16,5 +16,5 @@ alwaysApply: true
 - UI e copy em PT-BR; nomes por extenso (ex.: Repetições em reserva).
 - Vercel só na Phase 12.
 - Fases do app do atleta usam o prompt **TERVELO — MÓDULO ALUNO** (`docs/MODULO_ALUNO.md`): login, onboarding e `/app/*`. Admin é outro módulo (Phase 10).
-- Módulo de IA usa o prompt **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL** (`docs/IA_PROMPT_MESTRE.md`): contrato em `/admin/ai` e escolha de agente no modo administrar.
+- Módulo de IA usa o prompt **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL** (`docs/IA_PROMPT_MESTRE.md`) e o addendum **TERVELO — ADDENDUM** (`docs/IA_ADDENDUM.md`): treino e nutrição no mesmo sistema longitudinal; `NUTRITION_CONTEXT` obrigatório quando houver dados.
 - Evidência das próximas fases do módulo aluno: **apenas screenshots das telas**. Sem gravação de vídeo.

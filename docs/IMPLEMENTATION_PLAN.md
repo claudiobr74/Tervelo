@@ -198,6 +198,8 @@ Nav **Evolução** liga em `/app/progress`. Coach permanece `FIGMA_PENDING` (Pha
 
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL** no contrato admin (`/admin/ai`, `2:2954` / Light `15:6902`) e no pipeline de agentes. Escolha de agente no modo administrar (Figma não tem picker; a UI expõe os 8 agentes por extenso).
 
+**TERVELO — ADDENDUM** (`docs/IA_ADDENDUM.md`): treino e nutrição no mesmo sistema. Não substitui o prompt mestre nem as regras protegidas de segurança. `NUTRITION_CONTEXT` obrigatório quando houver dados nutricionais. QA 13–20.
+
 ```text
 ai/agents/  ai/skills/  ai/policies/  ai/evaluators/
 ```

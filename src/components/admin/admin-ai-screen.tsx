@@ -23,12 +23,16 @@ import {
   type AiTone,
 } from "@/domain/ai/contract";
 import { selectAiAgent, useAiAdmin } from "@/lib/ai/preview-admin";
+import {
+  AGENT_CONFLICT_PRIORITY,
+  INTEGRATED_OUTPUT_SECTIONS,
+  LONGITUDINAL_SYSTEM,
+} from "@/domain/ai/nutrition-context";
+import { QA_ADDENDUM_CHECKS } from "@/domain/ai/qa-addendum";
 
-const PENDING_COPY: Record<Exclude<AiAdminTabId, "behavior">, string> = {
+const PENDING_COPY: Record<Exclude<AiAdminTabId, "behavior" | "nutrition">, string> = {
   training:
     "FIGMA_PENDING — heurísticas de treino entram no jsonb do contrato (Phases 9–10). Sem layout inventado.",
-  nutrition:
-    "FIGMA_PENDING — heurísticas de nutrição entram no jsonb do contrato (Phases 9–10). Sem layout inventado.",
   recovery:
     "FIGMA_PENDING — heurísticas de recuperação entram no jsonb do contrato (Phases 9–10). Sem layout inventado.",
   safety:
@@ -55,6 +59,52 @@ function AutonomyDot({ selected }: { selected: boolean }) {
         selected ? "size-3 rounded-full bg-brand" : "size-2 rounded-full bg-border-strong"
       }
     />
+  );
+}
+
+function AddendumNutritionPanel() {
+  return (
+    <div className="flex flex-col gap-4">
+      <article className="rounded-[var(--radius-xl)] border border-brand bg-brand-soft p-5">
+        <p className="text-xs font-bold uppercase text-brand">TERVELO — ADDENDUM</p>
+        <h2 className="mt-1 text-lg font-extrabold">
+          Integração obrigatória entre treinamento e nutrição esportiva
+        </h2>
+        <p className="mt-2 text-sm text-foreground">
+          Complementa o prompt mestre. Não substitui as regras anteriores, não reduz o Sports
+          Nutrition Coach e não altera as regras protegidas de segurança.
+        </p>
+        <p className="mt-3 text-sm font-semibold uppercase text-foreground">
+          {LONGITUDINAL_SYSTEM.join(" ↔ ")}
+        </p>
+      </article>
+      <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+        <h3 className="text-sm font-bold">Princípio fundamental</h3>
+        <p className="mt-2 text-sm text-muted">
+          Dados ausentes permanecem UNKNOWN. Nunca estimar silenciosamente. O Daily Coach considera
+          NUTRITION_CONTEXT antes de reduzir volume, carga ou frequência. Não afirmar causalidade
+          quando houver apenas associação.
+        </p>
+      </article>
+      <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+        <h3 className="text-sm font-bold">QA Auditor — checks 13 a 20</h3>
+        <ol className="mt-3 flex flex-col gap-1.5 text-[13px] text-foreground">
+          {QA_ADDENDUM_CHECKS.map((check) => (
+            <li key={check.id}>
+              {check.id}. {check.label}
+            </li>
+          ))}
+        </ol>
+        <p className="mt-3 text-xs text-muted">Conflito grave entre agentes → FAIL.</p>
+      </article>
+      <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+        <h3 className="text-sm font-bold">Output quando a nutrição influencia a decisão</h3>
+        <p className="mt-2 text-sm text-muted">{INTEGRATED_OUTPUT_SECTIONS.join(" → ")}</p>
+        <p className="mt-3 text-xs text-muted">
+          Prioridade em conflito: {AGENT_CONFLICT_PRIORITY.join("; ")}.
+        </p>
+      </article>
+    </div>
   );
 }
 
@@ -266,11 +316,13 @@ export function AdminAiScreen() {
                 </article>
               </div>
             </div>
+          ) : tab === "nutrition" ? (
+            <AddendumNutritionPanel />
           ) : (
             <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
               <h2 className="text-lg font-extrabold">{activeTab.label}</h2>
               <p className="mt-2 text-sm text-muted">
-                {PENDING_COPY[tab as Exclude<AiAdminTabId, "behavior">]}
+                {PENDING_COPY[tab as Exclude<AiAdminTabId, "behavior" | "nutrition">]}
               </p>
             </article>
           )}

@@ -29,5 +29,6 @@ describe("contrato de IA (admin)", () => {
   it("não deixa políticas críticas no jsonb configurável", () => {
     expect(AI_POLICY_LOCKS.some((rule) => rule.includes("Não fabricar dados"))).toBe(true);
     expect(AI_POLICY_LOCKS.some((rule) => rule.includes("super_admin"))).toBe(true);
+    expect(AI_POLICY_LOCKS.some((rule) => rule.includes("UNKNOWN"))).toBe(true);
   });
 });

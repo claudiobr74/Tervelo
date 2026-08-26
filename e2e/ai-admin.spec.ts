@@ -21,6 +21,10 @@ test("admin escolhe o agente de IA no contrato", async ({ page }) => {
   await expect(page.getByText("Agente ativo: Recuperação")).toBeVisible();
   await expect(page.getByText("Identidade e Papel Base")).toBeVisible();
   await expect(page.getByText("Progressão de carga")).toBeVisible();
+  await page.getByRole("tab", { name: "Nutrição" }).click();
+  await expect(page.getByText("TERVELO — ADDENDUM")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Integração obrigatória entre treinamento e nutrição esportiva" })).toBeVisible();
+  await expect(page.getByText("13. O contexto nutricional relevante foi considerado?")).toBeVisible();
 });
 
 test("contrato de IA no tema claro", async ({ page }) => {
