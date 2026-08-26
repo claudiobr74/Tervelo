@@ -1,0 +1,60 @@
+table:
+  name: training_weeks
+  schema: public
+object_relationships:
+  - name: block
+    using:
+      foreign_key_constraint_on: block_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        block: &a1
+          program:
+            user_id:
+              _eq: X-Hasura-User-Id
+      columns:
+        - block_id
+        - week_index
+        - notes
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - block_id
+        - week_index
+        - notes
+        - created_at
+      filter:
+        block: *a1
+      limit: 100
+  - role: admin
+    permission:
+      columns:
+        - id
+        - block_id
+        - week_index
+        - notes
+        - created_at
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - block_id
+        - week_index
+        - notes
+        - created_at
+      filter: *a2
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: &a3
+        block: *a1
+      check: *a3
+      columns:
+        - week_index
+        - notes

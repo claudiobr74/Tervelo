@@ -1,0 +1,8 @@
+query AdminListProfiles {
+  profiles {
+    id
+    display_name
+    locale
+    created_at
+  }
+}

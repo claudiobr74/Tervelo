@@ -1,0 +1,45 @@
+table:
+  name: ai_decisions
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns: &a1
+        - id
+        - run_id
+        - user_id
+        - agent
+        - action
+        - input_snapshot
+        - recommendation
+        - rationale
+        - contract_version_id
+        - model
+        - confidence
+        - accepted
+        - overridden
+        - override_reason
+        - created_at
+      filter: &a3
+        user_id:
+          _eq: X-Hasura-User-Id
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a1
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a1
+      filter: *a2
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a3
+      check: *a3
+      columns:
+        - accepted
+        - overridden
+        - override_reason

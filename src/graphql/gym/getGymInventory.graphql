@@ -1,0 +1,32 @@
+query GetGymInventory($gymId: uuid!) {
+  gyms_by_pk(id: $gymId) {
+    id
+    name
+    owner_user_id
+  }
+  gym_plates(where: { gym_id: { _eq: $gymId } }, order_by: { weight_kg: desc }) {
+    id
+    weight_kg
+    quantity
+  }
+  gym_bars(where: { gym_id: { _eq: $gymId } }) {
+    id
+    bar_kind
+    actual_weight_kg
+    name
+    quantity
+  }
+  gym_dumbbell_sets(where: { gym_id: { _eq: $gymId } }) {
+    id
+    weights_kg
+    min_kg
+    max_kg
+    increment_kg
+  }
+  gym_equipment(where: { gym_id: { _eq: $gymId } }) {
+    id
+    equipment_id
+    quantity
+    is_available
+  }
+}

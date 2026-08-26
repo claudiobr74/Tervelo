@@ -1,0 +1,72 @@
+table:
+  name: training_blocks
+  schema: public
+object_relationships:
+  - name: program
+    using:
+      foreign_key_constraint_on: program_id
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        program:
+          user_id:
+            _eq: X-Hasura-User-Id
+      columns:
+        - program_id
+        - position
+        - name
+        - intent
+        - starts_on
+        - ends_on
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - program_id
+        - position
+        - name
+        - intent
+        - starts_on
+        - ends_on
+        - created_at
+      filter: *a1
+      limit: 100
+  - role: admin
+    permission:
+      columns:
+        - id
+        - program_id
+        - position
+        - name
+        - intent
+        - starts_on
+        - ends_on
+        - created_at
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - program_id
+        - position
+        - name
+        - intent
+        - starts_on
+        - ends_on
+        - created_at
+      filter: *a2
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a1
+      check: *a1
+      columns:
+        - position
+        - name
+        - intent
+        - starts_on
+        - ends_on

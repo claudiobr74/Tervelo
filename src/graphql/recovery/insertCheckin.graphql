@@ -1,0 +1,25 @@
+mutation InsertRecoveryCheckin(
+  $sleep_quality: smallint!
+  $energy: smallint!
+  $mood: smallint!
+  $muscle_soreness: smallint!
+  $discomfort: smallint!
+  $stress: smallint!
+  $perceived_recovery: smallint!
+) {
+  insert_recovery_checkins_one(
+    object: {
+      sleep_quality: $sleep_quality
+      energy: $energy
+      mood: $mood
+      muscle_soreness: $muscle_soreness
+      discomfort: $discomfort
+      stress: $stress
+      perceived_recovery: $perceived_recovery
+    }
+  ) {
+    id
+    checked_in_at
+    perceived_recovery
+  }
+}
