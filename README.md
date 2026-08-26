@@ -72,6 +72,7 @@ Rotas desta fase:
 - `/signup` — Figma `2:1478`
 - `/onboarding/*` — perfil, medidas, experiência, objetivos, nutrição
 - `/dev/tokens` — paleta e primitivos
+- `/app/nutrition` — Figma `2:817`
 - `/api/health` — liveness
 
 Scripts: `lint`, `typecheck`, `test` (Vitest), `test:e2e` (Playwright, fora do CI), `build`.

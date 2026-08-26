@@ -15,7 +15,7 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-6 px-6 py-16">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 7 — Longitudinal</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 8 — Nutrição</p>
       <h1>
         <BrandLogo className="h-14 w-auto max-w-[240px]" />
       </h1>

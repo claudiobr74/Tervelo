@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–7 neste repositório (Phase 7 neste branch).
+Veredito atual: **READY_WITH_FIXES**. Phases 0–8 neste repositório (Phase 8 neste branch).
 
 ---
 
@@ -48,7 +48,7 @@ Cobre o contrato em `/admin/ai` (escolha de agente no modo administrar) e o pipe
 | 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | concluída neste branch |
 | 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | concluída neste branch |
 | 7 | Recovery + Body + Progress — **MÓDULO ALUNO** | `2:499`, `2:1122`, `2:1025` | concluída neste branch |
-| 8 | Nutrition — **MÓDULO ALUNO** | `2:817` / `15:1436` | UI sim nos nodes |
+| 8 | Nutrition — **MÓDULO ALUNO** | `2:817` / `15:1436` | concluída neste branch |
 | 9 | AI — **MÓDULO ALUNO** (coach) + contrato admin | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | UI sim nos nodes |
 | 10 | Admin | 7 screens Dark + Light | UI sim; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
 | 11 | Hardening | conforme telas existentes | após fluxos reais |
@@ -180,13 +180,15 @@ Rotas mobile (Dark = layout; Light = tokens): `/app/today` `2:15`, `/app/workout
 
 Rotas mobile (Dark = layout; Light = tokens): `/app/recovery` `2:499`, `/app/progress` `2:1025`, `/app/body` `2:1122`. Desktop `15:216` / `15:1706` fica para endurecer o layout largo; prioridade 390px.
 
-Nav **Evolução** liga em `/app/progress`. Coach e Mais permanecem `FIGMA_PENDING` (Phase 9+). Nutrição `/app/nutrition` é Phase 8.
+Nav **Evolução** liga em `/app/progress`. Coach permanece `FIGMA_PENDING` (Phase 9). Nutrição `/app/nutrition` é Phase 8.
 
 ---
 
 ## 10. Phase 8 — Nutrição
 
-**TERVELO — MÓDULO ALUNO.** Nodes: nutrição `2:817` / desktop `15:1436`. Evidência: screenshots das telas; sem vídeo.
+**TERVELO — MÓDULO ALUNO.** Node mobile `2:817` / Light `15:4343`. Desktop `15:1436` fica para endurecer o layout largo; prioridade 390px. Evidência: screenshots das telas; sem vídeo.
+
+`/app/nutrition`: objetivo, targets diários (energia, proteínas, carboidratos, gorduras, hidratação), distribuição das refeições, insight do nutricionista virtual. Check-in só no dia aberto (`nutrition_checkins`). Nav **Mais** liga nesta tela. Coach permanece Phase 9. Calendário do atleta: `FIGMA_PENDING`.
 
 ---
 
@@ -260,6 +262,7 @@ Após Phase 1:
 | 5 | inventário + anilhas |
 | 6 | persistência de série + idempotência |
 | 7 | check-in de recuperação, composição append-only, e2e longitudinal |
+| 8 | check-in de nutrição no dia aberto, progresso de targets, e2e `/app/nutrition` |
 | 9 | contrato IA + escolha de agente no admin + recusa de fabricar dados |
 | 11 | e2e Playwright da spec §56 quando houver UI |
 

@@ -42,6 +42,18 @@ export const setResultInputSchema = z.object({
   clientMutationId: z.uuid(),
 });
 
+export const nutritionCheckinInputSchema = z.object({
+  userId: z.uuid(),
+  checkedInOn: z.iso.date(),
+  todayIso: z.iso.date(),
+  energyKcal: z.number().finite().nonnegative().optional(),
+  proteinG: z.number().finite().nonnegative().optional(),
+  carbohydrateG: z.number().finite().nonnegative().optional(),
+  fatG: z.number().finite().nonnegative().optional(),
+  fluidMl: z.number().finite().nonnegative().optional(),
+  notes: z.string().max(2000).optional(),
+});
+
 export const restTimerInputSchema = z.object({
   userId: z.uuid(),
   durationSeconds: z.int().min(0).max(3600),
@@ -64,6 +76,7 @@ export const plateCalculatorInputSchema = z.object({
 export type BodyMeasurementInput = z.infer<typeof bodyMeasurementInputSchema>;
 export type RecoveryCheckinInput = z.infer<typeof recoveryCheckinInputSchema>;
 export type SetResultInput = z.infer<typeof setResultInputSchema>;
+export type NutritionCheckinInput = z.infer<typeof nutritionCheckinInputSchema>;
 export type PlateCalculatorInput = z.infer<typeof plateCalculatorInputSchema>;
 
 export function issuesOf(error: z.ZodError): string[] {

@@ -18,3 +18,5 @@ export {
   AI_POLICY_LOCKS,
   DEFAULT_AI_AUTONOMY,
 } from "./ai/contract";
+export { NUTRITION_LABELS, energyFromMacros, isOpenNutritionDay } from "./nutrition/macros";
+export { mlToLiters, targetProgressPercent } from "./nutrition/progress";

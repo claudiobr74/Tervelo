@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { METRIC_LABELS } from "@/domain/labels";
 import {
   bodyMeasurementInputSchema,
+  nutritionCheckinInputSchema,
   plateCalculatorInputSchema,
   recoveryCheckinInputSchema,
   restTimerInputSchema,
@@ -72,6 +73,24 @@ describe("validações Zod", () => {
         stock: [{ weightKg: 20, quantity: 4 }],
       }).success,
     ).toBe(true);
+  });
+
+  it("check-in de nutrição exige data ISO do dia", () => {
+    expect(
+      nutritionCheckinInputSchema.safeParse({
+        userId,
+        checkedInOn: "2026-08-26",
+        todayIso: "2026-08-26",
+        energyKcal: 2450,
+      }).success,
+    ).toBe(true);
+    expect(
+      nutritionCheckinInputSchema.safeParse({
+        userId,
+        checkedInOn: "ontem",
+        todayIso: "2026-08-26",
+      }).success,
+    ).toBe(false);
   });
 
   it("labels de produto não usam sigla", () => {

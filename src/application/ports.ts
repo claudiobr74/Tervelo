@@ -43,6 +43,23 @@ export interface RecoveryCheckinRepository {
   insert(row: Omit<RecoveryCheckinRecord, "id">): Promise<RecoveryCheckinRecord>;
 }
 
+export type NutritionCheckinRecord = {
+  id: string;
+  userId: string;
+  checkedInOn: string;
+  energyKcal?: number;
+  proteinG?: number;
+  carbohydrateG?: number;
+  fatG?: number;
+  fluidMl?: number;
+  notes?: string;
+  supersedesId?: string;
+};
+
+export interface NutritionCheckinRepository {
+  insert(row: Omit<NutritionCheckinRecord, "id">): Promise<NutritionCheckinRecord>;
+}
+
 export interface SetResultRepository {
   findByClientMutationId(clientMutationId: string): Promise<SetResultRecord | null>;
   insert(row: Omit<SetResultRecord, "id">): Promise<SetResultRecord>;

@@ -2,11 +2,14 @@ import { describe, expect, it } from "vitest";
 import { calculateSessionPlates } from "./calculate-session-plates";
 import { searchExercisesUseCase } from "./search-exercises";
 import { recordBodyMeasurement } from "./record-measurement";
+import { recordNutritionCheckin } from "./record-nutrition-checkin";
 import { recordRecoveryCheckin } from "./record-recovery-checkin";
 import { recordSetResult } from "./record-set-result";
 import type {
   MeasurementRecord,
   MeasurementRepository,
+  NutritionCheckinRecord,
+  NutritionCheckinRepository,
   RecoveryCheckinRecord,
   RecoveryCheckinRepository,
   SetResultRecord,
@@ -31,6 +34,17 @@ function memoryRecovery(): RecoveryCheckinRepository {
   return {
     async insert(row) {
       const created = { ...row, id: `r${rows.length + 1}` };
+      rows.push(created);
+      return created;
+    },
+  };
+}
+
+function memoryNutrition(): NutritionCheckinRepository {
+  const rows: NutritionCheckinRecord[] = [];
+  return {
+    async insert(row) {
+      const created = { ...row, id: `n${rows.length + 1}` };
       rows.push(created);
       return created;
     },
@@ -96,6 +110,26 @@ describe("casos de uso", () => {
       expect(second.value.id).toBe(first.value.id);
       expect(second.value.reps).toBe(8);
     }
+  });
+
+  it("grava check-in de nutrição só no dia aberto", async () => {
+    const repo = memoryNutrition();
+    const open = await recordNutritionCheckin(repo, {
+      userId,
+      checkedInOn: "2026-08-26",
+      todayIso: "2026-08-26",
+      energyKcal: 2450,
+      proteinG: 142,
+    });
+    expect(open.ok).toBe(true);
+    const closed = await recordNutritionCheckin(repo, {
+      userId,
+      checkedInOn: "2026-08-25",
+      todayIso: "2026-08-26",
+      energyKcal: 1800,
+    });
+    expect(closed.ok).toBe(false);
+    if (!closed.ok) expect(closed.error.code).toBe("closed_day");
   });
 
   it("calculadora de anilhas passa pela validação Zod", async () => {

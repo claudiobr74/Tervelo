@@ -81,7 +81,10 @@ export function TodayScreen() {
               <p className="text-xs text-muted">Pronto para alta carga</p>
             </div>
           </Link>
-          <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
+          <Link
+            href="/app/nutrition"
+            className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4"
+          >
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold text-muted">Nutrição</p>
               <FigmaIcon src="/icons/flame.svg" alt="" size={14} className="text-brand" />
@@ -90,7 +93,7 @@ export function TodayScreen() {
               <p className="text-base font-bold text-foreground">2.450 / 3.100 kcal</p>
               <p className="text-xs text-muted">142g de proteína consumida</p>
             </div>
-          </article>
+          </Link>
           <Link
             href="/app/body"
             className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4"

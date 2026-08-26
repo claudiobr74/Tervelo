@@ -20,4 +20,6 @@ Phase 7: Vitest cobre mapeamento dos sliders (direita = melhor; dor/estresse inv
 
 **TERVELO — MÓDULO ALUNO** (Phase 8+): evidência de UI só com screenshots das telas (Light e Dark, 390px). Vídeo não é necessário.
 
+Phase 8: Vitest cobre percentual de target, fluido em litros e recusa de check-in em dia fechado. Playwright cobre hoje → nutrição (390px) no Dark e no Light.
+
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.
