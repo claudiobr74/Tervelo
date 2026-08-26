@@ -20,3 +20,23 @@ test("onboarding sem sessão volta para login", async ({ page }) => {
   await page.goto("/onboarding/perfil");
   await expect(page).toHaveURL(/\/login/);
 });
+
+test("login local abre onboarding e Google permanece desabilitado", async ({ page }) => {
+  await page.goto("/login");
+  await expect(page.getByRole("button", { name: "Google" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Apple" })).toBeDisabled();
+  await page.getByLabel("E-mail").fill("lucas.atleta@gmail.com");
+  await page.getByLabel("Senha").fill("senha12345");
+  await page.getByRole("button", { name: "Entrar" }).click();
+  await expect(page).toHaveURL(/\/onboarding\/perfil/);
+  await expect(page.getByText("Etapa 1 de 5")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sobre você" })).toBeVisible();
+});
+
+test("esqueci senha sem tela FIGMA_PENDING", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByLabel("E-mail").fill("lucas.atleta@gmail.com");
+  await page.getByRole("button", { name: "Esqueci minha senha" }).click();
+  await expect(page.getByText(/Se o e-mail existir/)).toBeVisible();
+  await expect(page).toHaveURL(/\/login/);
+});
