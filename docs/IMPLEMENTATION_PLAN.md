@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phase 1 pode iniciar após merge desta auditoria.
+Veredito atual: **READY_WITH_FIXES**. Phase 1 Foundation está neste PR (app compilável).
 
 ---
 
@@ -23,7 +23,7 @@ Veredito atual: **READY_WITH_FIXES**. Phase 1 pode iniciar após merge desta aud
 | Fase | Nome | UI Figma | Pode começar |
 | --- | --- | --- | --- |
 | 0 | Auditoria | inventário completo | concluída neste PR |
-| 1 | Foundation | tokens `28:527` + primitivos `2:2` | sim |
+| 1 | Foundation | tokens `28:527` + primitivos `2:2` | concluída neste PR |
 | 2 | Nhost | não | sim |
 | 3 | Domain | não | sim |
 | 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | UI mobile sim; `/forgot-password` não |

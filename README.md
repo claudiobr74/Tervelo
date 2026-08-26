@@ -6,9 +6,11 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) em andamento. Repositório de foundation — UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md) (`FIGMA_UI_PARTIAL`).
+Phase 0 (auditoria) concluída: veredito **READY_WITH_FIXES**. Phase 1 (foundation) neste repositório: Next.js compilando, tokens Light/Dark, primitivos de UI, stub Nhost, testes e CI.
 
-Veredito da auditoria: **READY_WITH_FIXES**. Detalhes em [`docs/PRE_IMPLEMENTATION_AUDIT.md`](docs/PRE_IMPLEMENTATION_AUDIT.md).
+UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md) (`FIGMA_UI_PARTIAL`). Sem landing, login ou dashboard genérico nesta fase.
+
+Detalhes da auditoria: [`docs/PRE_IMPLEMENTATION_AUDIT.md`](docs/PRE_IMPLEMENTATION_AUDIT.md).
 
 ## Fontes de verdade
 
@@ -32,15 +34,32 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 | [DATABASE_DESIGN.md](docs/DATABASE_DESIGN.md) | Schema PostgreSQL |
 | [NHOST_ARCHITECTURE.md](docs/NHOST_ARCHITECTURE.md) | Auth, Hasura, Storage, Functions |
 | [FIGMA_IMPLEMENTATION.md](docs/FIGMA_IMPLEMENTATION.md) | Tokens (`28:527`), mapa rota→node, `FIGMA_UI_PARTIAL` |
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Camadas do código |
+| [SECURITY.md](docs/SECURITY.md) | Secrets, roles, CI |
+| [TESTING.md](docs/TESTING.md) | Vitest, Playwright, CI |
 
-## Stack (planejada)
+## Stack
 
-- Frontend: Next.js (App Router), TypeScript strict, CSS variables, Manrope, Lucide
-- Backend: **Nhost** (PostgreSQL, Hasura GraphQL, Auth, Storage, Functions)
+- Frontend: Next.js 16 (App Router), TypeScript strict, Tailwind v4, CSS variables, Manrope, Lucide
+- Backend: **Nhost** (PostgreSQL, Hasura GraphQL, Auth, Storage, Functions) — stub na Phase 1
 - **Não** usar Supabase
 
 ## Desenvolvimento
 
-Ainda não há app compilável. Phase 1 cria o scaffold.
+```bash
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+Rotas desta fase:
+
+- `/` — scaffold interno (não é a landing de marketing)
+- `/dev/tokens` — paleta, tipografia, Button/Input/Card e tema claro/escuro/sistema
+- `/api/health` — liveness
+
+Scripts: `lint`, `typecheck`, `test` (Vitest), `test:e2e` (Playwright, fora do CI), `build`.
+
+Tema padrão: **escuro**. Persistência em `localStorage` (`tervelo-theme`). Tokens CSS: Handoff Figma `28:527`.
 
 Não commitar `.env`. Secrets de IA e admin secret Nhost nunca vão para o cliente.
