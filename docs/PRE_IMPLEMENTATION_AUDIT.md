@@ -16,7 +16,7 @@ O TERVELO está pronto para **foundation + UI a partir dos nodes publicados**. C
 
 | Superfície | Estado |
 | --- | --- |
-| Figma | Sete páginas: Foundations, Components, Athlete Desktop, Athlete Mobile, Admin, Prototype, Handoff. Fluxos principais de atleta e admin existem em Dark e Light. Lacunas pontuais (forgot-password, academias, admin Treinamento/Nutrição/Settings). Status: **`FIGMA_UI_PARTIAL`**. |
+| Figma | **Um arquivo** (`uJxhUZVuIzCpFL94dtQj0G`) com **7 páginas-tópico** e ~80 frames (telas). O MCP lista só `01 — Foundations` até cada página ser carregada. Status: **`FIGMA_UI_PARTIAL`**. |
 | GitHub | Repositório quase vazio (`README.md` em `main`). Branch desta auditoria: `cursor/phase-0-pre-implementation-audit-c3ef`. Sem CI, sem proteção. |
 | Nhost | Projeto cloud citado. Sem migrations/metadata no repo. Sem evidência de GitHub link neste workspace. |
 | Vercel | Ausente, conforme especificação. Não criar agora. |

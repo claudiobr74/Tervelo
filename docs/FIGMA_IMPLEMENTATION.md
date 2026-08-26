@@ -2,8 +2,21 @@
 
 **File:** [TERVELO — Design System + Product](https://www.figma.com/design/uJxhUZVuIzCpFL94dtQj0G/TERVELO-%E2%80%94-Design-System---Product?node-id=2-3)  
 **File key:** `uJxhUZVuIzCpFL94dtQj0G`  
-**Inspeção completa:** 2026-08-26 via Figma MCP (`get_metadata` por página, `get_libraries`, `get_variable_defs`)  
-**Nota MCP:** `get_metadata` sem `nodeId` lista só a primeira página. Carregar cada página pelo page id (`0:1` … `2:7`).
+**Inspeção completa:** 2026-08-26 via Figma MCP (`use_figma` em `figma.root.children`, depois `get_metadata` / `setCurrentPageAsync` por página)  
+**Contagem:** 7 páginas-tópico, ~80 frames de primeiro nível (telas, kits e canvases).
+
+### Como acessar o arquivo inteiro (não só Foundations)
+
+O MCP `get_metadata` **sem** `nodeId` devolve só a página atual — em geral `0:1` `01 — Foundations`. As outras páginas existem no documento, mas vêm com `childCount: 0` até serem carregadas.
+
+Protocolo obrigatório neste file:
+
+1. `use_figma`: `return figma.root.children.map(p => ({ id: p.id, name: p.name }))` — lista as 7 páginas.
+2. Uma chamada por página: `await figma.setCurrentPageAsync(page)` **ou** `get_metadata` com o page id (`2:2` … `2:7`).
+3. **Não** usar `loadAllPagesAsync` (não suportado neste MCP).
+4. Um `setCurrentPageAsync` por chamada `use_figma`; várias páginas = várias chamadas em paralelo.
+
+Este MCP enxerga **um file** por `fileKey`. Se o time Macedotech tiver **outros arquivos** no mesmo Project do Figma (outros `.fig` / outras URLs `/design/...`), eles **não** aparecem aqui. Enviar o link de cada arquivo ou o link do Project.
 
 Gate: **não implementar tela funcional sem `get_design_context` no node correspondente** (skill `resource:figma-design-to-code`). O output é referência, não código final.
 
