@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 async function loginPreview(page: import("@playwright/test").Page) {
-  await page.addInitScript(() => {
+  await page.goto("/login");
+  await page.evaluate(() => {
     window.localStorage.removeItem("tervelo-live-session");
     window.localStorage.removeItem("tervelo-athlete-state");
     window.localStorage.removeItem("tervelo-pre-workout-checkin-enabled");
     window.localStorage.removeItem("tervelo-weekly-coach-review-enabled");
   });
-  await page.goto("/login");
   await page.getByLabel("E-mail").fill("lucas.atleta@gmail.com");
   await page.getByLabel("Senha").fill("senha12345");
   await page.getByRole("button", { name: "Entrar" }).click();

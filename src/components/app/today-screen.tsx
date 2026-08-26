@@ -86,8 +86,15 @@ export function TodayScreen() {
             onClick={start}
             className="flex h-12 w-full items-center justify-center rounded-[var(--radius-lg)] bg-brand text-[15px] font-bold text-on-brand"
           >
-            {live.status === "active" || live.status === "resting" ? "Continuar treino" : "Iniciar treino"}
+            {live.status === "idle" ? "Iniciar treino" : "Continuar treino"}
           </button>
+          {athlete.todayAdjustment ? (
+            <Link href="/app/coach/ajuste" className="text-center text-sm font-semibold text-brand">
+              Ver ajuste de hoje
+            </Link>
+          ) : athlete.sessionKeptCopy ? (
+            <p className="text-center text-sm text-foreground">{athlete.sessionKeptCopy}</p>
+          ) : null}
         </section>
 
         {live.status === "idle" ? (
@@ -109,14 +116,6 @@ export function TodayScreen() {
                 Fazer check-in
               </Link>
             )}
-            {athlete.sessionKeptCopy ? (
-              <p className="text-sm text-foreground">{athlete.sessionKeptCopy}</p>
-            ) : null}
-            {athlete.todayAdjustment ? (
-              <Link href="/app/coach/ajuste" className="text-sm font-semibold text-brand">
-                Ver ajuste de hoje
-              </Link>
-            ) : null}
             <p className="text-[11px] text-muted">{PRODUCT_NAMES.preWorkoutCheckin}</p>
           </section>
         ) : null}

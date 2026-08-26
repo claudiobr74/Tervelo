@@ -36,7 +36,7 @@ export function CoachAjusteScreen() {
           <section className="flex flex-col gap-2.5">
             <h2 className="text-[13px] font-bold uppercase text-brand">Ajuste de hoje</h2>
             <div className="flex flex-col gap-2 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-[13px] text-foreground">
-              <p><span className="font-bold">O que mudou. </span>Volume de agachamento de 4 para 3 séries.</p>
+              <p><span className="font-bold">O que mudou. </span>Volume de 4 para 3 séries nesta sessão.</p>
               <p><span className="font-bold">Por que mudou. </span>Recuperação de membros inferiores abaixo do habitual e desempenho em queda nas duas últimas sessões.</p>
               <p><span className="font-bold">Dados considerados. </span>Desempenho objetivo, recuperação habitual e aderência. Sem nota de prontidão.</p>
               <p><span className="font-bold">Este ajuste vale apenas para hoje? </span>Sim. Não altera divisão, frequência nem o bloco.</p>

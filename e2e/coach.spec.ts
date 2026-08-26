@@ -38,7 +38,7 @@ test.describe("coach", () => {
     await page.getByRole("link", { name: "Quero entender" }).click();
     await expect(page).toHaveURL(/\/app\/coach\/ajuste/);
     await expect(page.getByRole("heading", { name: "Seu plano foi ajustado" })).toBeVisible();
-    await expect(page.getByText("Agachamento")).toBeVisible();
+    await expect(page.getByText("Agachamento", { exact: true })).toBeVisible();
     await expect(page.getByText("3 séries × 8 reps")).toBeVisible();
     await expect(page.getByText("Versão do contrato: v3.2")).toBeVisible();
   });
