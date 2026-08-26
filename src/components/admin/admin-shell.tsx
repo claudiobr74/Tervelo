@@ -35,6 +35,8 @@ export function AdminShell({
   libraryItem?: (typeof LIBRARY)[number]["label"] | "Inteligência Artificial";
   children: ReactNode;
 }) {
+  const libraryActive = Boolean(libraryItem) && libraryItem !== "Inteligência Artificial";
+
   return (
     <div className="flex min-h-dvh bg-background text-foreground">
       <aside className="flex w-[260px] shrink-0 flex-col gap-7 border-r border-border px-4 py-6">
@@ -54,9 +56,15 @@ export function AdminShell({
             </span>
           ))}
           <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-brand-soft px-3 py-2.5 text-brand">
+            <div
+              className={`flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 ${
+                libraryActive ? "bg-brand-soft text-brand" : "text-muted"
+              }`}
+            >
               <FigmaIcon src="/icons/admin/book.svg" alt="" size={18} />
-              <span className="text-sm font-semibold text-brand">Biblioteca</span>
+              <span className={`text-sm ${libraryActive ? "font-semibold text-brand" : "font-medium"}`}>
+                Biblioteca
+              </span>
             </div>
             {LIBRARY.map((item) => (
               <Link
