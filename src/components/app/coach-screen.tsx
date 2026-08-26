@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
@@ -11,11 +11,7 @@ import {
   previewCoachFacts,
   type CoachPreviewMessage,
 } from "@/domain/ai/coach-preview";
-import {
-  getCoachProposalSnapshot,
-  setCoachProposalStatus,
-  subscribeCoachProposal,
-} from "@/lib/coach-proposal-store";
+import { setCoachProposalStatus, useCoachProposal } from "@/lib/coach-proposal-store";
 
 const OPENING: CoachPreviewMessage = {
   id: "opening",
@@ -24,11 +20,7 @@ const OPENING: CoachPreviewMessage = {
 };
 
 export function CoachScreen() {
-  const proposal = useSyncExternalStore(
-    subscribeCoachProposal,
-    getCoachProposalSnapshot,
-    getCoachProposalSnapshot,
-  );
+  const proposal = useCoachProposal();
   const [thread, setThread] = useState<CoachPreviewMessage[]>([OPENING]);
   const proposalCopy = useMemo(
     () => coachProposalFeedback(proposal.status),
