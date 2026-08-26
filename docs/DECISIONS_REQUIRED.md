@@ -22,8 +22,9 @@ Status da Fase 0: `READY_WITH_FIXES`.
 
 **Proposta de implementação (pendente de aprovação):**
 
-- Theme System é a fonte de tokens semânticos Light/Dark.
-- Foundations permanece fonte de tipografia, espaçamento, grid, raio, elevação, ícones e motion.
+- Theme System é a fonte de tokens semânticos Light/Dark **quando o Handoff `28:527` não cobrir**.
+- Handoff `28:527` prevalece para **nomes CSS e valores copy-paste** (D-012).
+- Foundations permanece fonte de ícones Lucide, Display 48px de marketing, motion de countdown/números.
 - Mapear `Text Secondary` de Foundations para `text.tertiary` no código.
 
 **Impacto se não decidir:** CSS variables inconsistentes entre temas.
@@ -135,4 +136,60 @@ MVP é B2C. Especificação pede SaaS multi-tenant futuro sem espalhar `organiza
 
 `get_variable_defs` no arquivo retornou vazio. Tokens são swatches visuais, não Variables.
 
-**Proposta:** implementar CSS variables no código a partir do Theme System. Pedir ao design converter para Figma Variables depois (não bloqueia código).
+**Proposta:** implementar CSS variables no código a partir do Handoff `28:527` + Theme System. Pedir ao design converter para Figma Variables depois (não bloqueia código).
+
+---
+
+## D-012 — Vocabulário CSS: Handoff `28:527` vs auditoria inicial
+
+A auditoria inicial propôs `--color-background-primary`. O Handoff copy-paste usa `--bg-primary`, `--surface-*`, `--brand-*`, `--status-*`, mais `--surface-hover/pressed`, `--border-strong/subtle`, `--brand-secondary/accent`.
+
+**Proposta:** o CSS do produto segue **`28:527`**. Aliases da spec funcional apontam para esses nomes. Não manter dois vocabulários.
+
+**Impacto se não decidir:** tokens duplicados e componentes misturando hex.
+
+---
+
+## D-013 — Tipografia Handoff vs Foundations
+
+| Estilo | Foundations | Handoff (`15:2898` / `28:527`) |
+| --- | --- | --- |
+| Display | 48px / LH 1.2 / 700 | 32px / 40 / 700 |
+| H1 | 32px / 700 | 24px / 32 / 700 |
+| Caption | 11px / 400 | 12px / 16 / 400 |
+| Overline | ausente | 10px / 14 / 500 |
+
+**Proposta:** escala do handoff na **app**. Display 48px só na landing (`2:1865`) e no DS. Seguir `get_design_context` se uma tela divergir.
+
+---
+
+## D-014 — Radius e motion Handoff vs Foundations
+
+- Radius: Foundations badges **4px**; Handoff `--radius-sm: 6px`.
+- Motion: Foundations 150 / **250** / 300 + countdown **1s** + números **400ms**. Handoff 150 / **200** / 300.
+
+**Proposta:** radius e transitions de UI = handoff. Countdown 1s e animação de número 400ms = tokens extras do domínio de treino. Badges 4px se o Components page mostrar 4px no `get_design_context`.
+
+---
+
+## D-015 — Zustand no Handoff
+
+`28:527` inclui `stores/themeStore.ts` com Zustand persist `tervelo-theme`.
+
+**Proposta:** persistir `light | dark | system` no app. **Não** acoplar domínio a Zustand. Provider Next.js + `classList`/ `data-theme` é suficiente. Zustand só se a Phase 1 escolher essa lib explicitamente.
+
+---
+
+## D-016 — Frames mobile 402 vs grid 390
+
+Telas Dark de atleta estão em frames **402×874** (chrome de device). Grid e Light usam **390**. Handoff documenta Mobile 390.
+
+**Proposta:** implementar conteúdo a **390**. Não reproduzir a moldura de status bar iOS como layout do produto (exceto se o `get_design_context` da tela exigir safe-area).
+
+---
+
+## D-017 — Login social no Figma vs spec P3
+
+Login (`2:1428`, `15:7801`) desenha Google e Apple. Spec trata social como P3 / não blocker.
+
+**Proposta:** UI pode mostrar os botões desabilitados ou omitidos até providers Nhost. Não atrasar Auth e-mail. Não ligar OAuth sem tela **e** config Nhost.

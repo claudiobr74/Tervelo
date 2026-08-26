@@ -9,7 +9,7 @@ Veredito atual: **READY_WITH_FIXES**. Phase 1 pode iniciar após merge desta aud
 ## 1. Princípios
 
 1. Segurança e autorização no backend (Hasura + Functions). Frontend nunca é a barreira.
-2. Figma prevalece para UI. Sem tela = sem UI definitiva.
+2. Figma prevalece para UI. Sem node na tabela = sem UI definitiva (`FIGMA_PENDING`).
 3. Domínio desacoplado de React e de strings GraphQL.
 4. Histórico longitudinal nunca é sobrescrito.
 5. IA não inventa dados ausentes; memória vem do banco.
@@ -22,17 +22,17 @@ Veredito atual: **READY_WITH_FIXES**. Phase 1 pode iniciar após merge desta aud
 
 | Fase | Nome | UI Figma | Pode começar |
 | --- | --- | --- | --- |
-| 0 | Auditoria | — | concluída neste PR |
-| 1 | Foundation | tokens apenas | sim |
+| 0 | Auditoria | inventário completo | concluída neste PR |
+| 1 | Foundation | tokens `28:527` + primitivos `2:2` | sim |
 | 2 | Nhost | não | sim |
 | 3 | Domain | não | sim |
-| 4 | Auth + Onboarding | **aguarda Figma** | backend sim; UI não |
-| 5 | Exercise & Equipment | catálogo pode ser interno | sim (domínio + admin data) |
-| 6 | Training Engine | **aguarda Figma** para execução visual | domínio + persistência sim |
-| 7 | Recovery + Body + Progress | **aguarda Figma** | persistência sim |
-| 8 | Nutrition | **aguarda Figma** | persistência sim |
-| 9 | AI | admin contract **aguarda Figma** | orquestração sim |
-| 10 | Admin | **aguarda Figma** (desktop-first) | APIs/permissions sim |
+| 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | UI mobile sim; `/forgot-password` não |
+| 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | sim |
+| 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | UI sim nos nodes |
+| 7 | Recovery + Body + Progress | `2:499`, `2:1122`, `2:1025` | UI sim nos nodes |
+| 8 | Nutrition | `2:817` / `15:1436` | UI sim nos nodes |
+| 9 | AI | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | UI sim nos nodes |
+| 10 | Admin | 7 screens Dark + Light | UI sim; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
 | 11 | Hardening | conforme telas existentes | após fluxos reais |
 | 12 | Vercel | app navegável | só com critérios da spec |
 
@@ -48,7 +48,7 @@ Veredito atual: **READY_WITH_FIXES**. Phase 1 pode iniciar após merge desta aud
 - ESLint, Prettier, Vitest, Playwright (configuração; e2e de produto depois)
 - GitHub Actions: `lint`, `typecheck`, `test`, `build`
 - `.gitignore`, `.env.example`, `README.md`
-- CSS variables Light/Dark (Theme System) + `prefers-color-scheme` + persistência
+- CSS variables Light/Dark (Handoff `28:527`) + `prefers-color-scheme` + persistência (sem Zustand no domínio, D-015)
 - Fonte Manrope (next/font)
 - `src/lib/nhost` (client + server cookie storage) **sem secrets**
 - Error boundary / logging estruturado mínimo
@@ -121,9 +121,9 @@ GraphQL operations tipadas por domínio; repositórios escondem Hasura.
 
 Backend: signup, login, logout, verify email, reset password, session refresh, route guards server-side, roles.
 
-UI definitiva **somente** com nodes Figma. Até lá: `FIGMA_UI_PENDING`.
+UI definitiva **somente** com nodes da tabela em `FIGMA_IMPLEMENTATION.md`. `/forgot-password` permanece `FIGMA_PENDING`. Auth desktop: adaptar mobile + tokens, sem inventar landing.
 
-Social login preparado em `nhost.toml`, desligado até haver tela e providers.
+Social login preparado em `nhost.toml`, desligado até haver providers. Botões Google/Apple existem no Figma (D-017).
 
 ---
 
@@ -134,7 +134,7 @@ Social login preparado em `nhost.toml`, desligado até haver tela e providers.
 - Algoritmo de anilhas: carga desejada → discos por lado, simetria, menor quantidade, inventário real
 - Testes unitários cobrindo 0.5–25 kg, barra 20 kg, impossível, ímpar, estoque insuficiente
 
-UI de biblioteca **aguarda Figma**.
+UI de biblioteca: busca `10:1016` / Light `15:5213`; admin `10:7` / `10:201` / `10:377`. Catálogo de equipamentos **do atleta** e academias do atleta: `FIGMA_PENDING`.
 
 ---
 
@@ -151,13 +151,15 @@ Objetivo → Programa → Bloco → Semana → Sessão → Exercício → Série
 - Timer persistido; restante = `expected_end_at - now`
 - Offline: fila local idempotente para `set_results`
 
-UI de execução **aguarda Figma** (incluindo +15/+30/−15, pausar, reiniciar, pular).
+UI de execução: `2:372`, timer `10:758` (−15/+15/+30, pausar, reiniciar, pular), supersérie `10:2584`, drop-set `15:1109`, aquecimento `10:2757`. Desktop de sessão: `15:570`. Sem frames de execução desktop detalhada.
 
 ---
 
 ## 9. Phases 7–8 — Longitudinal + nutrição
 
 Append-only. IA usa tendências, não ponto único. Nomes por extenso na UI e nas respostas da IA.
+
+Nodes: recuperação `2:499`, corpo `2:1122`, evolução `2:1025`, nutrição `2:817` / desktop `15:1436`.
 
 ---
 
@@ -171,13 +173,13 @@ Fluxo: contexto → safety → programa → recovery → desempenho → strength
 
 Execução em **Nhost Functions** (chaves de modelo nunca no cliente). Rate limit. Audit (`ai_runs`, `ai_decisions`) sem chain-of-thought.
 
-Admin “Contrato da IA” **aguarda Figma**. Versionamento de contrato no banco desde o schema.
+Admin “Contrato da IA”: `2:2954` / Light `15:6902`. Coach atleta: `2:944`. Alteração pontual: `10:2651`. Versionamento de contrato no banco desde o schema.
 
 ---
 
 ## 11. Phase 10 — Admin
 
-Desktop-first. Áreas da spec. Proteção server-side + role Hasura. Sem UI genérica.
+Desktop-first. Screens: dashboard, usuários, IA, auditoria, exercícios, equipamentos, inventário. Sidebar Dark ainda cita Treinamento, Nutrição e Configurações **sem screen** → `FIGMA_PENDING`. Proteção server-side + role Hasura. Sem UI genérica.
 
 ---
 
@@ -233,4 +235,4 @@ Após Phase 1:
 
 Só “pronta” com: lógica, persistência, autorização, validação, testes, loading, error, empty, a11y, responsivo, Light, Dark, fidelidade Figma **quando o design existir**.
 
-Se Figma não existir: DoD de backend (lógica + persistência + authz + testes) com flag `FIGMA_PENDING` na feature.
+Se Figma não existir para aquela rota: DoD de backend (lógica + persistência + authz + testes) com flag `FIGMA_PENDING` na feature. Rotas com node na tabela **não** usam placeholder genérico.

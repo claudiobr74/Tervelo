@@ -1,7 +1,7 @@
 # TERVELO — Auditoria pré-implementação (Phase 0)
 
 **Data:** 2026-08-26  
-**Arquivo Figma:** `uJxhUZVuIzCpFL94dtQj0G`  
+**Arquivo Figma:** `uJxhUZVuIzCpFL94dtQj0G` (7 páginas; reinspeção completa)  
 **GitHub:** `claudiobr74/Tervelo` (`main` @ `80f3855`)  
 **Nhost project:** `wqttndghxeybdppcfnol`  
 **Veredito:** `READY_WITH_FIXES`
@@ -12,16 +12,16 @@ Esta auditoria **não implementa telas de produto**. Confirma fontes de verdade,
 
 ## 1. Resumo executivo
 
-O TERVELO está no ponto correto para **foundation**, não para UI definitiva.
+O TERVELO está pronto para **foundation + UI a partir dos nodes publicados**. Código de produto ainda não começa nesta Phase 0.
 
 | Superfície | Estado |
 | --- | --- |
-| Figma | Apenas página `01 — Foundations`. Tokens e Theme System existem. **Nenhuma tela funcional.** |
-| GitHub | Repositório quase vazio (`README.md`). Uma branch: `main`. Sem CI, sem proteção. |
+| Figma | Sete páginas: Foundations, Components, Athlete Desktop, Athlete Mobile, Admin, Prototype, Handoff. Fluxos principais de atleta e admin existem em Dark e Light. Lacunas pontuais (forgot-password, academias, admin Treinamento/Nutrição/Settings). Status: **`FIGMA_UI_PARTIAL`**. |
+| GitHub | Repositório quase vazio (`README.md` em `main`). Branch desta auditoria: `cursor/phase-0-pre-implementation-audit-c3ef`. Sem CI, sem proteção. |
 | Nhost | Projeto cloud citado. Sem migrations/metadata no repo. Sem evidência de GitHub link neste workspace. |
 | Vercel | Ausente, conforme especificação. Não criar agora. |
 
-**FIGMA_UI_PENDING** está registrado. Isso **não** é classificado como erro: a especificação previa Foundations sem telas completas.
+A primeira inspeção MCP só viu `01 — Foundations` (páginas não carregadas ficam com `childCount: 0`). A reinspeção com o link completo (`node-id=2-3`) e `get_metadata` por page id inventariou o arquivo inteiro. Ver `docs/FIGMA_IMPLEMENTATION.md`.
 
 ---
 
@@ -31,16 +31,22 @@ O TERVELO está no ponto correto para **foundation**, não para UI definitiva.
 
 | Page ID | Nome | Conteúdo de produto |
 | --- | --- | --- |
-| `0:1` | `01 — Foundations` | Única página. Documentação de design system. |
+| `0:1` | `01 — Foundations` | Tokens, tipografia, grid, motion, ícones, Theme System |
+| `2:2` | `02 — Components` | Kit v1.4.0: botões, campos, cards, toasts, overlays, nav. Symbols Button/Input/Card/Badge/NavItem |
+| `2:3` | `03 — Athlete Desktop` | Landing `2:1865` + 7 telas Dark + 7 Light (1440) |
+| `2:4` | `04 — Athlete Mobile` | Auth, onboarding, app, timer, anilhas, IA, estados especiais; Dark ~402×874 e variantes Light 390 |
+| `2:5` | `05 — Admin` | Dashboard, usuários, IA, auditoria, exercícios, equipamentos, inventário (Dark + Light) |
+| `2:6` | `06 — Prototype` | Mapa FL.01–FL.05 (`15:2307`) |
+| `2:7` | `07 — Handoff` | Specs `15:2898`, Developer Reference `28:77`, **Code Tokens CSS `28:527`** |
 
-Não existem páginas de Auth, Onboarding, App, Admin, Treino, Nutrição, Coach ou Timer.
-
-### 2.2 Frames de primeiro nível
+### 2.2 Frames de primeiro nível (Foundations)
 
 | Node | Nome | Tamanho |
 | --- | --- | --- |
 | `10:1253` | `foundations-tokens` | 1440 × 4656 |
 | `15:3419` | `Theme System — Light & Dark` | 1440 × 2775 |
+
+Inventário completo de telas: `docs/FIGMA_IMPLEMENTATION.md` §10.
 
 ### 2.3 Foundations — seções
 
@@ -198,15 +204,29 @@ Não usar emojis como ícones.
 
 ### 2.13 Componentes e estados
 
-- **Não há componentes Figma publicados** do TERVELO (Code Connect indisponível neste plano; `search_design_system` no arquivo retornou vazio).
-- Showcase local: botão, input, card, timer estático.
-- **Ausentes:** loading, empty, error, focus, disabled, hover além do token Interactive, bottom nav, command palette, controles de timer (+15/−15/pause/skip), onboarding, admin.
+- Symbols TERVELO: Button `28:20`, Input `28:23`, Card `28:27`, Badge `28:30`, NavItem `28:34`.
+- Documentação: `10:1812` (botões, campos, controles, cards) e `10:2242` (toasts, overlays, bottom nav).
+- Estados: default, hover, pressed, disabled, loading, focus, filled, error, empty de busca.
+- Code Connect do arquivo ainda não está mapeado ao repo (repo sem componentes).
+- Timer de produto **existe**: `10:758` cronometro-descanso (−15 / +15 / +30, Pausar, Reiniciar, Pular, Começar próxima série).
 
-### 2.14 Telas faltantes (FIGMA_UI_PENDING)
+### 2.14 Telas e lacunas (`FIGMA_UI_PARTIAL`)
 
-Todas as rotas de produto da especificação:
+**Cobertas (mapa em FIGMA_IMPLEMENTATION.md):** `/`, `/login`, `/signup`, `/onboarding/*`, `/app/*` principais, execução, timer, nutrição, coach, evolução, corpo, calendário, perfil, admin (dashboard, users, IA, auditoria, exercícios, equipamentos, inventário). Light + Dark nos fluxos core.
 
-`/`, `/login`, `/signup`, `/forgot-password`, `/onboarding/*`, `/app/*`, `/admin/*`.
+**Ainda FIGMA_PENDING:**
+
+- `/forgot-password` (só link no login)
+- Academias do atleta
+- Catálogo de equipamentos do atleta
+- Settings do atleta (conta/tema/academia) — há perfil + `15:5780` configurações de IA
+- Admin Treinamento, Nutrição, Configurações (itens de menu sem screen)
+- Admin detalhe do atleta (só card no protótipo)
+- Auth/onboarding/execução desktop
+- Landing mobile
+- Grid 360 px
+
+Login Dark/Light inclui Google e Apple. Spec trata social como P3 — o Figma não muda isso para blocker.
 
 ### 2.15 Bibliotecas anexadas (não usar como UI TERVELO)
 
@@ -293,7 +313,15 @@ Functions: arquivos em `./functions` viram HTTP endpoints; secrets só no servid
 
 ### 5.1 Conflitos Figma ↔ especificação
 
-Ver `docs/DECISIONS_REQUIRED.md` (D-001 a D-007). Não há conflito que impeça scaffold, tokens CSS, domínio ou banco.
+Ver `docs/DECISIONS_REQUIRED.md` (D-001 a D-016). Não há conflito que impeça scaffold, tokens CSS, domínio ou banco.
+
+Novos após reinspeção completa:
+
+- Handoff `28:527` vs Foundations (nomes CSS, Display 32 vs 48, radius 6 vs 4, motion 200 vs 250, countdown 1s).
+- Login social no Figma vs “não blocker”.
+- Frames mobile 402 vs grid 390.
+- Copy “FAQ” na landing.
+- Snippet Zustand no handoff vs domínio desacoplado.
 
 ### 5.2 Acoplamento
 
@@ -309,7 +337,7 @@ Catálogo global vs dados do atleta. Ver D-010 e `DATABASE_DESIGN.md`.
 
 ### 5.5 Timer e offline
 
-Sem tela Figma de controles. Lógica de timer (timestamps, não `setInterval` como fonte de verdade) **pode** ser domínio + testes. UI definitiva aguarda Figma.
+Tela de controles existe (`10:758` / Light `15:4065`). Lógica de timer (timestamps, não `setInterval` como fonte de verdade) **pode** ser domínio + testes. UI definitiva usa esses nodes via `get_design_context`.
 
 ---
 
@@ -319,13 +347,13 @@ Sem tela Figma de controles. Lógica de timer (timestamps, não `setInterval` co
 
 Nenhum P0 para **Phase 1 Foundation**.
 
-P0 para **UI de produto:** telas Figma inexistentes → **FIGMA_UI_PENDING** (esperado, não erro).
+P0 para **UI de uma rota específica:** se o node não estiver na tabela de `FIGMA_IMPLEMENTATION.md`, a rota fica `FIGMA_PENDING` — não inventar.
 
 ### P1 — must fix (antes ou durante Phases 1–2)
 
 | ID | Item |
 | --- | --- |
-| P1-01 | Resolver D-001/D-002/D-003 para gerar tokens sem adivinhar |
+| P1-01 | Resolver D-001/D-002/D-003/D-012/D-013/D-014 para gerar tokens sem adivinhar |
 | P1-02 | Scaffold Next.js + TypeScript strict + lint + testes |
 | P1-03 | Versionar `nhost/` (init, toml, roles) |
 | P1-04 | `.env.example` sem secrets; obter subdomain/region |
@@ -339,20 +367,22 @@ P0 para **UI de produto:** telas Figma inexistentes → **FIGMA_UI_PENDING** (es
 | --- | --- |
 | P2-01 | Converter tokens Figma em Variables |
 | P2-02 | Remover ou ignorar bibliotecas genéricas no arquivo Figma |
-| P2-03 | Grids 360 / 768 |
-| P2-04 | Componentes primitivos no Figma (button, input, tooltip acessível) |
+| P2-03 | Grid 360 (768 já está no handoff como `md`) |
+| P2-04 | Publicar tela `/forgot-password` e settings/academias do atleta |
 | P2-05 | Templates de e-mail Auth em PT-BR |
 | P2-06 | Proteção de `main` no GitHub |
-| P2-07 | Copy do showcase (“Projeto Alpha”) |
+| P2-07 | Copy do showcase (“Projeto Alpha”) e “FAQ” na landing |
+| P2-08 | Screens admin Treinamento / Nutrição / Configurações / detalhe do atleta |
 
 ### P3 — improvement
 
 | ID | Item |
 | --- | --- |
-| P3-01 | Login social |
+| P3-01 | Login social (já desenhado; não blocker) |
 | P3-02 | PWA |
 | P3-03 | Code Connect quando o plano Figma permitir |
 | P3-04 | Vercel (somente Phase 12) |
+| P3-05 | Landing e auth desktop |
 
 ---
 
@@ -361,9 +391,9 @@ P0 para **UI de produto:** telas Figma inexistentes → **FIGMA_UI_PENDING** (es
 ### Pode começar
 
 - Scaffold Next.js App Router, TS strict, ESLint, Prettier, Vitest, Playwright (smoke)
-- CSS variables Light/Dark a partir do Theme System (com D-001 aberto)
+- CSS variables Light/Dark a partir do Handoff `28:527` (D-012 aberto)
 - Manrope, Lucide, motion tokens
-- Primitivos **não finais**: focus ring, skip link — sem fingir telas de produto
+- Primitivos alinhados a `2:2` **depois** de `get_design_context` nos symbols
 - Nhost CLI, Auth architecture, GraphQL codegen
 - Schema, migrations, permissions
 - Domain services: plate calculator, timer, periodização, validação
@@ -371,9 +401,13 @@ P0 para **UI de produto:** telas Figma inexistentes → **FIGMA_UI_PENDING** (es
 - Cursor rules, testes unitários extensivos de anilhas
 - CI
 
-### Deve aguardar Figma (`FIGMA_UI_PENDING`)
+### UI definitiva só com node (`FIGMA_UI_PARTIAL`)
 
-Qualquer tela funcional definitiva: login visual, onboarding, dashboard, sessão de treino, timer UI, nutrição, admin, command palette visual, empty/error/loading de produto.
+Implementar telas **somente** com o mapa de `FIGMA_IMPLEMENTATION.md` §10 e `get_design_context`.
+
+### Ainda `FIGMA_PENDING` (não inventar)
+
+`/forgot-password`, academias do atleta, catálogo de equipamentos do atleta, settings de conta, admin Treinamento/Nutrição/Configurações/detalhe do atleta, landing mobile, auth desktop.
 
 Não inventar dashboards genéricos.
 
@@ -385,16 +419,16 @@ Não inventar dashboards genéricos.
 READY_WITH_FIXES
 ```
 
-**Não BLOCKED:** foundation, domínio, banco e Nhost podem avançar.
+**Não BLOCKED:** foundation, domínio, banco, Nhost e UI das rotas já desenhadas podem avançar **depois** desta auditoria, quando a Phase 1 for autorizada.
 
-**Não GO incondicional:** conflitos de token (D-001–D-004), Nhost não versionado, GitHub sem CI/`develop`, UI de produto pendente.
+**Não GO incondicional:** conflitos de token (D-001–D-004, D-012–D-014), Nhost não versionado, GitHub sem CI/`develop`, lacunas Figma pontuais.
 
 **Fixes para sair de READY_WITH_FIXES rumo a GO de Phase 1:**
 
-1. Aprovar mapeamento de tokens (Theme System > Foundations para cor semântica).
+1. Aprovar mapeamento de tokens: Handoff `28:527` para CSS; Theme System para cor semântica residual; Foundations para ícones/motion de treino.
 2. Criar scaffold e `nhost/` no repositório.
 3. Operador informar subdomain/region e ligar GitHub no Nhost.
 
-**Blockers de UI de produto (não de Phase 1):**
+**Blockers de UI pontual (não de Phase 1):**
 
-- Telas Figma inexistentes (`FIGMA_UI_PENDING`).
+- Rotas da §2.14 sem node (`FIGMA_PENDING`).

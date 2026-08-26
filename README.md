@@ -6,7 +6,7 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) em andamento. Repositório de foundation — **sem UI de produto definitiva** enquanto o Figma não publicar as telas.
+Phase 0 (auditoria) em andamento. Repositório de foundation — UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md) (`FIGMA_UI_PARTIAL`).
 
 Veredito da auditoria: **READY_WITH_FIXES**. Detalhes em [`docs/PRE_IMPLEMENTATION_AUDIT.md`](docs/PRE_IMPLEMENTATION_AUDIT.md).
 
@@ -31,7 +31,7 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 | [IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Fases 1–12 |
 | [DATABASE_DESIGN.md](docs/DATABASE_DESIGN.md) | Schema PostgreSQL |
 | [NHOST_ARCHITECTURE.md](docs/NHOST_ARCHITECTURE.md) | Auth, Hasura, Storage, Functions |
-| [FIGMA_IMPLEMENTATION.md](docs/FIGMA_IMPLEMENTATION.md) | Tokens, gate de UI, `FIGMA_UI_PENDING` |
+| [FIGMA_IMPLEMENTATION.md](docs/FIGMA_IMPLEMENTATION.md) | Tokens (`28:527`), mapa rota→node, `FIGMA_UI_PARTIAL` |
 
 ## Stack (planejada)
 
