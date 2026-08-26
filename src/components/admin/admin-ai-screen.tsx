@@ -164,7 +164,7 @@ export function AdminAiScreen() {
               </span>
               <button
                 type="button"
-                title="Execução real na Nhost Function entra na Phase 9"
+                title="Orquestração real depois da UI. Sem modelo nesta pré-visualização."
                 className="rounded-[var(--radius-md)] bg-surface-secondary px-4 py-2 text-[13px] font-semibold text-foreground"
               >
                 Testar versão

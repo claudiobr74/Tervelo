@@ -5,7 +5,7 @@ const TABS = [
   { href: "/app/today", label: "Hoje", icon: "/icons/nav/hoje.svg", enabled: true },
   { href: "/app/workout", label: "Treino", icon: "/icons/nav/treino.svg", enabled: true },
   { href: "/app/progress", label: "Evolução", icon: "/icons/nav/evolucao.svg", enabled: true },
-  { href: "/app/today", label: "Coach", icon: "/icons/nav/coach.svg", enabled: false },
+  { href: "/app/coach", label: "Coach", icon: "/icons/nav/coach.svg", enabled: true },
   { href: "/app/nutrition", label: "Mais", icon: "/icons/nav/mais.svg", enabled: true },
 ] as const;
 
@@ -25,7 +25,7 @@ export function AthleteBottomNav({ active = "Treino" }: { active?: (typeof TABS)
         );
         if (!tab.enabled) {
           return (
-            <span key={tab.label} className={`${className} opacity-70`} title="Tela na Phase 9">
+            <span key={tab.label} className={`${className} opacity-70`} title="FIGMA_PENDING">
               {inner}
             </span>
           );

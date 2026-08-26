@@ -22,6 +22,8 @@ Phase 7: Vitest cobre mapeamento dos sliders (direita = melhor; dor/estresse inv
 
 Phase 8: Vitest cobre percentual de target, fluido em litros e recusa de check-in em dia fechado. Playwright cobre hoje → nutrição (390px) no Dark e no Light.
 
+Phase 9: Vitest cobre recusa de fabricar fatos UNKNOWN, seções integradas (Papel da nutrição) e aceite/recusa da proposta. Playwright cobre hoje → Coach → chips/proposta → alteração pontual (390px) no Dark e no Light.
+
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.
 
 **TERVELO — ADDENDUM**: Vitest cobre `NUTRITION_CONTEXT` UNKNOWN, ordem de ajuste e QA 13–20. Playwright cobre a aba Nutrição do contrato admin.

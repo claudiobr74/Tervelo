@@ -22,11 +22,17 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 8 — Nutrição</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 9 — Coach</p>
       <div className="flex flex-wrap gap-3">
         <a
-          href="/app/today"
+          href="/app/coach"
           className="inline-flex h-11 items-center rounded-[var(--radius-md)] bg-brand px-5 text-sm font-semibold text-on-brand"
+        >
+          Coach
+        </a>
+        <a
+          href="/app/today"
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"
         >
           Hoje
         </a>

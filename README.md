@@ -74,6 +74,8 @@ Rotas desta fase:
 - `/onboarding/*` — perfil, medidas, experiência, objetivos, nutrição
 - `/dev/tokens` — paleta e primitivos
 - `/app/nutrition` — Figma `2:817`
+- `/app/coach` — Figma `2:944`
+- `/app/coach/ajuste` — Figma `10:2651`
 - `/api/health` — liveness
 
 Scripts: `lint`, `typecheck`, `test` (Vitest), `test:e2e` (Playwright, fora do CI), `build`.

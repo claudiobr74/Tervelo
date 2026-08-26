@@ -126,7 +126,10 @@ export function TodayScreen() {
           </Link>
         </div>
 
-        <article className="flex items-center gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
+        <Link
+          href="/app/coach"
+          className="flex items-center gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4"
+        >
           <span className="flex size-10 items-center justify-center rounded-full bg-brand-soft text-brand">
             <FigmaIcon src="/icons/brain.svg" alt="" size={20} />
           </span>
@@ -134,7 +137,7 @@ export function TodayScreen() {
             <p className="text-[13px] font-bold uppercase text-brand">Mensagem do treinador</p>
             <p className="text-[13px] text-foreground">“Seu treino permanece conforme planejado.”</p>
           </div>
-        </article>
+        </Link>
       </div>
     </AthleteAppShell>
   );

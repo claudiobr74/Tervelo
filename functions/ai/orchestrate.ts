@@ -20,6 +20,6 @@ export default function orchestrate(request: FunctionRequest, response: Function
   response.status(501).json({
     error: "not_implemented",
     phase: 9,
-    message: "Orquestração de IA entra na Phase 9.",
+    message: "Orquestração real depois da UI do coach. Sem modelo nesta pré-visualização.",
   });
 }
