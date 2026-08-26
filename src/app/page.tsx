@@ -1,11 +1,14 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
 import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
 import { parseSessionCookie } from "@/lib/auth/session";
 
 export default async function HomePage() {
-  const session = parseSessionCookie((await cookies()).get(NHOST_SESSION_COOKIE)?.value);
+  const jar = await cookies();
+  const session = parseSessionCookie(jar.get(NHOST_SESSION_COOKIE)?.value);
+  const onboardingDone = jar.get(ONBOARDING_COOKIE)?.value === "done";
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-6 px-6 py-16">
@@ -22,12 +25,18 @@ export default async function HomePage() {
             {session.preview ? " (pré-visualização local)" : ""}
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/onboarding/perfil"
-              className="inline-flex h-11 w-fit items-center justify-center rounded-[var(--radius-md)] bg-brand px-6 text-sm font-semibold text-on-brand"
-            >
-              Continuar onboarding
-            </Link>
+            {onboardingDone ? (
+              <p className="text-sm text-muted">
+                Onboarding concluído. O treino do dia entra na Phase 6 — esta home não é `/app/today`.
+              </p>
+            ) : (
+              <Link
+                href="/onboarding/perfil"
+                className="inline-flex h-11 w-fit items-center justify-center rounded-[var(--radius-md)] bg-brand px-6 text-sm font-semibold text-on-brand"
+              >
+                Continuar onboarding
+              </Link>
+            )}
             <LogoutButton />
           </div>
         </div>
