@@ -14,6 +14,10 @@ async function loginPreview(page: import("@playwright/test").Page) {
   await expect(page).toHaveURL(/\/onboarding\/perfil/);
 }
 
+async function skipPreWorkout(page: import("@playwright/test").Page) {
+  await page.getByRole("button", { name: "Pular por hoje" }).click();
+}
+
 test.describe("frequência cardíaca", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
@@ -27,6 +31,7 @@ test.describe("frequência cardíaca", () => {
 
     await page.goto("/app/today");
     await page.getByRole("button", { name: "Iniciar treino" }).click();
+    await skipPreWorkout(page);
     await page.getByRole("button", { name: "Começar exercício" }).click();
     await expect(page.getByRole("heading", { name: "Supino Reto" })).toBeVisible();
     await expect(page.getByLabel("Frequência cardíaca")).toHaveCount(0);
@@ -47,6 +52,7 @@ test.describe("frequência cardíaca", () => {
 
     await page.goto("/app/today");
     await page.getByRole("button", { name: "Iniciar treino" }).click();
+    await skipPreWorkout(page);
     await page.getByRole("button", { name: "Começar exercício" }).click();
     await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
     await expect(page.getByRole("button", { name: "Registrar aquecimento" })).toBeEnabled();
@@ -81,6 +87,7 @@ test.describe("frequência cardíaca", () => {
     });
     await page.goto("/app/today");
     await page.getByRole("button", { name: "Iniciar treino" }).click();
+    await skipPreWorkout(page);
     await page.getByRole("button", { name: "Começar exercício" }).click();
     await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
     await page.screenshot({

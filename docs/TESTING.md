@@ -28,6 +28,8 @@ Phase 10: Vitest cobre filtro de usuários e faixa de aderência. Playwright cob
 
 Phase 11: Vitest cobre parser BLE (8/16 bits, flags, inválidos), recuperação, associação temporal, batching/idempotência, toggle e `HEART_RATE_CONTEXT` condicional. Playwright cobre settings desligado → treino sem indicador; ligar o toggle; treino segue sem BLE. Screenshots 390 Light/Dark. Hardware real: `docs/HEART_RATE_HARDWARE_VALIDATION.md`.
 
+Phase 12: Vitest cobre Motor de Estado (casos 1–10), qualidade dos dados, tendências, check-in/check-out, orçamento de mudanças, revisão semanal e QA 31–44. Playwright cobre check-in pulável, check-out, revisões e toggles default ligados. Screenshots 390 Light/Dark. Sem vídeo.
+
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.
 
 **TERVELO — ADDENDUM**: Vitest cobre `NUTRITION_CONTEXT` UNKNOWN, ordem de ajuste e QA 13–20. Playwright cobre a aba Nutrição do contrato admin.

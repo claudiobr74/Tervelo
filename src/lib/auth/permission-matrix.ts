@@ -953,6 +953,118 @@ export const PUBLIC_TABLES: PublicTable[] = [
     ],
   },
   {
+    name: "pre_workout_checkins",
+    kind: "athlete",
+    columns: [
+      "id", "user_id", "training_session_id", "checked_in_at", "status", "sleep_quality", "energy",
+      "muscle_recovery", "stress", "has_pain", "pain_region", "pain_intensity",
+      "pain_worsens_with_movement", "pain_blocks_planned_exercise", "has_planned_time",
+      "available_minutes", "client_mutation_id", "created_at",
+    ],
+    permissions: athleteOwn(
+      [
+        "id", "user_id", "training_session_id", "checked_in_at", "status", "sleep_quality", "energy",
+        "muscle_recovery", "stress", "has_pain", "pain_region", "pain_intensity",
+        "pain_worsens_with_movement", "pain_blocks_planned_exercise", "has_planned_time",
+        "available_minutes", "client_mutation_id", "created_at",
+      ],
+      { insert: true, update: false, delete: false },
+    ),
+  },
+  {
+    name: "post_workout_checkouts",
+    kind: "athlete",
+    columns: [
+      "id", "user_id", "training_session_id", "checked_out_at", "status", "expectation", "difficulty",
+      "plan_completion", "partial_reasons", "had_pain", "client_mutation_id", "created_at",
+    ],
+    permissions: athleteOwn(
+      [
+        "id", "user_id", "training_session_id", "checked_out_at", "status", "expectation", "difficulty",
+        "plan_completion", "partial_reasons", "had_pain", "client_mutation_id", "created_at",
+      ],
+      { insert: true, update: false, delete: false },
+    ),
+  },
+  {
+    name: "athlete_state_snapshots",
+    kind: "athlete",
+    columns: [
+      "id", "user_id", "period_start", "period_end", "algorithm_version", "overall_state",
+      "training_state", "training_confidence", "recovery_state", "recovery_confidence",
+      "nutrition_state", "nutrition_confidence", "body_composition_state", "body_composition_confidence",
+      "heart_rate_state", "heart_rate_enabled", "heart_rate_confidence", "adherence_state",
+      "limitations_json", "alerts_json", "missing_data_json", "reasons_json", "data_quality",
+      "payload_json", "generated_at", "client_mutation_id", "created_at",
+    ],
+    permissions: athleteOwn(
+      [
+        "id", "user_id", "period_start", "period_end", "algorithm_version", "overall_state",
+        "training_state", "training_confidence", "recovery_state", "recovery_confidence",
+        "nutrition_state", "nutrition_confidence", "body_composition_state", "body_composition_confidence",
+        "heart_rate_state", "heart_rate_enabled", "heart_rate_confidence", "adherence_state",
+        "limitations_json", "alerts_json", "missing_data_json", "reasons_json", "data_quality",
+        "payload_json", "generated_at", "client_mutation_id", "created_at",
+      ],
+      { insert: true, update: false, delete: false },
+    ),
+  },
+  {
+    name: "weekly_coach_reviews",
+    kind: "athlete",
+    columns: [
+      "id", "user_id", "training_week_id", "athlete_state_snapshot_id", "period_start", "period_end",
+      "contract_version", "prompt_version", "model", "agents_json", "headline", "overview",
+      "what_improved", "what_needs_attention", "training_copy", "nutrition_copy", "body_copy",
+      "recovery_copy", "heart_rate_copy", "next_week_copy", "decision", "suggested_changes_json",
+      "status", "ai_run_id", "generated_at", "created_at", "updated_at",
+    ],
+    objectRelationships: [
+      { name: "athlete_state_snapshot", column: "athlete_state_snapshot_id" },
+    ],
+    arrayRelationships: [
+      { name: "decisions", table: "weekly_review_decisions", column: "weekly_review_id" },
+    ],
+    permissions: athleteOwn(
+      [
+        "id", "user_id", "training_week_id", "athlete_state_snapshot_id", "period_start", "period_end",
+        "contract_version", "prompt_version", "model", "agents_json", "headline", "overview",
+        "what_improved", "what_needs_attention", "training_copy", "nutrition_copy", "body_copy",
+        "recovery_copy", "heart_rate_copy", "next_week_copy", "decision", "suggested_changes_json",
+        "status", "ai_run_id", "generated_at", "created_at", "updated_at",
+      ],
+      { insert: true, update: ["status"], delete: false },
+    ),
+  },
+  {
+    name: "weekly_review_decisions",
+    kind: "athlete",
+    columns: [
+      "id", "user_id", "weekly_review_id", "decision_kind", "suggested_changes_json",
+      "accepted_changes_json", "rejected_changes_json", "follow_up_period_start", "follow_up_period_end",
+      "follow_up_performance_json", "follow_up_recovery_json", "follow_up_adherence_json",
+      "follow_up_nutrition_json", "follow_up_body_json", "created_at", "updated_at",
+    ],
+    objectRelationships: [{ name: "weekly_review", column: "weekly_review_id" }],
+    permissions: athleteOwn(
+      [
+        "id", "user_id", "weekly_review_id", "decision_kind", "suggested_changes_json",
+        "accepted_changes_json", "rejected_changes_json", "follow_up_period_start", "follow_up_period_end",
+        "follow_up_performance_json", "follow_up_recovery_json", "follow_up_adherence_json",
+        "follow_up_nutrition_json", "follow_up_body_json", "created_at", "updated_at",
+      ],
+      {
+        insert: true,
+        update: [
+          "accepted_changes_json", "rejected_changes_json", "follow_up_period_start", "follow_up_period_end",
+          "follow_up_performance_json", "follow_up_recovery_json", "follow_up_adherence_json",
+          "follow_up_nutrition_json", "follow_up_body_json",
+        ],
+        delete: false,
+      },
+    ),
+  },
+  {
     name: "notifications",
     kind: "athlete",
     columns: ["id", "user_id", "type", "payload", "read_at", "created_at"],

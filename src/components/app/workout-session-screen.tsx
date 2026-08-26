@@ -10,14 +10,30 @@ import {
   formatSetsAndReps,
   workingSets,
 } from "@/domain/training/session";
-import { startWorkout } from "@/lib/training/live-session";
+import { startWorkout, useLiveSession } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { shouldPromptPreWorkoutCheckin } from "@/domain/athlete-state/gates";
+import { getPreWorkoutCheckinEnabled } from "@/lib/athlete-state/preference-store";
+import { getAthleteStateStore } from "@/lib/athlete-state/session-store";
 
 export function WorkoutSessionScreen() {
   const router = useRouter();
   const session = PREVIEW_WORKOUT;
+  const live = useLiveSession();
 
   function begin() {
+    const active = live.status === "active" || live.status === "resting";
+    if (
+      !active &&
+      shouldPromptPreWorkoutCheckin({
+        preferenceEnabled: getPreWorkoutCheckinEnabled(),
+        alreadyCheckedIn: Boolean(getAthleteStateStore().preWorkout),
+        sessionAlreadyActive: false,
+      })
+    ) {
+      router.push("/app/workout/checkin");
+      return;
+    }
     startWorkout();
     router.push("/app/workout/exercise");
   }

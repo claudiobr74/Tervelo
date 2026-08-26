@@ -4,12 +4,18 @@ import { searchExercisesUseCase } from "./search-exercises";
 import { recordBodyMeasurement } from "./record-measurement";
 import { recordNutritionCheckin } from "./record-nutrition-checkin";
 import { recordRecoveryCheckin } from "./record-recovery-checkin";
+import { recordPostWorkoutCheckout } from "./record-post-workout-checkout";
+import { recordPreWorkoutCheckin } from "./record-pre-workout-checkin";
 import { recordSetResult } from "./record-set-result";
 import type {
   MeasurementRecord,
   MeasurementRepository,
   NutritionCheckinRecord,
   NutritionCheckinRepository,
+  PostWorkoutCheckoutRecord,
+  PostWorkoutCheckoutRepository,
+  PreWorkoutCheckinRecord,
+  PreWorkoutCheckinRepository,
   RecoveryCheckinRecord,
   RecoveryCheckinRepository,
   SetResultRecord,
@@ -59,6 +65,34 @@ function memorySetResults(): SetResultRepository {
     },
     async insert(row) {
       const created = { ...row, id: `s${rows.length + 1}` };
+      rows.push(created);
+      return created;
+    },
+  };
+}
+
+function memoryPreWorkout(): PreWorkoutCheckinRepository {
+  const rows: PreWorkoutCheckinRecord[] = [];
+  return {
+    async findByClientMutationId(id) {
+      return rows.find((row) => row.clientMutationId === id) ?? null;
+    },
+    async insert(row) {
+      const created = { ...row, id: `p${rows.length + 1}` };
+      rows.push(created);
+      return created;
+    },
+  };
+}
+
+function memoryPostWorkout(): PostWorkoutCheckoutRepository {
+  const rows: PostWorkoutCheckoutRecord[] = [];
+  return {
+    async findByClientMutationId(id) {
+      return rows.find((row) => row.clientMutationId === id) ?? null;
+    },
+    async insert(row) {
+      const created = { ...row, id: `c${rows.length + 1}` };
       rows.push(created);
       return created;
     },
@@ -148,5 +182,34 @@ describe("casos de uso", () => {
     );
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.value).toHaveLength(1);
+  });
+
+  it("check-in pré-treino é idempotente e aceita pulado", async () => {
+    const repo = memoryPreWorkout();
+    const payload = {
+      userId,
+      clientMutationId: "44444444-4444-4444-8444-444444444444",
+      status: "skipped" as const,
+    };
+    const first = await recordPreWorkoutCheckin(repo, payload);
+    const second = await recordPreWorkoutCheckin(repo, { ...payload, status: "completed" });
+    expect(first.ok && second.ok).toBe(true);
+    if (first.ok && second.ok) {
+      expect(second.value.id).toBe(first.value.id);
+      expect(second.value.status).toBe("skipped");
+    }
+  });
+
+  it("check-out pós-treino é idempotente", async () => {
+    const repo = memoryPostWorkout();
+    const payload = {
+      userId,
+      clientMutationId: "55555555-5555-4555-8555-555555555555",
+      status: "completed" as const,
+      expectation: "como_esperado" as const,
+      planCompletion: "sim" as const,
+    };
+    const first = await recordPostWorkoutCheckout(repo, payload);
+    expect(first.ok).toBe(true);
   });
 });

@@ -23,5 +23,8 @@ export { QA_ADDENDUM_CHECKS, auditIntegratedDecision } from "./ai/qa-addendum";
 export { parseHeartRateMeasurement } from "./heart-rate/parse-measurement";
 export { buildHeartRateContext, HEART_RATE_ANALYSIS_RULE } from "./heart-rate/context";
 export { QA_HEART_RATE_CHECKS, auditHeartRateDecision } from "./heart-rate/qa";
+export { buildAthleteState } from "./athlete-state/engine";
+export { QA_ATHLETE_STATE_CHECKS, auditAthleteStateDecision } from "./athlete-state/qa";
+export { ORCHESTRATOR_INTENTS } from "./athlete-state/intents";
 export { NUTRITION_LABELS, energyFromMacros, isOpenNutritionDay } from "./nutrition/macros";
 export { mlToLiters, targetProgressPercent } from "./nutrition/progress";

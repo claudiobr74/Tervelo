@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { shouldPromptPreWorkoutCheckin } from "@/domain/athlete-state/gates";
+import { PRODUCT_NAMES } from "@/domain/athlete-state/labels";
+import { getPreWorkoutCheckinEnabled } from "@/lib/athlete-state/preference-store";
+import { getAthleteStateStore, useAthleteStateStore } from "@/lib/athlete-state/session-store";
 import { startWorkout, useLiveSession } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 
@@ -13,8 +17,25 @@ export function TodayScreen() {
   const router = useRouter();
   const live = useLiveSession();
   const session = PREVIEW_WORKOUT;
+  const athlete = useAthleteStateStore();
+  const checkinDone = athlete.preWorkout?.status === "completed";
+  const checkinSkipped = athlete.preWorkout?.status === "skipped";
 
   function start() {
+    if (live.status === "active" || live.status === "resting") {
+      router.push("/app/workout");
+      return;
+    }
+    if (
+      shouldPromptPreWorkoutCheckin({
+        preferenceEnabled: getPreWorkoutCheckinEnabled(),
+        alreadyCheckedIn: Boolean(getAthleteStateStore().preWorkout),
+        sessionAlreadyActive: false,
+      })
+    ) {
+      router.push("/app/workout/checkin");
+      return;
+    }
     startWorkout();
     router.push("/app/workout");
   }
@@ -68,6 +89,37 @@ export function TodayScreen() {
             {live.status === "active" || live.status === "resting" ? "Continuar treino" : "Iniciar treino"}
           </button>
         </section>
+
+        {live.status === "idle" ? (
+          <section className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+            <p className="text-xs font-bold uppercase text-brand">Check-in rápido</p>
+            <h2 className="text-base font-bold text-foreground">Como você está para treinar hoje?</h2>
+            {checkinDone ? (
+              <p className="flex items-center gap-2 text-sm font-semibold text-success">
+                <FigmaIcon src="/icons/check-circle.svg" alt="" size={16} className="text-success" />
+                Check-in concluído
+              </p>
+            ) : checkinSkipped ? (
+              <p className="text-sm text-muted">Sem informação aguda hoje. O treino segue normalmente.</p>
+            ) : (
+              <Link
+                href="/app/workout/checkin"
+                className="flex h-12 items-center justify-center rounded-[var(--radius-lg)] border border-border text-sm font-bold text-foreground"
+              >
+                Fazer check-in
+              </Link>
+            )}
+            {athlete.sessionKeptCopy ? (
+              <p className="text-sm text-foreground">{athlete.sessionKeptCopy}</p>
+            ) : null}
+            {athlete.todayAdjustment ? (
+              <Link href="/app/coach/ajuste" className="text-sm font-semibold text-brand">
+                Ver ajuste de hoje
+              </Link>
+            ) : null}
+            <p className="text-[11px] text-muted">{PRODUCT_NAMES.preWorkoutCheckin}</p>
+          </section>
+        ) : null}
 
         <div className="grid grid-cols-2 gap-3">
           <Link

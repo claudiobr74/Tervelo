@@ -60,6 +60,31 @@ export const restTimerInputSchema = z.object({
   sessionId: z.uuid().optional(),
 });
 
+export const preWorkoutCheckinInputSchema = z.object({
+  userId: z.uuid(),
+  clientMutationId: z.uuid(),
+  status: z.enum(["completed", "skipped"]),
+  checkedInAt: z.iso.datetime().optional(),
+  sleepQuality: z.int().min(1).max(5).optional(),
+  energy: z.int().min(1).max(5).optional(),
+  muscleRecovery: z.int().min(1).max(4).optional(),
+  stress: z.int().min(1).max(4).optional(),
+  hasPain: z.boolean().optional(),
+  availableMinutes: z.int().positive().max(240).optional(),
+});
+
+export const postWorkoutCheckoutInputSchema = z.object({
+  userId: z.uuid(),
+  clientMutationId: z.uuid(),
+  status: z.enum(["completed", "skipped"]),
+  checkedOutAt: z.iso.datetime().optional(),
+  expectation: z.enum(["muito_abaixo", "abaixo", "como_esperado", "acima", "muito_acima"]).optional(),
+  difficulty: z.enum(["muito_facil", "facil", "adequada", "dificil", "muito_dificil"]).optional(),
+  planCompletion: z.enum(["sim", "parcialmente", "nao"]).optional(),
+  partialReasons: z.array(z.string()).optional(),
+  hadPain: z.boolean().optional(),
+});
+
 export const plateCalculatorInputSchema = z.object({
   targetKg: kg,
   barKg: z.number().finite().nonnegative(),

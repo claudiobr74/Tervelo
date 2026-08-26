@@ -22,6 +22,7 @@ Prompt permanente das fases de produto do **atleta**. Não cobre o console admin
 | 8 | Nutrição |
 | 9 | Coach / IA no app do aluno |
 | 11 | Frequência cardíaca (Web Bluetooth real, opcional) |
+| 12 | Estado do Atleta, Check-in Pré-Treino, Check-out Pós-Treino, Revisão Semanal do Coach |
 
 ## Regras ao implementar
 

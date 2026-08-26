@@ -2,6 +2,7 @@
 
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { HeartRateChart } from "@/components/app/heart-rate-chart";
+import { PostWorkoutCheckoutCard } from "@/components/app/post-workout-checkout-card";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { median, metricsForSet, setWindowsFromTimeline } from "@/domain/heart-rate/metrics";
 import {
@@ -77,27 +78,7 @@ export function WorkoutSummaryScreen() {
           </div>
         </article>
 
-        <article className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
-          <p className="text-sm font-bold text-foreground">Percepção de Esforço</p>
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <p className="text-muted">Energia ao treinar</p>
-              <p className="font-semibold text-brand">Alta</p>
-            </div>
-            <div className="h-1 overflow-hidden rounded-full bg-surface-interactive">
-              <div className="h-full w-4/5 rounded-full bg-brand" />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <p className="text-muted">Dificuldade geral</p>
-              <p className="font-semibold text-brand">Moderada (RPE 8)</p>
-            </div>
-            <div className="h-1 overflow-hidden rounded-full bg-surface-interactive">
-              <div className="h-full w-[70%] rounded-full bg-brand" />
-            </div>
-          </div>
-        </article>
+        <PostWorkoutCheckoutCard />
 
         <article className="flex items-start gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-[var(--radius-xl)] bg-brand-soft text-brand">

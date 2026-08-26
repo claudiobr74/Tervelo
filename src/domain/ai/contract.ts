@@ -55,6 +55,10 @@ export const AI_POLICY_LOCKS = [
   "Dados ausentes permanecem UNKNOWN; nunca estimar silenciosamente.",
   "Treino e nutrição não se interpretam isoladamente quando há dados relevantes nos dois.",
   "Frequência cardíaca é complementar; nunca determina sozinha carga, volume, falha, deload, hipertrofia, fadiga ou diagnóstico.",
+  "Não comprimir o Estado do Atleta em uma nota de prontidão 0 a 100.",
+  "Check-in diário não gera alteração permanente de programa sem evidência longitudinal.",
+  "Orçamento de Mudanças: a menor alteração necessária.",
+  "Não afirmar causalidade quando existe apenas associação.",
 ] as const;
 
 export const AI_ADMIN_TABS = [

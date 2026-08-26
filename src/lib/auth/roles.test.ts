@@ -60,6 +60,16 @@ describe("matriz Hasura", () => {
     expect(JSON.stringify(user?.operations.select?.filter)).toContain("X-Hasura-User-Id");
   });
 
+  it("check-ins pré/pós e snapshots do estado são append-only para user", () => {
+    for (const name of ["pre_workout_checkins", "post_workout_checkouts", "athlete_state_snapshots"]) {
+      const table = PUBLIC_TABLES.find((item) => item.name === name);
+      const user = table?.permissions.find((p) => p.role === "user");
+      expect(user?.operations.insert, name).toBeDefined();
+      expect(user?.operations.update, name).toBeUndefined();
+      expect(user?.operations.delete, name).toBeUndefined();
+    }
+  });
+
   it("body_measurements é append-only para user", () => {
     const table = PUBLIC_TABLES.find((item) => item.name === "body_measurements");
     const user = table?.permissions.find((p) => p.role === "user");

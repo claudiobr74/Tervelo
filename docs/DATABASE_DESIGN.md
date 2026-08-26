@@ -298,6 +298,18 @@ Opcional. Pertence ao usuário. Sem identificadores Bluetooth.
 
 Preferência `heart_rate_enabled` em `athlete_preferences` (default ausente = false).
 
+### Estado do Atleta (Phase 12)
+
+Copy de produto em português; tabelas em inglês.
+
+`pre_workout_checkins` / `post_workout_checkouts`: agudos da sessão; **não** misturar com `recovery_checkins` (longitudinal diário). Append-only. `client_mutation_id` único por usuário.
+
+`athlete_state_snapshots`: recorte + `algorithm_version` (`athlete-state-v1`). Não recalcular a história inteira a cada tela.
+
+`weekly_coach_reviews` + `weekly_review_decisions`: auditoria da revisão (período, estado usado, decisão, mudanças sugeridas/aceitas/recusadas, acompanhamento posterior). Sem afirmar causalidade.
+
+Preferências default **true**: `pre_workout_checkin_enabled`, `weekly_coach_review_enabled`.
+
 ### `rest_timers`
 
 Timer robusto (não só `setInterval`):
@@ -404,6 +416,9 @@ Não criar na Phase 2: `organizations`, `coach_client_links`, `teams` — docume
 | canonical_exercises, exercise_variants, exercise_equipment, exercise_aliases | sim | |
 | training_* / session_exercises / exercise_sets / set_results | sim | |
 | wearable_devices / heart_rate_sessions / heart_rate_samples | sim | Phase 11; samples append-only |
+| pre_workout_checkins / post_workout_checkouts | sim | Phase 12; append-only; `client_mutation_id` |
+| athlete_state_snapshots | sim | Phase 12; versão `athlete-state-v1` |
+| weekly_coach_reviews / weekly_review_decisions | sim | Phase 12; acompanhamento da decisão |
 | exercise_substitutions | sim | |
 | rest_timers | sim | extra necessário |
 | nutrition_* | sim | |

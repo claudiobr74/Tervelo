@@ -215,3 +215,20 @@ Sinal complementar, controlado pelo atleta (`heart_rate_enabled`, default false)
 - Nunca usar isoladamente para carga, volume, falha, deload, hipertrofia, fadiga ou diagnóstico.
 - QA 21–30 em `src/domain/heart-rate/qa.ts`.
 
+---
+
+## 24. Estado do Atleta, check-ins e revisão semanal (Phase 12)
+
+Complementa este adendo e o Prompt Mestre. **Não substitui** o pipeline de agentes.
+
+- Sem nota de prontidão 0–100.
+- Sempre observação / interpretação / recomendação.
+- Check-in Pré-Treino e Check-out Pós-Treino são opcionais.
+- Check-in ausente permanece UNKNOWN e só reduz confiança.
+- Ajuste de tempo = sessão atual (`AJUSTE_DA_SESSAO`).
+- Revisão Semanal do Coach é o ponto preferencial de mudança estrutural.
+- QA 31–44 em `src/domain/athlete-state/qa.ts`.
+- Intenções do Orquestrador: `ANALYZE_PRE_WORKOUT`, `ANALYZE_POST_WORKOUT`, `UPDATE_ATHLETE_STATE`, `GENERATE_WEEKLY_REVIEW`.
+
+Auditoria: [`ATHLETE_STATE_TRIO_PRE_IMPLEMENTATION_AUDIT.md`](ATHLETE_STATE_TRIO_PRE_IMPLEMENTATION_AUDIT.md).
+

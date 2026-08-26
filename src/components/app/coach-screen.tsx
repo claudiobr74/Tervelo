@@ -62,14 +62,13 @@ export function CoachScreen() {
       <header className="flex flex-col gap-1 px-6 py-4">
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-2xl font-extrabold text-foreground">Seu treinador</h1>
-          <button
-            type="button"
-            title="FIGMA_PENDING"
-            className="inline-flex size-6 shrink-0 items-center justify-center text-foreground"
-            aria-label="Menu do treinador"
+          <Link
+            href="/app/coach/revisoes"
+            className="text-xs font-bold text-brand"
+            aria-label="Revisões Semanais do Coach"
           >
-            <FigmaIcon src="/icons/nav/mais.svg" size={24} />
-          </button>
+            Revisões
+          </Link>
         </div>
         <p className="text-[13px] font-medium text-muted">
           Inteligência artificial focada em performance

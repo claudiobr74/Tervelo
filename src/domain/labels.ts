@@ -12,6 +12,10 @@ export const METRIC_LABELS = {
   fluidMl: "Fluido",
   bodyFatPercent: "Percentual de gordura",
   restSeconds: "Descanso",
+  athleteState: "Estado do Atleta",
+  preWorkoutCheckin: "Check-in Pré-Treino",
+  postWorkoutCheckout: "Check-out Pós-Treino",
+  weeklyCoachReview: "Revisão Semanal do Coach",
 } as const;
 
 export type MetricLabelKey = keyof typeof METRIC_LABELS;

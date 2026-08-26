@@ -64,3 +64,40 @@ export interface SetResultRepository {
   findByClientMutationId(clientMutationId: string): Promise<SetResultRecord | null>;
   insert(row: Omit<SetResultRecord, "id">): Promise<SetResultRecord>;
 }
+
+export type PreWorkoutCheckinRecord = {
+  id: string;
+  userId: string;
+  clientMutationId: string;
+  status: "completed" | "skipped";
+  checkedInAt: string;
+  sleepQuality?: number;
+  energy?: number;
+  muscleRecovery?: number;
+  stress?: number;
+  hasPain?: boolean;
+  availableMinutes?: number;
+};
+
+export type PostWorkoutCheckoutRecord = {
+  id: string;
+  userId: string;
+  clientMutationId: string;
+  status: "completed" | "skipped";
+  checkedOutAt: string;
+  expectation?: string;
+  difficulty?: string;
+  planCompletion?: string;
+  partialReasons?: string[];
+  hadPain?: boolean;
+};
+
+export interface PreWorkoutCheckinRepository {
+  findByClientMutationId(clientMutationId: string): Promise<PreWorkoutCheckinRecord | null>;
+  insert(row: Omit<PreWorkoutCheckinRecord, "id">): Promise<PreWorkoutCheckinRecord>;
+}
+
+export interface PostWorkoutCheckoutRepository {
+  findByClientMutationId(clientMutationId: string): Promise<PostWorkoutCheckoutRecord | null>;
+  insert(row: Omit<PostWorkoutCheckoutRecord, "id">): Promise<PostWorkoutCheckoutRecord>;
+}
