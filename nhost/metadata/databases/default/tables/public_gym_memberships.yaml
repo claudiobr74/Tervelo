@@ -1,0 +1,68 @@
+table:
+  name: gym_memberships
+  schema: public
+object_relationships:
+  - name: gym
+    using:
+      foreign_key_constraint_on: gym_id
+insert_permissions:
+  - role: user
+    permission:
+      check: &a2
+        gym:
+          owner_user_id: &a1
+            _eq: X-Hasura-User-Id
+      columns:
+        - gym_id
+        - user_id
+        - is_primary
+        - status
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - gym_id
+        - user_id
+        - is_primary
+        - status
+        - created_at
+      filter:
+        _or:
+          - user_id: *a1
+          - *a2
+      limit: 50
+  - role: admin
+    permission:
+      columns:
+        - id
+        - gym_id
+        - user_id
+        - is_primary
+        - status
+        - created_at
+      filter: &a3 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - gym_id
+        - user_id
+        - is_primary
+        - status
+        - created_at
+      filter: *a3
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a2
+      check: *a2
+      columns:
+        - is_primary
+        - status
+delete_permissions:
+  - role: user
+    permission:
+      filter: *a2

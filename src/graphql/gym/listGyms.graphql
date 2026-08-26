@@ -1,0 +1,7 @@
+query ListGyms {
+  gyms(order_by: { name: asc }, limit: 50) {
+    id
+    name
+    owner_user_id
+  }
+}

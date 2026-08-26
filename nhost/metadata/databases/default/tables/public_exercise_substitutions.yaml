@@ -1,0 +1,54 @@
+table:
+  name: exercise_substitutions
+  schema: public
+object_relationships:
+  - name: session_exercise
+    using:
+      foreign_key_constraint_on: session_exercise_id
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        session_exercise:
+          session:
+            user_id:
+              _eq: X-Hasura-User-Id
+      columns:
+        - session_exercise_id
+        - from_variant_id
+        - to_variant_id
+        - reason
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - session_exercise_id
+        - from_variant_id
+        - to_variant_id
+        - reason
+        - created_at
+      filter: *a1
+      limit: 100
+  - role: admin
+    permission:
+      columns:
+        - id
+        - session_exercise_id
+        - from_variant_id
+        - to_variant_id
+        - reason
+        - created_at
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - session_exercise_id
+        - from_variant_id
+        - to_variant_id
+        - reason
+        - created_at
+      filter: *a2
+      limit: 500

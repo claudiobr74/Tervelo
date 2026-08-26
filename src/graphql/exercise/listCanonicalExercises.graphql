@@ -1,0 +1,12 @@
+query ListCanonicalExercises {
+  canonical_exercises(order_by: { name_pt: asc }, limit: 200) {
+    id
+    name_pt
+    description
+    movement_pattern_id
+    exercise_aliases {
+      alias
+      locale
+    }
+  }
+}
