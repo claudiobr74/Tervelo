@@ -1,0 +1,85 @@
+table:
+  name: gyms
+  schema: public
+array_relationships:
+  - name: memberships
+    using:
+      foreign_key_constraint_on:
+        column: gym_id
+        table:
+          name: gym_memberships
+          schema: public
+  - name: bars
+    using:
+      foreign_key_constraint_on:
+        column: gym_id
+        table:
+          name: gym_bars
+          schema: public
+  - name: plates
+    using:
+      foreign_key_constraint_on:
+        column: gym_id
+        table:
+          name: gym_plates
+          schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        owner_user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        owner_user_id: x-hasura-user-id
+      columns:
+        - name
+        - notes
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - owner_user_id
+        - organization_id
+        - name
+        - notes
+        - created_at
+        - updated_at
+      filter: *a1
+      limit: 50
+  - role: admin
+    permission:
+      columns:
+        - id
+        - owner_user_id
+        - organization_id
+        - name
+        - notes
+        - created_at
+        - updated_at
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - owner_user_id
+        - organization_id
+        - name
+        - notes
+        - created_at
+        - updated_at
+      filter: *a2
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a1
+      check: *a1
+      columns:
+        - name
+        - notes
+delete_permissions:
+  - role: user
+    permission:
+      filter: *a1

@@ -1,0 +1,45 @@
+table:
+  name: athlete_profiles
+  schema: public
+object_relationships:
+  - name: profile
+    using:
+      foreign_key_constraint_on: user_id
+select_permissions:
+  - role: user
+    permission:
+      columns: &a1
+        - id
+        - user_id
+        - birth_date
+        - sex
+        - height_cm
+        - experience_level
+        - availability_json
+        - created_at
+        - updated_at
+      filter: &a3
+        user_id:
+          _eq: X-Hasura-User-Id
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a1
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a1
+      filter: *a2
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a3
+      check: *a3
+      columns:
+        - birth_date
+        - sex
+        - height_cm
+        - experience_level
+        - availability_json

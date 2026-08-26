@@ -1,0 +1,32 @@
+table:
+  name: ai_contract_publications
+  schema: public
+insert_permissions:
+  - role: super_admin
+    permission:
+      check: &a1 {}
+      columns:
+        - version_id
+        - published_by
+        - environment
+select_permissions:
+  - role: admin
+    permission:
+      columns:
+        - id
+        - version_id
+        - published_at
+        - published_by
+        - environment
+      filter: *a1
+      limit: 50
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - version_id
+        - published_at
+        - published_by
+        - environment
+      filter: *a1
+      limit: 50
