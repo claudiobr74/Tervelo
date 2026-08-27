@@ -12,10 +12,11 @@ signingKey = '{{ secrets.NHOST_JWT_PRIVATE_KEY }}'
 kid = '{{ secrets.NHOST_JWT_KID }}'
 
 [hasura.settings]
-corsDomain = ['*']
-devMode = true
+# Produção: sem console público, sem CORS aberto e sem detalhes internos no erro.
+corsDomain = ['{{ secrets.APP_URL }}']
+devMode = false
 enableAllowList = false
-enableConsole = true
+enableConsole = false
 enableRemoteSchemaPermissions = false
 enabledAPIs = ['metadata', 'graphql', 'pgdump', 'config']
 inferFunctionPermissions = true
@@ -165,7 +166,8 @@ expiresIn = 2592000
 enabled = false
 
 [auth.misc]
-concealErrors = false
+# Não revelar se um e-mail existe: a mensagem ao usuário já é genérica no cliente.
+concealErrors = true
 
 [auth.rateLimit]
 [auth.rateLimit.emails]
