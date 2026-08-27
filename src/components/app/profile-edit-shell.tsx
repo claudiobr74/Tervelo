@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { useOnboardingDraft } from "@/components/onboarding/onboarding-provider";
+import { saveOnboardingProfile } from "@/lib/auth/onboarding-sync";
 
 export function ProfileEditShell({
   title,
@@ -17,6 +19,21 @@ export function ProfileEditShell({
   saveLabel?: string;
 }) {
   const router = useRouter();
+  const { draft } = useOnboardingDraft();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function save() {
+    setSaving(true);
+    setError(null);
+    const result = await saveOnboardingProfile(draft);
+    setSaving(false);
+    if (!result.ok) {
+      setError("Não foi possível salvar agora. Suas respostas continuam neste aparelho.");
+      return;
+    }
+    router.push("/app/profile");
+  }
 
   return (
     <AthleteAppShell active="Mais">
@@ -28,8 +45,9 @@ export function ProfileEditShell({
           <h1 className="text-xl font-extrabold text-foreground">{title}</h1>
         </div>
         {children}
-        <button type="button" onClick={() => router.push("/app/profile")} className={PRIMARY_CTA_CLASS}>
-          {saveLabel}
+        {error ? <p className="text-sm text-error">{error}</p> : null}
+        <button type="button" onClick={save} disabled={saving} className={PRIMARY_CTA_CLASS}>
+          {saving ? "Salvando..." : saveLabel}
         </button>
       </div>
     </AthleteAppShell>

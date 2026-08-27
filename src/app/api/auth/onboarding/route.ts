@@ -8,6 +8,15 @@ import { clientKeyFromRequest, consumeRateLimit } from "@/lib/security/rate-limi
 
 const bodySchema = z.object({ done: z.boolean() }).strip();
 
+export async function GET() {
+  const store = await cookies();
+  const session = parseSessionCookie(store.get(NHOST_SESSION_COOKIE)?.value);
+  if (!session) {
+    return NextResponse.json({ ok: false, error: "unauthenticated" }, { status: 401 });
+  }
+  return NextResponse.json({ ok: true, done: store.get(ONBOARDING_COOKIE)?.value === "done" });
+}
+
 export async function POST(request: Request) {
   if (consumeRateLimit(`onboarding:${clientKeyFromRequest(request)}`, { max: 60 }) === "limited") {
     return NextResponse.json({ ok: false, error: "too_many_requests" }, { status: 429 });

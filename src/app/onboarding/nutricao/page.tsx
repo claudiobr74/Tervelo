@@ -7,6 +7,7 @@ import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { ChoiceChip, OnboardingShell } from "@/components/onboarding/onboarding-shell";
 import { useOnboarding } from "@/components/onboarding/onboarding-provider";
+import { markOnboardingComplete, saveOnboardingProfile } from "@/lib/auth/onboarding-sync";
 import type { PeriodOption } from "@/lib/auth/onboarding";
 
 const DIETS = [
@@ -20,19 +21,26 @@ export default function OnboardingNutricaoPage() {
   const router = useRouter();
   const { draft, update } = useOnboarding();
   const [finishing, setFinishing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function finish() {
     setFinishing(true);
+    setError(null);
     update({ completed: true });
-    await fetch("/api/auth/onboarding", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ done: true }),
-    });
-    window.setTimeout(() => {
-      router.push("/app/today");
-      router.refresh();
-    }, 2200);
+    const saved = await saveOnboardingProfile({ ...draft, completed: true });
+    if (!saved.ok) {
+      setFinishing(false);
+      setError("Não foi possível salvar suas respostas. Verifique a conexão e tente de novo.");
+      return;
+    }
+    const marked = await markOnboardingComplete();
+    if (!marked) {
+      setFinishing(false);
+      setError("Não foi possível concluir o cadastro. Tente de novo.");
+      return;
+    }
+    router.push("/app/today");
+    router.refresh();
   }
 
   return (
@@ -44,9 +52,12 @@ export default function OnboardingNutricaoPage() {
         onContinue={finish}
         continueLabel="Finalizar"
         cta={
-          <button type="button" onClick={finish} className={PRIMARY_CTA_CLASS}>
-            Finalizar
-          </button>
+          <div className="flex w-full flex-col gap-2">
+            {error ? <p className="text-sm text-error">{error}</p> : null}
+            <button type="button" onClick={finish} disabled={finishing} className={PRIMARY_CTA_CLASS}>
+              {finishing ? "Salvando..." : "Finalizar"}
+            </button>
+          </div>
         }
       >
         <div className="flex flex-col gap-2">
@@ -160,10 +171,9 @@ export default function OnboardingNutricaoPage() {
             />
           </span>
           <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
-            <p className="w-full text-xl font-extrabold text-foreground">Preparando seu plano inicial...</p>
+            <p className="w-full text-xl font-extrabold text-foreground">Salvando suas respostas...</p>
             <p className="w-full text-sm text-muted">
-              Nossa inteligência artificial está estruturando sua rotina de treinamento e diretrizes
-              metabólicas.
+              Guardando seu perfil, seus objetivos e sua rotina alimentar para montar o acompanhamento.
             </p>
           </div>
           </div>

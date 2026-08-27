@@ -201,7 +201,8 @@ export const PUBLIC_TABLES: PublicTable[] = [
     objectRelationships: [{ name: "profile", column: "user_id" }],
     permissions: athleteOwn(
       ["id", "user_id", "birth_date", "sex", "height_cm", "experience_level", "availability_json", "created_at", "updated_at"],
-      { insert: false, update: true },
+      // O onboarding cria o perfil do atleta na primeira vez e reescreve nas seguintes.
+      { insert: true, update: true },
     ),
   },
   {

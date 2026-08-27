@@ -1,8 +1,9 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { NHOST_SESSION_COOKIE, getNhostPublicConfig } from "@/lib/nhost/config";
+import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
 import { parseSessionCookie } from "@/lib/auth/session-cookie";
+import { nhostGraphqlEndpoint, sessionCanReachNhost } from "@/lib/nhost/graphql-server";
 import { clientKeyFromRequest, consumeRateLimit } from "@/lib/security/rate-limit";
 
 /**
@@ -20,12 +21,6 @@ const bodySchema = z
   })
   .strip();
 
-function graphqlEndpoint(): string | null {
-  const { subdomain, region } = getNhostPublicConfig();
-  if (subdomain === "local") return null;
-  return `https://${subdomain}.graphql.${region}.nhost.run/v1`;
-}
-
 export async function POST(request: Request) {
   if (consumeRateLimit(`sync:${clientKeyFromRequest(request)}`, { max: 600 }) === "limited") {
     return NextResponse.json({ ok: false, error: "too_many_requests" }, { status: 429 });
@@ -37,8 +32,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "unauthenticated" }, { status: 401 });
   }
 
-  const endpoint = graphqlEndpoint();
-  if (!endpoint || session.preview || !session.accessToken || session.accessToken === "preview") {
+  const endpoint = nhostGraphqlEndpoint();
+  if (!endpoint || !sessionCanReachNhost(session)) {
     return NextResponse.json({ ok: false, error: "nhost_unavailable" }, { status: 503 });
   }
 

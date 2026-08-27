@@ -6,6 +6,7 @@ import { useState, type FormEvent } from "react";
 import { AuthFooterLink, AuthShell, FieldLabel, AUTH_INPUT_CLASS, PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
+import { patchOnboarding } from "@/lib/auth/onboarding-store";
 import { persistSession } from "@/lib/auth/persist-session";
 import { isValidEmail, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
 import { getBrowserNhostClient } from "@/lib/nhost/browser";
@@ -50,6 +51,7 @@ export function SignupForm() {
     try {
       if (isLocalNhost()) {
         await persistSession(previewSession({ displayName: name, email: email.trim() }));
+        patchOnboarding({ displayName: name });
         router.push("/onboarding/perfil");
         router.refresh();
         return;
@@ -66,6 +68,7 @@ export function SignupForm() {
         return;
       }
       await persistSession(session);
+      patchOnboarding({ displayName: name });
       router.push("/onboarding/perfil");
       router.refresh();
     } catch (caught) {

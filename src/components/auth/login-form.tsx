@@ -6,6 +6,7 @@ import { AuthFooterLink, AuthShell, FieldLabel, AUTH_INPUT_CLASS, PRIMARY_CTA_CL
 import { BrandMark } from "@/components/auth/brand-mark";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
+import { onboardingLandingPath } from "@/lib/auth/onboarding-sync";
 import { persistSession } from "@/lib/auth/persist-session";
 import { isValidEmail, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
 import { getBrowserNhostClient } from "@/lib/nhost/browser";
@@ -34,7 +35,7 @@ export function LoginForm() {
     try {
       if (isLocalNhost()) {
         await persistSession(previewSession({ email: email.trim() }));
-        router.push("/onboarding/perfil");
+        router.push(await onboardingLandingPath());
         router.refresh();
         return;
       }
@@ -46,7 +47,7 @@ export function LoginForm() {
         return;
       }
       await persistSession(session);
-      router.push("/onboarding/perfil");
+      router.push(await onboardingLandingPath());
       router.refresh();
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : "Não foi possível entrar.";
