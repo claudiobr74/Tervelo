@@ -51,7 +51,7 @@ export function TodayScreen() {
             <p className="text-sm text-muted">Veja seu dia.</p>
             <SyncStatusIndicator />
           </div>
-          <Link href="/app/settings" className="size-10 shrink-0" aria-label="Configurações">
+          <Link href="/app/profile" className="size-10 shrink-0" aria-label="Perfil">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/catalog/admin-users/lucas.webp"

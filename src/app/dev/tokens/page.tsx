@@ -36,7 +36,7 @@ export default function TokensPage() {
           Fonte: Handoff Figma <code className="text-foreground">28:527</code>. Não é uma tela de
           produto.
         </p>
-        <Link href="/" className="text-sm font-medium text-brand hover:text-brand-accent">
+        <Link href="/dev" className="text-sm font-medium text-brand hover:text-brand-accent">
           Voltar ao scaffold
         </Link>
       </header>

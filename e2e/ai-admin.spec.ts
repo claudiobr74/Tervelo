@@ -10,7 +10,7 @@ async function loginPreview(page: import("@playwright/test").Page) {
 
 test("admin escolhe o agente de IA no contrato", async ({ page }) => {
   await loginPreview(page);
-  await page.goto("/");
+  await page.goto("/dev");
   await page.getByRole("button", { name: "Inteligência Artificial (admin)" }).click();
   await expect(page).toHaveURL(/\/admin\/ai/);
   await expect(page.getByRole("heading", { name: "Inteligência Artificial", exact: true })).toBeVisible();
@@ -32,7 +32,7 @@ test("contrato de IA no tema claro", async ({ page }) => {
     window.localStorage.setItem("tervelo-theme", "light");
   });
   await loginPreview(page);
-  await page.goto("/");
+  await page.goto("/dev");
   await page.getByRole("button", { name: "Inteligência Artificial (admin)" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await expect(page.getByRole("heading", { name: "Contrato da Inteligência Artificial" })).toBeVisible();

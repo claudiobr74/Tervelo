@@ -17,7 +17,7 @@ test.describe("layout do app", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await loginPreview(page);
 
-    for (const path of ["/app/today", "/app/progress", "/app/nutrition", "/app/workout", "/app/plates", "/app/coach"]) {
+    for (const path of ["/app/today", "/app/progress", "/app/nutrition", "/app/workout", "/app/plates", "/app/coach", "/app/profile", "/app/profile/pessoais", "/app/settings"]) {
       await page.goto(path);
       await expect(page.locator("h1").first()).toBeVisible();
       expect(await pageOverflow(page), path).toBeLessThanOrEqual(1);
@@ -27,7 +27,7 @@ test.describe("layout do app", () => {
   test("console admin não extravasa em 1024px", async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await loginPreview(page);
-    await page.goto("/");
+    await page.goto("/dev");
     await page.getByRole("button", { name: "Dashboard admin" }).click();
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
     expect(await pageOverflow(page)).toBeLessThanOrEqual(1);

@@ -19,7 +19,7 @@ test.describe("console admin", () => {
 
   test("dashboard, usuários e auditoria no desktop", async ({ page }) => {
     await loginPreview(page);
-    await page.goto("/");
+    await page.goto("/dev");
     await page.getByRole("button", { name: "Dashboard admin" }).click();
     await expect(page).toHaveURL(/\/admin$/);
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
@@ -51,7 +51,7 @@ test.describe("console admin", () => {
       window.localStorage.setItem("tervelo-theme", "light");
     });
     await loginPreview(page);
-    await page.goto("/");
+    await page.goto("/dev");
     await page.getByRole("button", { name: "Dashboard admin" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.locator("html")).not.toHaveClass(/dark/);
@@ -62,7 +62,7 @@ test.describe("console admin", () => {
   test("dashboard e usuários não encavalam em laptop 1280", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await loginPreview(page);
-    await page.goto("/");
+    await page.goto("/dev");
     await page.getByRole("button", { name: "Dashboard admin" }).click();
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
 

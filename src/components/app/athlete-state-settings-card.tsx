@@ -1,6 +1,7 @@
 "use client";
 
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { PRODUCT_NAMES } from "@/domain/athlete-state/labels";
 import {
   setPreWorkoutCheckinEnabled,
@@ -55,25 +56,12 @@ function ToggleRow({
   label: string;
 }) {
   return (
-    <div className="flex items-start justify-between gap-3 border-t border-border pt-3">
-      <div className="flex min-w-0 flex-col gap-1">
-        <p className="text-sm font-bold text-foreground">{title}</p>
-        <p className="text-xs text-muted">{description}</p>
+    <div className="flex flex-col gap-1 border-t border-border pt-3">
+      <div className="flex items-center justify-between gap-3">
+        <p className="min-w-0 text-sm font-bold text-foreground">{title}</p>
+        <ToggleSwitch checked={checked} onChange={onChange} label={label} />
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        aria-label={label}
-        onClick={() => onChange(!checked)}
-        className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${checked ? "bg-brand" : "bg-surface-interactive"}`}
-      >
-        <span
-          className={`absolute top-0.5 size-6 rounded-full bg-background transition-transform ${
-            checked ? "translate-x-[22px]" : "translate-x-0.5"
-          }`}
-        />
-      </button>
+      <p className="text-xs text-muted">{description}</p>
     </div>
   );
 }

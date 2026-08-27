@@ -35,7 +35,7 @@ test("admin sem papel volta para a home", async ({ page }) => {
 
 test("pré-visualização admin mostra anilha 1,25 kg zerada", async ({ page }) => {
   await loginPreview(page);
-  await page.goto("/");
+  await page.goto("/dev");
   await page.getByRole("button", { name: "Console admin (pré-visualização)" }).click();
   await expect(page).toHaveURL(/\/admin\/exercises/);
   await page.getByRole("link", { name: "Inventário da Academia" }).click();
