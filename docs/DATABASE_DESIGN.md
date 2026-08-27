@@ -342,7 +342,7 @@ Preferências, rotina, restrições, hidratação habitual. Sem sigla na UI.
 
 ### `nutrition_checkins`
 
-Aderência e ingestão do dia (`checked_in_on date` unique por usuário). Não sobrescrever dias anteriores: update só do dia aberto ou insert de correção com `supersedes_id`.
+Aderência e ingestão do dia (`checked_in_on date` unique por usuário). Não sobrescrever dias anteriores. Hasura: insert + select (append-only); correção via insert com `supersedes_id` — o filtro “só o dia aberto” não é expressável com segurança nas permissions.
 
 ---
 

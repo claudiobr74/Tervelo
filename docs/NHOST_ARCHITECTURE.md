@@ -221,7 +221,7 @@ Não seedar milhares de exercícios até haver pipeline de conteúdo.
 
 ## 12. Observabilidade
 
-Hasura/Nhost logs no cloud. App: erros sem PII. `audit_logs` e `ai_decisions` para rastreio de produto. Sem gravar prompts internos de raciocínio.
+Hasura/Nhost logs no cloud. App: erros sem PII (logger com redaction). `audit_logs` e `ai_decisions` para rastreio de produto. Sem gravar prompts internos de raciocínio. Health: `/api/health` (`status`, `service`, `version`).
 
 ---
 

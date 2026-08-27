@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
+import { SkipLink } from "@/components/a11y/skip-link";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { OfflineBoot } from "@/components/app/offline-boot";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme";
@@ -36,8 +37,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
+        <SkipLink />
         <ThemeProvider>
-          <OfflineBoot>{children}</OfflineBoot>
+          <OfflineBoot>
+            <div id="conteudo" className="flex min-h-full flex-1 flex-col">
+              {children}
+            </div>
+          </OfflineBoot>
         </ThemeProvider>
       </body>
     </html>

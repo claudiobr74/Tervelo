@@ -47,16 +47,3 @@ select_permissions:
       columns: *a2
       filter: *a3
       limit: 500
-update_permissions:
-  - role: user
-    permission:
-      filter: *a1
-      check: *a1
-      columns:
-        - energy_kcal
-        - protein_g
-        - carbohydrate_g
-        - fat_g
-        - fluid_ml
-        - adherence
-        - notes

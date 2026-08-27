@@ -78,6 +78,40 @@ describe("matriz Hasura", () => {
     expect(user?.operations.delete).toBeUndefined();
   });
 
+  it("nutrition_checkins e nutrition_targets são append-only para user", () => {
+    for (const name of ["nutrition_checkins", "nutrition_targets"]) {
+      const table = PUBLIC_TABLES.find((item) => item.name === name);
+      const user = table?.permissions.find((p) => p.role === "user");
+      expect(user?.operations.insert, name).toBeDefined();
+      expect(user?.operations.update, name).toBeUndefined();
+      expect(user?.operations.delete, name).toBeUndefined();
+      expect(JSON.stringify(user?.operations.select?.filter), name).toContain("X-Hasura-User-Id");
+    }
+  });
+
+  it("revisão semanal isola user e não apaga histórico", () => {
+    const reviews = PUBLIC_TABLES.find((item) => item.name === "weekly_coach_reviews");
+    const user = reviews?.permissions.find((p) => p.role === "user");
+    expect(user?.operations.insert).toBeDefined();
+    expect(user?.operations.delete).toBeUndefined();
+    expect(user?.operations.update?.columns).toEqual(["status"]);
+    expect(JSON.stringify(user?.operations.select?.filter)).toContain("X-Hasura-User-Id");
+
+    const decisions = PUBLIC_TABLES.find((item) => item.name === "weekly_review_decisions");
+    const decisionUser = decisions?.permissions.find((p) => p.role === "user");
+    expect(decisionUser?.operations.delete).toBeUndefined();
+    expect(JSON.stringify(decisionUser?.operations.select?.filter)).toContain("X-Hasura-User-Id");
+  });
+
+  it("user não muta equipamentos do catálogo", () => {
+    const table = PUBLIC_TABLES.find((item) => item.name === "equipment");
+    const user = table?.permissions.find((p) => p.role === "user");
+    expect(user?.operations.select).toBeDefined();
+    expect(user?.operations.insert).toBeUndefined();
+    expect(user?.operations.update).toBeUndefined();
+    expect(user?.operations.delete).toBeUndefined();
+  });
+
   it("catálogo é leitura para user e escrita para admin", () => {
     const table = PUBLIC_TABLES.find((item) => item.name === "canonical_exercises");
     const user = table?.permissions.find((p) => p.role === "user");

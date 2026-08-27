@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–13 neste repositório (Phase 13 neste branch).
+Veredito atual: **READY_WITH_FIXES**. Phases 0–14 neste repositório (Phase 14 neste branch).
 
 ---
 
@@ -22,7 +22,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–13 neste repositório (Phase 13
 
 Prompt das fases de produto do atleta (não admin). Fonte: [`docs/MODULO_ALUNO.md`](MODULO_ALUNO.md).
 
-Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, 11, 12 e 13, mais busca/anilhas do aluno na Phase 5). Phase 10 é o módulo admin.
+Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, 11, 12 e 13, mais busca/anilhas do aluno na Phase 5). Phase 10 é o módulo admin. Phase 14 endurece o que já existe.
 
 **Próximas fases:** evidência só com **imagens das telas** (Light/Dark, 390px). **Vídeo não é necessário.**
 
@@ -53,8 +53,8 @@ Cobre o contrato em `/admin/ai` (escolha de agente no modo administrar) e o pipe
 | 10 | Admin | 7 screens Dark + Light | concluída neste branch; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
 | 11 | Frequência cardíaca (Web Bluetooth real) | bloco Settings `FIGMA_PENDING`; overlay no treino | concluída neste branch |
 | 12 | Estado do Atleta + check-ins + revisão semanal | UI mínima Design System; **FIGMA_UI_PENDING** | concluída neste branch |
-| 13 | Offline-first + sincronização + PWA | estados nas telas existentes; **FIGMA_UI_PENDING** | neste branch |
-| 14 | Hardening | conforme telas existentes | após fluxos reais |
+| 13 | Offline-first + sincronização + PWA | estados nas telas existentes; **FIGMA_UI_PENDING** | concluída neste branch |
+| 14 | Hardening | conforme telas existentes | neste branch |
 | 15 | Vercel | app navegável | só com critérios da spec |
 
 ---
@@ -270,7 +270,22 @@ UI: indicador discreto, Configurações → Dados e sincronização, sessão rec
 
 ## 16. Phase 14 — Hardening
 
-Security review, testes de permission, a11y AA, observabilidade, performance.
+Security review, testes de permission, a11y AA, observabilidade, performance. **Não** inclui Vercel (Phase 15).
+
+Auditoria: [`HARDENING_PRE_IMPLEMENTATION_AUDIT.md`](HARDENING_PRE_IMPLEMENTATION_AUDIT.md). Veredito **READY_WITH_FIXES**, sem P0.
+
+### Entregas
+
+- Cookie de sessão: payload sanitizado; `preview` / `previewRole` só fora de production; rate-limit em memória no POST
+- Headers: nosniff, Referrer-Policy, X-Frame-Options DENY, CSP, Permissions-Policy (bluetooth permitido para FC)
+- `poweredByHeader: false`
+- Logger estruturado com redaction de PII (e-mail, tokens, FC, nutrição, cargas)
+- Health `{ status, service, version }`
+- Hasura: `nutrition_checkins` append-only (correção via `supersedes_id`)
+- a11y: skip link “Ir para o conteúdo”, landmarks `main`/`nav`, `:focus-visible`, `prefers-reduced-motion`
+- Testes: permissions (nutrição/revisão/catálogo), proxy, logger, headers; Playwright skip link / headings / 390 Light+Dark
+
+UI existente (Design System). Sem redesign Figma. Nomes em PT-BR.
 
 ---
 

@@ -61,7 +61,7 @@ export function AdminShell({
           <BrandLogo className="h-9 w-auto max-w-[196px]" />
           <p className="text-[10px] font-semibold uppercase text-brand">Admin Console</p>
         </div>
-        <nav className="flex flex-1 flex-col gap-1.5">
+        <nav aria-label="Navegação administrativa" className="flex flex-1 flex-col gap-1.5">
           {NAV.map((item) => {
             const selected = item.label === current;
             const inner = (
@@ -78,7 +78,12 @@ export function AdminShell({
               );
             }
             return (
-              <Link key={item.label} href={item.href} className={navClass(selected)}>
+              <Link
+                key={item.label}
+                href={item.href}
+                className={navClass(selected)}
+                aria-current={selected ? "page" : undefined}
+              >
                 {inner}
               </Link>
             );
@@ -94,6 +99,7 @@ export function AdminShell({
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={item.label === current ? "page" : undefined}
                 className={`ml-7 rounded-[var(--radius-sm)] px-2 py-1.5 text-sm ${
                   item.label === current ? "font-semibold text-brand" : "text-muted"
                 }`}
@@ -118,7 +124,12 @@ export function AdminShell({
               );
             }
             return (
-              <Link key={item.label} href={item.href} className={navClass(selected)}>
+              <Link
+                key={item.label}
+                href={item.href}
+                className={navClass(selected)}
+                aria-current={selected ? "page" : undefined}
+              >
                 {inner}
               </Link>
             );
@@ -154,7 +165,7 @@ export function AdminShell({
             </span>
           </div>
         </header>
-        <div className="min-h-0 flex-1 px-8 py-8">{children}</div>
+        <main className="min-h-0 flex-1 px-8 py-8">{children}</main>
       </div>
     </div>
   );

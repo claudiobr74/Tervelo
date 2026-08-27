@@ -6,7 +6,7 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma). Phase 11: frequência cardíaca opcional (Web Bluetooth real). Phase 12: Estado do Atleta, check-ins e Revisão Semanal do Coach. Phase 13: funcionamento offline (IndexedDB, fila, PWA).
+Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma). Phase 11: frequência cardíaca opcional (Web Bluetooth real). Phase 12: Estado do Atleta, check-ins e Revisão Semanal do Coach. Phase 13: funcionamento offline (IndexedDB, fila, PWA). Phase 14: hardening (headers, permissions, a11y AA, observabilidade).
 
 UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md). Login/admin screens entram nas Phases 4 e 10.
 
@@ -59,6 +59,7 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 | [CONFLICT_RESOLUTION.md](docs/CONFLICT_RESOLUTION.md) | Conflitos por domínio |
 | [LOCAL_DATA_MODEL.md](docs/LOCAL_DATA_MODEL.md) | IndexedDB |
 | [PWA.md](docs/PWA.md) | Manifest e Service Worker |
+| [HARDENING_PRE_IMPLEMENTATION_AUDIT.md](docs/HARDENING_PRE_IMPLEMENTATION_AUDIT.md) | Auditoria — hardening (segurança, a11y, observabilidade) |
 
 ## Stack
 

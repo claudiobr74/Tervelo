@@ -32,6 +32,8 @@ Phase 12: Vitest cobre Motor de Estado (casos 1–10), qualidade dos dados, tend
 
 Phase 13: Vitest cobre fila idempotente, backoff, motor (oscilação e resposta perdida) e conflitos. Playwright cobre settings de sincronização, recuperação de sessão após reload e evidência Light/Dark 390. Sem cache de GraphQL no Service Worker. Sem vídeo.
 
+Phase 14: Vitest cobre redaction de logs, sanitização da sessão, headers, proxy (atleta sem sessão / user sem admin) e matriz Hasura (nutrição append-only, revisão, catálogo). Playwright cobre skip link, landmarks, `/api/health` e evidência Light/Dark 390. Sem vídeo.
+
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.
 
 **TERVELO — ADDENDUM**: Vitest cobre `NUTRITION_CONTEXT` UNKNOWN, ordem de ajuste e QA 13–20. Playwright cobre a aba Nutrição do contrato admin.

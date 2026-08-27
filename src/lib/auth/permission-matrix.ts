@@ -843,7 +843,7 @@ export const PUBLIC_TABLES: PublicTable[] = [
         "id", "user_id", "checked_in_on", "energy_kcal", "protein_g", "carbohydrate_g", "fat_g",
         "fluid_ml", "adherence", "notes", "supersedes_id", "created_at",
       ],
-      { insert: true, update: ["energy_kcal", "protein_g", "carbohydrate_g", "fat_g", "fluid_ml", "adherence", "notes"], delete: false },
+      { insert: true, update: false, delete: false },
     ),
   },
   {

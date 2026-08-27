@@ -1,3 +1,5 @@
+import { healthPayload } from "@/lib/observability/health";
+
 export function GET() {
-  return Response.json({ status: "ok", service: "tervelo-web" });
+  return Response.json(healthPayload());
 }
