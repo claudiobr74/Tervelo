@@ -38,3 +38,11 @@ export function allowPreviewSessions(env?: DeployEnv): boolean {
 export function nhostMode(env?: DeployEnv): "local-preview" | "configured" {
   return isLocalNhostSubdomain(env) ? "local-preview" : "configured";
 }
+
+/**
+ * Atalhos de pré-visualização (`/dev`) trocam a sessão por uma de administrador.
+ * Só podem existir onde não há backend real para expor.
+ */
+export function devToolsEnabled(env?: DeployEnv): boolean {
+  return allowPreviewSessions(env);
+}

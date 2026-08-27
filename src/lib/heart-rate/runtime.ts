@@ -31,7 +31,8 @@ import {
 import { isWebBluetoothSupported } from "./bluetooth";
 import { WebBluetoothHeartRateProvider } from "./web-bluetooth-provider";
 import { getLiveSession, subscribeLiveSession } from "@/lib/training/live-session";
-import { PREVIEW_TRAINING_USER_ID, PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { currentOfflineUserId } from "@/lib/offline/user-scope";
 
 export type HeartRateRuntimeState = {
   status: HeartRateStatus;
@@ -179,7 +180,7 @@ function onLiveChange() {
   if (live.status === "active" && live.startedAt && capturingSessionId !== live.startedAt) {
     capturingSessionId = live.startedAt;
     beginHeartRateCapture({
-      userId: PREVIEW_TRAINING_USER_ID,
+      userId: currentOfflineUserId(),
       trainingSessionId: PREVIEW_WORKOUT.id,
       startedAt: live.startedAt,
     });

@@ -25,7 +25,7 @@ import {
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
-import { PREVIEW_TRAINING_USER_ID, PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 
 export const LIVE_SESSION_KEY = "tervelo-live-session";
 export const SET_RESULT_QUEUE_KEY = "tervelo-set-result-queue";
@@ -229,7 +229,7 @@ export function startWorkout(): LiveSessionState {
     entity_id: PREVIEW_WORKOUT.id,
     client_mutation_id: syncSessionId,
     occurred_at: at,
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     payload: { workoutId: PREVIEW_WORKOUT.id, programVersion: "preview-1" },
   });
   scheduleKvWrite(currentOfflineUserId(), KV_KEYS.prescriptionSnapshot, {
@@ -272,7 +272,7 @@ function completeSession(state: LiveSessionState): LiveSessionState {
     entity_id: PREVIEW_WORKOUT.id,
     client_mutation_id: completeSyncId,
     occurred_at: at,
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     dependency_ids: state.syncSessionId ? [state.syncSessionId] : [],
     payload: { startedAt: state.startedAt, completedAt: at },
   });
@@ -332,7 +332,7 @@ export function recordCurrentSet(): AfterRecord {
   const recordedAll = [...cached.recorded, recorded];
   const queued = enqueueSetResult(cached.queue, {
     clientMutationId: recorded.clientMutationId,
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     setId: recorded.setId,
     weightKg: recorded.weightKg ?? undefined,
     reps: recorded.reps,
@@ -347,7 +347,7 @@ export function recordCurrentSet(): AfterRecord {
     entity_id: recorded.setId,
     client_mutation_id: recorded.clientMutationId,
     occurred_at: performedAt,
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     dependency_ids: cached.syncSessionId ? [cached.syncSessionId] : [],
     payload: {
       setId: recorded.setId,

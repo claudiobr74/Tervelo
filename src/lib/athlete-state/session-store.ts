@@ -14,7 +14,6 @@ import type { PostWorkoutCheckout } from "@/domain/athlete-state/post-workout";
 import type { PreWorkoutCheckin } from "@/domain/athlete-state/pre-workout";
 import { CHANGE_SCOPE_COPY } from "@/domain/athlete-state/labels";
 import type { ChangeScope } from "@/domain/athlete-state/types";
-import { PREVIEW_TRAINING_USER_ID } from "@/lib/training/preview-workout";
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
@@ -209,7 +208,7 @@ const preRepo: PreWorkoutCheckinRepository = {
     if (!match) return null;
     return {
       id,
-      userId: PREVIEW_TRAINING_USER_ID,
+      userId: currentOfflineUserId(),
       clientMutationId: id,
       status: (match.payload.status as "completed" | "skipped") ?? "skipped",
       checkedInAt: new Date().toISOString(),
@@ -229,7 +228,7 @@ const postRepo: PostWorkoutCheckoutRepository = {
     if (!match) return null;
     return {
       id,
-      userId: PREVIEW_TRAINING_USER_ID,
+      userId: currentOfflineUserId(),
       clientMutationId: id,
       status: (match.payload.status as "completed" | "skipped") ?? "skipped",
       checkedOutAt: new Date().toISOString(),
@@ -244,7 +243,7 @@ export async function savePreWorkoutCheckin(checkin: PreWorkoutCheckin): Promise
   hydrate();
   const clientMutationId = crypto.randomUUID();
   const result = await recordPreWorkoutCheckin(preRepo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     clientMutationId,
     status: checkin.status,
     sleepQuality: checkin.sleepQuality ?? undefined,
@@ -266,7 +265,7 @@ export async function savePreWorkoutCheckin(checkin: PreWorkoutCheckin): Promise
     entity_id: clientMutationId,
     client_mutation_id: clientMutationId,
     occurred_at: new Date().toISOString(),
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     payload: { ...checkin },
   });
   persist({
@@ -285,7 +284,7 @@ export async function savePostWorkoutCheckout(checkout: PostWorkoutCheckout): Pr
   hydrate();
   const clientMutationId = crypto.randomUUID();
   const result = await recordPostWorkoutCheckout(postRepo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     clientMutationId,
     status: checkout.status,
     expectation: checkout.expectation ?? undefined,
@@ -306,7 +305,7 @@ export async function savePostWorkoutCheckout(checkout: PostWorkoutCheckout): Pr
     entity_id: clientMutationId,
     client_mutation_id: clientMutationId,
     occurred_at: new Date().toISOString(),
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     payload: { ...checkout },
   });
   persist({ ...cached, postWorkout: checkout, queue });

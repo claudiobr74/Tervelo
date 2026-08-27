@@ -400,13 +400,22 @@ export const PUBLIC_TABLES: PublicTable[] = [
         role: "user",
         operations: {
           select: { filter: { _or: [OWN, GYM_OWNER] }, columns: ["id", "gym_id", "user_id", "is_primary", "status", "created_at"], limit: 50 },
-          // Sem set.user_id: o dono cadastra memberships de outros atletas.
-          insert: { filter: GYM_OWNER, columns: ["gym_id", "user_id", "is_primary", "status"] },
-          update: { filter: GYM_OWNER, columns: ["is_primary", "status"] },
-          delete: { filter: GYM_OWNER },
+          // O atleta só vincula a si mesmo: sem isso, o dono de uma academia poderia
+          // associar UUIDs de terceiros sem consentimento. Vínculo de outra pessoa é ato de admin.
+          insert: { filter: OWN, set: SET_USER, columns: ["gym_id", "is_primary", "status"] },
+          update: { filter: { _or: [OWN, GYM_OWNER] }, columns: ["is_primary", "status"] },
+          delete: { filter: { _or: [OWN, GYM_OWNER] } },
         },
       },
-      { role: "admin", operations: { select: { filter: OPEN, columns: ["id", "gym_id", "user_id", "is_primary", "status", "created_at"], limit: 200 } } },
+      {
+        role: "admin",
+        operations: {
+          select: { filter: OPEN, columns: ["id", "gym_id", "user_id", "is_primary", "status", "created_at"], limit: 200 },
+          insert: { filter: OPEN, columns: ["gym_id", "user_id", "is_primary", "status"] },
+          update: { filter: OPEN, columns: ["is_primary", "status"] },
+          delete: { filter: OPEN },
+        },
+      },
       { role: "super_admin", operations: { select: { filter: OPEN, columns: ["id", "gym_id", "user_id", "is_primary", "status", "created_at"], limit: 500 } } },
     ],
   },
@@ -496,14 +505,19 @@ export const PUBLIC_TABLES: PublicTable[] = [
     kind: "training",
     columns: [
       "id", "week_id", "user_id", "gym_id", "scheduled_at", "started_at", "completed_at", "status",
-      "created_at", "updated_at",
+      "client_mutation_id", "created_at", "updated_at",
     ],
     permissions: athleteOwn(
       [
         "id", "week_id", "user_id", "gym_id", "scheduled_at", "started_at", "completed_at", "status",
-        "created_at", "updated_at",
+        "client_mutation_id", "created_at", "updated_at",
       ],
-      { insert: true, update: true, delete: false },
+      {
+        insert: true,
+        // `client_mutation_id` identifica a operação offline e nunca muda depois do insert.
+        update: ["week_id", "gym_id", "scheduled_at", "started_at", "completed_at", "status"],
+        delete: false,
+      },
     ),
   },
   {

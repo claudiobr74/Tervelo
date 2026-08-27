@@ -10,7 +10,6 @@ import type {
   RecoveryCheckinRepository,
 } from "@/application/ports";
 import type { RecoveryScores } from "@/domain/recovery/trend";
-import { PREVIEW_TRAINING_USER_ID } from "@/lib/training/preview-workout";
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
@@ -42,7 +41,7 @@ function seedCheckin(
 ): RecoveryCheckinRecord {
   return {
     id,
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     checkedInAt: daysAgoIso(daysAgo),
     ...scores,
   };
@@ -55,7 +54,7 @@ function seedMeasurement(
 ): MeasurementRecord {
   return {
     id,
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     measuredAt: daysAgoIso(daysAgo),
     source: "user",
     ...values,
@@ -195,7 +194,7 @@ const measurementRepo: MeasurementRepository = {
       entity_id: created.id,
       client_mutation_id: created.id,
       occurred_at: created.measuredAt,
-      user_id: PREVIEW_TRAINING_USER_ID,
+      user_id: currentOfflineUserId(),
       payload: {
         weightKg: created.weightKg,
         bodyFatPercent: created.bodyFatPercent,
@@ -220,7 +219,7 @@ const recoveryRepo: RecoveryCheckinRepository = {
 
 export async function appendRecoveryCheckin(scores: RecoveryScores) {
   return recordRecoveryCheckin(recoveryRepo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     ...scores,
   });
 }
@@ -229,7 +228,7 @@ export async function appendBodyMeasurement(
   input: Omit<MeasurementRecord, "id" | "userId" | "measuredAt" | "source">,
 ) {
   return recordBodyMeasurement(measurementRepo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     ...input,
   });
 }

@@ -7,8 +7,6 @@ import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
 import { PREVIEW_NUTRITION_INTAKE } from "@/lib/nutrition/preview";
-import { PREVIEW_TRAINING_USER_ID } from "@/lib/training/preview-workout";
-
 export type NutritionOfflineState = {
   extraFluidMl: number;
   adheredMeals: string[];
@@ -82,7 +80,7 @@ const repo: NutritionCheckinRepository = {
       entity_id: created.id,
       client_mutation_id: created.id,
       occurred_at: new Date().toISOString(),
-      user_id: PREVIEW_TRAINING_USER_ID,
+      user_id: currentOfflineUserId(),
       payload: { ...created },
     });
     return created;
@@ -101,7 +99,7 @@ export async function addHydration(ml: number) {
     entity_id: id,
     client_mutation_id: id,
     occurred_at: new Date().toISOString(),
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     payload: { fluidMl: ml, totalExtraMl: next },
   });
 }
@@ -121,7 +119,7 @@ export function toggleMealAdherence(mealName: string) {
     entity_id: id,
     client_mutation_id: id,
     occurred_at: new Date().toISOString(),
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     payload: { mealName, adhered: !has },
   });
 }
@@ -129,7 +127,7 @@ export function toggleMealAdherence(mealName: string) {
 export async function saveNutritionCheckinToday() {
   const today = new Date().toISOString().slice(0, 10);
   return recordNutritionCheckin(repo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     checkedInOn: today,
     todayIso: today,
     energyKcal: PREVIEW_NUTRITION_INTAKE.energyKcal,
