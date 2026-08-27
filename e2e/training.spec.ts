@@ -22,7 +22,7 @@ test.describe("treino", () => {
     await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
     await expect(page.getByText("Peitoral e Tríceps")).toHaveCount(0);
-    await expect(page.getByText("Sem refeições registradas hoje")).toBeVisible();
+    await expect(page.getByText("Sem refeições registradas")).toBeVisible();
     await expect(page.getByText("Sem histórico de carga")).toBeVisible();
 
     await page.goto("/app/workout");

@@ -160,7 +160,7 @@ export function TodayScreen({ sessionName = null }: { sessionName?: string | nul
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-base font-bold text-foreground">—</p>
-              <p className="text-xs text-muted">Sem refeições registradas hoje</p>
+              <p className="text-xs text-muted">Sem refeições registradas</p>
             </div>
           </Link>
           <Link

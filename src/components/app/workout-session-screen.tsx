@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
-import { EmptyPanel } from "@/components/ui/empty-panel";
 import { WorkoutSyncHint } from "@/components/app/sync-status-indicator";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 
@@ -32,10 +31,6 @@ export function WorkoutSessionScreen() {
         </div>
 
         <div className="flex flex-col gap-4 px-6 pb-6">
-          <EmptyPanel
-            title="Nenhum treino prescrito"
-            body="Não há sessão para começar. O app não inicia um treino de exemplo no seu lugar."
-          />
           <Link
             href="/app/today"
             className="flex h-[54px] w-full items-center justify-center rounded-[var(--radius-lg)] border border-border text-base font-bold text-foreground"
