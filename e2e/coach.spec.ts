@@ -64,7 +64,7 @@ test.describe("coach", () => {
 
     await page.goto("/app/coach");
     await page.getByRole("button", { name: "Por que meu treino mudou?" }).click();
-    await expect(page.getByText("cerca de 40 minutos", { exact: false })).toBeVisible();
+    await expect(page.getByText("cerca de 40 minutos", { exact: false })).toHaveCount(2);
     await expect(page.getByText("Papel da nutrição")).toBeVisible();
   });
 
