@@ -31,7 +31,7 @@ export function AdminExercisesScreen() {
       active="Exercícios"
     >
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col flex-wrap gap-3 xl:flex-row xl:items-center">
           <div className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3 text-muted">
             <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
             <input
@@ -52,7 +52,7 @@ export function AdminExercisesScreen() {
             Adicionar exercício
           </button>
         </div>
-        <div className="flex gap-2 text-sm">
+        <div className="flex flex-wrap gap-2 text-sm">
           {["Grupo muscular: Todos", "Equipamento", "Padrão de movimento", "Unilateral/Bilateral", "Nível", "Peso livre/Máquina"].map(
             (label, index) => (
               <span
@@ -66,7 +66,7 @@ export function AdminExercisesScreen() {
             ),
           )}
         </div>
-        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div className="flex flex-col gap-2">
             {list.map((exercise) => {
               const active = exercise.id === selected?.id;
@@ -92,7 +92,7 @@ export function AdminExercisesScreen() {
                       <span className="text-muted">{exercise.movementPattern}</span>
                     </div>
                   </div>
-                  <p className="text-xs text-muted">{exercise.equipmentName}</p>
+                  <p className="max-w-[7rem] shrink-0 truncate text-xs text-muted">{exercise.equipmentName}</p>
                 </button>
               );
             })}

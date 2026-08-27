@@ -40,7 +40,7 @@ export function AdminAuditScreen() {
                 <button
                   type="button"
                   onClick={() => setOpenId(open ? "" : log.id)}
-                  className="flex w-full items-center justify-between gap-4 text-left"
+                  className="flex w-full flex-col items-start justify-between gap-3 text-left sm:flex-row sm:items-center sm:gap-4"
                 >
                   <div className="flex items-center gap-4">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -72,12 +72,12 @@ export function AdminAuditScreen() {
                 </button>
                 {open ? (
                   <div className="mt-4 flex flex-col gap-3 rounded-[var(--radius-md)] border border-border bg-background p-4">
-                    <div className="flex gap-4">
+                    <div className="flex flex-col gap-4 md:flex-row">
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-bold uppercase text-muted">Decisão Proposta</p>
                         <p className="mt-1 text-sm font-semibold">{log.proposed}</p>
                       </div>
-                      <div className="w-[280px] shrink-0">
+                      <div className="min-w-0 md:w-[280px] md:shrink-0">
                         <p className="text-xs font-bold uppercase text-muted">Regra Aplicada</p>
                         <p className="mt-1 text-sm font-semibold text-success">{log.rule}</p>
                       </div>

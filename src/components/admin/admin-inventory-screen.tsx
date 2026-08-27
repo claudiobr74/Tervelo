@@ -35,7 +35,7 @@ export function AdminInventoryScreen() {
       subtitle="Configure o maquinário disponível fisicamente na sua unidade."
       active="Inventário da Academia"
     >
-      <div className="grid grid-cols-[280px_minmax(0,1fr)] gap-6">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-2">
             <p className="text-sm font-semibold">{gym.name}</p>
@@ -72,7 +72,7 @@ export function AdminInventoryScreen() {
           </div>
         </div>
         <div className="flex flex-col gap-5">
-          <div className="flex justify-end gap-3">
+          <div className="flex flex-wrap justify-end gap-3">
             <button
               type="button"
               disabled

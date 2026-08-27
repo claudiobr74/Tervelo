@@ -28,9 +28,9 @@ export function AdminUsersScreen() {
   return (
     <AdminShell active="Usuários" title="Usuários">
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
-            <label className="flex w-[220px] items-center gap-2 rounded-[var(--radius-md)] border border-border bg-surface px-4 py-2">
+            <label className="flex w-full max-w-[220px] min-w-0 items-center gap-2 rounded-[var(--radius-md)] border border-border bg-surface px-4 py-2">
               <FigmaIcon src="/icons/admin/search.svg" alt="" size={14} />
               <input
                 value={query}
@@ -54,8 +54,8 @@ export function AdminUsersScreen() {
           </button>
         </div>
 
-        <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface">
-          <div className="flex items-center gap-4 bg-surface-secondary p-3 text-xs font-bold text-muted">
+        <div className="overflow-x-auto rounded-[var(--radius-xl)] border border-border bg-surface">
+            <div className="flex min-w-[52rem] items-center gap-4 bg-surface-secondary p-3 text-xs font-bold text-muted">
             <p className="min-w-0 flex-1">Nome</p>
             <p className="w-[100px] shrink-0">Status</p>
             <p className="w-[100px] shrink-0">Plano</p>
@@ -67,7 +67,7 @@ export function AdminUsersScreen() {
           {list.map((user) => (
             <div
               key={user.id}
-              className="flex items-center gap-4 border-b border-border p-3 last:border-b-0"
+              className="flex min-w-[52rem] items-center gap-4 border-b border-border p-3 last:border-b-0"
             >
               <div className="flex min-w-0 flex-1 items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -98,7 +98,7 @@ export function AdminUsersScreen() {
               <p className="w-[120px] shrink-0 text-[13px] text-tertiary">{user.lastActivity}</p>
             </div>
           ))}
-          <div className="flex items-center justify-between bg-background-secondary p-3">
+          <div className="flex min-w-[52rem] items-center justify-between bg-background-secondary p-3">
             <p className="text-[13px] text-muted">
               Mostrando {list.length} de {formatThousands(PREVIEW_ADMIN_USER_TOTAL)} usuários
             </p>
