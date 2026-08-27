@@ -1,0 +1,148 @@
+table:
+  name: files
+  schema: storage
+configuration:
+  column_config:
+    bucket_id:
+      custom_name: bucketId
+    created_at:
+      custom_name: createdAt
+    etag:
+      custom_name: etag
+    id:
+      custom_name: id
+    is_uploaded:
+      custom_name: isUploaded
+    mime_type:
+      custom_name: mimeType
+    name:
+      custom_name: name
+    size:
+      custom_name: size
+    updated_at:
+      custom_name: updatedAt
+    uploaded_by_user_id:
+      custom_name: uploadedByUserId
+  custom_column_names:
+    bucket_id: bucketId
+    created_at: createdAt
+    etag: etag
+    id: id
+    is_uploaded: isUploaded
+    mime_type: mimeType
+    name: name
+    size: size
+    updated_at: updatedAt
+    uploaded_by_user_id: uploadedByUserId
+  custom_name: files
+  custom_root_fields:
+    delete: deleteFiles
+    delete_by_pk: deleteFile
+    insert: insertFiles
+    insert_one: insertFile
+    select: files
+    select_aggregate: filesAggregate
+    select_by_pk: file
+    update: updateFiles
+    update_by_pk: updateFile
+object_relationships:
+  - name: bucket
+    using:
+      foreign_key_constraint_on: bucket_id
+insert_permissions:
+  - role: user
+    permission:
+      check:
+        _and:
+          - uploaded_by_user_id:
+              _eq: X-Hasura-User-Id
+          - bucket_id:
+              _in:
+                - avatars
+                - progress-media
+                - documents
+      set:
+        uploaded_by_user_id: x-hasura-user-id
+      columns:
+        - bucket_id
+        - name
+        - mime_type
+        - size
+  - role: admin
+    permission:
+      check:
+        bucket_id:
+          _in:
+            - exercise-media
+            - equipment-media
+            - avatars
+      columns:
+        - bucket_id
+        - name
+        - mime_type
+        - size
+        - uploaded_by_user_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - bucket_id
+        - name
+        - size
+        - mime_type
+        - uploaded_by_user_id
+        - created_at
+      filter:
+        _or:
+          - uploaded_by_user_id:
+              _eq: X-Hasura-User-Id
+          - bucket_id:
+              _in:
+                - exercise-media
+                - equipment-media
+      limit: 100
+  - role: admin
+    permission:
+      columns:
+        - id
+        - bucket_id
+        - name
+        - size
+        - mime_type
+        - uploaded_by_user_id
+        - created_at
+      filter: {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - bucket_id
+        - name
+        - size
+        - mime_type
+        - uploaded_by_user_id
+        - created_at
+      filter: {}
+      limit: 500
+delete_permissions:
+  - role: user
+    permission:
+      filter:
+        _and:
+          - uploaded_by_user_id:
+              _eq: X-Hasura-User-Id
+          - bucket_id:
+              _in:
+                - avatars
+                - progress-media
+                - documents
+  - role: admin
+    permission:
+      filter:
+        bucket_id:
+          _in:
+            - exercise-media
+            - equipment-media
+            - avatars
