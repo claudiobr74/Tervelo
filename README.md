@@ -101,6 +101,6 @@ Rotas desta fase:
 
 Scripts: `lint`, `typecheck`, `typecheck:tooling`, `test` (Vitest), `test:e2e` (Playwright, também no CI), `smoke:deploy`, `build`.
 
-Tema padrão: **escuro**. Persistência em `localStorage` (`tervelo-theme`). Tokens CSS: Handoff Figma `28:527`.
+Tema padrão: **claro**, inclusive na landing antes de qualquer login. O escuro é uma escolha da pessoa, guardada em `localStorage` (`tervelo-theme`). Tokens CSS: Handoff Figma `28:527`.
 
 Não commitar `.env`. Secrets de IA e admin secret Nhost nunca vão para o cliente.

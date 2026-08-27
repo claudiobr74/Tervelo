@@ -4,6 +4,7 @@ import {
   getServerThemeSnapshot,
   isThemePreference,
   resolveTheme,
+  THEME_BOOTSTRAP_SCRIPT,
 } from "@/lib/theme";
 
 describe("resolveTheme", () => {
@@ -22,10 +23,22 @@ describe("resolveTheme", () => {
 });
 
 describe("DEFAULT_THEME_PREFERENCE", () => {
-  it("é dark, conforme Foundations", () => {
-    expect(DEFAULT_THEME_PREFERENCE).toBe("dark");
-    expect(getServerThemeSnapshot()).toEqual({ preference: "dark", resolved: "dark" });
+  it("abre no claro, inclusive antes de haver sessão", () => {
+    expect(DEFAULT_THEME_PREFERENCE).toBe("light");
+    expect(getServerThemeSnapshot()).toEqual({ preference: "light", resolved: "light" });
     expect(getServerThemeSnapshot()).toBe(getServerThemeSnapshot());
+  });
+
+  it("não segue o sistema por padrão: quem quer escuro precisa escolher", () => {
+    expect(resolveTheme(DEFAULT_THEME_PREFERENCE, true)).toBe("light");
+  });
+});
+
+describe("THEME_BOOTSTRAP_SCRIPT", () => {
+  it("cai no claro quando o armazenamento falha", () => {
+    const fallback = THEME_BOOTSTRAP_SCRIPT.split("catch(e){")[1];
+    expect(fallback).toContain('classList.remove("dark")');
+    expect(fallback).toContain('dataset.theme="light"');
   });
 });
 

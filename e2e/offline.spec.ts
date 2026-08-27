@@ -62,17 +62,18 @@ test.describe("offline", () => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await waitBoot(page);
-    await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
-    await captureEvidence(page, testInfo, "sincronizacao_escuro_390");
-
-    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
-    await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
     await captureEvidence(page, testInfo, "sincronizacao_claro_390");
 
+    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "dark"));
+    await page.goto("/app/settings");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
+    await captureEvidence(page, testInfo, "sincronizacao_escuro_390");
+
     await page.goto("/app/today");
     await expect(page.getByRole("button", { name: "Iniciar treino" })).toBeVisible();
-    await captureEvidence(page, testInfo, "hoje_claro_390");
+    await captureEvidence(page, testInfo, "hoje_escuro_390");
   });
 });

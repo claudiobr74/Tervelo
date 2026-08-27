@@ -84,25 +84,26 @@ test.describe("estado do atleta", () => {
   test("check-in e revisões funcionam nos dois temas", async ({ page }, testInfo) => {
     await loginPreview(page);
     await page.goto("/app/workout/checkin");
-    await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
-    await captureEvidence(page, testInfo, "checkin_escuro_390");
-
-    await page.goto("/app/coach/revisoes");
-    await expect(page.getByRole("heading", { name: "Revisões" })).toBeVisible();
-    await captureEvidence(page, testInfo, "revisoes_escuro_390");
-
-    await page.goto("/app/coach/revisoes/rev-26");
-    await expect(page.getByRole("heading", { name: "Revisão Semanal do Coach" })).toBeVisible();
-    await captureEvidence(page, testInfo, "revisao_escuro_390");
-
-    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
-    await page.goto("/app/workout/checkin");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
     await captureEvidence(page, testInfo, "checkin_claro_390");
 
+    await page.goto("/app/coach/revisoes");
+    await expect(page.getByRole("heading", { name: "Revisões" })).toBeVisible();
+    await captureEvidence(page, testInfo, "revisoes_claro_390");
+
     await page.goto("/app/coach/revisoes/rev-26");
     await expect(page.getByRole("heading", { name: "Revisão Semanal do Coach" })).toBeVisible();
     await captureEvidence(page, testInfo, "revisao_claro_390");
+
+    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "dark"));
+    await page.goto("/app/workout/checkin");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
+    await captureEvidence(page, testInfo, "checkin_escuro_390");
+
+    await page.goto("/app/coach/revisoes/rev-26");
+    await expect(page.getByRole("heading", { name: "Revisão Semanal do Coach" })).toBeVisible();
+    await captureEvidence(page, testInfo, "revisao_escuro_390");
   });
 });

@@ -76,33 +76,33 @@ test.describe("frequência cardíaca", () => {
       "aria-checked",
       "false",
     );
-    await captureEvidence(page, testInfo, "fc_desligada_escuro_390");
+    await captureEvidence(page, testInfo, "fc_desligada_claro_390");
 
     await page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }).click();
     await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
       "aria-checked",
       "true",
     );
-    await captureEvidence(page, testInfo, "fc_ligada_escuro_390");
+    await captureEvidence(page, testInfo, "fc_ligada_claro_390");
 
     await page.goto("/app/today");
     await page.getByRole("button", { name: "Iniciar treino" }).click();
     await skipPreWorkout(page);
     await page.getByRole("button", { name: "Começar exercício" }).click();
     await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
-    await captureEvidence(page, testInfo, "fc_treino_escuro_390");
+    await captureEvidence(page, testInfo, "fc_treino_claro_390");
 
-    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
+    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "dark"));
     await page.goto("/app/settings");
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
       "aria-checked",
       "true",
     );
-    await captureEvidence(page, testInfo, "fc_ligada_claro_390");
+    await captureEvidence(page, testInfo, "fc_ligada_escuro_390");
 
     await page.goto("/app/workout/exercise");
     await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
-    await captureEvidence(page, testInfo, "fc_treino_claro_390");
+    await captureEvidence(page, testInfo, "fc_treino_escuro_390");
   });
 });
