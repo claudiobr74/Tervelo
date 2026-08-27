@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SkipLink />
         <ThemeProvider>
           <OfflineBoot>
-            <div id="conteudo" className="flex min-h-full flex-1 flex-col">
+            <div id="conteudo" className="flex min-h-0 w-full flex-1 flex-col">
               {children}
             </div>
           </OfflineBoot>

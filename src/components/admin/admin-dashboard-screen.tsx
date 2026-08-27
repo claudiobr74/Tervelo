@@ -10,14 +10,14 @@ export function AdminDashboardScreen() {
   return (
     <AdminShell active="Dashboard" title="Dashboard">
       <div className="flex flex-col gap-6">
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {PREVIEW_DASHBOARD.kpis.map((kpi) => (
             <article
               key={kpi.label}
-              className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5"
+              className="flex min-w-0 flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5"
             >
               <p className="text-[13px] font-semibold uppercase text-muted">{kpi.label}</p>
-              <div className="flex items-baseline justify-between gap-3">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <p className="text-[32px] font-extrabold leading-none text-foreground">{kpi.value}</p>
                 <span
                   className={`inline-flex items-center gap-1 rounded-[6px] px-2 py-1 text-[11px] font-bold ${
@@ -36,7 +36,7 @@ export function AdminDashboardScreen() {
           ))}
         </div>
 
-        <div className="grid grid-cols-[minmax(0,1fr)_380px] gap-4">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(16rem,24rem)]">
           <article className="flex h-[280px] flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
             <div className="flex items-start justify-between gap-3">
               <p className="text-[15px] font-bold">Usuários Ativos ao Longo do Tempo</p>
@@ -74,7 +74,7 @@ export function AdminDashboardScreen() {
           </article>
         </div>
 
-        <div className="grid grid-cols-[340px_minmax(0,1fr)] gap-4">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,21rem)_minmax(0,1fr)]">
           <div className="flex flex-col gap-3">
             {PREVIEW_DASHBOARD.alerts.map((alert) => (
               <article
@@ -102,28 +102,30 @@ export function AdminDashboardScreen() {
           </div>
           <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
             <p className="text-[15px] font-bold">Últimos alertas do sistema</p>
-            <div className="flex border-b border-border pb-2 text-xs font-bold text-tertiary">
-              <p className="w-[120px] shrink-0">Evento</p>
-              <p className="min-w-0 flex-1">Descrição</p>
-              <p className="w-[100px] shrink-0 text-right">Hora</p>
-            </div>
-            {PREVIEW_DASHBOARD.systemAlerts.map((row) => (
-              <div key={row.event} className="flex items-start text-[13px]">
-                <p
-                  className={`w-[120px] shrink-0 font-semibold ${
-                    row.tone === "error"
-                      ? "text-error"
-                      : row.tone === "success"
-                        ? "text-success"
-                        : "text-brand"
-                  }`}
-                >
-                  {row.event}
-                </p>
-                <p className="min-w-0 flex-1 text-muted">{row.description}</p>
-                <p className="w-[100px] shrink-0 text-right text-tertiary">{row.when}</p>
+            <div className="overflow-x-auto">
+              <div className="flex min-w-[28rem] border-b border-border pb-2 text-xs font-bold text-tertiary">
+                <p className="w-[120px] shrink-0">Evento</p>
+                <p className="min-w-0 flex-1">Descrição</p>
+                <p className="w-[100px] shrink-0 text-right">Hora</p>
               </div>
-            ))}
+              {PREVIEW_DASHBOARD.systemAlerts.map((row) => (
+                <div key={row.event} className="flex min-w-[28rem] items-start text-[13px]">
+                  <p
+                    className={`w-[120px] shrink-0 font-semibold ${
+                      row.tone === "error"
+                        ? "text-error"
+                        : row.tone === "success"
+                          ? "text-success"
+                          : "text-brand"
+                    }`}
+                  >
+                    {row.event}
+                  </p>
+                  <p className="min-w-0 flex-1 text-muted">{row.description}</p>
+                  <p className="w-[100px] shrink-0 text-right text-tertiary">{row.when}</p>
+                </div>
+              ))}
+            </div>
           </article>
         </div>
       </div>

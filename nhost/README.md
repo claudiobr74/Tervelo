@@ -16,12 +16,19 @@ npm exec nhost -- up
 | `admin` | administrador operacional | operador SQL em `auth.user_roles` |
 | `super_admin` | contratos IA + auditoria | operador SQL |
 
-O cliente **nunca** atribui admin.
+O cliente **nunca** atribui admin. Não existe formulário de “criar administrador”.
+
+1. A pessoa se cadastra em `/signup` (JWT `user`).
+2. Operador promove no SQL Editor do Nhost (ou `psql` local):
 
 ```sql
 INSERT INTO auth.user_roles (id, created_at, user_id, role)
 VALUES (gen_random_uuid(), now(), '<user-uuid>', 'admin');
 ```
+
+Para auditoria e publicação de contratos de IA, o mesmo `INSERT` com `'super_admin'`.
+
+Em **pré-visualização local** (e Preview Vercel sem Nhost cloud) o botão **Dashboard admin** na home grava `previewRole: admin` no cookie. Em production esse campo é recusado.
 
 ## Layout
 

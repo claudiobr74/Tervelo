@@ -29,7 +29,7 @@ export function AdminEquipmentScreen() {
       active="Equipamentos"
     >
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col flex-wrap gap-3 xl:flex-row xl:items-center">
           <div className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3 text-muted">
             <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
             <input
@@ -52,7 +52,7 @@ export function AdminEquipmentScreen() {
             Adicionar equipamento
           </button>
         </div>
-        <div className="grid grid-cols-[220px_minmax(0,1fr)_minmax(0,1.1fr)] gap-4">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_minmax(0,1.1fr)]">
           <div className="flex flex-col gap-1">
             {EQUIPMENT_CATEGORIES.map((item) => (
               <button

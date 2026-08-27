@@ -5,7 +5,7 @@
 - Não commitar `.env`. Usar `.env.example` sem valores secretos.
 - Uploads privados via URLs pré-assinadas, não buckets públicos permanentes.
 - Roles: `public` (anônimo), `user` (atleta), `admin` (administrador), `super_admin` (auditoria/IA).
-- Admin **não** é atribuído pelo cliente. Operador: `INSERT INTO auth.user_roles`.
+- Admin **não** é atribuído pelo cliente nem pelo `/signup`. Operador: `INSERT INTO auth.user_roles`. Preview local usa `previewRole` (recusado em production).
 - Cookie `nhostSession`: httpOnly, SameSite=lax, Secure em production. POST `/api/auth/session` **não** aceita `previewRole: admin` em production (nem no Preview Vercel quando o Nhost cloud está configurado).
 - Logs da app: JSON sem PII (e-mail, tokens, FC bruta, nutrição, cargas).
 - Headers: CSP, `X-Content-Type-Options`, `X-Frame-Options`, Permissions-Policy (bluetooth permitido para FC).

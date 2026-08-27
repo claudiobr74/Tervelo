@@ -18,7 +18,7 @@ UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FI
 | Administrador | `admin` | `/admin/*` |
 | Super admin | `super_admin` | auditoria e contratos de IA |
 
-Admin **não** é criado no cadastro. Operador promove com SQL em `auth.user_roles` — ver [`nhost/README.md`](nhost/README.md).
+O cadastro público (`/signup`) cria só o papel `user` (atleta). **Não há tela de registro de administrador** no Figma: o operador promove a conta no banco Nhost (`auth.user_roles`). Em pré-visualização local (e Preview Vercel **sem** Nhost cloud) o botão **Dashboard admin** grava `previewRole: admin` — isso é recusado em production. Detalhes: [`nhost/README.md`](nhost/README.md).
 
 Detalhes da auditoria: [`docs/PRE_IMPLEMENTATION_AUDIT.md`](docs/PRE_IMPLEMENTATION_AUDIT.md).
 

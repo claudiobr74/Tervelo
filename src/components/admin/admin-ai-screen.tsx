@@ -129,8 +129,8 @@ export function AdminAiScreen() {
 
   return (
     <AdminShell title="Inteligência Artificial" active="Inteligência Artificial">
-      <div className="flex items-start gap-6">
-        <nav aria-label="Seções do contrato" className="flex w-[220px] shrink-0 flex-col gap-1">
+      <div className="flex flex-col items-stretch gap-6 xl:flex-row xl:items-start">
+        <nav aria-label="Seções do contrato" className="flex w-full shrink-0 flex-row gap-1 overflow-x-auto xl:w-[220px] xl:flex-col">
           {AI_ADMIN_TABS.map((item) => {
             const selected = item.id === tab;
             return (
@@ -140,7 +140,7 @@ export function AdminAiScreen() {
                 role="tab"
                 aria-selected={selected}
                 onClick={() => setTab(item.id)}
-                className={`rounded-[var(--radius-md)] px-4 py-3 text-left text-sm ${
+                className={`shrink-0 whitespace-nowrap rounded-[var(--radius-md)] px-4 py-3 text-left text-sm ${
                   selected ? "bg-surface-secondary font-bold text-brand" : "font-medium text-muted"
                 }`}
               >
@@ -151,14 +151,14 @@ export function AdminAiScreen() {
         </nav>
 
         <div className="flex min-w-0 flex-1 flex-col gap-5">
-          <article className="flex items-center justify-between gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+          <article className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex min-w-0 flex-col gap-1">
               <h2 className="text-lg font-extrabold">Contrato da Inteligência Artificial</h2>
               <p className="text-[13px] text-muted">
                 Edite o comportamento e as heurísticas padrão adotadas pela IA da Tervelo.
               </p>
             </div>
-            <div className="flex shrink-0 items-center gap-3">
+            <div className="flex shrink-0 flex-wrap items-center gap-3">
               <span className="rounded-full bg-success/20 px-2.5 py-1 text-xs font-bold text-success">
                 {AI_CONTRACT_PREVIEW.version} — {AI_CONTRACT_PREVIEW.stateLabel}
               </span>
@@ -180,8 +180,8 @@ export function AdminAiScreen() {
           </article>
 
           {tab === "behavior" ? (
-            <div className="flex items-start gap-4">
-              <div className="flex min-w-0 flex-1 flex-col gap-5 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+            <div className="flex flex-col items-stretch gap-4 xl:flex-row xl:items-start">
+            <div className="flex min-w-0 flex-1 flex-col gap-5 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
                 <section className="flex flex-col gap-2">
                   <h3 className="text-sm font-bold">Agente de IA</h3>
                   <p className="text-[13px] text-muted">
@@ -258,7 +258,7 @@ export function AdminAiScreen() {
                 </section>
               </div>
 
-              <div className="flex w-[420px] shrink-0 flex-col gap-4">
+              <div className="flex w-full min-w-0 shrink-0 flex-col gap-4 xl:w-[min(100%,420px)]">
                 <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
                   <h3 className="text-sm font-bold">Matriz de Autonomia da IA</h3>
                   <div className="flex flex-col gap-2">
