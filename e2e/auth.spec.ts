@@ -61,7 +61,7 @@ test("finalizar as cinco etapas abre o app mesmo sem backend Nhost", async ({ pa
 
   await expect(page).toHaveURL(/\/app\/today/);
   await expect(page.getByText("Não foi possível salvar suas respostas")).toHaveCount(0);
-  await expect(page.getByText(/^Olá/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^Olá/ })).toBeVisible();
 });
 
 test("esqueci senha sem tela FIGMA_PENDING", async ({ page }) => {
