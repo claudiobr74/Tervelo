@@ -1,4 +1,4 @@
-/** Marca oficial. `logo.png` é o original sem alteração; `logo-dark.png` é só a inversão para Dark. */
+/** Marca oficial. `logo.webp` é o original sem alteração; `logo-dark.webp` é só a inversão para Dark. */
 
 const SIZE = { width: 2000, height: 667 } as const;
 
@@ -13,7 +13,7 @@ export function BrandLogo({
     <span role="img" aria-label={alt} className="inline-flex max-w-full">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/brand/logo.png"
+        src="/brand/logo.webp"
         alt=""
         width={SIZE.width}
         height={SIZE.height}
@@ -21,7 +21,7 @@ export function BrandLogo({
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/brand/logo-dark.png"
+        src="/brand/logo-dark.webp"
         alt=""
         width={SIZE.width}
         height={SIZE.height}

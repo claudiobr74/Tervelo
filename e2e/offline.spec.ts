@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { captureEvidence } from "./support/evidence";
 
 async function loginPreview(page: import("@playwright/test").Page) {
   await page.goto("/login");
@@ -57,17 +58,21 @@ test.describe("offline", () => {
     await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
   });
 
-  test("captura Light/Dark 390", async ({ page }) => {
-    const stamp = Date.now();
+  test("dados e sincronização funcionam nos dois temas", async ({ page }, testInfo) => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await waitBoot(page);
-    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_settings_dark_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
+    await captureEvidence(page, testInfo, "sincronizacao_escuro_390");
+
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
     await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_settings_light_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
+    await captureEvidence(page, testInfo, "sincronizacao_claro_390");
+
     await page.goto("/app/today");
-    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_today_light_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("button", { name: "Iniciar treino" })).toBeVisible();
+    await captureEvidence(page, testInfo, "hoje_claro_390");
   });
 });

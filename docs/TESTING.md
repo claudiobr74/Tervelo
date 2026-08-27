@@ -4,7 +4,11 @@
 | --- | --- | --- |
 | Unitário | Vitest | `src/**/*.test.ts` |
 | E2E | Playwright | `e2e/` (smoke; produto depois das telas Figma) |
-| CI | GitHub Actions | `.github/workflows/ci.yml` |
+| CI | GitHub Actions | `.github/workflows/ci.yml` (job `check` + job `e2e`) |
+
+Evidência visual (screenshots dos temas) é gravada com `captureEvidence` em
+`e2e/support/evidence.ts`, dentro do resultado do próprio teste. Caminho absoluto
+fora do repositório não existe em outra máquina nem no CI.
 
 Phase 2 cobre schema Nhost, papéis `user`/`admin` e a matriz Hasura (`src/lib/auth/permission-matrix.ts`).
 
@@ -35,6 +39,8 @@ Phase 13: Vitest cobre fila idempotente, backoff, motor (oscilação e resposta 
 Phase 14: Vitest cobre redaction de logs, sanitização da sessão, headers, proxy (atleta sem sessão / user sem admin) e matriz Hasura (nutrição append-only, revisão, catálogo). Playwright cobre skip link, landmarks, `/api/health` e evidência Light/Dark 390. Sem vídeo.
 
 Phase 15: Vitest cobre `VERCEL_ENV` (preview vs production). Playwright cobre smoke local de health/login. Script `npm run smoke:deploy -- <url>` contra Preview/Production. Sem vídeo.
+
+Remediação da auditoria: Vitest cobre CSP com nonce e `connect-src` restrito, token não verificado que não vira admin, leitura de número digitado, mapeamento do onboarding para o perfil, saudação, leitura de tendência corporal, porcentagem de recuperação, aderência da sessão, portão do check-in, prioridade da fila e sanitização do log de sincronização. Playwright cobre a landing na raiz, o hub Mais, o guia de pontos de medição, o ajuste real do Coach e o resumo sem série registrada.
 
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.
 

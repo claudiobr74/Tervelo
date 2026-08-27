@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { captureEvidence } from "./support/evidence";
 
 async function loginPreview(page: import("@playwright/test").Page) {
   await page.goto("/login");
@@ -68,45 +69,40 @@ test.describe("frequência cardíaca", () => {
     await expect(page.getByRole("heading", { name: "Treino e dispositivos" })).toBeVisible();
   });
 
-  test("captura settings e treino Light/Dark", async ({ page }) => {
-    const stamp = Date.now();
+  test("frequência cardíaca aparece no treino nos dois temas", async ({ page }, testInfo) => {
     await loginPreview(page);
     await page.goto("/app/settings");
-    await page.screenshot({
-      path: `/opt/cursor/artifacts/hr_settings_off_dark_390_${stamp}.png`,
-      fullPage: true,
-    });
+    await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
+      "aria-checked",
+      "false",
+    );
+    await captureEvidence(page, testInfo, "fc_desligada_escuro_390");
+
     await page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }).click();
     await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
       "aria-checked",
       "true",
     );
-    await page.screenshot({
-      path: `/opt/cursor/artifacts/hr_settings_on_dark_390_${stamp}.png`,
-      fullPage: true,
-    });
+    await captureEvidence(page, testInfo, "fc_ligada_escuro_390");
+
     await page.goto("/app/today");
     await page.getByRole("button", { name: "Iniciar treino" }).click();
     await skipPreWorkout(page);
     await page.getByRole("button", { name: "Começar exercício" }).click();
     await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
-    await page.screenshot({
-      path: `/opt/cursor/artifacts/hr_workout_on_dark_390_${stamp}.png`,
-      fullPage: true,
-    });
+    await captureEvidence(page, testInfo, "fc_treino_escuro_390");
 
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
     await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await page.screenshot({
-      path: `/opt/cursor/artifacts/hr_settings_on_light_390_${stamp}.png`,
-      fullPage: true,
-    });
+    await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+    await captureEvidence(page, testInfo, "fc_ligada_claro_390");
+
     await page.goto("/app/workout/exercise");
     await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
-    await page.screenshot({
-      path: `/opt/cursor/artifacts/hr_workout_on_light_390_${stamp}.png`,
-      fullPage: true,
-    });
+    await captureEvidence(page, testInfo, "fc_treino_claro_390");
   });
 });

@@ -210,6 +210,12 @@ describe("casos de uso", () => {
       planCompletion: "sim" as const,
     };
     const first = await recordPostWorkoutCheckout(repo, payload);
-    expect(first.ok).toBe(true);
+    // Reenviar a mesma operação (retry da fila offline) não pode criar um segundo check-out.
+    const second = await recordPostWorkoutCheckout(repo, { ...payload, expectation: "abaixo" as const });
+    expect(first.ok && second.ok).toBe(true);
+    if (first.ok && second.ok) {
+      expect(second.value.id).toBe(first.value.id);
+      expect(second.value.expectation).toBe("como_esperado");
+    }
   });
 });

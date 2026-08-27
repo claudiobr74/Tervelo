@@ -80,22 +80,26 @@ npm exec nhost -- up # backend local (Docker)
 
 Rotas desta fase:
 
-- `/` — scaffold interno (não é a landing de marketing)
+- `/` — landing de marketing (Figma `2:1865`)
+- `/termos`, `/privacidade` — páginas legais
 - `/login` — Figma `2:1428`
 - `/signup` — Figma `2:1478`
 - `/onboarding/*` — perfil, medidas, experiência, objetivos, nutrição
-- `/dev/tokens` — paleta e primitivos
+- `/app/today` — Figma `2:15`
+- `/app/profile` — hub Mais (Figma `2:1334`) e subpáginas de perfil
 - `/app/nutrition` — Figma `2:817`
 - `/app/coach` — Figma `2:944`
-- `/app/settings` — Treino e dispositivos (frequência cardíaca; `FIGMA_PENDING`)
-- `/app/workout/checkin` — Check-in Pré-Treino (`FIGMA_UI_PENDING`)
-- `/app/coach/revisoes` — Revisão Semanal do Coach (`FIGMA_UI_PENDING`)
+- `/app/settings` — Treino, dispositivos e aparência
+- `/app/workout/checkin` — Check-in Pré-Treino
+- `/app/coach/revisoes` — Revisão Semanal do Coach
 - `/admin` — Figma `2:2503`
 - `/admin/users` — Figma `2:2659`
 - `/admin/audit` — Figma `2:3112`
+- `/dev`, `/dev/tokens` — pré-visualização interna; só existem sem backend real
 - `/api/health` — liveness
+- `/api/sync/graphql` — ponte de sincronização assinada com o cookie da sessão
 
-Scripts: `lint`, `typecheck`, `test` (Vitest), `test:e2e` (Playwright, fora do CI), `smoke:deploy`, `build`.
+Scripts: `lint`, `typecheck`, `typecheck:tooling`, `test` (Vitest), `test:e2e` (Playwright, também no CI), `smoke:deploy`, `build`.
 
 Tema padrão: **escuro**. Persistência em `localStorage` (`tervelo-theme`). Tokens CSS: Handoff Figma `28:527`.
 

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { captureEvidence } from "./support/evidence";
 
 async function loginPreview(page: import("@playwright/test").Page) {
   await page.goto("/login");
@@ -56,18 +57,25 @@ test.describe("hardening", () => {
     await expect(page.getByRole("link", { name: "Voltar" })).toBeVisible();
   });
 
-  test("captura Light/Dark 390", async ({ page }) => {
-    const stamp = Date.now();
+  test("hoje e configurações funcionam nos dois temas", async ({ page }, testInfo) => {
     await loginPreview(page);
     await page.goto("/app/today");
-    await page.screenshot({ path: `/tmp/cursor-artifacts/hardening_today_dark_390_${stamp}.png`, fullPage: true });
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(page.getByRole("navigation", { name: "Navegação principal" })).toBeVisible();
+    await captureEvidence(page, testInfo, "hoje_escuro_390");
+
     await page.goto("/app/settings");
-    await page.screenshot({ path: `/tmp/cursor-artifacts/hardening_settings_dark_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Treino e dispositivos" })).toBeVisible();
+    await captureEvidence(page, testInfo, "configuracoes_escuro_390");
+
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
     await page.goto("/app/today");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await page.screenshot({ path: `/tmp/cursor-artifacts/hardening_today_light_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("navigation", { name: "Navegação principal" })).toBeVisible();
+    await captureEvidence(page, testInfo, "hoje_claro_390");
+
     await page.goto("/app/settings");
-    await page.screenshot({ path: `/tmp/cursor-artifacts/hardening_settings_light_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Treino e dispositivos" })).toBeVisible();
+    await captureEvidence(page, testInfo, "configuracoes_claro_390");
   });
 });

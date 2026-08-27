@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { captureEvidence } from "./support/evidence";
 
 async function loginPreview(page: import("@playwright/test").Page) {
   await page.goto("/login");
@@ -80,23 +81,28 @@ test.describe("estado do atleta", () => {
     await expect(page.getByText("Check-out concluído")).toBeVisible();
   });
 
-  test("captura Light/Dark 390", async ({ page }) => {
-    const stamp = Date.now();
+  test("check-in e revisões funcionam nos dois temas", async ({ page }, testInfo) => {
     await loginPreview(page);
     await page.goto("/app/workout/checkin");
-    await page.screenshot({ path: `/opt/cursor/artifacts/athlete_state_checkin_dark_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
+    await captureEvidence(page, testInfo, "checkin_escuro_390");
+
     await page.goto("/app/coach/revisoes");
-    await page.screenshot({ path: `/opt/cursor/artifacts/athlete_state_reviews_dark_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Revisões" })).toBeVisible();
+    await captureEvidence(page, testInfo, "revisoes_escuro_390");
+
     await page.goto("/app/coach/revisoes/rev-26");
-    await page.screenshot({ path: `/opt/cursor/artifacts/athlete_state_review_dark_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Revisão Semanal do Coach" })).toBeVisible();
+    await captureEvidence(page, testInfo, "revisao_escuro_390");
 
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
     await page.goto("/app/workout/checkin");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await page.screenshot({ path: `/opt/cursor/artifacts/athlete_state_checkin_light_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
+    await captureEvidence(page, testInfo, "checkin_claro_390");
+
     await page.goto("/app/coach/revisoes/rev-26");
-    await page.screenshot({ path: `/opt/cursor/artifacts/athlete_state_review_light_390_${stamp}.png`, fullPage: true });
-    await page.goto("/app/today");
-    await page.screenshot({ path: `/opt/cursor/artifacts/athlete_state_today_light_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Revisão Semanal do Coach" })).toBeVisible();
+    await captureEvidence(page, testInfo, "revisao_claro_390");
   });
 });
