@@ -62,12 +62,12 @@ test.describe("offline", () => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await waitBoot(page);
-    await page.screenshot({ path: `/opt/cursor/artifacts/offline_settings_dark_390_${stamp}.png`, fullPage: true });
+    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_settings_dark_390_${stamp}.png`, fullPage: true });
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
     await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await page.screenshot({ path: `/opt/cursor/artifacts/offline_settings_light_390_${stamp}.png`, fullPage: true });
+    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_settings_light_390_${stamp}.png`, fullPage: true });
     await page.goto("/app/today");
-    await page.screenshot({ path: `/opt/cursor/artifacts/offline_today_light_390_${stamp}.png`, fullPage: true });
+    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_today_light_390_${stamp}.png`, fullPage: true });
   });
 });

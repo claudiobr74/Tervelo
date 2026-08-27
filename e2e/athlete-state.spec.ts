@@ -23,7 +23,7 @@ test.describe("estado do atleta", () => {
     await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
     await page.getByRole("link", { name: "Fazer check-in" }).click();
     await expect(page).toHaveURL(/\/app\/workout\/checkin/);
-    await expect(page.getByText("Check-in Pré-Treino")).toBeVisible();
+    await expect(page.getByText("Check-in Pré-Treino", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Começar treino" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Enviar formulário" })).toHaveCount(0);
     await page.getByRole("button", { name: "Pular por hoje" }).click();
