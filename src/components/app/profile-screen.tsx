@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { InitialsAvatar } from "@/components/ui/initials-avatar";
 import { useOnboardingDraft } from "@/components/onboarding/onboarding-provider";
+import { athleteDisplayName, initialsFromName } from "@/domain/athlete/display-name";
 
 const ITEMS: ({ label: string; href: string } | { label: string; pending: true })[] = [
   { label: "Dados pessoais", href: "/app/profile/pessoais" },
@@ -27,29 +29,18 @@ function MenuRow({ label }: { label: string }) {
   );
 }
 
-export function ProfileScreen() {
+export function ProfileScreen({ sessionName = null }: { sessionName?: string | null }) {
   const { draft } = useOnboardingDraft();
-  const name = draft.displayName.trim() || "Lucas Mendes";
+  const name = athleteDisplayName(draft.displayName, sessionName);
+  const heading = name || "Atleta";
 
   return (
     <AthleteAppShell active="Mais">
       <div className="flex flex-col">
         <div className="flex flex-col items-center gap-4 px-6 pb-5 pt-6">
-          <div className="size-20 shrink-0 overflow-hidden rounded-full">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/catalog/admin-users/lucas.webp"
-              alt=""
-              width={80}
-              height={80}
-              className="size-20 rounded-full object-cover"
-            />
-          </div>
+          <InitialsAvatar name={initialsFromName(heading)} size={80} />
           <div className="flex flex-col items-center gap-1">
-            <h1 className="text-xl font-extrabold text-foreground">{name}</h1>
-            <span className="rounded-full border border-brand bg-brand-soft px-2.5 py-0.5 text-[11px] font-bold text-brand">
-              ATLETA PRO
-            </span>
+            <h1 className="text-xl font-extrabold text-foreground">{heading}</h1>
           </div>
         </div>
         <nav aria-label="Mais opções" className="flex flex-col gap-2.5 px-6 pb-6">

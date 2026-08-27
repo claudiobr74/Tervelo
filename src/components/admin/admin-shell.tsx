@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { BrandLogo } from "@/components/brand/brand-logo";
+import { InitialsAvatar } from "@/components/ui/initials-avatar";
 
 const PENDING = "Em breve";
 
@@ -145,19 +146,10 @@ export function AdminShell({
           })}
         </nav>
         <div className="mt-auto flex items-center gap-3 border-t border-border px-2 pt-4">
-          <span className="relative size-9 shrink-0 overflow-clip rounded-full">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/catalog/admin-users/lucas.webp"
-              alt=""
-              width={36}
-              height={36}
-              className="size-full object-cover"
-            />
-          </span>
+          <InitialsAvatar name="A" size={36} />
           <div className="min-w-0 flex flex-col">
-            <p className="truncate text-sm font-semibold">Lucas Mendes</p>
-            <p className="truncate text-xs text-muted">Diretor Técnico</p>
+            <p className="truncate text-sm font-semibold">Administrador</p>
+            <p className="truncate text-xs text-muted">Painel Tervelo</p>
           </div>
         </div>
       </aside>

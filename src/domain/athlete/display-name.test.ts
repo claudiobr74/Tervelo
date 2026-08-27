@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { firstName, greeting } from "@/domain/athlete/display-name";
+import {
+  athleteDisplayName,
+  firstName,
+  greeting,
+  initialsFromName,
+} from "@/domain/athlete/display-name";
 
 describe("firstName", () => {
   it("usa o primeiro nome de um nome completo", () => {
@@ -25,5 +30,21 @@ describe("greeting", () => {
 
   it("cumprimenta sem nome quando não existe", () => {
     expect(greeting(undefined)).toBe("Olá.");
+  });
+});
+
+describe("athleteDisplayName", () => {
+  it("não cai em nome de demonstração", () => {
+    expect(athleteDisplayName("", "Maria")).toBe("Maria");
+    expect(athleteDisplayName("  ", null)).toBe("");
+    expect(athleteDisplayName("Ana", "Outro")).toBe("Ana");
+  });
+});
+
+describe("initialsFromName", () => {
+  it("usa até duas letras do nome", () => {
+    expect(initialsFromName("Ana Paula")).toBe("AP");
+    expect(initialsFromName("lucas.atleta")).toBe("LA");
+    expect(initialsFromName("")).toBe("A");
   });
 });

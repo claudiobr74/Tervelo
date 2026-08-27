@@ -16,8 +16,8 @@ test.describe("perfil do atleta", () => {
     await page.goto("/app/today");
     await page.getByRole("link", { name: "Perfil" }).click();
     await expect(page).toHaveURL(/\/app\/profile/);
-    await expect(page.getByRole("heading", { name: "Lucas Mendes" })).toBeVisible();
-    await expect(page.getByText("ATLETA PRO")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "lucas.atleta" })).toBeVisible();
+    await expect(page.getByText("ATLETA PRO")).toHaveCount(0);
 
     await page.getByRole("link", { name: "Mais" }).click();
     await expect(page).toHaveURL(/\/app\/profile/);

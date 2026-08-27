@@ -38,9 +38,10 @@ test.describe("longitudinal", () => {
     await page.getByRole("button", { name: "Medidas" }).click();
     await expect(page).toHaveURL(/\/app\/body/);
     await expect(page.getByRole("heading", { name: "Corpo e Medidas" })).toBeVisible();
-    await expect(page.getByText("82,4 kg")).toBeVisible();
-    await expect(page.getByText("16,2%")).toBeVisible();
-    await expect(page.getByText("69,1 kg")).toBeVisible();
+    await expect(page.getByText("82,4 kg")).toHaveCount(0);
+    await expect(
+      page.getByText("Registre sua primeira medida").or(page.getByText("—").first()),
+    ).toBeVisible();
   });
 
   test("recuperação funciona no tema claro", async ({ page }) => {

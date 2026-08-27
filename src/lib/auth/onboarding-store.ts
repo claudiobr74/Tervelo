@@ -3,6 +3,7 @@ import {
   ONBOARDING_STORAGE_KEY,
   type OnboardingDraft,
 } from "@/lib/auth/onboarding";
+import { currentOfflineUserId } from "@/lib/offline/user-scope";
 
 const listeners = new Set<() => void>();
 let cachedRaw: string | null = null;
@@ -22,11 +23,21 @@ export function parseOnboardingDraft(raw: string | null): OnboardingDraft {
   }
 }
 
+function scopedKey(): string {
+  return `${ONBOARDING_STORAGE_KEY}:${currentOfflineUserId()}`;
+}
+
 function bindStorageListener() {
   if (storageListenerBound || typeof window === "undefined") return;
   storageListenerBound = true;
   window.addEventListener("storage", (event) => {
-    if (event.key !== ONBOARDING_STORAGE_KEY) return;
+    if (
+      event.key !== ONBOARDING_STORAGE_KEY &&
+      event.key !== scopedKey() &&
+      !event.key?.startsWith(`${ONBOARDING_STORAGE_KEY}:`)
+    ) {
+      return;
+    }
     cachedRaw = null;
     emit();
   });
@@ -36,8 +47,10 @@ function readRaw(): string | null {
   if (typeof window === "undefined") return null;
   bindStorageListener();
   try {
-    const local = window.localStorage.getItem(ONBOARDING_STORAGE_KEY);
+    const local = window.localStorage.getItem(scopedKey());
     if (local) return local;
+    // Chave antiga era global: herdá-la copiaria o cadastro de outra conta.
+    window.localStorage.removeItem(ONBOARDING_STORAGE_KEY);
   } catch {
     /* private mode */
   }
@@ -60,7 +73,8 @@ function readRaw(): string | null {
 
 function writeRaw(raw: string) {
   try {
-    window.localStorage.setItem(ONBOARDING_STORAGE_KEY, raw);
+    window.localStorage.setItem(scopedKey(), raw);
+    window.localStorage.removeItem(ONBOARDING_STORAGE_KEY);
     window.sessionStorage.removeItem(ONBOARDING_STORAGE_KEY);
     return;
   } catch {

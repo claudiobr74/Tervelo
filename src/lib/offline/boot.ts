@@ -1,3 +1,4 @@
+import { demoDataEnabled } from "@/lib/demo-data";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 import { hydrateAthleteStateFromDurable } from "@/lib/athlete-state/session-store";
 import { hydrateHeartRateFromDurable } from "@/lib/heart-rate/session-store";
@@ -52,15 +53,17 @@ async function bootOnce() {
   if (nutrition) hydrateNutritionFromDurable(nutrition);
 
   const snapshot = await getKv(userId, KV_KEYS.prescriptionSnapshot);
-  if (!snapshot) {
-    await putKv(userId, KV_KEYS.prescriptionSnapshot, {
-      sessionId: PREVIEW_WORKOUT.id,
-      programVersion: "preview-1",
-      frozenAt: new Date().toISOString(),
-      workout: PREVIEW_WORKOUT,
-    });
+  if (demoDataEnabled()) {
+    if (!snapshot) {
+      await putKv(userId, KV_KEYS.prescriptionSnapshot, {
+        sessionId: PREVIEW_WORKOUT.id,
+        programVersion: "preview-1",
+        frozenAt: new Date().toISOString(),
+        workout: PREVIEW_WORKOUT,
+      });
+    }
+    await putKv(userId, KV_KEYS.catalogToday, PREVIEW_WORKOUT);
   }
-  await putKv(userId, KV_KEYS.catalogToday, PREVIEW_WORKOUT);
 
   patchSyncStatus({
     offlineReady: true,
