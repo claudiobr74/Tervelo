@@ -57,7 +57,11 @@ export function shouldFlush(input: {
   intervalMs?: number;
 }): boolean {
   if (input.pendingCount <= 0) return false;
-  if (input.trigger === "exercise_change" || input.trigger === "session_end" || input.trigger === "online") {
+  if (
+    input.trigger === "exercise_change" ||
+    input.trigger === "session_end" ||
+    input.trigger === "online"
+  ) {
     return true;
   }
   const interval = input.intervalMs ?? 15_000;

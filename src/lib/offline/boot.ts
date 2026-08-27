@@ -21,13 +21,22 @@ async function bootOnce() {
   await loadSyncQueueFromIdb(userId);
   await hydrateLastSyncedAt();
 
-  const live = await getKv<Parameters<typeof hydrateLiveSessionFromDurable>[0]>(userId, KV_KEYS.liveSession);
+  const live = await getKv<Parameters<typeof hydrateLiveSessionFromDurable>[0]>(
+    userId,
+    KV_KEYS.liveSession,
+  );
   if (live) hydrateLiveSessionFromDurable(live);
 
-  const athlete = await getKv<Parameters<typeof hydrateAthleteStateFromDurable>[0]>(userId, KV_KEYS.athleteState);
+  const athlete = await getKv<Parameters<typeof hydrateAthleteStateFromDurable>[0]>(
+    userId,
+    KV_KEYS.athleteState,
+  );
   if (athlete) hydrateAthleteStateFromDurable(athlete);
 
-  const heart = await getKv<Parameters<typeof hydrateHeartRateFromDurable>[0]>(userId, KV_KEYS.heartRateSession);
+  const heart = await getKv<Parameters<typeof hydrateHeartRateFromDurable>[0]>(
+    userId,
+    KV_KEYS.heartRateSession,
+  );
   if (heart) hydrateHeartRateFromDurable(heart);
 
   const longitudinal = await getKv<Parameters<typeof hydrateLongitudinalFromDurable>[0]>(
@@ -36,7 +45,10 @@ async function bootOnce() {
   );
   if (longitudinal) hydrateLongitudinalFromDurable(longitudinal);
 
-  const nutrition = await getKv<Parameters<typeof hydrateNutritionFromDurable>[0]>(userId, KV_KEYS.nutrition);
+  const nutrition = await getKv<Parameters<typeof hydrateNutritionFromDurable>[0]>(
+    userId,
+    KV_KEYS.nutrition,
+  );
   if (nutrition) hydrateNutritionFromDurable(nutrition);
 
   const snapshot = await getKv(userId, KV_KEYS.prescriptionSnapshot);

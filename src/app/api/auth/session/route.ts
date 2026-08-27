@@ -72,7 +72,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (consumeRateLimit(`session-delete:${clientKeyFromRequest(request)}`, { max: 120 }) === "limited") {
+  if (
+    consumeRateLimit(`session-delete:${clientKeyFromRequest(request)}`, { max: 120 }) === "limited"
+  ) {
     return NextResponse.json({ ok: false, error: "too_many_requests" }, { status: 429 });
   }
   const store = await cookies();

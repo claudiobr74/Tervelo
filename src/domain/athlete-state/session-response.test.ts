@@ -49,7 +49,9 @@ describe("buildSessionResponse", () => {
     expect(build().suggestedScope).toBe("SEM_MUDANCA");
     expect(build({ timeAdapted: true }).suggestedScope).toBe("AJUSTE_DA_SESSAO");
     expect(build({ limitationPresent: true }).suggestedScope).toBe("AJUSTE_DA_SESSAO");
-    expect(build({ timeAdapted: true, limitationPresent: true }).suggestedScope).toBe("AJUSTE_DA_SESSAO");
+    expect(build({ timeAdapted: true, limitationPresent: true }).suggestedScope).toBe(
+      "AJUSTE_DA_SESSAO",
+    );
   });
 
   it("só considera frequência cardíaca com aparelho ligado e amostras", () => {

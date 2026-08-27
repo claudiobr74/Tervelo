@@ -69,7 +69,10 @@ const SAVE_GOAL = `mutation SaveAthleteGoal($goal_type: String!) {
 }`;
 
 export async function POST(request: Request) {
-  if (consumeRateLimit(`onboarding-profile:${clientKeyFromRequest(request)}`, { max: 30 }) === "limited") {
+  if (
+    consumeRateLimit(`onboarding-profile:${clientKeyFromRequest(request)}`, { max: 30 }) ===
+    "limited"
+  ) {
     return NextResponse.json({ ok: false, error: "too_many_requests" }, { status: 429 });
   }
 

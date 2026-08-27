@@ -36,7 +36,9 @@ export function buildSessionResponse(input: {
   timeAdapted: boolean;
 }): SessionResponse {
   const completedRatio =
-    input.objective.plannedSets <= 0 ? 1 : input.objective.completedSets / input.objective.plannedSets;
+    input.objective.plannedSets <= 0
+      ? 1
+      : input.objective.completedSets / input.objective.plannedSets;
   const adherence: SessionResponse["adherence"] =
     completedRatio >= 0.9 ? "completa" : completedRatio >= 0.4 ? "parcial" : "nao_realizada";
 

@@ -76,8 +76,12 @@ function hydrate() {
   try {
     const raw = window.localStorage.getItem(HEART_RATE_SESSION_KEY);
     if (!raw) return;
-    const parsed = JSON.parse(raw) as { session?: StoredHeartRateSession; wearable?: StoredWearable | null };
-    if (parsed.session) cached = { ...EMPTY_SESSION, ...parsed.session, queue: parsed.session.queue ?? [] };
+    const parsed = JSON.parse(raw) as {
+      session?: StoredHeartRateSession;
+      wearable?: StoredWearable | null;
+    };
+    if (parsed.session)
+      cached = { ...EMPTY_SESSION, ...parsed.session, queue: parsed.session.queue ?? [] };
     wearable = parsed.wearable ?? null;
   } catch {
     cached = EMPTY_SESSION;
@@ -151,7 +155,11 @@ export function deactivateWearable() {
   persist();
 }
 
-export function beginHeartRateCapture(input: { userId: string; trainingSessionId: string; startedAt: string }) {
+export function beginHeartRateCapture(input: {
+  userId: string;
+  trainingSessionId: string;
+  startedAt: string;
+}) {
   hydrate();
   cached = {
     ...EMPTY_SESSION,
@@ -204,7 +212,9 @@ export function samplesFromQueue(): HeartRateSample[] {
   }));
 }
 
-export async function flushStoredHeartRate(trigger: "interval" | "exercise_change" | "session_end" | "online") {
+export async function flushStoredHeartRate(
+  trigger: "interval" | "exercise_change" | "session_end" | "online",
+) {
   hydrate();
   if (!cached.id || cached.queue.length === 0) return;
   if (

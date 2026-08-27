@@ -35,11 +35,7 @@ function daysAgoIso(days: number): string {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000 - 1000).toISOString();
 }
 
-function seedCheckin(
-  id: string,
-  daysAgo: number,
-  scores: RecoveryScores,
-): RecoveryCheckinRecord {
+function seedCheckin(id: string, daysAgo: number, scores: RecoveryScores): RecoveryCheckinRecord {
   return {
     id,
     userId: currentOfflineUserId(),
@@ -170,7 +166,9 @@ export function hydrateLongitudinalFromDurable(state: LongitudinalState) {
   const checkins = Array.isArray(state.checkins) ? state.checkins : [];
   const measurements = Array.isArray(state.measurements) ? state.measurements : [];
   cached =
-    checkins.length === 0 && measurements.length === 0 ? initialState() : { checkins, measurements };
+    checkins.length === 0 && measurements.length === 0
+      ? initialState()
+      : { checkins, measurements };
   hydrated = true;
   emit();
 }

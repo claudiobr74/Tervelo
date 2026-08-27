@@ -54,7 +54,9 @@ export function adherenceRate(completed: number, planned: number): number | null
   return Math.min(1, Math.max(0, completed / planned));
 }
 
-export function classifyAdherence(rate: number | null): "ALTA" | "MODERADA" | "BAIXA" | "INDEFINIDO" {
+export function classifyAdherence(
+  rate: number | null,
+): "ALTA" | "MODERADA" | "BAIXA" | "INDEFINIDO" {
   if (rate == null) return "INDEFINIDO";
   if (rate >= 0.85) return "ALTA";
   if (rate >= 0.6) return "MODERADA";

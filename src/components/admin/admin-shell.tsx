@@ -28,7 +28,12 @@ const LIBRARY = [
 ] as const;
 
 const AFTER = [
-  { href: "/admin/ai", label: "Inteligência Artificial", icon: "/icons/admin/cpu.svg", pending: false },
+  {
+    href: "/admin/ai",
+    label: "Inteligência Artificial",
+    icon: "/icons/admin/cpu.svg",
+    pending: false,
+  },
   { href: null, label: "Configurações", icon: "/icons/admin/settings.svg", pending: true },
   { href: "/admin/audit", label: "Auditoria", icon: "/icons/admin/shield.svg", pending: false },
 ] as const;
@@ -89,9 +94,13 @@ export function AdminShell({
             );
           })}
           <div className="flex flex-col gap-1">
-            <div className={`flex items-center gap-3 rounded-[var(--radius-md)] px-4 py-3 ${libraryActive ? "text-brand" : "text-muted"}`}>
+            <div
+              className={`flex items-center gap-3 rounded-[var(--radius-md)] px-4 py-3 ${libraryActive ? "text-brand" : "text-muted"}`}
+            >
               <FigmaIcon src="/icons/admin/book.svg" alt="" size={18} />
-              <span className={`text-sm ${libraryActive ? "font-semibold text-brand" : "font-medium"}`}>
+              <span
+                className={`text-sm ${libraryActive ? "font-semibold text-brand" : "font-medium"}`}
+              >
                 Biblioteca
               </span>
             </div>
@@ -138,7 +147,13 @@ export function AdminShell({
         <div className="mt-auto flex items-center gap-3 border-t border-border px-2 pt-4">
           <span className="relative size-9 shrink-0 overflow-clip rounded-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/catalog/admin-users/lucas.webp" alt="" width={36} height={36} className="size-full object-cover" />
+            <img
+              src="/catalog/admin-users/lucas.webp"
+              alt=""
+              width={36}
+              height={36}
+              className="size-full object-cover"
+            />
           </span>
           <div className="min-w-0 flex flex-col">
             <p className="truncate text-sm font-semibold">Lucas Mendes</p>
@@ -165,7 +180,9 @@ export function AdminShell({
             </span>
           </div>
         </header>
-        <main className="min-h-0 min-w-0 flex-1 overflow-auto px-4 py-6 lg:px-8 lg:py-8">{children}</main>
+        <main className="min-h-0 min-w-0 flex-1 overflow-auto px-4 py-6 lg:px-8 lg:py-8">
+          {children}
+        </main>
       </div>
     </div>
   );

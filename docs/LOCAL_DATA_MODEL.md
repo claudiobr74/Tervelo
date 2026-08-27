@@ -4,11 +4,11 @@ Banco IndexedDB: `tervelo-offline` (versão 1). Migrations no `onupgradeneeded`.
 
 ## Stores
 
-| Store | Chave | Conteúdo |
-| --- | --- | --- |
-| `kv` | `userId:key` | Documentos por usuário |
-| `sync_queue` | `id` | Fila de operações |
-| `meta` | `key` | lastSyncedAt e flags de migração |
+| Store        | Chave        | Conteúdo                         |
+| ------------ | ------------ | -------------------------------- |
+| `kv`         | `userId:key` | Documentos por usuário           |
+| `sync_queue` | `id`         | Fila de operações                |
+| `meta`       | `key`        | lastSyncedAt e flags de migração |
 
 ## Documentos KV
 

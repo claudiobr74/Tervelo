@@ -60,7 +60,10 @@ describe("HEART_RATE_CONTEXT", () => {
 
   it("resume a sessão sem enviar a série temporal crua", () => {
     const samples = Array.from({ length: 12 }, (_, index) =>
-      sample(110 + index, new Date(Date.parse("2026-08-26T10:00:00.000Z") + index * 1000).toISOString()),
+      sample(
+        110 + index,
+        new Date(Date.parse("2026-08-26T10:00:00.000Z") + index * 1000).toISOString(),
+      ),
     );
     const ctx = buildHeartRateContext({
       heartRateEnabled: true,

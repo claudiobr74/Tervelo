@@ -70,11 +70,11 @@ Não sugerir alterações de energia ou macronutrientes com base apenas em um re
 
 Antes de recomendar mudança relevante: confirmar tendência; avaliar qualidade dos dados; avaliar aderência; avaliar objetivo; avaliar treinamento; avaliar composição corporal; avaliar performance; avaliar recuperação; somente então considerar ajuste.
 
-| Condição | Ação |
-| --- | --- |
-| `insufficient_data` | KEEP / OBSERVE |
-| `trend_is_appropriate` | KEEP |
-| `outcome_is_off_target` e `adherence_is_low` | ADDRESS_ADHERENCE_FIRST |
+| Condição                                      | Ação                          |
+| --------------------------------------------- | ----------------------------- |
+| `insufficient_data`                           | KEEP / OBSERVE                |
+| `trend_is_appropriate`                        | KEEP                          |
+| `outcome_is_off_target` e `adherence_is_low`  | ADDRESS_ADHERENCE_FIRST       |
 | `outcome_is_off_target` e `adherence_is_high` | CONSIDER_NUTRITION_ADJUSTMENT |
 
 Não utilizar mudanças frequentes e pequenas apenas para demonstrar atividade da IA.
@@ -231,4 +231,3 @@ Complementa este adendo e o Prompt Mestre. **Não substitui** o pipeline de agen
 - Intenções do Orquestrador: `ANALYZE_PRE_WORKOUT`, `ANALYZE_POST_WORKOUT`, `UPDATE_ATHLETE_STATE`, `GENERATE_WEEKLY_REVIEW`.
 
 Auditoria: [`ATHLETE_STATE_TRIO_PRE_IMPLEMENTATION_AUDIT.md`](ATHLETE_STATE_TRIO_PRE_IMPLEMENTATION_AUDIT.md).
-

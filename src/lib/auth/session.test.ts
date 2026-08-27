@@ -15,14 +15,20 @@ describe("auth", () => {
   it("lê cookie de sessão", () => {
     expect(parseSessionCookie(undefined)).toBeNull();
     expect(parseSessionCookie("{")).toBeNull();
-    expect(parseSessionCookie(JSON.stringify({ preview: true, user: { email: "a@b.c" } }))).toMatchObject({
+    expect(
+      parseSessionCookie(JSON.stringify({ preview: true, user: { email: "a@b.c" } })),
+    ).toMatchObject({
       preview: true,
     });
   });
 
   it("pré-visualização admin só com previewRole", async () => {
-    await expect(sessionHasAdminAccess({ preview: true, previewRole: "admin" })).resolves.toBe(true);
-    await expect(sessionHasAdminAccess({ preview: true, previewRole: "user" })).resolves.toBe(false);
+    await expect(sessionHasAdminAccess({ preview: true, previewRole: "admin" })).resolves.toBe(
+      true,
+    );
+    await expect(sessionHasAdminAccess({ preview: true, previewRole: "user" })).resolves.toBe(
+      false,
+    );
     await expect(sessionHasAdminAccess({ preview: true })).resolves.toBe(false);
   });
 

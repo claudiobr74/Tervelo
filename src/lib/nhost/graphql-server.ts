@@ -12,7 +12,9 @@ export function nhostGraphqlEndpoint(): string | null {
 }
 
 /** Sessão utilizável para falar com o Hasura em nome do usuário. */
-export function sessionCanReachNhost(session: StoredAppSession | null): session is StoredAppSession {
+export function sessionCanReachNhost(
+  session: StoredAppSession | null,
+): session is StoredAppSession {
   return Boolean(
     session && !session.preview && session.accessToken && session.accessToken !== "preview",
   );

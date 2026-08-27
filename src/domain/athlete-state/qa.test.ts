@@ -24,7 +24,11 @@ const okFlags = {
 
 describe("Auditor de Qualidade — Estado do Atleta", () => {
   it("passa quando as regras protegidas são respeitadas", () => {
-    expect(auditAthleteStateDecision(okFlags)).toEqual({ ok: true, blocked: false, failedChecks: [] });
+    expect(auditAthleteStateDecision(okFlags)).toEqual({
+      ok: true,
+      blocked: false,
+      failedChecks: [],
+    });
   });
 
   it("bloqueia superinterpretação de check-in e mudança estrutural de uma sessão", () => {

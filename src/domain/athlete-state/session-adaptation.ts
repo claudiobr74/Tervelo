@@ -19,7 +19,11 @@ export type SessionTimeAdaptation = {
   affectsFutureProgram: false;
 };
 
-function priorityOf(exercise: SessionExercise, index: number, total: number): PlannedExercisePriority {
+function priorityOf(
+  exercise: SessionExercise,
+  index: number,
+  total: number,
+): PlannedExercisePriority {
   if (index === 0 || index === 1) return "primary";
   if (index >= total - 1) return "finisher";
   return "accessory";
@@ -83,7 +87,9 @@ export function adaptSessionForAvailableTime(input: {
     );
   }
 
-  const remainingRatio = input.availableMinutes / Math.max(1, input.plannedMinutes * (kept.length / input.exercises.length));
+  const remainingRatio =
+    input.availableMinutes /
+    Math.max(1, input.plannedMinutes * (kept.length / input.exercises.length));
   if (remainingRatio < 0.85 && kept.length > 1) {
     const last = kept[kept.length - 1];
     if (last.priority !== "primary" && last.sets > 2) {

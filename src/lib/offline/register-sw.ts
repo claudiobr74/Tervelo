@@ -16,21 +16,23 @@ export function registerTerveloServiceWorker() {
     (window as Window & { __terveloInstall?: Event }).__terveloInstall = event;
   });
 
-  void navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).then((registration) => {
-    registration.addEventListener("updatefound", () => {
-      const worker = registration.installing;
-      if (!worker) return;
-      worker.addEventListener("statechange", () => {
-        if (worker.state !== "installed" || !navigator.serviceWorker.controller) return;
-        const live = getLiveSession();
-        if (live.status === "active" || live.status === "resting") {
+  void navigator.serviceWorker
+    .register("/sw.js", { updateViaCache: "none" })
+    .then((registration) => {
+      registration.addEventListener("updatefound", () => {
+        const worker = registration.installing;
+        if (!worker) return;
+        worker.addEventListener("statechange", () => {
+          if (worker.state !== "installed" || !navigator.serviceWorker.controller) return;
+          const live = getLiveSession();
+          if (live.status === "active" || live.status === "resting") {
+            patchSyncStatus({ updateWaiting: true });
+            return;
+          }
           patchSyncStatus({ updateWaiting: true });
-          return;
-        }
-        patchSyncStatus({ updateWaiting: true });
+        });
       });
     });
-  });
 }
 
 export function dismissInstallPrompt() {
@@ -40,7 +42,8 @@ export function dismissInstallPrompt() {
 }
 
 export async function promptInstall(): Promise<void> {
-  const event = (window as Window & { __terveloInstall?: BeforeInstallPromptEvent }).__terveloInstall;
+  const event = (window as Window & { __terveloInstall?: BeforeInstallPromptEvent })
+    .__terveloInstall;
   if (!event) return;
   await event.prompt();
   patchSyncStatus({ installAvailable: false });

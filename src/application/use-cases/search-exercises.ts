@@ -1,4 +1,8 @@
-import { searchCatalogExercises, type CatalogExercise, type ExerciseSearchFilter } from "@/domain/exercise/search";
+import {
+  searchCatalogExercises,
+  type CatalogExercise,
+  type ExerciseSearchFilter,
+} from "@/domain/exercise/search";
 import { err, ok, type Result } from "@/domain/result";
 import { z } from "zod";
 import { issuesOf } from "../validation/schemas";
@@ -16,5 +20,7 @@ export function searchExercisesUseCase(
   if (!parsed.success) {
     return err({ code: "invalid_input", issues: issuesOf(parsed.error) });
   }
-  return ok(searchCatalogExercises(catalog, parsed.data.query, parsed.data.filter as ExerciseSearchFilter));
+  return ok(
+    searchCatalogExercises(catalog, parsed.data.query, parsed.data.filter as ExerciseSearchFilter),
+  );
 }

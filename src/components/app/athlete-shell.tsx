@@ -23,12 +23,19 @@ export function AthleteBottomNav({ active }: { active?: (typeof TABS)[number]["l
         const inner = (
           <>
             <FigmaIcon src={tab.icon} alt="" size={22} />
-            <span className={`text-[11px] ${selected ? "font-semibold" : "font-normal"}`}>{tab.label}</span>
+            <span className={`text-[11px] ${selected ? "font-semibold" : "font-normal"}`}>
+              {tab.label}
+            </span>
           </>
         );
         if (!tab.enabled) {
           return (
-            <span key={tab.label} className={`${className} opacity-70`} aria-disabled="true" title="Em breve">
+            <span
+              key={tab.label}
+              className={`${className} opacity-70`}
+              aria-disabled="true"
+              title="Em breve"
+            >
               {inner}
             </span>
           );

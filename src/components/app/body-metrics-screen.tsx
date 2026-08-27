@@ -21,7 +21,18 @@ import { appendBodyMeasurement, useLongitudinal } from "@/lib/longitudinal/previ
 import { useSyncStatus } from "@/components/app/sync-status-indicator";
 import { SYNC_COPY } from "@/domain/offline";
 
-function toPoints(rows: { id: string; measuredAt: string; supersedesId?: string; weightKg?: number; bodyFatPercent?: number; waistCm?: number; rightArmCm?: number; rightThighCm?: number }[]): CompositionPoint[] {
+function toPoints(
+  rows: {
+    id: string;
+    measuredAt: string;
+    supersedesId?: string;
+    weightKg?: number;
+    bodyFatPercent?: number;
+    waistCm?: number;
+    rightArmCm?: number;
+    rightThighCm?: number;
+  }[],
+): CompositionPoint[] {
   return rows.map((row) => ({
     id: row.id,
     recordedAt: new Date(row.measuredAt),
@@ -34,15 +45,7 @@ function toPoints(rows: { id: string; measuredAt: string; supersedesId?: string;
   }));
 }
 
-function MetricBox({
-  label,
-  value,
-  trend,
-}: {
-  label: string;
-  value: string;
-  trend?: string;
-}) {
+function MetricBox({ label, value, trend }: { label: string; value: string; trend?: string }) {
   return (
     <article className="flex min-w-0 flex-1 flex-col gap-1.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3.5">
       <p className="text-[11px] font-medium text-muted">{label}</p>
@@ -67,7 +70,9 @@ function CircumferenceRow({
       <div className="flex items-center gap-3">
         <p className="text-sm font-bold text-foreground">{value}</p>
         {delta ? (
-          <span className="rounded bg-success/20 px-1.5 py-0.5 text-[11px] font-bold text-success">{delta}</span>
+          <span className="rounded bg-success/20 px-1.5 py-0.5 text-[11px] font-bold text-success">
+            {delta}
+          </span>
         ) : null}
       </div>
     </article>
@@ -157,7 +162,9 @@ export function BodyMetricsScreen() {
           />
           <MetricBox
             label="Gordura Corporal"
-            value={latest?.bodyFatPercent !== undefined ? formatPercent(latest.bodyFatPercent) : "—"}
+            value={
+              latest?.bodyFatPercent !== undefined ? formatPercent(latest.bodyFatPercent) : "—"
+            }
             trend={
               fatDelta !== null && fatDelta !== 0
                 ? `${formatSignedDelta(round1(fatDelta), "")}% ${period.deltaLabel}`
@@ -169,7 +176,9 @@ export function BodyMetricsScreen() {
         <div className="flex gap-3">
           <article className="flex min-w-0 flex-1 flex-col gap-1.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3.5">
             <p className="text-[11px] font-medium text-muted">Massa Magra Est.</p>
-            <p className="text-lg font-bold text-foreground">{lean !== null ? formatMeasure(lean, "kg") : "—"}</p>
+            <p className="text-lg font-bold text-foreground">
+              {lean !== null ? formatMeasure(lean, "kg") : "—"}
+            </p>
           </article>
           <article className="flex min-w-0 flex-1 flex-col gap-1.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3.5">
             <p className="text-[11px] font-medium text-muted">Peso Médio (7d)</p>
@@ -193,7 +202,9 @@ export function BodyMetricsScreen() {
           />
           <CircumferenceRow
             label="Coxa D"
-            value={latest?.rightThighCm !== undefined ? formatMeasure(latest.rightThighCm, "cm", 0) : "—"}
+            value={
+              latest?.rightThighCm !== undefined ? formatMeasure(latest.rightThighCm, "cm", 0) : "—"
+            }
             delta={thighDelta !== null ? formatSignedDelta(round1(thighDelta), "cm") : null}
           />
         </section>

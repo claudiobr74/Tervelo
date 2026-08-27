@@ -13,17 +13,17 @@ Prompt permanente das fases de produto do **atleta**. Não cobre o console admin
 
 ## Fases deste módulo
 
-| Fase | Superfície |
-| --- | --- |
-| 4 | Auth + onboarding |
-| 5 | Busca de exercícios e anilhas **do aluno** (admin da Phase 5 fica fora deste prompt) |
-| 6 | Motor de treino |
-| 7 | Recuperação, corpo e evolução |
-| 8 | Nutrição |
-| 9 | Coach / IA no app do aluno |
-| 11 | Frequência cardíaca (Web Bluetooth real, opcional) |
-| 12 | Estado do Atleta, Check-in Pré-Treino, Check-out Pós-Treino, Revisão Semanal do Coach |
-| 13 | Funcionamento offline (treino, check-ins, medidas, nutrição essencial, PWA) |
+| Fase | Superfície                                                                            |
+| ---- | ------------------------------------------------------------------------------------- |
+| 4    | Auth + onboarding                                                                     |
+| 5    | Busca de exercícios e anilhas **do aluno** (admin da Phase 5 fica fora deste prompt)  |
+| 6    | Motor de treino                                                                       |
+| 7    | Recuperação, corpo e evolução                                                         |
+| 8    | Nutrição                                                                              |
+| 9    | Coach / IA no app do aluno                                                            |
+| 11   | Frequência cardíaca (Web Bluetooth real, opcional)                                    |
+| 12   | Estado do Atleta, Check-in Pré-Treino, Check-out Pós-Treino, Revisão Semanal do Coach |
+| 13   | Funcionamento offline (treino, check-ins, medidas, nutrição essencial, PWA)           |
 
 ## Regras ao implementar
 

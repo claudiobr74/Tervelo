@@ -53,7 +53,7 @@ export function AdminUsersScreen() {
         </div>
 
         <div className="overflow-x-auto rounded-[var(--radius-xl)] border border-border bg-surface">
-            <div className="flex min-w-[52rem] items-center gap-4 bg-surface-secondary p-3 text-xs font-bold text-muted">
+          <div className="flex min-w-[52rem] items-center gap-4 bg-surface-secondary p-3 text-xs font-bold text-muted">
             <p className="min-w-0 flex-1">Nome</p>
             <p className="w-[100px] shrink-0">Status</p>
             <p className="w-[100px] shrink-0">Plano</p>
@@ -81,7 +81,9 @@ export function AdminUsersScreen() {
               <div className="w-[100px] shrink-0">
                 <span
                   className={`inline-flex rounded-full px-2 py-1 text-[11px] font-bold ${
-                    user.status === "Ativo" ? "bg-success/20 text-success" : "bg-error/20 text-error"
+                    user.status === "Ativo"
+                      ? "bg-success/20 text-success"
+                      : "bg-error/20 text-error"
                   }`}
                 >
                   {user.status}
@@ -90,7 +92,9 @@ export function AdminUsersScreen() {
               <p className="w-[100px] shrink-0 text-[13px] font-medium">{user.plan}</p>
               <p className="w-[140px] shrink-0 text-[13px] text-muted">{user.goal}</p>
               <p className="w-[140px] shrink-0 text-[13px] text-muted">{user.lastWorkout}</p>
-              <p className={`w-[100px] shrink-0 text-[13px] font-bold ${TONE[adherenceTone(user.adherencePct)]}`}>
+              <p
+                className={`w-[100px] shrink-0 text-[13px] font-bold ${TONE[adherenceTone(user.adherencePct)]}`}
+              >
                 {user.adherencePct}%
               </p>
               <p className="w-[120px] shrink-0 text-[13px] text-tertiary">{user.lastActivity}</p>
@@ -119,4 +123,3 @@ export function AdminUsersScreen() {
     </AdminShell>
   );
 }
-

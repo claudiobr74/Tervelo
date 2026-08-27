@@ -15,7 +15,6 @@
 - Headers: CSP com **nonce por requisição** (sem `unsafe-inline` em script), `connect-src` restrito aos domínios Nhost, HSTS em production, `X-Content-Type-Options`, `X-Frame-Options`, Permissions-Policy (bluetooth permitido para FC).
 - Rate limit das rotas de API é **em memória, por instância** (`src/lib/security/rate-limit.ts`). Em serverless isso é defesa parcial: para produção com tráfego real, complementar com rate limit distribuído (KV/Firewall) ou com o rate limit nativo do Nhost Auth.
 - Vercel: só `NEXT_PUBLIC_NHOST_SUBDOMAIN` / `REGION` no cliente. Deploy: [`VERCEL.md`](VERCEL.md).
-- Dependências e CI devem passar `lint` / `typecheck` / `test` / `build` / `test:e2e` antes de merge.
-- `npm run format:check` ainda não roda no CI: o repositório nunca passou pelo Prettier e a formatação em massa deve ser um commit próprio.
+- Dependências e CI devem passar `format:check` / `lint` / `typecheck` / `test` / `build` / `test:e2e` antes de merge.
 
 Detalhe da Phase 14: [`HARDENING_PRE_IMPLEMENTATION_AUDIT.md`](HARDENING_PRE_IMPLEMENTATION_AUDIT.md).

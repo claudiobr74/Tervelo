@@ -2,7 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { AuthFooterLink, AuthShell, FieldLabel, AUTH_INPUT_CLASS, PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
+import {
+  AuthFooterLink,
+  AuthShell,
+  FieldLabel,
+  AUTH_INPUT_CLASS,
+  PRIMARY_CTA_CLASS,
+} from "@/components/auth/auth-shell";
 import { BrandMark } from "@/components/auth/brand-mark";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
@@ -79,9 +85,7 @@ export function LoginForm() {
 
   return (
     <AuthShell
-      footer={
-        <AuthFooterLink prompt="Não tem uma conta?" href="/signup" action="Criar conta" />
-      }
+      footer={<AuthFooterLink prompt="Não tem uma conta?" href="/signup" action="Criar conta" />}
     >
       <BrandMark subtitle="Sua jornada para alta performance começa aqui." />
       <form onSubmit={onSubmit} className="flex w-full flex-col gap-[18px] px-6" noValidate>
@@ -129,7 +133,9 @@ export function LoginForm() {
           </button>
           <div className="flex items-center gap-3">
             <span className="h-px flex-1 bg-border" />
-            <span className="text-[12px] font-semibold uppercase text-tertiary">ou continue com</span>
+            <span className="text-[12px] font-semibold uppercase text-tertiary">
+              ou continue com
+            </span>
             <span className="h-px flex-1 bg-border" />
           </div>
           <div className="flex gap-3">

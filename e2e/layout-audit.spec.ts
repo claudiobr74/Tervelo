@@ -9,7 +9,9 @@ async function loginPreview(page: import("@playwright/test").Page) {
 }
 
 async function pageOverflow(page: import("@playwright/test").Page): Promise<number> {
-  return page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  return page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
 }
 
 test.describe("layout do app", () => {
@@ -17,7 +19,17 @@ test.describe("layout do app", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await loginPreview(page);
 
-    for (const path of ["/app/today", "/app/progress", "/app/nutrition", "/app/workout", "/app/plates", "/app/coach", "/app/profile", "/app/profile/pessoais", "/app/settings"]) {
+    for (const path of [
+      "/app/today",
+      "/app/progress",
+      "/app/nutrition",
+      "/app/workout",
+      "/app/plates",
+      "/app/coach",
+      "/app/profile",
+      "/app/profile/pessoais",
+      "/app/settings",
+    ]) {
       await page.goto(path);
       await expect(page.locator("h1").first()).toBeVisible();
       expect(await pageOverflow(page), path).toBeLessThanOrEqual(1);

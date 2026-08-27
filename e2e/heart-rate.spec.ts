@@ -26,7 +26,9 @@ test.describe("frequência cardíaca", () => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await expect(page.getByRole("heading", { name: "Treino e dispositivos" })).toBeVisible();
-    const toggle = page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" });
+    const toggle = page.getByRole("switch", {
+      name: "Usar frequência cardíaca durante os treinos",
+    });
     await expect(toggle).toHaveAttribute("aria-checked", "false");
     await expect(page.getByRole("button", { name: "Conectar frequencímetro" })).toHaveCount(0);
 
@@ -42,10 +44,9 @@ test.describe("frequência cardíaca", () => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }).click();
-    await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
-      "aria-checked",
-      "true",
-    );
+    await expect(
+      page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }),
+    ).toHaveAttribute("aria-checked", "true");
     await expect(
       page.getByText("Este navegador não oferece conexão direta com frequencímetros Bluetooth."),
     ).toBeVisible();
@@ -72,17 +73,15 @@ test.describe("frequência cardíaca", () => {
   test("frequência cardíaca aparece no treino nos dois temas", async ({ page }, testInfo) => {
     await loginPreview(page);
     await page.goto("/app/settings");
-    await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
-      "aria-checked",
-      "false",
-    );
+    await expect(
+      page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }),
+    ).toHaveAttribute("aria-checked", "false");
     await captureEvidence(page, testInfo, "fc_desligada_claro_390");
 
     await page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }).click();
-    await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
-      "aria-checked",
-      "true",
-    );
+    await expect(
+      page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }),
+    ).toHaveAttribute("aria-checked", "true");
     await captureEvidence(page, testInfo, "fc_ligada_claro_390");
 
     await page.goto("/app/today");
@@ -95,10 +94,9 @@ test.describe("frequência cardíaca", () => {
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "dark"));
     await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    await expect(page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" })).toHaveAttribute(
-      "aria-checked",
-      "true",
-    );
+    await expect(
+      page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }),
+    ).toHaveAttribute("aria-checked", "true");
     await captureEvidence(page, testInfo, "fc_ligada_escuro_390");
 
     await page.goto("/app/workout/exercise");

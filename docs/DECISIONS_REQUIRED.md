@@ -10,15 +10,15 @@ Status da Fase 0: `READY_WITH_FIXES`.
 
 **Fontes:** Figma `foundations-tokens` (`10:1253`) vs `Theme System — Light & Dark` (`15:3419`).
 
-| Token | Foundations (Light — “Em preparação”) | Theme System Light |
-| --- | --- | --- |
-| Background | `#FFFFFF` | Background/Primary `#FFFFFF` |
-| Surface | `#F9FAFB` | Surface/Primary `#FFFFFF`; Surface/Secondary `#F3F4F6`; Background/Secondary `#F8F9FA` |
-| Surface Elevated | `#FFFFFF` | Background/Elevated `#FFFFFF` |
-| Text Secondary | `#6B7280` | Text/Secondary `#4B5563`; Text/Tertiary `#6B7280` |
-| Brand Primary | não diferenciado (`#F59E0B`) | Brand/Primary `#D97706` |
-| Success | `#10B981` | Status/Success `#059669` |
-| Info | `#6366F1` (Indigo) | Status/Info `#2563EB` |
+| Token            | Foundations (Light — “Em preparação”) | Theme System Light                                                                     |
+| ---------------- | ------------------------------------- | -------------------------------------------------------------------------------------- |
+| Background       | `#FFFFFF`                             | Background/Primary `#FFFFFF`                                                           |
+| Surface          | `#F9FAFB`                             | Surface/Primary `#FFFFFF`; Surface/Secondary `#F3F4F6`; Background/Secondary `#F8F9FA` |
+| Surface Elevated | `#FFFFFF`                             | Background/Elevated `#FFFFFF`                                                          |
+| Text Secondary   | `#6B7280`                             | Text/Secondary `#4B5563`; Text/Tertiary `#6B7280`                                      |
+| Brand Primary    | não diferenciado (`#F59E0B`)          | Brand/Primary `#D97706`                                                                |
+| Success          | `#10B981`                             | Status/Success `#059669`                                                               |
+| Info             | `#6366F1` (Indigo)                    | Status/Info `#2563EB`                                                                  |
 
 **Proposta de implementação (pendente de aprovação):**
 
@@ -33,12 +33,12 @@ Status da Fase 0: `READY_WITH_FIXES`.
 
 ## D-002 — Tokens Dark: borda e superfície
 
-| Token | Foundations Dark | Theme System Dark |
-| --- | --- | --- |
-| Border | `#2E3340` | Border/Default `#2A2E3B` |
-| Surface Elevated | `#242833` | Surface/Secondary `#242833`; Overlay Level 03 `#2A2E3B` |
-| Background | `#0F1117` | Background/Primary `#0F1117` |
-| Surface | `#1A1D27` | Surface/Primary `#1A1D27` |
+| Token            | Foundations Dark | Theme System Dark                                       |
+| ---------------- | ---------------- | ------------------------------------------------------- |
+| Border           | `#2E3340`        | Border/Default `#2A2E3B`                                |
+| Surface Elevated | `#242833`        | Surface/Secondary `#242833`; Overlay Level 03 `#2A2E3B` |
+| Background       | `#0F1117`        | Background/Primary `#0F1117`                            |
+| Surface          | `#1A1D27`        | Surface/Primary `#1A1D27`                               |
 
 Theme System introduz tokens ausentes em Foundations: `Background/Secondary` (`#161920`), `Surface/Interactive` (`#2A2E3B`), `Text/Tertiary` (`#6B7280`).
 
@@ -152,12 +152,12 @@ A auditoria inicial propôs `--color-background-primary`. O Handoff copy-paste u
 
 ## D-013 — Tipografia Handoff vs Foundations
 
-| Estilo | Foundations | Handoff (`15:2898` / `28:527`) |
-| --- | --- | --- |
-| Display | 48px / LH 1.2 / 700 | 32px / 40 / 700 |
-| H1 | 32px / 700 | 24px / 32 / 700 |
-| Caption | 11px / 400 | 12px / 16 / 400 |
-| Overline | ausente | 10px / 14 / 500 |
+| Estilo   | Foundations         | Handoff (`15:2898` / `28:527`) |
+| -------- | ------------------- | ------------------------------ |
+| Display  | 48px / LH 1.2 / 700 | 32px / 40 / 700                |
+| H1       | 32px / 700          | 24px / 32 / 700                |
+| Caption  | 11px / 400          | 12px / 16 / 400                |
+| Overline | ausente             | 10px / 14 / 500                |
 
 **Proposta:** escala do handoff na **app**. Display 48px só na landing (`2:1865`) e no DS. Seguir `get_design_context` se uma tela divergir.
 

@@ -98,7 +98,10 @@ describe("calculadora de anilhas", () => {
   });
 
   it("respeita o teto do inventário (só dois de 25 kg no ginásio)", () => {
-    const limited = [{ weightKg: 25, quantity: 2 }, { weightKg: 10, quantity: 8 }];
+    const limited = [
+      { weightKg: 25, quantity: 2 },
+      { weightKg: 10, quantity: 8 },
+    ];
     const result = calculatePlates({ targetKg: 90, barKg: 20, stock: limited });
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -144,7 +147,9 @@ describe("calculadora de anilhas", () => {
   });
 
   it("sugere cargas vizinhas quando 1,25 kg falta no estoque", () => {
-    const noFine = stock.filter((item) => item.weightKg !== 1.25 && item.weightKg !== 0.5 && item.weightKg !== 1);
+    const noFine = stock.filter(
+      (item) => item.weightKg !== 1.25 && item.weightKg !== 0.5 && item.weightKg !== 1,
+    );
     const exact = calculatePlates({ targetKg: 101.25, barKg: 20, stock: noFine });
     expect(exact.ok).toBe(false);
     const nearest = nearestPlateLoads({ targetKg: 101.25, barKg: 20, stock: noFine });

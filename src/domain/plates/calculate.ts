@@ -105,10 +105,7 @@ export function calculatePlates(input: {
     .filter((type) => type.maxPerSide > 0)
     .sort((a, b) => b.weightGrams - a.weightGrams);
 
-  const availablePerSide = types.reduce(
-    (sum, type) => sum + type.weightGrams * type.maxPerSide,
-    0,
-  );
+  const availablePerSide = types.reduce((sum, type) => sum + type.weightGrams * type.maxPerSide, 0);
   if (types.length === 0 || availablePerSide < perSideGrams) {
     return err({ code: "insufficient_stock" });
   }

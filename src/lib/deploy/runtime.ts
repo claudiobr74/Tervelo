@@ -7,11 +7,13 @@ type DeployEnv = {
 };
 
 function readEnv(env?: DeployEnv): DeployEnv {
-  return env ?? {
-    VERCEL_ENV: process.env.VERCEL_ENV,
-    NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_NHOST_SUBDOMAIN: process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN,
-  };
+  return (
+    env ?? {
+      VERCEL_ENV: process.env.VERCEL_ENV,
+      NODE_ENV: process.env.NODE_ENV,
+      NEXT_PUBLIC_NHOST_SUBDOMAIN: process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN,
+    }
+  );
 }
 
 export function resolveDeployTarget(env?: DeployEnv): DeployTarget {

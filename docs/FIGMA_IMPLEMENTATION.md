@@ -36,15 +36,15 @@ Ainda faltam telas pontuais (ver §11). Isso **não** autoriza inventar UI gené
 
 ## 2. Páginas
 
-| Page ID | Nome | Papel |
-| --- | --- | --- |
-| `0:1` | 01 — Foundations | Tokens visuais, tipografia, grid, motion, ícones |
-| `2:2` | 02 — Components | Kit v1.4.0: botões, campos, controles, cards, toasts, overlays, nav |
-| `2:3` | 03 — Athlete Desktop | Landing + app desktop 1440 (Dark e Light) |
-| `2:4` | 04 — Athlete Mobile | App atleta ~402×874 (conteúdo 390), Dark e Light |
-| `2:5` | 05 — Admin | Console desktop 1440 (Dark e Light) |
-| `2:6` | 06 — Prototype | Mapa de fluxos FL.01–FL.05 (`15:2307`) |
-| `2:7` | 07 — Handoff | Specs + referência Cursor/React + **Code Tokens CSS** |
+| Page ID | Nome                 | Papel                                                               |
+| ------- | -------------------- | ------------------------------------------------------------------- |
+| `0:1`   | 01 — Foundations     | Tokens visuais, tipografia, grid, motion, ícones                    |
+| `2:2`   | 02 — Components      | Kit v1.4.0: botões, campos, controles, cards, toasts, overlays, nav |
+| `2:3`   | 03 — Athlete Desktop | Landing + app desktop 1440 (Dark e Light)                           |
+| `2:4`   | 04 — Athlete Mobile  | App atleta ~402×874 (conteúdo 390), Dark e Light                    |
+| `2:5`   | 05 — Admin           | Console desktop 1440 (Dark e Light)                                 |
+| `2:6`   | 06 — Prototype       | Mapa de fluxos FL.01–FL.05 (`15:2307`)                              |
+| `2:7`   | 07 — Handoff         | Specs + referência Cursor/React + **Code Tokens CSS**               |
 
 Kit de componentes: v1.4.0. Handoff Developer Reference: v1.2.0-beta. Specs: v1.0, “READY FOR DEV”, atualizado 24 de outubro de 2026.
 
@@ -165,29 +165,29 @@ Fonte de produto: **Manrope** via `next/font`. Pesos: Regular 400, Medium 500, S
 
 Handoff `15:2898` / `28:527` (UI de produto — D-013):
 
-| Token | Size / line / weight |
-| --- | --- |
-| Display | 32px / 40 / 700 |
-| H1 | 24px / 32 / 700 |
-| H2 | 20px / 28 / 600 |
-| H3 | 16px / 24 / 600 |
-| Body | 14px / 20 / 400 |
-| Caption | 12px / 16 / 400 |
+| Token    | Size / line / weight      |
+| -------- | ------------------------- |
+| Display  | 32px / 40 / 700           |
+| H1       | 24px / 32 / 700           |
+| H2       | 20px / 28 / 600           |
+| H3       | 16px / 24 / 600           |
+| Body     | 14px / 20 / 400           |
+| Caption  | 12px / 16 / 400           |
 | Overline | 10px / 14 / 500 uppercase |
 
 Foundations `10:1253` (marketing / Display hero — D-013):
 
-| Token | Size / weight / LH |
-| --- | --- |
-| Display | 48px / 700 / 1.2 |
-| Heading 1 | 32px / 700 / 1.3 |
-| Heading 2 | 24px / 600 / 1.3 |
-| Heading 3 | 20px / 600 / 1.4 |
-| Body Large | 16px / 400 / 1.5 |
-| Body | 14px / 400 / 1.5 |
-| Body Small | 12px / 400 / 1.4 |
-| Label | 14px / 500 / 1.2 |
-| Caption | 11px / 400 / 1.2 |
+| Token      | Size / weight / LH |
+| ---------- | ------------------ |
+| Display    | 48px / 700 / 1.2   |
+| Heading 1  | 32px / 700 / 1.3   |
+| Heading 2  | 24px / 600 / 1.3   |
+| Heading 3  | 20px / 600 / 1.4   |
+| Body Large | 16px / 400 / 1.5   |
+| Body       | 14px / 400 / 1.5   |
+| Body Small | 12px / 400 / 1.4   |
+| Label      | 14px / 500 / 1.2   |
+| Caption    | 11px / 400 / 1.2   |
 
 Proposta: escala do **handoff** na app; Display 48px só na landing (`2:1865`) e no DS. Caption 11px de Foundations só se o `get_design_context` da tela pedir.
 
@@ -207,13 +207,13 @@ Geist Mono: só no DS (hex codes). Ver D-006.
 
 **Motion Foundations** (domínio de treino):
 
-| Token | Valor |
-| --- | --- |
-| `--motion-micro` | 150ms ease-out |
+| Token                 | Valor             |
+| --------------------- | ----------------- |
+| `--motion-micro`      | 150ms ease-out    |
 | `--motion-transition` | 250ms ease-in-out |
-| `--motion-spring` | 300ms spring |
-| `--motion-countdown` | 1s linear |
-| `--motion-number` | 400ms ease-out |
+| `--motion-spring`     | 300ms spring      |
+| `--motion-countdown`  | 1s linear         |
+| `--motion-number`     | 400ms ease-out    |
 
 **Motion Handoff:** 150 / 200 / 300 ms. Proposta: CSS usa handoff; countdown 1s e número 400ms ficam como tokens extras do domínio de treino (D-014).
 
@@ -223,22 +223,22 @@ Geist Mono: só no DS (hex codes). Ver D-006.
 
 Artboards Figma:
 
-| Nome | Largura | Colunas | Margem | Gutter |
-| --- | --- | --- | --- | --- |
-| Mobile (Foundations + Handoff) | 390 | 4 | 16 | 16 |
-| Desktop | 1440 | 12 | 80 | 24 |
+| Nome                           | Largura | Colunas | Margem | Gutter |
+| ------------------------------ | ------- | ------- | ------ | ------ |
+| Mobile (Foundations + Handoff) | 390     | 4       | 16     | 16     |
+| Desktop                        | 1440    | 12      | 80     | 24     |
 
 Frames Dark de atleta mobile têm **402×874** (chrome de device); conteúdo útil **390**. Ver D-016.
 
 Breakpoints Tailwind no Developer Reference (`28:77`):
 
-| Token | Valor | Alvo |
-| --- | --- | --- |
-| sm | 640px | Mobile landscape / tablets pequenos |
-| md | 768px | Tablets verticais |
-| lg | 1024px | Tablets horizontais / netbooks |
-| xl | 1280px | Laptops |
-| 2xl | 1440px | Desktop Figma |
+| Token | Valor  | Alvo                                |
+| ----- | ------ | ----------------------------------- |
+| sm    | 640px  | Mobile landscape / tablets pequenos |
+| md    | 768px  | Tablets verticais                   |
+| lg    | 1024px | Tablets horizontais / netbooks      |
+| xl    | 1280px | Laptops                             |
+| 2xl   | 1440px | Desktop Figma                       |
 
 Validar 360 px **sem inventar grid Figma**. Atleta: mobile-first. Admin: desktop-first.
 
@@ -261,13 +261,13 @@ Frames de documentação:
 
 Symbols:
 
-| Node | Nome |
-| --- | --- |
+| Node    | Nome                                                                |
+| ------- | ------------------------------------------------------------------- |
 | `28:20` | Button (Primary/Secondary/Ghost/Danger, md, Default/Hover/Disabled) |
-| `28:23` | Input |
-| `28:27` | Card |
-| `28:30` | Badge |
-| `28:34` | NavItem |
+| `28:23` | Input                                                               |
+| `28:27` | Card                                                                |
+| `28:30` | Badge                                                               |
+| `28:34` | NavItem                                                             |
 
 Estados já desenhados: hover, pressed, disabled, loading, focus, filled, error, empty (“Nenhum resultado encontrado”).
 
@@ -281,80 +281,80 @@ Nodes **Dark** são a referência principal do treino. Nodes Light são variante
 
 ### 10.1 Marketing e auth
 
-| Rota | Node Dark | Node Light | Notas |
-| --- | --- | --- | --- |
-| `/` | `2:1865` landing-page (1440×7856) | — | Nav usa sigla **FAQ** (D-005 / copy). Sem landing mobile. |
-| `/login` | `2:1428` | `15:7801` (em `15:7800`) | Link “Esqueci minha senha”; Google/Apple. Sem tela `/forgot-password`. |
-| `/signup` | `2:1478` | `15:7843` | |
-| `/forgot-password` | — | — | **FIGMA_PENDING**. Só o link no login. |
-| `/onboarding/perfil` | `2:1526` | `15:5638` | |
-| `/onboarding/medidas` | `2:1578` | `15:7892` | |
-| `/onboarding/experiencia` | `2:1642` | `15:7940` | |
-| `/onboarding/objetivos` | `2:1696` | `15:7996` | |
-| `/onboarding/nutricao` | `2:1765` | `15:8052` | |
+| Rota                      | Node Dark                         | Node Light               | Notas                                                                  |
+| ------------------------- | --------------------------------- | ------------------------ | ---------------------------------------------------------------------- |
+| `/`                       | `2:1865` landing-page (1440×7856) | —                        | Nav usa sigla **FAQ** (D-005 / copy). Sem landing mobile.              |
+| `/login`                  | `2:1428`                          | `15:7801` (em `15:7800`) | Link “Esqueci minha senha”; Google/Apple. Sem tela `/forgot-password`. |
+| `/signup`                 | `2:1478`                          | `15:7843`                |                                                                        |
+| `/forgot-password`        | —                                 | —                        | **FIGMA_PENDING**. Só o link no login.                                 |
+| `/onboarding/perfil`      | `2:1526`                          | `15:5638`                |                                                                        |
+| `/onboarding/medidas`     | `2:1578`                          | `15:7892`                |                                                                        |
+| `/onboarding/experiencia` | `2:1642`                          | `15:7940`                |                                                                        |
+| `/onboarding/objetivos`   | `2:1696`                          | `15:7996`                |                                                                        |
+| `/onboarding/nutricao`    | `2:1765`                          | `15:8052`                |                                                                        |
 
 Auth/onboarding **desktop** não tem frames dedicados. Adaptar a partir do mobile + tokens, sem inventar layout de marketing.
 
 ### 10.2 Atleta — mobile (`2:4`)
 
-| Rota / superfície | Node Dark | Node Light |
-| --- | --- | --- |
-| `/app/today` | `2:15` dashboard-hoje | `15:3832` (em `15:3831`) |
-| `/app/plan` | `2:108` plano-treinamento | `15:8114` |
-| `/app/workout` | `2:188` treino-do-dia | `15:3908` |
-| `/app/workout/exercise` | `2:372` execucao-exercicio | `15:3980` |
-| `/app/workout/rest` | `10:758` cronometro-descanso | `15:4065` |
-| `/app/workout/summary` | `2:428` resumo-treino | `15:4093` |
-| `/app/recovery` | `2:499` checkin-recuperacao | `15:4144` |
-| `/app/nutrition` | `2:817` nutricao | `15:4343` |
-| `/app/coach` | `2:944` coach-ia | `15:4465` |
-| `/app/progress` | `2:1025` evolucao | `15:4534` |
-| `/app/body` | `2:1122` corpo-medidas | `15:4643` |
-| `/app/calendar` | `2:1218` calendario | `15:4758` |
-| `/app/profile` | `2:1334` perfil | `15:4876` |
-| Timer: −15 / +15 / +30, Pausar, Reiniciar, Pular | `10:758` | `15:4065` |
-| Calculadora de anilhas | `10:835` | `15:5325` |
-| Substituição de equipamento | `10:923` | `15:5432` |
-| Busca de exercícios | `10:1016` | `15:5213` |
-| Exercício unilateral | `10:1118` | `15:5539` |
-| Supersérie | `10:2584` | `15:8388` (screen-1) |
-| Alteração IA | `10:2651` | `15:8472` (screen-2) |
-| Command palette | `10:2699` | `15:8546` (screen-3) |
-| Aquecimento | `10:2757` | `15:8596` (screen-4) |
-| Notificações | `15:968` | `15:8665` (screen-5) |
-| FAB expandido | `15:1055` | `15:8743` (screen-6) |
-| Drop-set | `15:1109` | `15:8783` (screen-7) |
-| Histórico do exercício | `15:1181` | `15:8857` (screen-8) |
-| Configurações de IA | — | `15:5780` |
-| Admin compacto (referência, não produto atleta) | — | `15:5699` |
+| Rota / superfície                                | Node Dark                    | Node Light               |
+| ------------------------------------------------ | ---------------------------- | ------------------------ |
+| `/app/today`                                     | `2:15` dashboard-hoje        | `15:3832` (em `15:3831`) |
+| `/app/plan`                                      | `2:108` plano-treinamento    | `15:8114`                |
+| `/app/workout`                                   | `2:188` treino-do-dia        | `15:3908`                |
+| `/app/workout/exercise`                          | `2:372` execucao-exercicio   | `15:3980`                |
+| `/app/workout/rest`                              | `10:758` cronometro-descanso | `15:4065`                |
+| `/app/workout/summary`                           | `2:428` resumo-treino        | `15:4093`                |
+| `/app/recovery`                                  | `2:499` checkin-recuperacao  | `15:4144`                |
+| `/app/nutrition`                                 | `2:817` nutricao             | `15:4343`                |
+| `/app/coach`                                     | `2:944` coach-ia             | `15:4465`                |
+| `/app/progress`                                  | `2:1025` evolucao            | `15:4534`                |
+| `/app/body`                                      | `2:1122` corpo-medidas       | `15:4643`                |
+| `/app/calendar`                                  | `2:1218` calendario          | `15:4758`                |
+| `/app/profile`                                   | `2:1334` perfil              | `15:4876`                |
+| Timer: −15 / +15 / +30, Pausar, Reiniciar, Pular | `10:758`                     | `15:4065`                |
+| Calculadora de anilhas                           | `10:835`                     | `15:5325`                |
+| Substituição de equipamento                      | `10:923`                     | `15:5432`                |
+| Busca de exercícios                              | `10:1016`                    | `15:5213`                |
+| Exercício unilateral                             | `10:1118`                    | `15:5539`                |
+| Supersérie                                       | `10:2584`                    | `15:8388` (screen-1)     |
+| Alteração IA                                     | `10:2651`                    | `15:8472` (screen-2)     |
+| Command palette                                  | `10:2699`                    | `15:8546` (screen-3)     |
+| Aquecimento                                      | `10:2757`                    | `15:8596` (screen-4)     |
+| Notificações                                     | `15:968`                     | `15:8665` (screen-5)     |
+| FAB expandido                                    | `15:1055`                    | `15:8743` (screen-6)     |
+| Drop-set                                         | `15:1109`                    | `15:8783` (screen-7)     |
+| Histórico do exercício                           | `15:1181`                    | `15:8857` (screen-8)     |
+| Configurações de IA                              | —                            | `15:5780`                |
+| Admin compacto (referência, não produto atleta)  | —                            | `15:5699`                |
 
 Canvas Light agrupados: `15:3831` core flow, `15:7800` auth/onboarding, `15:8387` special states.
 
 ### 10.3 Atleta — desktop (`2:3`)
 
-| Rota | Node Dark | Node Light |
-| --- | --- | --- |
-| `/app/today` | `15:11` dashboard-desktop | `15:6095` |
-| `/app/workout` | `15:570` treino-desktop | `15:6250` |
-| `/app/progress` | `15:216` evolucao-desktop | `15:6374` |
-| `/app/coach` | `15:418` coach-desktop | `15:9176` |
-| `/app/nutrition` | `15:1436` nutricao-desktop | `15:9290` |
-| `/app/body` | `15:1706` corpo-medidas-desktop | `15:9483` |
-| `/app/calendar` | `15:1894` calendario-desktop | `15:9622` |
+| Rota             | Node Dark                       | Node Light |
+| ---------------- | ------------------------------- | ---------- |
+| `/app/today`     | `15:11` dashboard-desktop       | `15:6095`  |
+| `/app/workout`   | `15:570` treino-desktop         | `15:6250`  |
+| `/app/progress`  | `15:216` evolucao-desktop       | `15:6374`  |
+| `/app/coach`     | `15:418` coach-desktop          | `15:9176`  |
+| `/app/nutrition` | `15:1436` nutricao-desktop      | `15:9290`  |
+| `/app/body`      | `15:1706` corpo-medidas-desktop | `15:9483`  |
+| `/app/calendar`  | `15:1894` calendario-desktop    | `15:9622`  |
 
 Sidebar desktop cita **Configurações**; não há frame dedicado de settings do atleta (usar `perfil` + `15:5780` até o design publicar). Sem desktop de execução de série / timer / onboarding.
 
 ### 10.4 Admin (`2:5`)
 
-| Rota | Node Dark | Node Light |
-| --- | --- | --- |
-| `/admin` | `2:2503` Screen-1-Dashboard | `15:6624` |
-| `/admin/users` | `2:2659` Screen-2-Gestao-Usuarios | `15:6757` |
-| `/admin/ai` | `2:2954` Screen-3-Inteligencia-Artificial | `15:6902` |
-| `/admin/audit` | `2:3112` Screen-4-Auditoria | `15:7015` |
-| `/admin/exercises` | `10:7` Screen-1-Biblioteca-Exercicios | `15:7136` |
-| `/admin/equipment` | `10:201` Screen-2-Biblioteca-Equipamentos | `15:7244` |
-| `/admin/inventory` | `10:377` Screen-3-Inventario-Academia | `15:7366` |
+| Rota               | Node Dark                                 | Node Light |
+| ------------------ | ----------------------------------------- | ---------- |
+| `/admin`           | `2:2503` Screen-1-Dashboard               | `15:6624`  |
+| `/admin/users`     | `2:2659` Screen-2-Gestao-Usuarios         | `15:6757`  |
+| `/admin/ai`        | `2:2954` Screen-3-Inteligencia-Artificial | `15:6902`  |
+| `/admin/audit`     | `2:3112` Screen-4-Auditoria               | `15:7015`  |
+| `/admin/exercises` | `10:7` Screen-1-Biblioteca-Exercicios     | `15:7136`  |
+| `/admin/equipment` | `10:201` Screen-2-Biblioteca-Equipamentos | `15:7244`  |
+| `/admin/inventory` | `10:377` Screen-3-Inventario-Academia     | `15:7366`  |
 
 Menu Dark também lista **Treinamento**, **Nutrição**, **Configurações** — **sem screens dedicadas**. Protótipo FL.05 cita **Detalhe do atleta** — sem frame. **FIGMA_PENDING**.
 
@@ -362,31 +362,31 @@ Canvases: `2:2502` (4 telas Dark), `10:6` (bibliotecas/inventário Dark), `15:66
 
 ### 10.5 Handoff (`2:7`) — não são rotas
 
-| Node | Uso |
-| --- | --- |
-| `15:2898` | Specs (cores Dark resumidas, tipo 32px, SEC-01…05, API summary) |
-| `28:77` | Developer Reference Cursor/React (spacing Tailwind, grid, breakpoints) |
-| `28:527` | CSS + `tailwind.config.ts` copy-paste + exemplo de theme store |
+| Node      | Uso                                                                    |
+| --------- | ---------------------------------------------------------------------- |
+| `15:2898` | Specs (cores Dark resumidas, tipo 32px, SEC-01…05, API summary)        |
+| `28:77`   | Developer Reference Cursor/React (spacing Tailwind, grid, breakpoints) |
+| `28:527`  | CSS + `tailwind.config.ts` copy-paste + exemplo de theme store         |
 
 ---
 
 ## 11. Ainda `FIGMA_PENDING`
 
-| Superfície | Situação |
-| --- | --- |
-| `/forgot-password` | Só link no login |
-| Academias do atleta | Sem tela |
-| Catálogo de equipamentos do atleta | Há busca de exercícios e substituição; sem catálogo próprio |
-| Settings do atleta (conta, tema, academia) | Perfil + `light-configuracoes-ia`; sidebar desktop “Configurações” sem frame |
-| Treino e dispositivos / frequência cardíaca | Sem frame; bloco em `/app/settings` no Design System até o Figma publicar |
-| Check-in Pré-Treino / Check-out Pós-Treino / Estado do Atleta / Revisão Semanal do Coach | Sem frames; UI mínima Phase 12 com flag **FIGMA_UI_PENDING** |
-| Offline / sincronização (indicador, Dados e sincronização, sessão recuperada) | Sem frames; estados nas telas existentes, Design System, **FIGMA_UI_PENDING** |
-| Admin Treinamento / Nutrição / Configurações | Itens de menu sem screen |
-| Admin detalhe do atleta | Só card no protótipo FL.05 |
-| Auth/onboarding/execução desktop | Sem frames |
-| Landing mobile | Sem frame |
-| Grid 360 px | Ausente (768 existe como breakpoint `md`) |
-| Empty/error de produto além do kit | Kit tem empty de busca; não há empty de treino/plano |
+| Superfície                                                                               | Situação                                                                      |
+| ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `/forgot-password`                                                                       | Só link no login                                                              |
+| Academias do atleta                                                                      | Sem tela                                                                      |
+| Catálogo de equipamentos do atleta                                                       | Há busca de exercícios e substituição; sem catálogo próprio                   |
+| Settings do atleta (conta, tema, academia)                                               | Perfil + `light-configuracoes-ia`; sidebar desktop “Configurações” sem frame  |
+| Treino e dispositivos / frequência cardíaca                                              | Sem frame; bloco em `/app/settings` no Design System até o Figma publicar     |
+| Check-in Pré-Treino / Check-out Pós-Treino / Estado do Atleta / Revisão Semanal do Coach | Sem frames; UI mínima Phase 12 com flag **FIGMA_UI_PENDING**                  |
+| Offline / sincronização (indicador, Dados e sincronização, sessão recuperada)            | Sem frames; estados nas telas existentes, Design System, **FIGMA_UI_PENDING** |
+| Admin Treinamento / Nutrição / Configurações                                             | Itens de menu sem screen                                                      |
+| Admin detalhe do atleta                                                                  | Só card no protótipo FL.05                                                    |
+| Auth/onboarding/execução desktop                                                         | Sem frames                                                                    |
+| Landing mobile                                                                           | Sem frame                                                                     |
+| Grid 360 px                                                                              | Ausente (768 existe como breakpoint `md`)                                     |
+| Empty/error de produto além do kit                                                       | Kit tem empty de busca; não há empty de treino/plano                          |
 
 Copy: landing usa “FAQ”. Theme System ainda mostra “Projeto Alpha / dados fiscais” (D-005). Login social no Figma **não** torna social um blocker de MVP (spec: P3).
 

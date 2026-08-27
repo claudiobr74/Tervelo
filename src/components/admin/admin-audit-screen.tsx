@@ -57,10 +57,14 @@ export function AdminAuditScreen() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${DECISION[log.decisionTone]}`}>
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${DECISION[log.decisionTone]}`}
+                    >
                       {log.decision}
                     </span>
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${OUTCOME[log.outcomeTone]}`}>
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${OUTCOME[log.outcomeTone]}`}
+                    >
                       {log.outcome}
                     </span>
                     <FigmaIcon
@@ -86,7 +90,9 @@ export function AdminAuditScreen() {
                       <p className="text-xs font-bold uppercase text-muted">
                         Motivação e Evidências Biométricas
                       </p>
-                      <p className="mt-1 text-[13px] leading-[18px] text-foreground">“{log.evidence}”</p>
+                      <p className="mt-1 text-[13px] leading-[18px] text-foreground">
+                        “{log.evidence}”
+                      </p>
                     </div>
                   </div>
                 ) : null}

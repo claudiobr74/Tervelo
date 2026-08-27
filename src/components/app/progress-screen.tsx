@@ -17,15 +17,7 @@ import { formatMeasure, formatPercent } from "@/lib/longitudinal/format";
 const TABS = ["Força", "Visão Geral", "Volume", "Exercícios", "Medidas"] as const;
 type ProgressTab = (typeof TABS)[number];
 
-function Chip({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -112,10 +104,15 @@ function ConsistencyCard() {
     <article className="flex flex-col gap-2.5 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
       <div className="flex flex-col gap-2">
         <p className="text-[11px] font-medium text-muted">Consistência nos Treinos</p>
-        <p className="text-sm font-bold text-success">{formatPercent(PREVIEW_CONSISTENCY_PERCENT, 0)} de aderência</p>
+        <p className="text-sm font-bold text-success">
+          {formatPercent(PREVIEW_CONSISTENCY_PERCENT, 0)} de aderência
+        </p>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-surface-pressed">
-        <div className="h-2 rounded-full bg-success" style={{ width: `${PREVIEW_CONSISTENCY_PERCENT}%` }} />
+        <div
+          className="h-2 rounded-full bg-success"
+          style={{ width: `${PREVIEW_CONSISTENCY_PERCENT}%` }}
+        />
       </div>
     </article>
   );
@@ -130,8 +127,8 @@ function AiCard() {
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <p className="text-[11px] font-bold uppercase text-brand">Análise do Coach</p>
         <p className="text-[13px] font-medium text-foreground">
-          “Sua progressão de força está acima da média para o período de treinamento atual. Mantenha o
-          volume de séries proposto.”
+          “Sua progressão de força está acima da média para o período de treinamento atual. Mantenha
+          o volume de séries proposto.”
         </p>
       </div>
     </article>
@@ -158,7 +155,9 @@ export function ProgressScreen() {
             <h1 className="text-2xl font-extrabold text-foreground">Evolução</h1>
             <FigmaIcon src="/icons/trending-up.svg" alt="" size={24} className="text-foreground" />
           </div>
-          <p className="text-[13px] font-medium text-muted">Acompanhamento detalhado do seu progresso</p>
+          <p className="text-[13px] font-medium text-muted">
+            Acompanhamento detalhado do seu progresso
+          </p>
         </header>
 
         <div className="flex gap-2 overflow-x-auto">

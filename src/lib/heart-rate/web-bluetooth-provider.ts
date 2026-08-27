@@ -56,7 +56,11 @@ export class WebBluetoothHeartRateProvider {
 
   async requestAndConnect(): Promise<{ displayName: string }> {
     if (!this.api) {
-      this.emitConnection("ERROR", null, "Este navegador não oferece conexão direta com frequencímetros Bluetooth.");
+      this.emitConnection(
+        "ERROR",
+        null,
+        "Este navegador não oferece conexão direta com frequencímetros Bluetooth.",
+      );
       throw new Error("WEB_BLUETOOTH_UNSUPPORTED");
     }
     this.allowSilentReconnect = true;

@@ -9,8 +9,12 @@ describe("priorityFor", () => {
   });
 
   it("fecha a sessão depois das séries que pertencem a ela", () => {
-    expect(priorityFor("training_session", "SESSION_COMPLETED")).toBeGreaterThan(priorityFor("set_result"));
-    expect(priorityFor("training_session", "complete_session")).toBe(SYNC_PRIORITY.session_complete);
+    expect(priorityFor("training_session", "SESSION_COMPLETED")).toBeGreaterThan(
+      priorityFor("set_result"),
+    );
+    expect(priorityFor("training_session", "complete_session")).toBe(
+      SYNC_PRIORITY.session_complete,
+    );
   });
 
   it("deixa upload de arquivo por último", () => {

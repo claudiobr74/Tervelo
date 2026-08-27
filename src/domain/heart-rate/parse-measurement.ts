@@ -7,8 +7,7 @@ const FLAG_ENERGY_EXPENDED = 0x08;
 const FLAG_RR_INTERVALS = 0x10;
 
 export type ParseHeartRateResult =
-  | { ok: true; value: HeartRateMeasurement }
-  | { ok: false; reason: string };
+  { ok: true; value: HeartRateMeasurement } | { ok: false; reason: string };
 
 function readUint16Le(view: DataView, offset: number): number {
   return view.getUint16(offset, true);
@@ -79,7 +78,10 @@ export function parseHeartRateMeasurement(dataView: DataView): ParseHeartRateRes
   };
 }
 
-export function sampleValidity(bpm: number, sensorContactDetected: boolean | null): {
+export function sampleValidity(
+  bpm: number,
+  sensorContactDetected: boolean | null,
+): {
   isValid: boolean;
   quality: "good" | "degraded" | "poor";
   qualityReason: string | null;

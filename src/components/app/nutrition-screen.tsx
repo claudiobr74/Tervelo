@@ -132,7 +132,10 @@ export function NutritionScreen() {
                 aria-valuenow={Math.round(item.percent)}
                 className="h-1.5 overflow-clip rounded-full bg-surface-secondary"
               >
-                <div className={`h-1.5 rounded-full ${item.bar}`} style={{ width: `${item.percent}%` }} />
+                <div
+                  className={`h-1.5 rounded-full ${item.bar}`}
+                  style={{ width: `${item.percent}%` }}
+                />
               </div>
             </div>
           ))}
@@ -148,7 +151,8 @@ export function NutritionScreen() {
               <div className="min-w-0 flex-1">
                 <p className="text-base font-bold text-foreground">{meal.name}</p>
                 <p className="text-[11px] font-medium text-muted">
-                  {formatInt(meal.energyKcal)} kcal • {meal.proteinG}g prot • {meal.carbohydrateG}g carb
+                  {formatInt(meal.energyKcal)} kcal • {meal.proteinG}g prot • {meal.carbohydrateG}g
+                  carb
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-1 text-muted">

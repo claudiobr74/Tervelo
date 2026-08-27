@@ -76,10 +76,7 @@ export function coachProposalFeedback(status: CoachProposalStatus): string | nul
   return null;
 }
 
-export function coachReplyForPrompt(
-  prompt: string,
-  facts: CoachKnownFacts,
-): CoachPreviewMessage {
+export function coachReplyForPrompt(prompt: string, facts: CoachKnownFacts): CoachPreviewMessage {
   const needed = requiredKeysForPrompt(prompt);
   const check = requireKnownFacts(facts, needed);
   if (!check.ok) {
@@ -172,7 +169,9 @@ function heartRateRoleCopy(heartRate: HeartRateContext | null): string | null {
 
 export { HEART_RATE_ANALYSIS_RULE };
 
-function requiredKeysForPrompt(prompt: string): Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate">[] {
+function requiredKeysForPrompt(
+  prompt: string,
+): Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate">[] {
   if (prompt.includes("evolução") || prompt.includes("carga")) {
     return ["benchPressKg", "proposedBenchPressKg", "repetitionsInReserve"];
   }

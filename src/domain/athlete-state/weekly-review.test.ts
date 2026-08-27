@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { buildAthleteState } from "./engine";
 import { defaultAthleteStateInput } from "./gates";
-import { buildWeeklyReview, recordDecisionOutcome, selectAgentsForWeeklyReview } from "./weekly-review";
+import {
+  buildWeeklyReview,
+  recordDecisionOutcome,
+  selectAgentsForWeeklyReview,
+} from "./weekly-review";
 
 describe("Revisão Semanal do Coach", () => {
   it("caso 7: boa semana → manter plano", () => {

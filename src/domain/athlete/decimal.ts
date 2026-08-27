@@ -5,7 +5,10 @@
 export function parseDecimal(input: string | number | null | undefined): number | null {
   if (typeof input === "number") return Number.isFinite(input) ? input : null;
   if (typeof input !== "string") return null;
-  const cleaned = input.replace(",", ".").replace(/[^\d.-]/g, "").trim();
+  const cleaned = input
+    .replace(",", ".")
+    .replace(/[^\d.-]/g, "")
+    .trim();
   if (!cleaned || cleaned === "-" || cleaned === ".") return null;
   const value = Number(cleaned);
   return Number.isFinite(value) ? value : null;

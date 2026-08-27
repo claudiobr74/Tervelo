@@ -21,7 +21,9 @@ test.describe("estado do atleta", () => {
   test("check-in pré-treino pode ser pulado e não bloqueia o treino", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/today");
-    await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Como você está para treinar hoje?" }),
+    ).toBeVisible();
     await page.getByRole("link", { name: "Fazer check-in" }).click();
     await expect(page).toHaveURL(/\/app\/workout\/checkin/);
     await expect(page.getByText("Check-in Pré-Treino", { exact: true })).toBeVisible();
@@ -51,11 +53,13 @@ test.describe("estado do atleta", () => {
   test("revisão semanal e configurações nascem ligadas", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/settings");
-    await expect(page.getByRole("switch", { name: "Ativar Check-in Pré-Treino" })).toHaveAttribute("aria-checked", "true");
-    await expect(page.getByRole("switch", { name: "Ativar Revisão Semanal do Coach" })).toHaveAttribute(
+    await expect(page.getByRole("switch", { name: "Ativar Check-in Pré-Treino" })).toHaveAttribute(
       "aria-checked",
       "true",
     );
+    await expect(
+      page.getByRole("switch", { name: "Ativar Revisão Semanal do Coach" }),
+    ).toHaveAttribute("aria-checked", "true");
 
     await page.goto("/app/coach");
     await page.getByRole("link", { name: "Revisões Semanais do Coach" }).click();
@@ -85,7 +89,9 @@ test.describe("estado do atleta", () => {
     await loginPreview(page);
     await page.goto("/app/workout/checkin");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Como você está para treinar hoje?" }),
+    ).toBeVisible();
     await captureEvidence(page, testInfo, "checkin_claro_390");
 
     await page.goto("/app/coach/revisoes");
@@ -99,7 +105,9 @@ test.describe("estado do atleta", () => {
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "dark"));
     await page.goto("/app/workout/checkin");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Como você está para treinar hoje?" }),
+    ).toBeVisible();
     await captureEvidence(page, testInfo, "checkin_escuro_390");
 
     await page.goto("/app/coach/revisoes/rev-26");

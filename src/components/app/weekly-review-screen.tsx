@@ -20,7 +20,9 @@ export function WeeklyReviewScreen() {
             <Link href="/app/coach/revisoes" aria-label="Voltar" className="text-foreground">
               <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
             </Link>
-            <h1 className="text-xl font-extrabold text-foreground">{PRODUCT_NAMES.weeklyCoachReview}</h1>
+            <h1 className="text-xl font-extrabold text-foreground">
+              {PRODUCT_NAMES.weeklyCoachReview}
+            </h1>
           </header>
           <p className="text-sm text-muted">Esta revisão não está disponível neste dispositivo.</p>
         </div>
@@ -37,7 +39,9 @@ export function WeeklyReviewScreen() {
           </Link>
           <div>
             <p className="text-xs font-bold uppercase text-brand">{review.dateLabel}</p>
-            <h1 className="text-xl font-extrabold text-foreground">{PRODUCT_NAMES.weeklyCoachReview}</h1>
+            <h1 className="text-xl font-extrabold text-foreground">
+              {PRODUCT_NAMES.weeklyCoachReview}
+            </h1>
           </div>
         </header>
         <section className="flex flex-col gap-2">
@@ -49,7 +53,9 @@ export function WeeklyReviewScreen() {
         <Section title="O que evoluiu">{review.whatImproved}</Section>
         <Section title="O que merece atenção">{review.whatNeedsAttention}</Section>
         <details className="rounded-[var(--radius-lg)] border border-border bg-surface p-4">
-          <summary className="cursor-pointer text-sm font-bold text-foreground">Treinamento</summary>
+          <summary className="cursor-pointer text-sm font-bold text-foreground">
+            Treinamento
+          </summary>
           <p className="mt-2 text-sm text-foreground">{review.training}</p>
         </details>
         <details className="rounded-[var(--radius-lg)] border border-border bg-surface p-4">
@@ -58,17 +64,23 @@ export function WeeklyReviewScreen() {
         </details>
         {review.body ? (
           <details className="rounded-[var(--radius-lg)] border border-border bg-surface p-4">
-            <summary className="cursor-pointer text-sm font-bold text-foreground">Corpo e Medidas</summary>
+            <summary className="cursor-pointer text-sm font-bold text-foreground">
+              Corpo e Medidas
+            </summary>
             <p className="mt-2 text-sm text-foreground">{review.body}</p>
           </details>
         ) : null}
         <details className="rounded-[var(--radius-lg)] border border-border bg-surface p-4">
-          <summary className="cursor-pointer text-sm font-bold text-foreground">Recuperação</summary>
+          <summary className="cursor-pointer text-sm font-bold text-foreground">
+            Recuperação
+          </summary>
           <p className="mt-2 text-sm text-foreground">{review.recovery}</p>
         </details>
         {review.heartRate ? (
           <details className="rounded-[var(--radius-lg)] border border-border bg-surface p-4">
-            <summary className="cursor-pointer text-sm font-bold text-foreground">Frequência cardíaca</summary>
+            <summary className="cursor-pointer text-sm font-bold text-foreground">
+              Frequência cardíaca
+            </summary>
             <p className="mt-2 text-sm text-foreground">{review.heartRate}</p>
           </details>
         ) : null}

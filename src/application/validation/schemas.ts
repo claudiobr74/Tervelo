@@ -78,7 +78,9 @@ export const postWorkoutCheckoutInputSchema = z.object({
   clientMutationId: z.uuid(),
   status: z.enum(["completed", "skipped"]),
   checkedOutAt: z.iso.datetime().optional(),
-  expectation: z.enum(["muito_abaixo", "abaixo", "como_esperado", "acima", "muito_acima"]).optional(),
+  expectation: z
+    .enum(["muito_abaixo", "abaixo", "como_esperado", "acima", "muito_acima"])
+    .optional(),
   difficulty: z.enum(["muito_facil", "facil", "adequada", "dificil", "muito_dificil"]).optional(),
   planCompletion: z.enum(["sim", "parcialmente", "nao"]).optional(),
   partialReasons: z.array(z.string()).optional(),

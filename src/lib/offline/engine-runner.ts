@@ -29,7 +29,8 @@ export async function requestSync(options?: { force?: boolean }) {
     const pending = pendingDataCount(result.operations);
     const permanent = result.operations.find((row) => row.status === "ERRO_PERMANENTE");
     const noisyRecoverable = result.operations.find(
-      (row) => row.status === "ERRO_RECUPERAVEL" && !isPreviewUnavailable(row.error_code) && isOnlineNow(),
+      (row) =>
+        row.status === "ERRO_RECUPERAVEL" && !isPreviewUnavailable(row.error_code) && isOnlineNow(),
     );
     if (result.metrics.sync_success > 0) {
       const at = new Date().toISOString();
@@ -41,7 +42,9 @@ export async function requestSync(options?: { force?: boolean }) {
       lastError: permanent?.error_code ?? noisyRecoverable?.error_code ?? null,
     });
     if (result.metrics.sync_failure > 0) {
-      const failed = result.operations.find((row) => row.status !== "SINCRONIZADO" && row.status !== "PENDENTE");
+      const failed = result.operations.find(
+        (row) => row.status !== "SINCRONIZADO" && row.status !== "PENDENTE",
+      );
       if (failed) {
         void sanitizeSyncLog({
           opId: failed.id,

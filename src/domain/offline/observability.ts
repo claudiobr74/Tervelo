@@ -14,7 +14,11 @@ export type OfflineMetric = {
   at: string;
 };
 
-export function metricEvent(name: OfflineMetricName, value: number, at = new Date().toISOString()): OfflineMetric {
+export function metricEvent(
+  name: OfflineMetricName,
+  value: number,
+  at = new Date().toISOString(),
+): OfflineMetric {
   return { name, value, at };
 }
 

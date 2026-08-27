@@ -1,6 +1,10 @@
 import "server-only";
 
-import { PREVIEW_EQUIPMENT, PREVIEW_EXERCISES, previewGymInventory } from "@/lib/catalog/preview-catalog";
+import {
+  PREVIEW_EQUIPMENT,
+  PREVIEW_EXERCISES,
+  previewGymInventory,
+} from "@/lib/catalog/preview-catalog";
 import { isLocalNhost } from "@/lib/auth/local-preview";
 import { demoDataEnabled } from "@/lib/demo-data";
 import type { CatalogExercise } from "@/domain/exercise/search";

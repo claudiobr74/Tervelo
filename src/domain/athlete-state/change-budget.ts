@@ -46,7 +46,11 @@ export function evaluateChangeBudget(changes: ProposedChange[]): ChangeBudgetRes
     };
   }
 
-  if (structural.length > 0 && meaningful.some((change) => change.scope === "AJUSTE_DA_SESSAO") && !strong) {
+  if (
+    structural.length > 0 &&
+    meaningful.some((change) => change.scope === "AJUSTE_DA_SESSAO") &&
+    !strong
+  ) {
     return {
       ok: false,
       allowed: meaningful.filter((change) => change.scope === "AJUSTE_DA_SESSAO"),
@@ -81,7 +85,12 @@ export function classifyChange(input: {
     return "ALTERACAO_DO_PROGRAMA";
   }
   if (input.redistributeWeekVolume) return "AJUSTE_DA_SEMANA";
-  if (input.timeShortage || input.equipmentUnavailable || input.acuteRecoveryReduced || input.discomfort) {
+  if (
+    input.timeShortage ||
+    input.equipmentUnavailable ||
+    input.acuteRecoveryReduced ||
+    input.discomfort
+  ) {
     return "AJUSTE_DA_SESSAO";
   }
   return "SEM_MUDANCA";

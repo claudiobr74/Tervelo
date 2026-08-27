@@ -14,11 +14,7 @@ export function ThemeToggle() {
   const { preference, setPreference } = useTheme();
 
   return (
-    <div
-      role="radiogroup"
-      aria-label="Aparência do aplicativo"
-      className="flex flex-col gap-2"
-    >
+    <div role="radiogroup" aria-label="Aparência do aplicativo" className="flex flex-col gap-2">
       {OPTIONS.map(({ value, label, icon: Icon }) => {
         const selected = preference === value;
         return (

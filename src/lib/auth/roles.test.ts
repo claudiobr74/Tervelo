@@ -61,7 +61,11 @@ describe("matriz Hasura", () => {
   });
 
   it("check-ins pré/pós e snapshots do estado são append-only para user", () => {
-    for (const name of ["pre_workout_checkins", "post_workout_checkouts", "athlete_state_snapshots"]) {
+    for (const name of [
+      "pre_workout_checkins",
+      "post_workout_checkouts",
+      "athlete_state_snapshots",
+    ]) {
       const table = PUBLIC_TABLES.find((item) => item.name === name);
       const user = table?.permissions.find((p) => p.role === "user");
       expect(user?.operations.insert, name).toBeDefined();
@@ -126,7 +130,9 @@ describe("matriz Hasura", () => {
     const table = PUBLIC_TABLES.find((item) => item.name === "audit_logs");
     expect(table?.permissions.some((p) => p.role === "user")).toBe(false);
     expect(table?.permissions.some((p) => p.role === "admin")).toBe(false);
-    expect(table?.permissions.find((p) => p.role === "super_admin")?.operations.select).toBeDefined();
+    expect(
+      table?.permissions.find((p) => p.role === "super_admin")?.operations.select,
+    ).toBeDefined();
   });
 
   it("user não publica contrato de IA", () => {
@@ -176,10 +182,7 @@ describe("matriz Hasura", () => {
   });
 
   it("migration registra papéis admin e super_admin em auth.roles", () => {
-    const sql = readFileSync(
-      "nhost/migrations/default/20260826134500_tervelo_core/up.sql",
-      "utf8",
-    );
+    const sql = readFileSync("nhost/migrations/default/20260826134500_tervelo_core/up.sql", "utf8");
     expect(sql).toContain("INSERT INTO auth.roles");
     expect(sql).toContain("'admin'");
     expect(sql).toContain("'super_admin'");

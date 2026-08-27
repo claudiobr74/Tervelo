@@ -147,14 +147,23 @@ export function TodayScreen({ sessionName = null }: { sessionName?: string | nul
         {live.status === "idle" ? (
           <section className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
             <p className="text-xs font-bold uppercase text-brand">Check-in rápido</p>
-            <h2 className="text-base font-bold text-foreground">Como você está para treinar hoje?</h2>
+            <h2 className="text-base font-bold text-foreground">
+              Como você está para treinar hoje?
+            </h2>
             {checkinDone ? (
               <p className="flex items-center gap-2 text-sm font-semibold text-success">
-                <FigmaIcon src="/icons/check-circle.svg" alt="" size={16} className="text-success" />
+                <FigmaIcon
+                  src="/icons/check-circle.svg"
+                  alt=""
+                  size={16}
+                  className="text-success"
+                />
                 Check-in concluído
               </p>
             ) : checkinSkipped ? (
-              <p className="text-sm text-muted">Sem informação aguda hoje. O treino segue normalmente.</p>
+              <p className="text-sm text-muted">
+                Sem informação aguda hoje. O treino segue normalmente.
+              </p>
             ) : (
               <Link
                 href="/app/workout/checkin"
@@ -222,7 +231,9 @@ export function TodayScreen({ sessionName = null }: { sessionName?: string | nul
             <p className="text-xs font-semibold text-muted">Peso e Composição</p>
             <div className="flex items-baseline gap-2">
               <p className="text-[22px] font-bold text-foreground">
-                {latestBody?.weightKg !== undefined ? formatMeasure(latestBody.weightKg, "kg") : "—"}
+                {latestBody?.weightKg !== undefined
+                  ? formatMeasure(latestBody.weightKg, "kg")
+                  : "—"}
               </p>
               {weightDelta !== null && weightDelta !== 0 ? (
                 <span className="flex items-center gap-0.5 text-[11px] font-semibold text-success">

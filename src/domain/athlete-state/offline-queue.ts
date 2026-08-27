@@ -1,7 +1,5 @@
 export type QueuedAthleteMutationKind =
-  | "pre_workout_checkin"
-  | "post_workout_checkout"
-  | "athlete_state_snapshot";
+  "pre_workout_checkin" | "post_workout_checkout" | "athlete_state_snapshot";
 
 export type QueuedAthleteMutation = {
   clientMutationId: string;

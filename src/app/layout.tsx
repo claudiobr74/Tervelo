@@ -35,7 +35,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const nonce = (await headers()).get(NONCE_HEADER) ?? undefined;
   return (
-    <html lang="pt-BR" className={`${manrope.variable} h-full antialiased`} suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      className={`${manrope.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <head>
         <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>

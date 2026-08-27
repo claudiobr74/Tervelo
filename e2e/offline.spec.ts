@@ -21,7 +21,9 @@ async function loginPreview(page: import("@playwright/test").Page) {
 }
 
 async function waitBoot(page: import("@playwright/test").Page) {
-  await expect(page.locator("body")).toHaveAttribute("data-offline-boot", "ready", { timeout: 10_000 });
+  await expect(page.locator("body")).toHaveAttribute("data-offline-boot", "ready", {
+    timeout: 10_000,
+  });
 }
 
 test.describe("offline", () => {

@@ -3,7 +3,11 @@
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { formatLastSyncedAt, pendingCountCopy, SYNC_COPY } from "@/domain/offline";
 import { requestSync } from "@/lib/offline/engine-runner";
-import { applyWaitingServiceWorker, dismissInstallPrompt, promptInstall } from "@/lib/offline/register-sw";
+import {
+  applyWaitingServiceWorker,
+  dismissInstallPrompt,
+  promptInstall,
+} from "@/lib/offline/register-sw";
 import { useSyncStatus } from "@/components/app/sync-status-indicator";
 
 export function DataSyncSettingsCard() {

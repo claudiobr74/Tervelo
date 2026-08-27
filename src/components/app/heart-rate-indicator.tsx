@@ -14,12 +14,13 @@ export function HeartRateWorkoutIndicator({ compact = false }: { compact?: boole
   const [open, setOpen] = useState(false);
   if (!runtime.enabled) return null;
 
-  const disconnected = runtime.status === "DISCONNECTED" || runtime.status === "READY" || runtime.status === "ERROR";
-  const waiting = runtime.status === "CONNECTING" || runtime.status === "RECONNECTING" || runtime.status === "CONNECTED";
-  const label =
-    runtime.status === "STREAMING" && runtime.bpm !== null
-      ? `${runtime.bpm}`
-      : "—";
+  const disconnected =
+    runtime.status === "DISCONNECTED" || runtime.status === "READY" || runtime.status === "ERROR";
+  const waiting =
+    runtime.status === "CONNECTING" ||
+    runtime.status === "RECONNECTING" ||
+    runtime.status === "CONNECTED";
+  const label = runtime.status === "STREAMING" && runtime.bpm !== null ? `${runtime.bpm}` : "—";
   const caption =
     runtime.status === "STREAMING"
       ? "Conectado"
@@ -48,7 +49,11 @@ export function HeartRateWorkoutIndicator({ compact = false }: { compact?: boole
         {disconnected && runtime.status !== "UNSUPPORTED" ? (
           <button
             type="button"
-            onClick={() => void (runtime.status === "DISCONNECTED" ? reconnectHeartRateMonitor() : connectHeartRateMonitor())}
+            onClick={() =>
+              void (runtime.status === "DISCONNECTED"
+                ? reconnectHeartRateMonitor()
+                : connectHeartRateMonitor())
+            }
             className="shrink-0 rounded-[var(--radius-md)] border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-foreground"
           >
             {runtime.status === "DISCONNECTED" ? "Reconectar" : "Conectar"}

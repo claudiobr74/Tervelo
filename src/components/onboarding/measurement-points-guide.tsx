@@ -30,7 +30,9 @@ export function MeasurementPointsGuide() {
           height={210}
           className="h-[210px] w-full object-contain"
         />
-        <p className="mt-auto px-1 pb-1 text-center text-[11px] leading-tight text-muted">Pontos de medição</p>
+        <p className="mt-auto px-1 pb-1 text-center text-[11px] leading-tight text-muted">
+          Pontos de medição
+        </p>
       </button>
       {open ? (
         <div

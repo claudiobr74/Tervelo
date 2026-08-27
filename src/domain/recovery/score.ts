@@ -53,7 +53,13 @@ export const RECOVERY_QUESTIONS: {
   },
 ];
 
-export const RECOVERY_CLASSIFICATIONS = ["Ruim", "Regular", "Moderada", "Boa", "Excelente"] as const;
+export const RECOVERY_CLASSIFICATIONS = [
+  "Ruim",
+  "Regular",
+  "Moderada",
+  "Boa",
+  "Excelente",
+] as const;
 
 export type RecoveryClassification = (typeof RECOVERY_CLASSIFICATIONS)[number];
 
@@ -80,7 +86,9 @@ export function scoresFromSliders(sliders: RecoverySliders): RecoveryScores {
     sliders.pain,
     sliders.stress,
   ].map(clampScore);
-  const perceivedRecovery = clampScore(goodness.reduce((sum, value) => sum + value, 0) / goodness.length);
+  const perceivedRecovery = clampScore(
+    goodness.reduce((sum, value) => sum + value, 0) / goodness.length,
+  );
   return {
     sleepQuality: goodness[0],
     energy: goodness[1],

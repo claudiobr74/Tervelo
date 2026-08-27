@@ -3,7 +3,11 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
-import { searchCatalogExercises, type CatalogExercise, type ExerciseSearchFilter } from "@/domain/exercise/search";
+import {
+  searchCatalogExercises,
+  type CatalogExercise,
+  type ExerciseSearchFilter,
+} from "@/domain/exercise/search";
 import { PREVIEW_EXERCISES } from "@/lib/catalog/preview-catalog";
 
 const FILTERS: { id: ExerciseSearchFilter; label: string }[] = [
@@ -77,7 +81,11 @@ export function ExerciseSearchScreen() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<ExerciseSearchFilter>("muscle");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const storedFavorites = useSyncExternalStore(subscribeFavorites, readFavorites, getServerFavorites);
+  const storedFavorites = useSyncExternalStore(
+    subscribeFavorites,
+    readFavorites,
+    getServerFavorites,
+  );
   const catalog = useMemo(
     () => withFavorites(PREVIEW_EXERCISES, storedFavorites),
     [storedFavorites],
@@ -99,7 +107,12 @@ export function ExerciseSearchScreen() {
             placeholder="Buscar exercício"
           />
           {query ? (
-            <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="text-muted">
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label="Limpar busca"
+              className="text-muted"
+            >
               <FigmaIcon src="/icons/close.svg" alt="" size={18} />
             </button>
           ) : null}

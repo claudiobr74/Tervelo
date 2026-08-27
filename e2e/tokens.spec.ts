@@ -30,4 +30,3 @@ test("a escolha de tema sobrevive ao recarregar", async ({ page }) => {
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
-

@@ -26,7 +26,9 @@ test.describe("perfil do atleta", () => {
     await expect(page).toHaveURL(/\/app\/profile\/pessoais/);
     await expect(page.getByRole("heading", { name: "Sobre você" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Suas medidas" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Abrir guia de pontos de medição" })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Abrir guia de pontos de medição" }),
+    ).toBeVisible();
 
     await page.getByLabel("Nome preferido").fill("Lucas");
     await page.getByLabel("Tórax (cm)").fill("104");
@@ -56,7 +58,9 @@ test.describe("perfil do atleta", () => {
     await page.getByRole("button", { name: "Continuar" }).click();
     await expect(page).toHaveURL(/\/onboarding\/medidas/);
     await expect(page.getByRole("heading", { name: "Suas medidas" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Abrir guia de pontos de medição" })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Abrir guia de pontos de medição" }),
+    ).toBeVisible();
     await page.goto("/app/profile");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.getByRole("link", { name: "Dados pessoais" })).toBeVisible();

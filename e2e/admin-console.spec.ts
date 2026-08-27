@@ -71,13 +71,23 @@ test.describe("console admin", () => {
     const overlap = await page.locator("main article").evaluateAll((els) => {
       const boxes = els.map((el) => {
         const r = el.getBoundingClientRect();
-        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, text: el.textContent?.slice(0, 40) };
+        return {
+          left: r.left,
+          right: r.right,
+          top: r.top,
+          bottom: r.bottom,
+          text: el.textContent?.slice(0, 40),
+        };
       });
       for (let i = 0; i < boxes.length; i += 1) {
         for (let j = i + 1; j < boxes.length; j += 1) {
           const a = boxes[i];
           const b = boxes[j];
-          const hit = a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1;
+          const hit =
+            a.left < b.right - 1 &&
+            b.left < a.right - 1 &&
+            a.top < b.bottom - 1 &&
+            b.top < a.bottom - 1;
           if (hit) return `${a.text} ∩ ${b.text}`;
         }
       }
@@ -85,13 +95,17 @@ test.describe("console admin", () => {
     });
     expect(overlap).toBeNull();
 
-    const pageOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    const pageOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
     expect(pageOverflow).toBeLessThanOrEqual(1);
 
     await page.getByRole("link", { name: "Usuários" }).click();
     await expect(page.getByRole("heading", { name: "Usuários" })).toBeVisible();
     await expect(page.getByText("Lucas Mendes").first()).toBeVisible();
-    const usersOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    const usersOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
     expect(usersOverflow).toBeLessThanOrEqual(1);
   });
 });

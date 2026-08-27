@@ -4,11 +4,7 @@ import { useSyncExternalStore } from "react";
 import { sampleValidity } from "@/domain/heart-rate/parse-measurement";
 import { sessionStats } from "@/domain/heart-rate/metrics";
 import type { HeartRateStatus } from "@/domain/heart-rate/types";
-import {
-  currentExercise,
-  currentSet,
-  isSessionComplete,
-} from "@/domain/training/session";
+import { currentExercise, currentSet, isSessionComplete } from "@/domain/training/session";
 import {
   getHeartRateEnabled,
   setHeartRateEnabled,
@@ -75,13 +71,14 @@ function setState(patch: Partial<HeartRateRuntimeState>) {
   emit();
 }
 
-function deriveStatus(enabled: boolean, supported: boolean, current: HeartRateStatus): HeartRateStatus {
+function deriveStatus(
+  enabled: boolean,
+  supported: boolean,
+  current: HeartRateStatus,
+): HeartRateStatus {
   if (!enabled) return "DISABLED";
   if (!supported) return "UNSUPPORTED";
-  if (
-    current === "DISABLED" ||
-    current === "UNSUPPORTED"
-  ) {
+  if (current === "DISABLED" || current === "UNSUPPORTED") {
     return "READY";
   }
   return current;
@@ -173,9 +170,12 @@ function syncFromPreference() {
 function onLiveChange() {
   if (!getHeartRateEnabled()) return;
   const live = getLiveSession();
-  const exercise = live.status === "idle" || live.status === "completed" || isSessionComplete(PREVIEW_WORKOUT, live.recorded)
-    ? null
-    : currentExercise(PREVIEW_WORKOUT, live.recorded);
+  const exercise =
+    live.status === "idle" ||
+    live.status === "completed" ||
+    isSessionComplete(PREVIEW_WORKOUT, live.recorded)
+      ? null
+      : currentExercise(PREVIEW_WORKOUT, live.recorded);
 
   if (live.status === "active" && live.startedAt && capturingSessionId !== live.startedAt) {
     capturingSessionId = live.startedAt;
@@ -244,7 +244,11 @@ export function getServerHeartRateRuntime(): HeartRateRuntimeState {
 }
 
 export function useHeartRateRuntime(): HeartRateRuntimeState {
-  return useSyncExternalStore(subscribeHeartRateRuntime, getHeartRateRuntime, getServerHeartRateRuntime);
+  return useSyncExternalStore(
+    subscribeHeartRateRuntime,
+    getHeartRateRuntime,
+    getServerHeartRateRuntime,
+  );
 }
 
 export async function enableHeartRate(enabled: boolean) {

@@ -49,9 +49,7 @@ function AutonomyDot({ selected }: { selected: boolean }) {
   return (
     <span
       aria-hidden
-      className={
-        selected ? "size-3 rounded-full bg-brand" : "size-2 rounded-full bg-border-strong"
-      }
+      className={selected ? "size-3 rounded-full bg-brand" : "size-2 rounded-full bg-border-strong"}
     />
   );
 }
@@ -124,7 +122,10 @@ export function AdminAiScreen() {
   return (
     <AdminShell title="Inteligência Artificial" active="Inteligência Artificial">
       <div className="flex flex-col items-stretch gap-6 xl:flex-row xl:items-start">
-        <nav aria-label="Seções do contrato" className="flex w-full shrink-0 flex-row gap-1 overflow-x-auto xl:w-[220px] xl:flex-col">
+        <nav
+          aria-label="Seções do contrato"
+          className="flex w-full shrink-0 flex-row gap-1 overflow-x-auto xl:w-[220px] xl:flex-col"
+        >
           {AI_ADMIN_TABS.map((item) => {
             const selected = item.id === tab;
             return (
@@ -175,7 +176,7 @@ export function AdminAiScreen() {
 
           {tab === "behavior" ? (
             <div className="flex flex-col items-stretch gap-4 xl:flex-row xl:items-start">
-            <div className="flex min-w-0 flex-1 flex-col gap-5 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+              <div className="flex min-w-0 flex-1 flex-col gap-5 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
                 <section className="flex flex-col gap-2">
                   <h3 className="text-sm font-bold">Agente de IA</h3>
                   <p className="text-[13px] text-muted">
@@ -271,7 +272,9 @@ export function AdminAiScreen() {
                         aria-label={action.label}
                         className="flex items-center gap-2"
                       >
-                        <span className="min-w-0 flex-1 text-xs text-foreground">{action.label}</span>
+                        <span className="min-w-0 flex-1 text-xs text-foreground">
+                          {action.label}
+                        </span>
                         {AI_AUTONOMY_LEVELS.map((level) => {
                           const selected = autonomy[action.id] === level;
                           return (
@@ -295,12 +298,17 @@ export function AdminAiScreen() {
 
                 <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-error bg-error/10 p-5">
                   <div className="flex items-center gap-2">
-                    <FigmaIcon src="/icons/admin/lock.svg" alt="" size={16} className="text-error" />
+                    <FigmaIcon
+                      src="/icons/admin/lock.svg"
+                      alt=""
+                      size={16}
+                      className="text-error"
+                    />
                     <h3 className="text-sm font-bold">Regras Protegidas do Sistema</h3>
                   </div>
                   <p className="text-xs text-muted">
-                    Estas diretrizes fundamentais estão travadas no código core da plataforma e nunca
-                    são sobrescritas pela IA.
+                    Estas diretrizes fundamentais estão travadas no código core da plataforma e
+                    nunca são sobrescritas pela IA.
                   </p>
                   <ul className="flex flex-col gap-1.5 text-[11px] text-foreground">
                     {AI_SYSTEM_LOCKS.map((rule) => (

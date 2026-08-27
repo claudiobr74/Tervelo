@@ -31,7 +31,9 @@ describe("QA frequência cardíaca 21–30", () => {
   };
 
   it("lista dez verificações", () => {
-    expect(QA_HEART_RATE_CHECKS.map((item) => item.id)).toEqual([21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+    expect(QA_HEART_RATE_CHECKS.map((item) => item.id)).toEqual([
+      21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+    ]);
   });
 
   it("passa no caminho integrado", () => {
@@ -39,8 +41,14 @@ describe("QA frequência cardíaca 21–30", () => {
   });
 
   it("falha se a IA usa BPM como esforço muscular ou diagnóstico", () => {
-    expect(auditHeartRateDecision({ ...clean, inferredMuscularEffortFromBpm: true }).failedChecks).toContain(27);
-    expect(auditHeartRateDecision({ ...clean, inferredDiagnosis: true }).failedChecks).toContain(28);
-    expect(auditHeartRateDecision({ ...clean, singleReadingDroveDecision: true }).failedChecks).toContain(26);
+    expect(
+      auditHeartRateDecision({ ...clean, inferredMuscularEffortFromBpm: true }).failedChecks,
+    ).toContain(27);
+    expect(auditHeartRateDecision({ ...clean, inferredDiagnosis: true }).failedChecks).toContain(
+      28,
+    );
+    expect(
+      auditHeartRateDecision({ ...clean, singleReadingDroveDecision: true }).failedChecks,
+    ).toContain(26);
   });
 });

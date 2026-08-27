@@ -28,7 +28,9 @@ function liveCoachFacts() {
     samples: details.samples,
     startedAt: details.stored.startedAt ?? live.startedAt,
     endedAt: details.stored.endedAt ?? live.completedAt,
-    setMetrics: setWindowsFromTimeline(live.events).map((window) => metricsForSet(details.samples, window)),
+    setMetrics: setWindowsFromTimeline(live.events).map((window) =>
+      metricsForSet(details.samples, window),
+    ),
     sameDevice: true,
     comparableSessions: details.stats.sampleCount > 0 ? 1 : 0,
   });
@@ -45,10 +47,7 @@ export function CoachScreen() {
   const proposal = useCoachProposal();
   const sync = useSyncStatus();
   const [thread, setThread] = useState<CoachPreviewMessage[]>([OPENING]);
-  const proposalCopy = useMemo(
-    () => coachProposalFeedback(proposal.status),
-    [proposal.status],
-  );
+  const proposalCopy = useMemo(() => coachProposalFeedback(proposal.status), [proposal.status]);
 
   function ask(prompt: string) {
     const athlete: CoachPreviewMessage = {
@@ -69,7 +68,11 @@ export function CoachScreen() {
       return;
     }
     const reply = coachReplyForPrompt(prompt, liveCoachFacts());
-    setThread((current) => [...current, athlete, { ...reply, id: `${reply.id}-${current.length}` }]);
+    setThread((current) => [
+      ...current,
+      athlete,
+      { ...reply, id: `${reply.id}-${current.length}` },
+    ]);
   }
 
   return (
@@ -175,7 +178,9 @@ function CoachBubble({ message }: { message: CoachPreviewMessage }) {
       </span>
       <div className="min-w-0 flex-1 rounded-[12px] rounded-tl-none border border-border bg-surface p-3">
         <p className="text-[11px] font-bold text-brand">Coach TERVELO</p>
-        <p className="mt-1 text-[13px] font-medium leading-normal text-foreground">{message.body}</p>
+        <p className="mt-1 text-[13px] font-medium leading-normal text-foreground">
+          {message.body}
+        </p>
         {message.sections ? (
           <dl className="mt-3 flex flex-col gap-2 border-t border-border pt-3 text-[12px] leading-4">
             <Section label="Observação" value={message.sections.observacao} />

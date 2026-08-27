@@ -94,13 +94,18 @@ export function AdminInventoryScreen() {
               <h2 className="mb-3 text-sm font-bold">Equipamentos de Peito Disponíveis</h2>
               <div className="flex flex-col gap-2">
                 {chest.map((item) => (
-                  <label key={item.id} className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm">
+                  <label
+                    key={item.id}
+                    className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm"
+                  >
                     <input
                       type="checkbox"
                       checked={item.selected}
                       onChange={() =>
                         setChest((rows) =>
-                          rows.map((row) => (row.id === item.id ? { ...row, selected: !row.selected } : row)),
+                          rows.map((row) =>
+                            row.id === item.id ? { ...row, selected: !row.selected } : row,
+                          ),
                         )
                       }
                       className="size-4 accent-[var(--brand-primary)]"
@@ -112,8 +117,8 @@ export function AdminInventoryScreen() {
             </section>
           ) : (
             <p className="text-sm text-muted">
-              Lista detalhada deste grupo muscular entra com o catálogo completo no Nhost. Peito está no node
-              Figma.
+              Lista detalhada deste grupo muscular entra com o catálogo completo no Nhost. Peito
+              está no node Figma.
             </p>
           )}
           <section>
@@ -154,7 +159,9 @@ export function AdminInventoryScreen() {
                     checked={bar.selected}
                     onChange={() =>
                       setBars((rows) =>
-                        rows.map((row) => (row.id === bar.id ? { ...row, selected: !row.selected } : row)),
+                        rows.map((row) =>
+                          row.id === bar.id ? { ...row, selected: !row.selected } : row,
+                        ),
                       )
                     }
                     className="size-4 accent-[var(--brand-primary)]"

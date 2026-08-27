@@ -38,24 +38,24 @@ Cobre o contrato em `/admin/ai` (escolha de agente no modo administrar) e o pipe
 
 ## 2. Ordem das fases
 
-| Fase | Nome | UI Figma | Pode começar |
-| --- | --- | --- | --- |
-| 0 | Auditoria | inventário completo | concluída neste PR |
-| 1 | Foundation | tokens `28:527` + primitivos `2:2` | concluída neste PR |
-| 2 | Nhost | não | concluída neste branch |
-| 3 | Domain | não | concluída neste branch |
-| 4 | Auth + Onboarding | nodes `2:1428`–`2:1765` (mobile); desktop **parcial** | concluída neste branch |
-| 5 | Exercise & Equipment | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | concluída neste branch |
-| 6 | Training Engine | execução `2:372`, timer `10:758`, supersérie, drop-set, etc. | concluída neste branch |
-| 7 | Recovery + Body + Progress — **MÓDULO ALUNO** | `2:499`, `2:1122`, `2:1025` | concluída neste branch |
-| 8 | Nutrition — **MÓDULO ALUNO** | `2:817` / `15:1436` | concluída neste branch |
-| 9 | AI — **MÓDULO ALUNO** (coach) + contrato admin | coach `2:944`, alteração `10:2651`, admin IA `2:2954` | concluída neste branch |
-| 10 | Admin | 7 screens Dark + Light | concluída neste branch; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
-| 11 | Frequência cardíaca (Web Bluetooth real) | bloco Settings `FIGMA_PENDING`; overlay no treino | concluída neste branch |
-| 12 | Estado do Atleta + check-ins + revisão semanal | UI mínima Design System; **FIGMA_UI_PENDING** | concluída neste branch |
-| 13 | Offline-first + sincronização + PWA | estados nas telas existentes; **FIGMA_UI_PENDING** | concluída neste branch |
-| 14 | Hardening | conforme telas existentes | concluída neste branch |
-| 15 | Vercel | app navegável | neste branch |
+| Fase | Nome                                           | UI Figma                                                          | Pode começar                                                            |
+| ---- | ---------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 0    | Auditoria                                      | inventário completo                                               | concluída neste PR                                                      |
+| 1    | Foundation                                     | tokens `28:527` + primitivos `2:2`                                | concluída neste PR                                                      |
+| 2    | Nhost                                          | não                                                               | concluída neste branch                                                  |
+| 3    | Domain                                         | não                                                               | concluída neste branch                                                  |
+| 4    | Auth + Onboarding                              | nodes `2:1428`–`2:1765` (mobile); desktop **parcial**             | concluída neste branch                                                  |
+| 5    | Exercise & Equipment                           | busca `10:1016`, anilhas `10:835`, admin `10:7`/`10:201`/`10:377` | concluída neste branch                                                  |
+| 6    | Training Engine                                | execução `2:372`, timer `10:758`, supersérie, drop-set, etc.      | concluída neste branch                                                  |
+| 7    | Recovery + Body + Progress — **MÓDULO ALUNO**  | `2:499`, `2:1122`, `2:1025`                                       | concluída neste branch                                                  |
+| 8    | Nutrition — **MÓDULO ALUNO**                   | `2:817` / `15:1436`                                               | concluída neste branch                                                  |
+| 9    | AI — **MÓDULO ALUNO** (coach) + contrato admin | coach `2:944`, alteração `10:2651`, admin IA `2:2954`             | concluída neste branch                                                  |
+| 10   | Admin                                          | 7 screens Dark + Light                                            | concluída neste branch; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
+| 11   | Frequência cardíaca (Web Bluetooth real)       | bloco Settings `FIGMA_PENDING`; overlay no treino                 | concluída neste branch                                                  |
+| 12   | Estado do Atleta + check-ins + revisão semanal | UI mínima Design System; **FIGMA_UI_PENDING**                     | concluída neste branch                                                  |
+| 13   | Offline-first + sincronização + PWA            | estados nas telas existentes; **FIGMA_UI_PENDING**                | concluída neste branch                                                  |
+| 14   | Hardening                                      | conforme telas existentes                                         | concluída neste branch                                                  |
+| 15   | Vercel                                         | app navegável                                                     | neste branch                                                            |
 
 ---
 
@@ -121,19 +121,19 @@ src/server/repositories/
 
 Módulos (primeira fatia nesta fase):
 
-| Módulo | Primeira fatia |
-| --- | --- |
-| athlete | idade derivada de `birth_date` |
-| measurement | append-only + `supersedes_id` |
-| gym | halteres lista ou min/max/incremento |
-| equipment | canônico vs modelo vs inventário |
-| exercise | aliases de busca, um canônico |
-| training | hierarquia; substituição não muta o programa |
-| timer | `expected_end_at - now`; pausa; −15/+15/+30 |
-| recovery | tendência só com janela (≥3 pontos) |
-| nutrition | nomes por extenso; dia aberto |
-| ai | não fabricar dados; publish só `super_admin` |
-| plates | carga → discos simétricos, menor quantidade, estoque |
+| Módulo      | Primeira fatia                                       |
+| ----------- | ---------------------------------------------------- |
+| athlete     | idade derivada de `birth_date`                       |
+| measurement | append-only + `supersedes_id`                        |
+| gym         | halteres lista ou min/max/incremento                 |
+| equipment   | canônico vs modelo vs inventário                     |
+| exercise    | aliases de busca, um canônico                        |
+| training    | hierarquia; substituição não muta o programa         |
+| timer       | `expected_end_at - now`; pausa; −15/+15/+30          |
+| recovery    | tendência só com janela (≥3 pontos)                  |
+| nutrition   | nomes por extenso; dia aberto                        |
+| ai          | não fabricar dados; publish só `super_admin`         |
+| plates      | carga → discos simétricos, menor quantidade, estoque |
 
 GraphQL: documents em `src/graphql/<domínio>/`. Codegen contra schema local fica para quando `nhost up` existir (Docker no operador). Tipos de domínio não dependem do codegen.
 
@@ -326,23 +326,23 @@ Após Phase 1:
 
 ## 19. Testes por fase
 
-| Fase | Foco |
-| --- | --- |
-| 1 | config, tokens, theme |
-| 2 | permissions GraphQL, trigger profile |
-| 3 | plate calc, timer math, validações Zod |
-| 4 | auth flows (integration) |
-| 5 | inventário + anilhas |
-| 6 | persistência de série + idempotência |
-| 7 | check-in de recuperação, composição append-only, e2e longitudinal |
-| 8 | check-in de nutrição no dia aberto, progresso de targets, e2e `/app/nutrition` |
-| 9 | contrato IA + escolha de agente no admin + recusa de fabricar dados |
-| 10 | dashboard / usuários / auditoria desktop, redirect sem papel admin |
-| 11 | e2e Playwright da spec §56 quando houver UI |
-| 12 | Motor de Estado, check-in/check-out, revisão semanal, QA 31–44 |
-| 13 | fila/idempotência, conflitos, crash da sessão, PWA sem cache GraphQL |
-| 14 | a11y, permissions, observabilidade |
-| 15 | smoke do deploy (`/api/health`, `/login`, SSO vs público) |
+| Fase | Foco                                                                           |
+| ---- | ------------------------------------------------------------------------------ |
+| 1    | config, tokens, theme                                                          |
+| 2    | permissions GraphQL, trigger profile                                           |
+| 3    | plate calc, timer math, validações Zod                                         |
+| 4    | auth flows (integration)                                                       |
+| 5    | inventário + anilhas                                                           |
+| 6    | persistência de série + idempotência                                           |
+| 7    | check-in de recuperação, composição append-only, e2e longitudinal              |
+| 8    | check-in de nutrição no dia aberto, progresso de targets, e2e `/app/nutrition` |
+| 9    | contrato IA + escolha de agente no admin + recusa de fabricar dados            |
+| 10   | dashboard / usuários / auditoria desktop, redirect sem papel admin             |
+| 11   | e2e Playwright da spec §56 quando houver UI                                    |
+| 12   | Motor de Estado, check-in/check-out, revisão semanal, QA 31–44                 |
+| 13   | fila/idempotência, conflitos, crash da sessão, PWA sem cache GraphQL           |
+| 14   | a11y, permissions, observabilidade                                             |
+| 15   | smoke do deploy (`/api/health`, `/login`, SSO vs público)                      |
 
 ---
 

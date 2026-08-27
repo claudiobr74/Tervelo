@@ -6,9 +6,7 @@ import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { HeartRateWorkoutIndicator } from "@/components/app/heart-rate-indicator";
 import { WorkoutSyncHint } from "@/components/app/sync-status-indicator";
 import { FigmaIcon } from "@/components/auth/figma-icon";
-import {
-  remainingSeconds,
-} from "@/domain/timer/rest-timer";
+import { remainingSeconds } from "@/domain/timer/rest-timer";
 import {
   currentExercise,
   currentSet,
@@ -105,7 +103,8 @@ export function RestTimerScreen() {
           <h1 className="text-[22px] font-extrabold text-foreground">Descanso</h1>
           <WorkoutSyncHint />
           <p className="text-sm text-muted">
-            {lastExercise?.namePt ?? "Série"} • Série {ordinal ? `${Math.max(1, ordinal.current)} de ${ordinal.total}` : "—"}
+            {lastExercise?.namePt ?? "Série"} • Série{" "}
+            {ordinal ? `${Math.max(1, ordinal.current)} de ${ordinal.total}` : "—"}
           </p>
           <HeartRateWorkoutIndicator compact />
         </div>
@@ -119,7 +118,9 @@ export function RestTimerScreen() {
             aria-label={`Restante ${formatTimer(remaining)}`}
           >
             <div className="flex size-[168px] flex-col items-center justify-center gap-1 rounded-full bg-background">
-              <p className="text-[42px] font-extrabold tabular-nums text-foreground">{formatTimer(remaining)}</p>
+              <p className="text-[42px] font-extrabold tabular-nums text-foreground">
+                {formatTimer(remaining)}
+              </p>
               <p className="text-xs font-bold uppercase text-brand">Restantes</p>
             </div>
           </div>

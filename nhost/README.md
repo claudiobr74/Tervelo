@@ -10,11 +10,11 @@ npm exec nhost -- up
 
 ## Acesso
 
-| Papel JWT | Quem | Como nasce |
-| --- | --- | --- |
-| `user` | atleta | signup (default) |
-| `admin` | administrador operacional | operador SQL em `auth.user_roles` |
-| `super_admin` | contratos IA + auditoria | operador SQL |
+| Papel JWT     | Quem                      | Como nasce                        |
+| ------------- | ------------------------- | --------------------------------- |
+| `user`        | atleta                    | signup (default)                  |
+| `admin`       | administrador operacional | operador SQL em `auth.user_roles` |
+| `super_admin` | contratos IA + auditoria  | operador SQL                      |
 
 O cliente **nunca** atribui admin. Não existe formulário de “criar administrador”.
 

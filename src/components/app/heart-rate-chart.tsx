@@ -11,7 +11,9 @@ export function HeartRateChart({
 }) {
   const valid = samples.filter((sample) => sample.isValid);
   if (valid.length < 2) {
-    return <p className="text-xs text-muted">Ainda não há série temporal suficiente para o gráfico.</p>;
+    return (
+      <p className="text-xs text-muted">Ainda não há série temporal suficiente para o gráfico.</p>
+    );
   }
   const times = valid.map((sample) => Date.parse(sample.recordedAt));
   const minT = Math.min(...times);
@@ -23,13 +25,21 @@ export function HeartRateChart({
   const height = 140;
   const pad = 8;
   const x = (t: number) => pad + ((t - minT) / Math.max(1, maxT - minT)) * (width - pad * 2);
-  const y = (bpm: number) => height - pad - ((bpm - minB) / Math.max(1, maxB - minB)) * (height - pad * 2);
-  const points = valid.map((sample, index) => `${x(times[index]).toFixed(1)},${y(sample.bpm).toFixed(1)}`).join(" ");
+  const y = (bpm: number) =>
+    height - pad - ((bpm - minB) / Math.max(1, maxB - minB)) * (height - pad * 2);
+  const points = valid
+    .map((sample, index) => `${x(times[index]).toFixed(1)},${y(sample.bpm).toFixed(1)}`)
+    .join(" ");
 
   const rests = restRanges(events, minT, maxT);
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="h-[140px] w-full text-brand" role="img" aria-label="Frequência cardíaca ao longo do treino">
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className="h-[140px] w-full text-brand"
+      role="img"
+      aria-label="Frequência cardíaca ao longo do treino"
+    >
       {rests.map((rest, index) => (
         <rect
           key={index}
@@ -45,7 +55,11 @@ export function HeartRateChart({
   );
 }
 
-function restRanges(events: WorkoutTimelineEvent[], minT: number, maxT: number): Array<{ start: number; end: number }> {
+function restRanges(
+  events: WorkoutTimelineEvent[],
+  minT: number,
+  maxT: number,
+): Array<{ start: number; end: number }> {
   const ranges: Array<{ start: number; end: number }> = [];
   let open: number | null = null;
   for (const event of events) {

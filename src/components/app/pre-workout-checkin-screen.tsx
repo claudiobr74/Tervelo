@@ -19,9 +19,16 @@ import {
   skippedPreWorkoutCheckin,
   type PreWorkoutCheckin,
 } from "@/domain/athlete-state/pre-workout";
-import { adaptSessionForAvailableTime, exercisesFromSession } from "@/domain/athlete-state/session-adaptation";
+import {
+  adaptSessionForAvailableTime,
+  exercisesFromSession,
+} from "@/domain/athlete-state/session-adaptation";
 import { PRODUCT_NAMES } from "@/domain/athlete-state/labels";
-import { savePreWorkoutCheckin, setTodayAdjustment, trackProductEvent } from "@/lib/athlete-state/session-store";
+import {
+  savePreWorkoutCheckin,
+  setTodayAdjustment,
+  trackProductEvent,
+} from "@/lib/athlete-state/session-store";
 import { startWorkout } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 
@@ -96,7 +103,8 @@ export function PreWorkoutCheckinScreen() {
           ? `Priorizamos os exercícios principais e retiramos ${adapted.dropped.map((item) => item.name).join(", ")}.`
           : "A sessão de hoje foi enxugada para caber no tempo informado.",
         whyChanged: `Você tem cerca de ${minutes} minutos, abaixo dos ${PREVIEW_WORKOUT.estimatedMinutes} planejados.`,
-        dataConsidered: "Tempo disponível informado no Check-in Pré-Treino. O programa futuro permanece igual.",
+        dataConsidered:
+          "Tempo disponível informado no Check-in Pré-Treino. O programa futuro permanece igual.",
         onlyToday: true,
         reevaluateWhen: "Na próxima sessão, ou na Revisão Semanal do Coach.",
       });
@@ -115,48 +123,89 @@ export function PreWorkoutCheckinScreen() {
   }
 
   const ready =
-    sleep != null && energy != null && muscle != null && stress != null && pain != null && plannedTime != null;
+    sleep != null &&
+    energy != null &&
+    muscle != null &&
+    stress != null &&
+    pain != null &&
+    plannedTime != null;
 
   return (
     <AthleteAppShell active="Treino" hideNav>
       <div className="flex flex-col gap-5 px-6 pb-8 pt-4">
         <header className="flex items-center justify-between">
-          <button type="button" onClick={() => router.push("/app/today")} aria-label="Voltar" className="text-foreground">
+          <button
+            type="button"
+            onClick={() => router.push("/app/today")}
+            aria-label="Voltar"
+            className="text-foreground"
+          >
             <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
           </button>
           <p className="text-sm font-semibold text-foreground">{PRODUCT_NAMES.preWorkoutCheckin}</p>
-          <button type="button" onClick={() => void skip()} className="text-sm font-semibold text-brand">
+          <button
+            type="button"
+            onClick={() => void skip()}
+            className="text-sm font-semibold text-brand"
+          >
             Pular por hoje
           </button>
         </header>
 
         <div>
           <h1 className="text-xl font-bold text-foreground">Como você está para treinar hoje?</h1>
-          <p className="mt-1 text-[13px] text-muted">Resposta rápida, com uma mão. 15 a 30 segundos.</p>
+          <p className="mt-1 text-[13px] text-muted">
+            Resposta rápida, com uma mão. 15 a 30 segundos.
+          </p>
           <WorkoutSyncHint />
         </div>
 
         {step === "main" ? (
           <div className="flex flex-col gap-5">
-            <ChoiceGroup legend="Como foi seu sono?" options={SLEEP_OPTIONS} value={sleep} onChange={setSleep} />
-            <ChoiceGroup legend="Como está sua energia agora?" options={ENERGY_OPTIONS} value={energy} onChange={setEnergy} />
+            <ChoiceGroup
+              legend="Como foi seu sono?"
+              options={SLEEP_OPTIONS}
+              value={sleep}
+              onChange={setSleep}
+            />
+            <ChoiceGroup
+              legend="Como está sua energia agora?"
+              options={ENERGY_OPTIONS}
+              value={energy}
+              onChange={setEnergy}
+            />
             <ChoiceGroup
               legend="Como seu corpo está para treinar?"
               options={MUSCLE_RECOVERY_OPTIONS}
               value={muscle}
               onChange={setMuscle}
             />
-            <ChoiceGroup legend="Como está seu nível de estresse hoje?" options={STRESS_OPTIONS} value={stress} onChange={setStress} />
-            <ChoiceGroup legend="Alguma dor ou limitação hoje?" options={YES_NO} value={pain} onChange={setPain} columns={2} />
+            <ChoiceGroup
+              legend="Como está seu nível de estresse hoje?"
+              options={STRESS_OPTIONS}
+              value={stress}
+              onChange={setStress}
+            />
+            <ChoiceGroup
+              legend="Alguma dor ou limitação hoje?"
+              options={YES_NO}
+              value={pain}
+              onChange={setPain}
+              columns={2}
+            />
             <fieldset className="flex flex-col gap-2">
-              <legend className="text-sm font-bold text-foreground">Você tem o tempo planejado para o treino?</legend>
+              <legend className="text-sm font-bold text-foreground">
+                Você tem o tempo planejado para o treino?
+              </legend>
               <div className="grid grid-cols-1 gap-2">
                 <button
                   type="button"
                   aria-pressed={plannedTime === true}
                   onClick={() => setPlannedTime(true)}
                   className={`flex min-h-12 items-center justify-center rounded-[var(--radius-lg)] border text-sm font-semibold ${
-                    plannedTime === true ? "border-brand bg-brand-soft text-brand" : "border-border bg-surface text-foreground"
+                    plannedTime === true
+                      ? "border-brand bg-brand-soft text-brand"
+                      : "border-border bg-surface text-foreground"
                   }`}
                 >
                   Sim
@@ -166,7 +215,9 @@ export function PreWorkoutCheckinScreen() {
                   aria-pressed={plannedTime === false}
                   onClick={() => setPlannedTime(false)}
                   className={`flex min-h-12 items-center justify-center rounded-[var(--radius-lg)] border text-sm font-semibold ${
-                    plannedTime === false ? "border-brand bg-brand-soft text-brand" : "border-border bg-surface text-foreground"
+                    plannedTime === false
+                      ? "border-brand bg-brand-soft text-brand"
+                      : "border-border bg-surface text-foreground"
                   }`}
                 >
                   Tenho aproximadamente {minutes} minutos
@@ -180,18 +231,30 @@ export function PreWorkoutCheckinScreen() {
                       type="button"
                       onClick={() => setMinutes(chip)}
                       className={`min-h-11 min-w-14 rounded-[var(--radius-md)] border px-3 text-sm font-semibold ${
-                        minutes === chip ? "border-brand bg-brand-soft text-brand" : "border-border bg-surface text-foreground"
+                        minutes === chip
+                          ? "border-brand bg-brand-soft text-brand"
+                          : "border-border bg-surface text-foreground"
                       }`}
                     >
                       {chip}
                     </button>
                   ))}
                   <div className="flex min-h-11 items-center gap-2 rounded-[var(--radius-md)] border border-border bg-surface px-2">
-                    <button type="button" aria-label="Diminuir minutos" onClick={() => setMinutes((value) => Math.max(15, value - 5))}>
+                    <button
+                      type="button"
+                      aria-label="Diminuir minutos"
+                      onClick={() => setMinutes((value) => Math.max(15, value - 5))}
+                    >
                       −
                     </button>
-                    <span className="min-w-8 text-center text-sm font-bold tabular-nums">{minutes}</span>
-                    <button type="button" aria-label="Aumentar minutos" onClick={() => setMinutes((value) => Math.min(180, value + 5))}>
+                    <span className="min-w-8 text-center text-sm font-bold tabular-nums">
+                      {minutes}
+                    </span>
+                    <button
+                      type="button"
+                      aria-label="Aumentar minutos"
+                      onClick={() => setMinutes((value) => Math.min(180, value + 5))}
+                    >
                       +
                     </button>
                   </div>
@@ -201,7 +264,9 @@ export function PreWorkoutCheckinScreen() {
           </div>
         ) : (
           <div className="flex flex-col gap-5">
-            <p className="text-sm text-muted">Não diagnosticamos lesão. Só precisamos saber o que evitar hoje.</p>
+            <p className="text-sm text-muted">
+              Não diagnosticamos lesão. Só precisamos saber o que evitar hoje.
+            </p>
             <fieldset className="flex flex-col gap-2">
               <legend className="text-sm font-bold text-foreground">Onde?</legend>
               <div className="grid grid-cols-2 gap-2">
@@ -212,7 +277,9 @@ export function PreWorkoutCheckinScreen() {
                     aria-pressed={region === item}
                     onClick={() => setRegion(item)}
                     className={`flex min-h-11 items-center justify-center rounded-[var(--radius-lg)] border px-2 text-xs font-semibold ${
-                      region === item ? "border-brand bg-brand-soft text-brand" : "border-border bg-surface text-foreground"
+                      region === item
+                        ? "border-brand bg-brand-soft text-brand"
+                        : "border-border bg-surface text-foreground"
                     }`}
                   >
                     {item}
@@ -220,8 +287,19 @@ export function PreWorkoutCheckinScreen() {
                 ))}
               </div>
             </fieldset>
-            <ChoiceGroup legend="Intensidade" options={PAIN_INTENSITY_OPTIONS} value={intensity} onChange={setIntensity} />
-            <ChoiceGroup legend="Algum movimento piora?" options={YES_NO} value={worsens} onChange={setWorsens} columns={2} />
+            <ChoiceGroup
+              legend="Intensidade"
+              options={PAIN_INTENSITY_OPTIONS}
+              value={intensity}
+              onChange={setIntensity}
+            />
+            <ChoiceGroup
+              legend="Algum movimento piora?"
+              options={YES_NO}
+              value={worsens}
+              onChange={setWorsens}
+              columns={2}
+            />
             <ChoiceGroup
               legend="Isso impede algum exercício planejado?"
               options={BLOCKS_EXERCISE_OPTIONS}

@@ -21,7 +21,9 @@ test.describe("treino", () => {
     await expect(page.getByRole("heading", { name: "Olá, Lucas." })).toBeVisible();
     await expect(page.getByText("Peitoral e Tríceps")).toBeVisible();
     await page.getByRole("button", { name: "Iniciar treino" }).click();
-    await expect(page.getByRole("heading", { name: "Como você está para treinar hoje?" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Como você está para treinar hoje?" }),
+    ).toBeVisible();
     await page.getByRole("button", { name: "Pular por hoje" }).click();
     await expect(page).toHaveURL(/\/app\/workout$/);
     await expect(page.getByRole("heading", { name: "Peitoral e Tríceps" })).toBeVisible();

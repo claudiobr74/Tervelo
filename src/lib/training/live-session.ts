@@ -110,7 +110,9 @@ export function deserializeTimer(raw: SerializedTimer): RestTimer {
   };
 }
 
-function inputsFromSet(set: SetPrescription): Pick<LiveSessionState, "loadKg" | "reps" | "rir" | "boundSetId"> {
+function inputsFromSet(
+  set: SetPrescription,
+): Pick<LiveSessionState, "loadKg" | "reps" | "rir" | "boundSetId"> {
   return {
     loadKg: set.suggestedWeightKg ?? set.targetWeightKg ?? set.previousWeightKg ?? 0,
     reps: set.targetRepsMin,
@@ -261,7 +263,12 @@ function completeSession(state: LiveSessionState): LiveSessionState {
   const last = state.recorded.at(-1);
   const extra: WorkoutTimelineEvent[] = [];
   if (last) {
-    extra.push({ type: "EXERCISE_COMPLETED", at, exerciseId: last.sessionExerciseId, setId: last.setId });
+    extra.push({
+      type: "EXERCISE_COMPLETED",
+      at,
+      exerciseId: last.sessionExerciseId,
+      setId: last.setId,
+    });
   }
   extra.push({ type: "SESSION_COMPLETED", at });
   const completeSyncId = state.completeSyncId ?? crypto.randomUUID();
@@ -302,7 +309,12 @@ function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelin
   const set = currentSet(PREVIEW_WORKOUT, recorded);
   const events: WorkoutTimelineEvent[] = [];
   if (previous && previous.sessionExerciseId !== exercise.id) {
-    events.push({ type: "EXERCISE_COMPLETED", at, exerciseId: previous.sessionExerciseId, setId: previous.setId });
+    events.push({
+      type: "EXERCISE_COMPLETED",
+      at,
+      exerciseId: previous.sessionExerciseId,
+      setId: previous.setId,
+    });
     events.push({ type: "EXERCISE_STARTED", at, exerciseId: exercise.id });
   }
   events.push({ type: "SET_STARTED", at, setId: set.id, exerciseId: exercise.id });
@@ -362,7 +374,15 @@ export function recordCurrentSet(): AfterRecord {
     { type: "SET_COMPLETED", at: performedAt, setId: set.id, exerciseId: exercise.id },
   ];
   if (isSessionComplete(session, recordedAll)) {
-    persist(completeSession({ ...cached, recorded: recordedAll, queue: queued, timer: null, events: timeline }));
+    persist(
+      completeSession({
+        ...cached,
+        recorded: recordedAll,
+        queue: queued,
+        timer: null,
+        events: timeline,
+      }),
+    );
     return "summary";
   }
   const rest = restSecondsAfter(session, recordedAll);
@@ -373,7 +393,10 @@ export function recordCurrentSet(): AfterRecord {
       queue: queued,
       status: "resting",
       timer: serializeTimer(startRestTimer(new Date(), rest)),
-      events: [...timeline, { type: "REST_STARTED", at: performedAt, setId: set.id, exerciseId: exercise.id }],
+      events: [
+        ...timeline,
+        { type: "REST_STARTED", at: performedAt, setId: set.id, exerciseId: exercise.id },
+      ],
       currentSetStartedAt: null,
       ...inputsFromSet(currentSet(session, recordedAll)),
     });
@@ -401,7 +424,9 @@ function mutateTimer(map: (timer: RestTimer, now: Date) => RestTimer) {
 }
 
 export function pauseOrResumeTimer() {
-  mutateTimer((timer, now) => (timer.status === "paused" ? resumeRestTimer(timer, now) : pauseRestTimer(timer, now)));
+  mutateTimer((timer, now) =>
+    timer.status === "paused" ? resumeRestTimer(timer, now) : pauseRestTimer(timer, now),
+  );
 }
 
 export function restartTimer() {
@@ -419,7 +444,13 @@ export function skipRest(): AfterRecord {
   if (cached.timer) {
     const skipped = skipRestTimer(deserializeTimer(cached.timer), new Date());
     if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
-      persist(completeSession({ ...cached, timer: serializeTimer(skipped), events: [...cached.events, restDone] }));
+      persist(
+        completeSession({
+          ...cached,
+          timer: serializeTimer(skipped),
+          events: [...cached.events, restDone],
+        }),
+      );
       return "summary";
     }
     persist({
@@ -458,7 +489,11 @@ export function beginNextSet(): AfterRecord {
       status: "active",
       timer: null,
       currentSetStartedAt: at,
-      events: [...cached.events, { type: "REST_COMPLETED", at }, ...startNextSetEvents(cached.recorded, at)],
+      events: [
+        ...cached.events,
+        { type: "REST_COMPLETED", at },
+        ...startNextSetEvents(cached.recorded, at),
+      ],
     }),
   });
   return "exercise";
@@ -468,7 +503,10 @@ export function tickTimer(now = new Date()) {
   hydrate();
   if (!cached.timer || cached.status !== "resting") return;
   const ticked = tickRestTimer(deserializeTimer(cached.timer), now);
-  if (ticked.status === cached.timer.status && remainingSeconds(ticked, now) === remainingSeconds(deserializeTimer(cached.timer), now)) {
+  if (
+    ticked.status === cached.timer.status &&
+    remainingSeconds(ticked, now) === remainingSeconds(deserializeTimer(cached.timer), now)
+  ) {
     return;
   }
   persist({ ...cached, timer: serializeTimer(ticked) }, false);

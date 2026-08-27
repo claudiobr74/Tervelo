@@ -1,8 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { enqueueHeartRateSamples, flushHeartRateQueue, pendingHeartRateCount, shouldFlush } from "./buffer";
+import {
+  enqueueHeartRateSamples,
+  flushHeartRateQueue,
+  pendingHeartRateCount,
+  shouldFlush,
+} from "./buffer";
 import type { BufferedHeartRateSample } from "./buffer";
 
-function row(id: string, status: BufferedHeartRateSample["status"] = "pending"): BufferedHeartRateSample {
+function row(
+  id: string,
+  status: BufferedHeartRateSample["status"] = "pending",
+): BufferedHeartRateSample {
   return {
     id,
     clientMutationId: id,
@@ -54,10 +62,20 @@ describe("buffer de frequência cardíaca", () => {
       shouldFlush({ pendingCount: 3, trigger: "interval", lastFlushAtMs: 10_000, nowMs: 12_000 }),
     ).toBe(false);
     expect(
-      shouldFlush({ pendingCount: 1, trigger: "exercise_change", lastFlushAtMs: 10_000, nowMs: 10_100 }),
+      shouldFlush({
+        pendingCount: 1,
+        trigger: "exercise_change",
+        lastFlushAtMs: 10_000,
+        nowMs: 10_100,
+      }),
     ).toBe(true);
     expect(
-      shouldFlush({ pendingCount: 1, trigger: "session_end", lastFlushAtMs: 10_000, nowMs: 10_100 }),
+      shouldFlush({
+        pendingCount: 1,
+        trigger: "session_end",
+        lastFlushAtMs: 10_000,
+        nowMs: 10_100,
+      }),
     ).toBe(true);
     expect(
       shouldFlush({ pendingCount: 0, trigger: "session_end", lastFlushAtMs: null, nowMs: 1 }),

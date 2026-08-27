@@ -1,4 +1,8 @@
-import { DEFAULT_ONBOARDING, ONBOARDING_STORAGE_KEY, type OnboardingDraft } from "@/lib/auth/onboarding";
+import {
+  DEFAULT_ONBOARDING,
+  ONBOARDING_STORAGE_KEY,
+  type OnboardingDraft,
+} from "@/lib/auth/onboarding";
 
 const listeners = new Set<() => void>();
 let cachedRaw: string | null = null;

@@ -18,10 +18,38 @@ describe("NUTRITION_CONTEXT", () => {
   });
 
   it("ordena ajuste nutricional sem atividade cosmética", () => {
-    expect(nutritionAdjustmentAction({ insufficientData: true, trendIsAppropriate: false, outcomeIsOffTarget: true, adherenceIsLow: false })).toBe("OBSERVE");
-    expect(nutritionAdjustmentAction({ insufficientData: false, trendIsAppropriate: true, outcomeIsOffTarget: false, adherenceIsLow: false })).toBe("KEEP");
-    expect(nutritionAdjustmentAction({ insufficientData: false, trendIsAppropriate: false, outcomeIsOffTarget: true, adherenceIsLow: true })).toBe("ADDRESS_ADHERENCE_FIRST");
-    expect(nutritionAdjustmentAction({ insufficientData: false, trendIsAppropriate: false, outcomeIsOffTarget: true, adherenceIsLow: false })).toBe("CONSIDER_NUTRITION_ADJUSTMENT");
+    expect(
+      nutritionAdjustmentAction({
+        insufficientData: true,
+        trendIsAppropriate: false,
+        outcomeIsOffTarget: true,
+        adherenceIsLow: false,
+      }),
+    ).toBe("OBSERVE");
+    expect(
+      nutritionAdjustmentAction({
+        insufficientData: false,
+        trendIsAppropriate: true,
+        outcomeIsOffTarget: false,
+        adherenceIsLow: false,
+      }),
+    ).toBe("KEEP");
+    expect(
+      nutritionAdjustmentAction({
+        insufficientData: false,
+        trendIsAppropriate: false,
+        outcomeIsOffTarget: true,
+        adherenceIsLow: true,
+      }),
+    ).toBe("ADDRESS_ADHERENCE_FIRST");
+    expect(
+      nutritionAdjustmentAction({
+        insufficientData: false,
+        trendIsAppropriate: false,
+        outcomeIsOffTarget: true,
+        adherenceIsLow: false,
+      }),
+    ).toBe("CONSIDER_NUTRITION_ADJUSTMENT");
   });
 
   it("expõe prioridade de conflito e seções do output", () => {

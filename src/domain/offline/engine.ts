@@ -111,7 +111,10 @@ export async function runSyncPass(input: {
   }
 
   metrics.pending_operations = operations.filter(
-    (row) => row.status === "PENDENTE" || row.status === "ERRO_RECUPERAVEL" || row.status === "SINCRONIZANDO",
+    (row) =>
+      row.status === "PENDENTE" ||
+      row.status === "ERRO_RECUPERAVEL" ||
+      row.status === "SINCRONIZANDO",
   ).length;
   return { operations, metrics };
 }

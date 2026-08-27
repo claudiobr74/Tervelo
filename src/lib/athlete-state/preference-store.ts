@@ -28,7 +28,9 @@ function hydrate() {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
   preEnabled = parsePreWorkoutCheckinEnabled(window.localStorage.getItem(PRE_WORKOUT_PREF_STORAGE));
-  weeklyEnabled = parseWeeklyCoachReviewEnabled(window.localStorage.getItem(WEEKLY_REVIEW_PREF_STORAGE));
+  weeklyEnabled = parseWeeklyCoachReviewEnabled(
+    window.localStorage.getItem(WEEKLY_REVIEW_PREF_STORAGE),
+  );
 }
 
 function persist() {
@@ -67,11 +69,19 @@ export function subscribeAthleteStatePrefs(listener: () => void): () => void {
 }
 
 export function usePreWorkoutCheckinEnabled(): boolean {
-  return useSyncExternalStore(subscribeAthleteStatePrefs, getPreWorkoutCheckinEnabled, () => DEFAULT_PRE_WORKOUT_CHECKIN_ENABLED);
+  return useSyncExternalStore(
+    subscribeAthleteStatePrefs,
+    getPreWorkoutCheckinEnabled,
+    () => DEFAULT_PRE_WORKOUT_CHECKIN_ENABLED,
+  );
 }
 
 export function useWeeklyCoachReviewEnabled(): boolean {
-  return useSyncExternalStore(subscribeAthleteStatePrefs, getWeeklyCoachReviewEnabled, () => DEFAULT_WEEKLY_COACH_REVIEW_ENABLED);
+  return useSyncExternalStore(
+    subscribeAthleteStatePrefs,
+    getWeeklyCoachReviewEnabled,
+    () => DEFAULT_WEEKLY_COACH_REVIEW_ENABLED,
+  );
 }
 
 export { PRE_WORKOUT_PREFERENCE_KEY, WEEKLY_REVIEW_PREFERENCE_KEY };

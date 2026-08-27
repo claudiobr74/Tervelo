@@ -10,12 +10,7 @@ import { useOnboarding } from "@/components/onboarding/onboarding-provider";
 import { markOnboardingComplete, saveOnboardingProfile } from "@/lib/auth/onboarding-sync";
 import type { PeriodOption } from "@/lib/auth/onboarding";
 
-const DIETS = [
-  "Sem restrições (Dieta Geral)",
-  "Vegetariana",
-  "Vegana",
-  "Low carb",
-];
+const DIETS = ["Sem restrições (Dieta Geral)", "Vegetariana", "Vegana", "Low carb"];
 
 export function OnboardingNutricaoScreen() {
   const router = useRouter();
@@ -54,7 +49,12 @@ export function OnboardingNutricaoScreen() {
         cta={
           <div className="flex w-full flex-col gap-2">
             {error ? <p className="text-sm text-error">{error}</p> : null}
-            <button type="button" onClick={finish} disabled={finishing} className={PRIMARY_CTA_CLASS}>
+            <button
+              type="button"
+              onClick={finish}
+              disabled={finishing}
+              className={PRIMARY_CTA_CLASS}
+            >
               {finishing ? "Salvando..." : "Finalizar"}
             </button>
           </div>
@@ -160,22 +160,25 @@ export function OnboardingNutricaoScreen() {
       {finishing ? (
         <div className="fixed inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-background/93 p-6">
           <div className="flex w-full max-w-[390px] flex-col items-center gap-6 text-center">
-          <span className="relative inline-block size-20 shrink-0 overflow-clip">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/icons/loading-spinner.svg"
-              alt=""
-              width={80}
-              height={80}
-              className="size-full animate-spin object-contain"
-            />
-          </span>
-          <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
-            <p className="w-full text-xl font-extrabold text-foreground">Salvando suas respostas...</p>
-            <p className="w-full text-sm text-muted">
-              Guardando seu perfil, seus objetivos e sua rotina alimentar para montar o acompanhamento.
-            </p>
-          </div>
+            <span className="relative inline-block size-20 shrink-0 overflow-clip">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/icons/loading-spinner.svg"
+                alt=""
+                width={80}
+                height={80}
+                className="size-full animate-spin object-contain"
+              />
+            </span>
+            <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
+              <p className="w-full text-xl font-extrabold text-foreground">
+                Salvando suas respostas...
+              </p>
+              <p className="w-full text-sm text-muted">
+                Guardando seu perfil, seus objetivos e sua rotina alimentar para montar o
+                acompanhamento.
+              </p>
+            </div>
           </div>
         </div>
       ) : null}

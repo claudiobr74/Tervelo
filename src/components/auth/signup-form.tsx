@@ -3,7 +3,13 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { AuthFooterLink, AuthShell, FieldLabel, AUTH_INPUT_CLASS, PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
+import {
+  AuthFooterLink,
+  AuthShell,
+  FieldLabel,
+  AUTH_INPUT_CLASS,
+  PRIMARY_CTA_CLASS,
+} from "@/components/auth/auth-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
 import { patchOnboarding } from "@/lib/auth/onboarding-store";
@@ -80,7 +86,9 @@ export function SignupForm() {
   }
 
   return (
-    <AuthShell footer={<AuthFooterLink prompt="Já tem uma conta?" href="/login" action="Fazer login" />}>
+    <AuthShell
+      footer={<AuthFooterLink prompt="Já tem uma conta?" href="/login" action="Fazer login" />}
+    >
       <header className="flex flex-col gap-3 px-6 pb-5 pt-4">
         <div className="flex items-center justify-between">
           <Link href="/login" aria-label="Voltar" className="size-6 text-foreground">

@@ -30,10 +30,7 @@ function utcYmd(now: Date): { year: number; month: number; day: number } {
 }
 
 /** Idade em anos completos. Nunca persistir — deriva de `birth_date`. */
-export function ageYearsFromBirthDate(
-  birthDateIso: string,
-  now: Date,
-): Result<number, AgeError> {
+export function ageYearsFromBirthDate(birthDateIso: string, now: Date): Result<number, AgeError> {
   const birth = parseIsoDateOnly(birthDateIso);
   if (!birth) {
     return err({ code: "invalid_birth_date" });
@@ -52,7 +49,10 @@ export function ageYearsFromBirthDate(
     return err({ code: "birth_date_in_future" });
   }
   let age = today.year - birthYmd.year;
-  if (today.month < birthYmd.month || (today.month === birthYmd.month && today.day < birthYmd.day)) {
+  if (
+    today.month < birthYmd.month ||
+    (today.month === birthYmd.month && today.day < birthYmd.day)
+  ) {
     age -= 1;
   }
   return ok(age);

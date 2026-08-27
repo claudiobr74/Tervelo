@@ -93,9 +93,10 @@ export function athleteProfileInput(answers: OnboardingAnswers): AthleteProfileI
     nutrition: {
       routine,
       restrictions: textOrNull(answers.dietPattern, 200),
-      hydrationNotes: [hydration, supplements ? `Suplementos: ${supplements}` : null]
-        .filter(Boolean)
-        .join(". ") || null,
+      hydrationNotes:
+        [hydration, supplements ? `Suplementos: ${supplements}` : null]
+          .filter(Boolean)
+          .join(". ") || null,
     },
   };
 }

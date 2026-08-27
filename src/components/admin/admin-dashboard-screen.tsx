@@ -18,7 +18,9 @@ export function AdminDashboardScreen() {
             >
               <p className="text-[13px] font-semibold uppercase text-muted">{kpi.label}</p>
               <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <p className="text-[32px] font-extrabold leading-none text-foreground">{kpi.value}</p>
+                <p className="text-[32px] font-extrabold leading-none text-foreground">
+                  {kpi.value}
+                </p>
                 <span
                   className={`inline-flex items-center gap-1 rounded-[6px] px-2 py-1 text-[11px] font-bold ${
                     kpi.tone === "up" ? "bg-success/20 text-success" : "bg-error/20 text-error"
@@ -44,7 +46,13 @@ export function AdminDashboardScreen() {
             </div>
             <div className="flex flex-1 flex-col items-center justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/icons/admin/sparkline.svg" alt="" width={480} height={160} className="h-40 w-full max-w-[480px]" />
+              <img
+                src="/icons/admin/sparkline.svg"
+                alt=""
+                width={480}
+                height={160}
+                className="h-40 w-full max-w-[480px]"
+              />
               <div className="flex w-full max-w-[480px] justify-between pt-2 text-[11px] text-tertiary">
                 {PREVIEW_DASHBOARD.months.map((month) => (
                   <span key={month}>{month}</span>
@@ -86,14 +94,20 @@ export function AdminDashboardScreen() {
                 }`}
               >
                 <FigmaIcon
-                  src={alert.tone === "critical" ? "/icons/alert-triangle.svg" : "/icons/trending-up.svg"}
+                  src={
+                    alert.tone === "critical"
+                      ? "/icons/alert-triangle.svg"
+                      : "/icons/trending-up.svg"
+                  }
                   alt=""
                   size={20}
                   className={alert.tone === "critical" ? "text-error" : "text-brand"}
                 />
                 <div className="min-w-0">
                   <p className="text-[13px] font-bold">{alert.title}</p>
-                  <p className={`text-xs ${alert.tone === "critical" ? "text-foreground" : "text-muted"}`}>
+                  <p
+                    className={`text-xs ${alert.tone === "critical" ? "text-foreground" : "text-muted"}`}
+                  >
                     {alert.body}
                   </p>
                 </div>

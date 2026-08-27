@@ -46,7 +46,8 @@ const PLANS = [
   {
     name: "Pro",
     price: "R$ 89",
-    blurb: "Nossa experiência principal. Integração total entre sua nutrição, treino e inteligência artificial.",
+    blurb:
+      "Nossa experiência principal. Integração total entre sua nutrição, treino e inteligência artificial.",
     cta: "Seja um Atleta Pro",
     featured: true,
     items: [
@@ -132,7 +133,10 @@ export function MarketingLanding() {
           <Link href="/" aria-label="TERVELO">
             <BrandLogo className="h-8 w-auto max-w-[160px] lg:h-10" />
           </Link>
-          <nav className="hidden items-center gap-8 text-sm font-medium text-muted lg:flex" aria-label="Seções">
+          <nav
+            className="hidden items-center gap-8 text-sm font-medium text-muted lg:flex"
+            aria-label="Seções"
+          >
             {NAV.map((item) => (
               <a key={item.href} href={item.href} className="hover:text-foreground">
                 {item.label}
@@ -164,8 +168,9 @@ export function MarketingLanding() {
                 Evolução contínua.
               </h1>
               <p className="max-w-xl text-base leading-7 text-muted lg:text-lg">
-                O TERVELO reúne treinamento de força, recuperação e nutrição esportiva num acompanhamento
-                só. Você registra cada série, e o plano é revisto a partir do que os seus dados mostram.
+                O TERVELO reúne treinamento de força, recuperação e nutrição esportiva num
+                acompanhamento só. Você registra cada série, e o plano é revisto a partir do que os
+                seus dados mostram.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-4">
@@ -175,7 +180,10 @@ export function MarketingLanding() {
               >
                 Começar minha evolução
               </Link>
-              <a href="#treinamento" className="inline-flex items-center gap-2 text-[15px] font-semibold text-brand">
+              <a
+                href="#treinamento"
+                className="inline-flex items-center gap-2 text-[15px] font-semibold text-brand"
+              >
                 Conhecer como funciona
                 <FigmaIcon src="/icons/chevron-right.svg" alt="" size={16} />
               </a>
@@ -195,8 +203,8 @@ export function MarketingLanding() {
                 ))}
               </div>
               <p className="text-[13px] text-muted">
-                <span className="font-bold text-foreground">Mais de 14.000</span> atletas treinando hoje com
-                inteligência artificial.
+                <span className="font-bold text-foreground">Mais de 14.000</span> atletas treinando
+                hoje com inteligência artificial.
               </p>
             </div>
           </div>
@@ -233,8 +241,8 @@ export function MarketingLanding() {
                 Sua assessoria esportiva completa, sem limites
               </h2>
               <p className="text-base text-muted">
-                Chega de planilhas estáticas e palpites. O ecossistema inteligente TERVELO gerencia cada
-                aspecto do seu rendimento físico.
+                Chega de planilhas estáticas e palpites. O ecossistema inteligente TERVELO gerencia
+                cada aspecto do seu rendimento físico.
               </p>
             </div>
             <div className="grid w-full gap-6 lg:grid-cols-3">
@@ -256,15 +264,18 @@ export function MarketingLanding() {
           </div>
         </section>
 
-        <section id="treinamento" className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-6 py-16 lg:px-20 lg:py-24">
+        <section
+          id="treinamento"
+          className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-6 py-16 lg:px-20 lg:py-24"
+        >
           <Badge>Tecnologia de Carga</Badge>
           <h2 className="max-w-3xl text-[28px] font-extrabold text-foreground lg:text-[40px]">
             Treinamento que evolui com você
           </h2>
           <p className="max-w-3xl text-base leading-[26px] text-muted">
-            O corpo humano não evolui de forma linear. Por que o seu treino deveria? Nosso sistema adapta os
-            estímulos de acordo com as flutuações diárias de energia, estresse e sono, maximizando a resposta
-            adaptativa.
+            O corpo humano não evolui de forma linear. Por que o seu treino deveria? Nosso sistema
+            adapta os estímulos de acordo com as flutuações diárias de energia, estresse e sono,
+            maximizando a resposta adaptativa.
           </p>
         </section>
 
@@ -275,19 +286,24 @@ export function MarketingLanding() {
               Nutrição esportiva personalizada
             </h2>
             <p className="max-w-3xl text-base leading-[26px] text-muted">
-              Não existe treino eficiente com nutrição desalinhada. O TERVELO integra o cálculo exato das suas
-              demandas energéticas pós-treino, construindo cardápios dinâmicos baseados no volume real de
-              estresse muscular daquela sessão.
+              Não existe treino eficiente com nutrição desalinhada. O TERVELO integra o cálculo
+              exato das suas demandas energéticas pós-treino, construindo cardápios dinâmicos
+              baseados no volume real de estresse muscular daquela sessão.
             </p>
           </div>
         </section>
 
-        <section id="evolucao" className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-6 py-16 lg:px-20 lg:py-24">
+        <section
+          id="evolucao"
+          className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-6 py-16 lg:px-20 lg:py-24"
+        >
           <Badge>Analytics e Metas</Badge>
-          <h2 className="text-[28px] font-extrabold text-foreground lg:text-[40px]">Visualize cada progresso</h2>
+          <h2 className="text-[28px] font-extrabold text-foreground lg:text-[40px]">
+            Visualize cada progresso
+          </h2>
           <p className="max-w-3xl text-base text-muted">
-            Métricas de força bruta, volume acumulado e densidade de trabalho explicadas em gráficos limpos e
-            acionáveis.
+            Métricas de força bruta, volume acumulado e densidade de trabalho explicadas em gráficos
+            limpos e acionáveis.
           </p>
         </section>
 
@@ -299,7 +315,8 @@ export function MarketingLanding() {
                 Investimento estruturado para o seu corpo
               </h2>
               <p className="text-base text-muted">
-                Escolha o nível de acompanhamento ideal para sua rotina esportiva. Cancele quando quiser.
+                Escolha o nível de acompanhamento ideal para sua rotina esportiva. Cancele quando
+                quiser.
               </p>
             </div>
             <div className="grid w-full gap-6 lg:grid-cols-3">
@@ -323,8 +340,16 @@ export function MarketingLanding() {
                   </div>
                   <ul className="flex flex-col gap-3">
                     {plan.items.map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-[13px] text-foreground">
-                        <FigmaIcon src="/icons/check.svg" alt="" size={14} className="mt-0.5 text-brand" />
+                      <li
+                        key={item}
+                        className="flex items-start gap-2.5 text-[13px] text-foreground"
+                      >
+                        <FigmaIcon
+                          src="/icons/check.svg"
+                          alt=""
+                          size={14}
+                          className="mt-0.5 text-brand"
+                        />
                         {item}
                       </li>
                     ))}
@@ -382,10 +407,12 @@ export function MarketingLanding() {
           <div className="mx-auto grid w-full max-w-[1440px] gap-10 lg:grid-cols-[1fr_1.4fr]">
             <div className="flex flex-col items-start gap-4">
               <Badge>Tire suas dúvidas</Badge>
-              <h2 className="text-[28px] font-extrabold text-foreground lg:text-[40px]">Perguntas Frequentes</h2>
+              <h2 className="text-[28px] font-extrabold text-foreground lg:text-[40px]">
+                Perguntas Frequentes
+              </h2>
               <p className="text-base leading-6 text-muted">
-                Tem alguma pergunta específica sobre a nossa metodologia científica ou integrador artificial?
-                Confira as respostas rápidas ao lado.
+                Tem alguma pergunta específica sobre a nossa metodologia científica ou integrador
+                artificial? Confira as respostas rápidas ao lado.
               </p>
             </div>
             <div className="flex flex-col gap-3">
@@ -409,8 +436,8 @@ export function MarketingLanding() {
             Assuma o controle total do seu rendimento físico
           </h2>
           <p className="max-w-2xl text-base text-muted">
-            Em apenas 12 semanas, nosso algoritmo reorganizará sua capacidade de força, volume metabólico e
-            relação com a balança de forma definitiva.
+            Em apenas 12 semanas, nosso algoritmo reorganizará sua capacidade de força, volume
+            metabólico e relação com a balança de forma definitiva.
           </p>
           <Link
             href="/signup"

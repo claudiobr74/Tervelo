@@ -20,11 +20,11 @@ Funções críticas do treino **não** esperam mutation GraphQL para confirmar a
 
 ## Camadas
 
-| Pasta | Papel |
-| --- | --- |
+| Pasta                 | Papel                                              |
+| --------------------- | -------------------------------------------------- |
 | `src/domain/offline/` | Fila, motor, conflitos, backoff, copy PT-BR (puro) |
-| `src/lib/offline/` | IndexedDB, boot, transporter, rede, SW |
-| Stores existentes | Continuam cache em memória; persistem no IDB |
+| `src/lib/offline/`    | IndexedDB, boot, transporter, rede, SW             |
+| Stores existentes     | Continuam cache em memória; persistem no IDB       |
 
 ## Capacidades
 

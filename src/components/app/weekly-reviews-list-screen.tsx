@@ -4,7 +4,11 @@ import Link from "next/link";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { PRODUCT_NAMES } from "@/domain/athlete-state/labels";
-import { trackProductEvent, useAthleteStateStore, weeklyDecisionLabel } from "@/lib/athlete-state/session-store";
+import {
+  trackProductEvent,
+  useAthleteStateStore,
+  weeklyDecisionLabel,
+} from "@/lib/athlete-state/session-store";
 import { useWeeklyCoachReviewEnabled } from "@/lib/athlete-state/preference-store";
 
 export function WeeklyReviewsListScreen() {
@@ -30,24 +34,27 @@ export function WeeklyReviewsListScreen() {
               {PRODUCT_NAMES.weeklyCoachReview} está desligada
             </p>
             <p className="text-xs text-muted">
-              Ligue em Mais → Conta → Acompanhamento do Coach para voltar a receber a análise da semana.
+              Ligue em Mais → Conta → Acompanhamento do Coach para voltar a receber a análise da
+              semana.
             </p>
           </div>
         ) : null}
         <div className="flex flex-col gap-3">
           {enabled &&
             store.weeklyReviews.map((review) => (
-            <Link
-              key={review.id}
-              href={`/app/coach/revisoes/${review.id}`}
-              onClick={() => trackProductEvent("revisao_semanal_aberta")}
-              className="flex flex-col gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-4"
-            >
-              <p className="text-xs text-muted">{review.dateLabel}</p>
-              <p className="text-sm font-bold text-foreground">{review.headline}</p>
-              <p className="text-xs font-semibold text-brand">{weeklyDecisionLabel(review.decision)}</p>
-            </Link>
-          ))}
+              <Link
+                key={review.id}
+                href={`/app/coach/revisoes/${review.id}`}
+                onClick={() => trackProductEvent("revisao_semanal_aberta")}
+                className="flex flex-col gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-4"
+              >
+                <p className="text-xs text-muted">{review.dateLabel}</p>
+                <p className="text-sm font-bold text-foreground">{review.headline}</p>
+                <p className="text-xs font-semibold text-brand">
+                  {weeklyDecisionLabel(review.decision)}
+                </p>
+              </Link>
+            ))}
         </div>
       </div>
     </AthleteAppShell>

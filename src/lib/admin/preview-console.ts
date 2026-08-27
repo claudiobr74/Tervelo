@@ -72,7 +72,8 @@ export const PREVIEW_AUDIT_LOGS = [
     outcomeTone: "success" as const,
     proposed: "Aumento de 2 kg no Supino Reto, com 2 repetições em reserva.",
     rule: "Protocolo de progressão v3.2",
-    evidence: "Séries fechadas com margem de execução. Sem dado nutricional inventado neste recorte.",
+    evidence:
+      "Séries fechadas com margem de execução. Sem dado nutricional inventado neste recorte.",
   },
   {
     id: "matheus-sub",

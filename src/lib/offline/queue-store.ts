@@ -29,11 +29,18 @@ export function pendingSyncCount(): number {
 }
 
 export function hydrateSyncQueue(ops: SyncOperation[]) {
-  if (hydrated && cached.some((row) => row.status === "PENDENTE" || row.status === "SINCRONIZANDO")) {
+  if (
+    hydrated &&
+    cached.some((row) => row.status === "PENDENTE" || row.status === "SINCRONIZANDO")
+  ) {
     const incoming = new Map(ops.map((row) => [row.id, row]));
     const merged = cached.map((row) => incoming.get(row.id) ?? row);
     for (const row of ops) {
-      if (!merged.some((item) => item.id === row.id || item.client_mutation_id === row.client_mutation_id)) {
+      if (
+        !merged.some(
+          (item) => item.id === row.id || item.client_mutation_id === row.client_mutation_id,
+        )
+      ) {
         merged.push(row);
       }
     }

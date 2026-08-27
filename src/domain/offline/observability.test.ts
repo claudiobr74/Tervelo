@@ -24,7 +24,12 @@ describe("observabilidade offline", () => {
   });
 
   it("normaliza ausência de erro em string vazia", () => {
-    expect(sanitizeSyncLog({ opId: "op-2", entity: "set_result", status: "OK" }).errorCode).toBe("");
-    expect(sanitizeSyncLog({ opId: "op-3", entity: "set_result", status: "OK", errorCode: null }).errorCode).toBe("");
+    expect(sanitizeSyncLog({ opId: "op-2", entity: "set_result", status: "OK" }).errorCode).toBe(
+      "",
+    );
+    expect(
+      sanitizeSyncLog({ opId: "op-3", entity: "set_result", status: "OK", errorCode: null })
+        .errorCode,
+    ).toBe("");
   });
 });

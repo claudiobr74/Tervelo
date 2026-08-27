@@ -40,7 +40,9 @@ export function ProfileAvailabilityScreen() {
                 aria-pressed={selected}
                 onClick={() => toggleDay(day.value)}
                 className={`flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border px-2 text-[13px] font-bold ${
-                  selected ? "border-brand bg-brand text-on-brand" : "border-border bg-surface text-muted"
+                  selected
+                    ? "border-brand bg-brand text-on-brand"
+                    : "border-border bg-surface text-muted"
                 }`}
               >
                 {day.label}

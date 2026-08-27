@@ -17,7 +17,9 @@ test.describe("nutrição", () => {
     await page.getByRole("link", { name: /Nutrição/ }).click();
     await expect(page).toHaveURL(/\/app\/nutrition/);
     await expect(page.getByRole("heading", { name: "Nutrição" })).toBeVisible();
-    await expect(page.getByText("Aumentar massa muscular com controle do ganho de gordura")).toBeVisible();
+    await expect(
+      page.getByText("Aumentar massa muscular com controle do ganho de gordura"),
+    ).toBeVisible();
     await expect(page.getByText("2.450")).toBeVisible();
     await expect(page.getByText("/ 3.100 kcal")).toBeVisible();
     await expect(page.getByText("Proteínas")).toBeVisible();

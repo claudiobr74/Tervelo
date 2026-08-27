@@ -27,10 +27,7 @@ export function expandDumbbellWeights(set: DumbbellSet): Result<number[], Dumbbe
   return ok(weights);
 }
 
-export function canLoadDumbbell(
-  set: DumbbellSet,
-  weightKg: number,
-): Result<true, DumbbellError> {
+export function canLoadDumbbell(set: DumbbellSet, weightKg: number): Result<true, DumbbellError> {
   const expanded = expandDumbbellWeights(set);
   if (!expanded.ok) return expanded;
   if (expanded.value.some((kg) => nearlyEqual(kg, weightKg))) {

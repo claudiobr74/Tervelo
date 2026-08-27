@@ -19,10 +19,10 @@ Auditoria: [`VERCEL_PRE_IMPLEMENTATION_AUDIT.md`](VERCEL_PRE_IMPLEMENTATION_AUDI
 
 Settings → Environment Variables. **Production** e **Preview**.
 
-| Nome | Público? | Valor |
-| --- | --- | --- |
-| `NEXT_PUBLIC_NHOST_SUBDOMAIN` | sim | subdomain do dashboard Nhost (não é secret) |
-| `NEXT_PUBLIC_NHOST_REGION` | sim | region do dashboard (ex. `sa-east-1`) |
+| Nome                          | Público? | Valor                                       |
+| ----------------------------- | -------- | ------------------------------------------- |
+| `NEXT_PUBLIC_NHOST_SUBDOMAIN` | sim      | subdomain do dashboard Nhost (não é secret) |
+| `NEXT_PUBLIC_NHOST_REGION`    | sim      | region do dashboard (ex. `sa-east-1`)       |
 
 **Não** criar `NEXT_PUBLIC_` para admin secret, JWT private key, chaves de modelo.
 
@@ -36,9 +36,9 @@ Copiar do dashboard Nhost: [projeto `wqttndghxeybdppcfnol`](https://app.nhost.io
 
 O app é o frontend. Colocar **URLs da Vercel/localhost** no Nhost, não o contrário.
 
-| Campo | Valor |
-| --- | --- |
-| Client URL | `http://localhost:3000` até ter domínio de produção; depois a URL canônica `https://…` |
+| Campo                 | Valor                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| Client URL            | `http://localhost:3000` até ter domínio de produção; depois a URL canônica `https://…`                 |
 | Allowed redirect URLs | `http://localhost:3000` **e** a URL de Production (e Preview, se for usar e-mail de confirmação neles) |
 
 Hasura no git já usa `corsDomain = ['*']`. GraphQL a partir da Vercel não depende dessa lista.
@@ -49,10 +49,10 @@ Hasura no git já usa `corsDomain = ['*']`. GraphQL a partir da Vercel não depe
 
 O Preview atual responde **302** para `vercel.com/sso-api`. Isso é a Authentication da Vercel.
 
-| Ambiente | Recomendação |
-| --- | --- |
-| Preview | SSO ok para revisão interna. **Impede** smoke público e links de e-mail Nhost. |
-| Production | **Sem** SSO Vercel. Atleta entra pelo login do Tervelo. |
+| Ambiente   | Recomendação                                                                   |
+| ---------- | ------------------------------------------------------------------------------ |
+| Preview    | SSO ok para revisão interna. **Impede** smoke público e links de e-mail Nhost. |
+| Production | **Sem** SSO Vercel. Atleta entra pelo login do Tervelo.                        |
 
 Dashboard: Project → Settings → Deployment Protection.
 

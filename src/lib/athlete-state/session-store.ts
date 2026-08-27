@@ -9,7 +9,10 @@ import type {
   PreWorkoutCheckinRecord,
   PreWorkoutCheckinRepository,
 } from "@/application/ports";
-import { enqueueAthleteMutation, type QueuedAthleteMutation } from "@/domain/athlete-state/offline-queue";
+import {
+  enqueueAthleteMutation,
+  type QueuedAthleteMutation,
+} from "@/domain/athlete-state/offline-queue";
 import type { PostWorkoutCheckout } from "@/domain/athlete-state/post-workout";
 import type { PreWorkoutCheckin } from "@/domain/athlete-state/pre-workout";
 import { CHANGE_SCOPE_COPY } from "@/domain/athlete-state/labels";
@@ -70,7 +73,8 @@ function seedReviews(): WeeklyReviewPreview[] {
       whatImproved: "Progressão em três exercícios comparáveis.",
       whatNeedsAttention: "Nada neste recorte pede mudança estrutural.",
       training: "O planejamento atual continua funcionando para este atleta.",
-      nutrition: "Sua ingestão de proteína permaneceu próxima ao planejamento na maior parte da semana.",
+      nutrition:
+        "Sua ingestão de proteína permaneceu próxima ao planejamento na maior parte da semana.",
       body: null,
       recovery: "A recuperação permaneceu próxima ao seu padrão habitual.",
       heartRate: null,
@@ -239,7 +243,9 @@ const postRepo: PostWorkoutCheckoutRepository = {
   },
 };
 
-export async function savePreWorkoutCheckin(checkin: PreWorkoutCheckin): Promise<PreWorkoutCheckinRecord | null> {
+export async function savePreWorkoutCheckin(
+  checkin: PreWorkoutCheckin,
+): Promise<PreWorkoutCheckinRecord | null> {
   hydrate();
   const clientMutationId = crypto.randomUUID();
   const result = await recordPreWorkoutCheckin(preRepo, {
@@ -273,14 +279,18 @@ export async function savePreWorkoutCheckin(checkin: PreWorkoutCheckin): Promise
     preWorkout: checkin,
     queue,
     sessionKeptCopy:
-      checkin.status === "completed" && checkin.hasPain !== true && (checkin.availableMinutes == null || checkin.hasPlannedTime)
+      checkin.status === "completed" &&
+      checkin.hasPain !== true &&
+      (checkin.availableMinutes == null || checkin.hasPlannedTime)
         ? "Treino mantido conforme planejado."
         : cached.sessionKeptCopy,
   });
   return result.ok ? result.value : null;
 }
 
-export async function savePostWorkoutCheckout(checkout: PostWorkoutCheckout): Promise<PostWorkoutCheckoutRecord | null> {
+export async function savePostWorkoutCheckout(
+  checkout: PostWorkoutCheckout,
+): Promise<PostWorkoutCheckoutRecord | null> {
   hydrate();
   const clientMutationId = crypto.randomUUID();
   const result = await recordPostWorkoutCheckout(postRepo, {

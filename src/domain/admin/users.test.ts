@@ -28,13 +28,20 @@ const users: AdminUser[] = [
 
 describe("admin users", () => {
   it("filtra por nome sem inventar linha", () => {
-    expect(filterAdminUsers(users, { query: "carla", status: "Todos", plan: "Todos", goal: "Todos" }).map((u) => u.name)).toEqual([
-      "Carla Oliveira",
-    ]);
+    expect(
+      filterAdminUsers(users, {
+        query: "carla",
+        status: "Todos",
+        plan: "Todos",
+        goal: "Todos",
+      }).map((u) => u.name),
+    ).toEqual(["Carla Oliveira"]);
   });
 
   it("filtra status inativo", () => {
-    expect(filterAdminUsers(users, { query: "", status: "Inativo", plan: "Todos", goal: "Todos" })).toHaveLength(1);
+    expect(
+      filterAdminUsers(users, { query: "", status: "Inativo", plan: "Todos", goal: "Todos" }),
+    ).toHaveLength(1);
   });
 
   it("pinta aderência por faixa", () => {

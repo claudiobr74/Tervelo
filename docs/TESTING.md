@@ -1,10 +1,10 @@
 # Testes
 
-| Camada | Ferramenta | Onde |
-| --- | --- | --- |
-| Unitário | Vitest | `src/**/*.test.ts` |
-| E2E | Playwright | `e2e/` (smoke; produto depois das telas Figma) |
-| CI | GitHub Actions | `.github/workflows/ci.yml` (job `check` + job `e2e`) |
+| Camada   | Ferramenta     | Onde                                                 |
+| -------- | -------------- | ---------------------------------------------------- |
+| Unitário | Vitest         | `src/**/*.test.ts`                                   |
+| E2E      | Playwright     | `e2e/` (smoke; produto depois das telas Figma)       |
+| CI       | GitHub Actions | `.github/workflows/ci.yml` (job `check` + job `e2e`) |
 
 Evidência visual (screenshots dos temas) é gravada com `captureEvidence` em
 `e2e/support/evidence.ts`, dentro do resultado do próprio teste. Caminho absoluto

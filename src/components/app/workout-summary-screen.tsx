@@ -83,9 +83,7 @@ export function WorkoutSummaryScreen() {
           </article>
           <article className="flex flex-col gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
             <p className="text-[11px] text-muted">Volume de Carga</p>
-            <p className="text-lg font-bold text-brand">
-              {volume.toLocaleString("pt-BR")} kg
-            </p>
+            <p className="text-lg font-bold text-brand">{volume.toLocaleString("pt-BR")} kg</p>
           </article>
         </div>
 
@@ -125,7 +123,9 @@ export function WorkoutSummaryScreen() {
               </div>
             </div>
             {!runtime.online && runtime.pendingSync > 0 ? (
-              <p className="text-xs text-muted">Salvo neste dispositivo • aguardando sincronização</p>
+              <p className="text-xs text-muted">
+                Salvo neste dispositivo • aguardando sincronização
+              </p>
             ) : null}
             <button
               type="button"

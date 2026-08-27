@@ -28,22 +28,31 @@ async function graphql<T>(query: string, variables: Record<string, unknown>): Pr
 
 export async function upsertWearableDevice(device: WearablePayload): Promise<void> {
   await graphql(
-    `mutation UpsertWearable($id: uuid!, $display_name: String!, $last_connected_at: timestamptz!, $is_active: Boolean!) {
-      insert_wearable_devices_one(
-        object: {
-          id: $id
-          provider: "web_bluetooth"
-          display_name: $display_name
-          device_type: "heart_rate_monitor"
-          last_connected_at: $last_connected_at
-          is_active: $is_active
+    `
+      mutation UpsertWearable(
+        $id: uuid!
+        $display_name: String!
+        $last_connected_at: timestamptz!
+        $is_active: Boolean!
+      ) {
+        insert_wearable_devices_one(
+          object: {
+            id: $id
+            provider: "web_bluetooth"
+            display_name: $display_name
+            device_type: "heart_rate_monitor"
+            last_connected_at: $last_connected_at
+            is_active: $is_active
+          }
+          on_conflict: {
+            constraint: wearable_devices_pkey
+            update_columns: [display_name, last_connected_at, is_active]
+          }
+        ) {
+          id
         }
-        on_conflict: {
-          constraint: wearable_devices_pkey
-          update_columns: [display_name, last_connected_at, is_active]
-        }
-      ) { id }
-    }`,
+      }
+    `,
     {
       id: device.id,
       display_name: device.displayName,
@@ -133,9 +142,19 @@ export async function insertHeartRateSamples(input: {
     client_mutation_id: sample.clientMutationId,
   }));
   await graphql(
-    `mutation InsertHeartRateSamples($objects: [heart_rate_samples_insert_input!]!) {
-      insert_heart_rate_samples(objects: $objects, on_conflict: { constraint: heart_rate_samples_user_id_client_mutation_id_key, update_columns: [] }) { affected_rows }
-    }`,
+    `
+      mutation InsertHeartRateSamples($objects: [heart_rate_samples_insert_input!]!) {
+        insert_heart_rate_samples(
+          objects: $objects
+          on_conflict: {
+            constraint: heart_rate_samples_user_id_client_mutation_id_key
+            update_columns: []
+          }
+        ) {
+          affected_rows
+        }
+      }
+    `,
     { objects },
   );
 }

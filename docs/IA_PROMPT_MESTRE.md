@@ -15,16 +15,16 @@ Cobre o contrato administrativo e o pipeline de agentes. O coach do atleta (`/ap
 
 Escolha operacional no **modo administrar** (`/admin/ai`, aba Comportamento). Nomes por extenso na UI. O Figma não tem picker; a seleção existe porque o pipeline precisa de um agente em foco.
 
-| Identificador | Nome na UI |
-| --- | --- |
-| `orchestrator` | Orquestrador |
-| `profiler` | Perfilador |
-| `strength` | Força |
-| `periodization` | Periodização |
-| `nutrition` | Nutrição |
-| `recovery` | Recuperação |
-| `progress` | Evolução |
-| `qa` | Controle de qualidade |
+| Identificador   | Nome na UI            |
+| --------------- | --------------------- |
+| `orchestrator`  | Orquestrador          |
+| `profiler`      | Perfilador            |
+| `strength`      | Força                 |
+| `periodization` | Periodização          |
+| `nutrition`     | Nutrição              |
+| `recovery`      | Recuperação           |
+| `progress`      | Evolução              |
+| `qa`            | Controle de qualidade |
 
 Padrão: Orquestrador. Fluxo: contexto → segurança → programa → recuperação → desempenho → força → periodização → nutrição (se necessário) → evolução → controle de qualidade → resposta.
 

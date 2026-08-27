@@ -49,13 +49,17 @@ export function HeartRateDetailsSheet({ onClose }: { onClose: () => void }) {
           <div className="flex justify-between">
             <dt className="text-muted">Média da sessão</dt>
             <dd className="font-semibold tabular-nums text-foreground">
-              {details.stats.averageBpm !== null ? `${details.stats.averageBpm} batimentos/min` : "—"}
+              {details.stats.averageBpm !== null
+                ? `${details.stats.averageBpm} batimentos/min`
+                : "—"}
             </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted">Máxima</dt>
             <dd className="font-semibold tabular-nums text-foreground">
-              {details.stats.maximumBpm !== null ? `${details.stats.maximumBpm} batimentos/min` : "—"}
+              {details.stats.maximumBpm !== null
+                ? `${details.stats.maximumBpm} batimentos/min`
+                : "—"}
             </dd>
           </div>
           <div className="flex justify-between">
@@ -72,7 +76,9 @@ export function HeartRateDetailsSheet({ onClose }: { onClose: () => void }) {
             <>
               <div className="flex justify-between">
                 <dt className="text-muted">Antes da série</dt>
-                <dd className="tabular-nums text-foreground">{lastMetrics.heartRateBeforeSet ?? "—"}</dd>
+                <dd className="tabular-nums text-foreground">
+                  {lastMetrics.heartRateBeforeSet ?? "—"}
+                </dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-muted">Pico</dt>
@@ -80,24 +86,31 @@ export function HeartRateDetailsSheet({ onClose }: { onClose: () => void }) {
               </div>
               <div className="flex justify-between">
                 <dt className="text-muted">Após 60 segundos</dt>
-                <dd className="tabular-nums text-foreground">{lastMetrics.heartRateAfter60Seconds ?? "—"}</dd>
+                <dd className="tabular-nums text-foreground">
+                  {lastMetrics.heartRateAfter60Seconds ?? "—"}
+                </dd>
               </div>
             </>
           ) : null}
           <div className="flex items-center justify-between border-t border-border pt-3">
             <div>
               <p className="text-xs text-muted">Dispositivo</p>
-              <p className="font-semibold text-foreground">{runtime.deviceName ?? "Nenhum frequencímetro conectado"}</p>
+              <p className="font-semibold text-foreground">
+                {runtime.deviceName ?? "Nenhum frequencímetro conectado"}
+              </p>
             </div>
             <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-              <span className={`size-2 rounded-full ${connected ? "bg-success" : "bg-surface-interactive"}`} />
+              <span
+                className={`size-2 rounded-full ${connected ? "bg-success" : "bg-surface-interactive"}`}
+              />
               {connected ? "Conectado" : "Desconectado"}
             </p>
           </div>
         </dl>
         <p className="mt-4 flex items-start gap-2 text-xs text-muted">
-          <FigmaIcon src="/icons/info.svg" alt="" size={14} className="mt-0.5 text-muted" />
-          A frequência cardíaca complementa o treino. Ela não substitui carga, repetições nem esforço percebido.
+          <FigmaIcon src="/icons/info.svg" alt="" size={14} className="mt-0.5 text-muted" />A
+          frequência cardíaca complementa o treino. Ela não substitui carga, repetições nem esforço
+          percebido.
         </p>
       </div>
     </div>

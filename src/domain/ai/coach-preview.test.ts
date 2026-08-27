@@ -11,7 +11,11 @@ import {
 describe("coach preview", () => {
   it("recusa fabricar carga quando o fato está UNKNOWN", () => {
     const facts = { ...previewCoachFacts, benchPressKg: null };
-    const check = requireKnownFacts(facts, ["benchPressKg", "proposedBenchPressKg", "repetitionsInReserve"]);
+    const check = requireKnownFacts(facts, [
+      "benchPressKg",
+      "proposedBenchPressKg",
+      "repetitionsInReserve",
+    ]);
     expect(check.ok).toBe(false);
     if (!check.ok) {
       expect(check.unknown).toContain("benchPressKg");
@@ -65,7 +69,13 @@ describe("coach preview", () => {
       ...previewCoachFacts,
       heartRate: {
         enabled: true,
-        session: { averageBpm: 118, maximumBpm: 157, minimumBpm: 90, coverage: 0.94, sampleCount: 400 },
+        session: {
+          averageBpm: 118,
+          maximumBpm: 157,
+          minimumBpm: 90,
+          coverage: 0.94,
+          sampleCount: 400,
+        },
         recovery: { median60Seconds: 29, trend: "STABLE" },
         comparability: { sameDevice: true, comparableSessions: 4 },
         quality: "GOOD",

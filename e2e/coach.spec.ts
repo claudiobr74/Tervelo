@@ -39,7 +39,9 @@ test.describe("coach", () => {
     await expect(page).toHaveURL(/\/app\/coach\/ajuste/);
     // Sem check-in que gere adaptação, a tela não inventa um ajuste.
     await expect(page.getByRole("heading", { name: "Nada foi ajustado hoje" })).toBeVisible();
-    await expect(page.getByText("segue exatamente como foi planejada", { exact: false })).toBeVisible();
+    await expect(
+      page.getByText("segue exatamente como foi planejada", { exact: false }),
+    ).toBeVisible();
   });
 
   test("ajuste de hoje mostra o que o check-in realmente mudou", async ({ page }) => {

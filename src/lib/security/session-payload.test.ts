@@ -9,7 +9,12 @@ describe("sanitizeSessionPayload", () => {
         refreshToken: "refresh",
         previewRole: "admin",
         extra: "drop",
-        user: { id: "u1", displayName: "Lucas", email: "lucas.atleta@gmail.com", passwordHash: "nope" },
+        user: {
+          id: "u1",
+          displayName: "Lucas",
+          email: "lucas.atleta@gmail.com",
+          passwordHash: "nope",
+        },
       },
       { allowPreview: false },
     );
@@ -41,7 +46,10 @@ describe("sanitizeSessionPayload", () => {
     expect(admin.ok).toBe(true);
     if (admin.ok) expect(admin.session.previewRole).toBe("admin");
 
-    const user = sanitizeSessionPayload({ accessToken: "preview", preview: true }, { allowPreview: true });
+    const user = sanitizeSessionPayload(
+      { accessToken: "preview", preview: true },
+      { allowPreview: true },
+    );
     expect(user.ok).toBe(true);
     if (user.ok) expect(user.session.previewRole).toBe("user");
   });

@@ -5,10 +5,7 @@ import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { useOnboardingDraft } from "@/components/onboarding/onboarding-provider";
 
-const ITEMS: (
-  | { label: string; href: string }
-  | { label: string; pending: true }
-)[] = [
+const ITEMS: ({ label: string; href: string } | { label: string; pending: true })[] = [
   { label: "Dados pessoais", href: "/app/profile/pessoais" },
   { label: "Objetivos", href: "/app/profile/objetivos" },
   { label: "Academia e equipamentos", pending: true },

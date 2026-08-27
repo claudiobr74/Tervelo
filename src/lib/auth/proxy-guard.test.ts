@@ -37,21 +37,31 @@ describe("proxy guard", () => {
   });
 
   it("user sem admin volta para a home em /admin", () => {
-    expect(resolveAuthRedirect("/admin", context({ hasSession: true, onboardingDone: true }))).toBe("/");
+    expect(resolveAuthRedirect("/admin", context({ hasSession: true, onboardingDone: true }))).toBe(
+      "/",
+    );
     expect(
-      resolveAuthRedirect("/admin", context({ hasSession: true, adminAccess: true, onboardingDone: true })),
+      resolveAuthRedirect(
+        "/admin",
+        context({ hasSession: true, adminAccess: true, onboardingDone: true }),
+      ),
     ).toBeNull();
   });
 
   it("login com sessão redireciona", () => {
-    expect(resolveAuthRedirect("/login", context({ hasSession: true, onboardingDone: true }))).toBe("/app/today");
+    expect(resolveAuthRedirect("/login", context({ hasSession: true, onboardingDone: true }))).toBe(
+      "/app/today",
+    );
     expect(resolveAuthRedirect("/login", context({ hasSession: true }))).toBe("/onboarding/perfil");
   });
 
   it("onboarding concluído não reabre o fluxo", () => {
-    expect(resolveAuthRedirect("/onboarding/perfil", context({ hasSession: true, onboardingDone: true }))).toBe(
-      "/app/today",
-    );
+    expect(
+      resolveAuthRedirect(
+        "/onboarding/perfil",
+        context({ hasSession: true, onboardingDone: true }),
+      ),
+    ).toBe("/app/today");
     expect(resolveAuthRedirect("/onboarding/nutricao", context({ hasSession: true }))).toBeNull();
   });
 

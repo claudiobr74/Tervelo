@@ -68,13 +68,7 @@ function Stepper({
   );
 }
 
-function Header({
-  title,
-  onBack,
-}: {
-  title: string;
-  onBack: () => void;
-}) {
+function Header({ title, onBack }: { title: string; onBack: () => void }) {
   return (
     <div className="flex items-center justify-between">
       <button type="button" aria-label="Voltar" onClick={onBack} className="text-foreground">
@@ -132,7 +126,8 @@ function WarmupList({
         <div className="flex items-start justify-between rounded-[var(--radius-md)] border border-border bg-surface p-3 text-sm text-foreground">
           <p className="font-semibold">Série 1 de {workingSets(exercise).length}</p>
           <p className="font-bold">
-            {firstWorking.suggestedWeightKg} kg × {firstWorking.targetRepsMin}-{firstWorking.targetRepsMax}
+            {firstWorking.suggestedWeightKg} kg × {firstWorking.targetRepsMin}-
+            {firstWorking.targetRepsMax}
           </p>
         </div>
       ) : null}
@@ -154,7 +149,10 @@ function DropList({
       {exercise.sets.map((set, index) => {
         const active = set.id === current.id;
         const done = recordedIds.has(set.id);
-        const label = set.methodKind === "drop_set" ? `Drop ${dropOrdinal(exercise, set).current}` : `Série ${index + 1}`;
+        const label =
+          set.methodKind === "drop_set"
+            ? `Drop ${dropOrdinal(exercise, set).current}`
+            : `Série ${index + 1}`;
         return (
           <div
             key={set.id}
@@ -166,7 +164,9 @@ function DropList({
                   done ? "bg-success" : active ? "bg-brand" : "bg-tertiary"
                 }`}
               />
-              <p className={`text-sm ${active ? "font-bold text-brand" : done ? "text-muted" : "text-tertiary"}`}>
+              <p
+                className={`text-sm ${active ? "font-bold text-brand" : done ? "text-muted" : "text-tertiary"}`}
+              >
                 {label}
               </p>
             </div>
@@ -244,7 +244,9 @@ export function ExerciseExecutionScreen() {
             </div>
           </div>
 
-          {isWarmup ? <WarmupList exercise={exercise} current={set} recordedIds={recordedIds} /> : null}
+          {isWarmup ? (
+            <WarmupList exercise={exercise} current={set} recordedIds={recordedIds} />
+          ) : null}
 
           {isDrop && !isWarmup ? (
             <>
@@ -253,7 +255,9 @@ export function ExerciseExecutionScreen() {
                   <FigmaIcon src="/icons/info.svg" alt="" size={16} className="text-brand" />
                   <p className="text-sm font-bold uppercase text-brand">Método: Drop Set</p>
                 </div>
-                <p className="text-[13px] font-medium text-foreground">Reduza a carga e continue sem descanso.</p>
+                <p className="text-[13px] font-medium text-foreground">
+                  Reduza a carga e continue sem descanso.
+                </p>
               </div>
               <DropList exercise={exercise} current={set} recordedIds={recordedIds} />
             </>
@@ -317,7 +321,8 @@ export function ExerciseExecutionScreen() {
                 <FigmaIcon src="/icons/chevron-right.svg" alt="" size={16} className="text-brand" />
               </p>
               <p className="text-center text-xs text-muted">
-                O descanso de {exercise.restSeconds}s será iniciado após completar ambos os exercícios.
+                O descanso de {exercise.restSeconds}s será iniciado após completar ambos os
+                exercícios.
               </p>
             </div>
           ) : null}
@@ -339,7 +344,9 @@ export function ExerciseExecutionScreen() {
                       type="button"
                       onClick={() => setRir(value)}
                       className={`flex size-12 items-center justify-center rounded-full text-sm font-bold ${
-                        selected ? "bg-brand text-on-brand" : "bg-surface-interactive text-foreground"
+                        selected
+                          ? "bg-brand text-on-brand"
+                          : "bg-surface-interactive text-foreground"
                       }`}
                     >
                       {value === 4 ? "4+" : value}
@@ -392,19 +399,19 @@ export function ExerciseExecutionScreen() {
                 Registrar {superLetter}
               </button>
               <div className="flex gap-3">
-              <Link
-                href="/app/workout"
-                className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
-              >
-                Anterior
-              </Link>
-              <button
-                type="button"
-                onClick={onRecord}
-                className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
-              >
-                Pular
-              </button>
+                <Link
+                  href="/app/workout"
+                  className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
+                >
+                  Anterior
+                </Link>
+                <button
+                  type="button"
+                  onClick={onRecord}
+                  className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
+                >
+                  Pular
+                </button>
               </div>
             </div>
           ) : (

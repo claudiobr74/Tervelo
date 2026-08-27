@@ -15,7 +15,11 @@ export function resolveConflict(input: {
     };
   }
 
-  if (input.domain === "set_result" || input.domain === "heart_rate" || input.domain === "checkin") {
+  if (
+    input.domain === "set_result" ||
+    input.domain === "heart_rate" ||
+    input.domain === "checkin"
+  ) {
     if (input.localExists && input.remoteExists && input.independentOperations) {
       return {
         decision: "keep_both",
