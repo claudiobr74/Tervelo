@@ -45,8 +45,15 @@ export async function runGraphqlAsUser<T>(
   if (!response.ok) {
     return { ok: false, reason: "graphql_error" };
   }
-  const json = (await response.json()) as { data?: T; errors?: unknown[] };
+  const json = (await response.json()) as { data?: T; errors?: { message?: string }[] };
   if (json.errors?.length || !json.data) {
+    const messages = (json.errors ?? [])
+      .map((error) => error.message)
+      .filter((message): message is string => Boolean(message))
+      .slice(0, 3);
+    if (messages.length > 0) {
+      console.warn("[graphql]", messages.join("; "));
+    }
     return { ok: false, reason: "graphql_error" };
   }
   return { ok: true, data: json.data };

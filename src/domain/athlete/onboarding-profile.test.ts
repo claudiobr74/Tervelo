@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { athleteProfileInput } from "@/domain/athlete/onboarding-profile";
+import { athleteProfileInput, coerceOnboardingAnswers } from "@/domain/athlete/onboarding-profile";
 
 describe("athleteProfileInput", () => {
   it("converte o rascunho completo", () => {
@@ -29,6 +29,8 @@ describe("athleteProfileInput", () => {
     expect(input.availability.days).toEqual(["seg", "qua", "sex"]);
     expect(input.availability.sessionMinutes).toBe(75);
     expect(input.limitations).toBe("Ombro esquerdo");
+    expect(input.displayName).toBe("Lucas");
+    expect(input.measurements.weightKg).toBe(82.4);
     expect(input.nutrition.routine).toBe("4 refeições por dia");
     expect(input.nutrition.restrictions).toBe("Vegetariana");
     expect(input.nutrition.hydrationNotes).toContain("3,5 litros");
@@ -57,6 +59,35 @@ describe("athleteProfileInput", () => {
     expect(input.availability.days).toEqual(["seg"]);
     expect(input.availability.preferredPeriod).toBeNull();
     expect(input.limitations).toBeNull();
+  });
+
+  it("lê números vindos como texto e medidas corporais", () => {
+    const input = athleteProfileInput({
+      sessionMinutes: "90",
+      mealsPerDay: "5",
+      waterLiters: "2,5",
+      chestCm: "104",
+      waistCm: "84,5",
+    });
+    expect(input.availability.sessionMinutes).toBe(90);
+    expect(input.nutrition.routine).toBe("5 refeições por dia");
+    expect(input.nutrition.hydrationNotes).toContain("2,5 litros");
+    expect(input.measurements.chestCm).toBe(104);
+    expect(input.measurements.waistCm).toBe(84.5);
+  });
+
+  it("coerce ignora campos quebrados sem perder o resto", () => {
+    const answers = coerceOnboardingAnswers({
+      displayName: "Ana",
+      days: "seg",
+      sessionMinutes: 60,
+      mealsPerDay: { n: 4 },
+      extra: "lixo",
+    });
+    expect(answers.displayName).toBe("Ana");
+    expect(answers.days).toBeUndefined();
+    expect(answers.sessionMinutes).toBe(60);
+    expect(answers.mealsPerDay).toBeUndefined();
   });
 
   it("não inventa nota de hidratação sem dados", () => {
