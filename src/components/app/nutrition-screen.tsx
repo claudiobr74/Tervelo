@@ -1,25 +1,14 @@
 "use client";
 
 import { AthleteAppShell } from "@/components/app/athlete-shell";
+import { EmptyPanel } from "@/components/ui/empty-panel";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { mlToLiters, targetProgressPercent } from "@/domain/nutrition/progress";
 import {
-  PREVIEW_MEALS,
-  PREVIEW_NUTRITION_INSIGHT,
-  PREVIEW_NUTRITION_INTAKE,
-  PREVIEW_NUTRITION_OBJECTIVE,
-  PREVIEW_NUTRITION_TARGET,
-} from "@/lib/nutrition/preview";
-import {
   addHydration,
   saveNutritionCheckinToday,
-  toggleMealAdherence,
   useNutritionOffline,
 } from "@/lib/nutrition/offline-store";
-
-function formatInt(value: number): string {
-  return value.toLocaleString("pt-BR");
-}
 
 function formatLiters(ml: number): string {
   return mlToLiters(ml).toLocaleString("pt-BR", {
@@ -28,73 +17,10 @@ function formatLiters(ml: number): string {
   });
 }
 
-const TARGETS = [
-  {
-    key: "energy",
-    label: "Energia",
-    current: formatInt(PREVIEW_NUTRITION_INTAKE.energyKcal),
-    rest: `/ ${formatInt(PREVIEW_NUTRITION_TARGET.energyKcal)} kcal`,
-    percent: targetProgressPercent(
-      PREVIEW_NUTRITION_INTAKE.energyKcal,
-      PREVIEW_NUTRITION_TARGET.energyKcal,
-    ),
-    bar: "bg-brand",
-  },
-  {
-    key: "protein",
-    label: "Proteínas",
-    current: String(PREVIEW_NUTRITION_INTAKE.proteinG),
-    rest: `/ ${PREVIEW_NUTRITION_TARGET.proteinG} g`,
-    percent: targetProgressPercent(
-      PREVIEW_NUTRITION_INTAKE.proteinG,
-      PREVIEW_NUTRITION_TARGET.proteinG,
-    ),
-    bar: "bg-success",
-  },
-  {
-    key: "carbs",
-    label: "Carboidratos",
-    current: String(PREVIEW_NUTRITION_INTAKE.carbohydrateG),
-    rest: `/ ${PREVIEW_NUTRITION_TARGET.carbohydrateG} g`,
-    percent: targetProgressPercent(
-      PREVIEW_NUTRITION_INTAKE.carbohydrateG,
-      PREVIEW_NUTRITION_TARGET.carbohydrateG,
-    ),
-    bar: "bg-info",
-  },
-  {
-    key: "fat",
-    label: "Gorduras",
-    current: String(PREVIEW_NUTRITION_INTAKE.fatG),
-    rest: `/ ${PREVIEW_NUTRITION_TARGET.fatG} g`,
-    percent: targetProgressPercent(PREVIEW_NUTRITION_INTAKE.fatG, PREVIEW_NUTRITION_TARGET.fatG),
-    bar: "bg-error",
-  },
-  {
-    key: "fluid",
-    label: "Hidratação",
-    current: formatLiters(PREVIEW_NUTRITION_INTAKE.fluidMl),
-    rest: `/ ${formatLiters(PREVIEW_NUTRITION_TARGET.fluidMl)} L`,
-    percent: targetProgressPercent(
-      PREVIEW_NUTRITION_INTAKE.fluidMl,
-      PREVIEW_NUTRITION_TARGET.fluidMl,
-    ),
-    bar: "bg-info",
-  },
-] as const;
-
 export function NutritionScreen() {
   const nutrition = useNutritionOffline();
-  const fluidCurrent = PREVIEW_NUTRITION_INTAKE.fluidMl + nutrition.extraFluidMl;
-  const targets = TARGETS.map((item) =>
-    item.key === "fluid"
-      ? {
-          ...item,
-          current: formatLiters(fluidCurrent),
-          percent: targetProgressPercent(fluidCurrent, PREVIEW_NUTRITION_TARGET.fluidMl),
-        }
-      : item,
-  );
+  const fluidMl = nutrition.extraFluidMl;
+  const fluidPercent = targetProgressPercent(fluidMl, Math.max(fluidMl, 1));
 
   return (
     <AthleteAppShell active="Mais">
@@ -108,69 +34,41 @@ export function NutritionScreen() {
           </p>
         </header>
 
-        <article className="flex flex-col gap-2 rounded-[var(--radius-xl)] border border-brand bg-brand-soft p-4">
-          <p className="text-sm font-bold uppercase text-brand">Objetivo atual</p>
-          <p className="text-sm font-bold text-foreground">{PREVIEW_NUTRITION_OBJECTIVE}</p>
-        </article>
+        <EmptyPanel
+          title="Sem plano nutricional"
+          body="Quando houver metas de energia, proteína e refeições, elas aparecem aqui."
+        />
 
         <article className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-          <h2 className="text-sm font-bold uppercase text-muted">Metas diárias</h2>
-          {targets.map((item) => (
-            <div key={item.key} className="flex flex-col gap-1.5">
-              <div className="flex items-start justify-between text-[13px] font-medium text-foreground">
-                <p>{item.label}</p>
-                <p>
-                  {item.current}
-                  <span className="text-muted"> {item.rest}</span>
-                </p>
-              </div>
-              <div
-                role="progressbar"
-                aria-label={item.label}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={Math.round(item.percent)}
-                className="h-1.5 overflow-clip rounded-full bg-surface-secondary"
-              >
-                <div
-                  className={`h-1.5 rounded-full ${item.bar}`}
-                  style={{ width: `${item.percent}%` }}
-                />
-              </div>
+          <h2 className="text-sm font-bold uppercase text-muted">Hidratação de hoje</h2>
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-start justify-between text-[13px] font-medium text-foreground">
+              <p>Água registrada</p>
+              <p>
+                {formatLiters(fluidMl)}
+                <span className="text-muted"> L</span>
+              </p>
             </div>
-          ))}
+            <div
+              role="progressbar"
+              aria-label="Hidratação"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={fluidMl > 0 ? Math.round(fluidPercent) : 0}
+              className="h-1.5 overflow-clip rounded-full bg-surface-secondary"
+            >
+              <div
+                className="h-1.5 rounded-full bg-info"
+                style={{ width: `${fluidMl > 0 ? fluidPercent : 0}%` }}
+              />
+            </div>
+          </div>
         </article>
 
-        <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-bold uppercase text-muted">Distribuição ao longo do dia</h2>
-          {PREVIEW_MEALS.map((meal) => (
-            <article
-              key={meal.name}
-              className="flex flex-wrap items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4"
-            >
-              <div className="min-w-0 flex-1">
-                <p className="text-base font-bold text-foreground">{meal.name}</p>
-                <p className="text-[11px] font-medium text-muted">
-                  {formatInt(meal.energyKcal)} kcal • {meal.proteinG}g prot • {meal.carbohydrateG}g
-                  carb
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-1 text-muted">
-                <FigmaIcon src="/icons/clock.svg" alt="" size={14} />
-                <p className="text-[11px] font-medium">{meal.time}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => toggleMealAdherence(meal.name)}
-                className={`shrink-0 text-[11px] font-bold ${
-                  nutrition.adheredMeals.includes(meal.name) ? "text-success" : "text-brand"
-                }`}
-              >
-                {nutrition.adheredMeals.includes(meal.name) ? "Registrada" : "Marcar"}
-              </button>
-            </article>
-          ))}
-        </section>
+        <EmptyPanel
+          title="Sem refeições registradas"
+          body="Nenhuma refeição foi lançada hoje. O app não preenche café, almoço nem jantar por conta própria."
+        />
 
         <section className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
           <h2 className="text-sm font-bold text-foreground">Registros de hoje</h2>
@@ -200,7 +98,9 @@ export function NutritionScreen() {
             <p className="text-[11px] font-bold uppercase text-brand">
               Recomendações do nutricionista virtual
             </p>
-            <p className="text-[13px] font-medium text-foreground">“{PREVIEW_NUTRITION_INSIGHT}”</p>
+            <p className="text-[13px] font-medium text-muted">
+              Sem refeições nem metas, não há o que recomendar.
+            </p>
           </div>
         </article>
       </div>

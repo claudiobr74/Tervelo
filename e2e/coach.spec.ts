@@ -14,7 +14,7 @@ async function loginPreview(page: import("@playwright/test").Page) {
 test.describe("coach", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("hoje abre o treinador com chips e proposta", async ({ page }) => {
+  test("hoje abre o treinador sem proposta inventada", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/today");
     await page.getByRole("link", { name: "Coach" }).click();
@@ -22,26 +22,14 @@ test.describe("coach", () => {
     await expect(page.getByRole("heading", { name: "Seu treinador" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Como está minha evolução?" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Por que meu treino mudou?" })).toBeVisible();
-    await expect(page.getByText("Mudança proposta")).toBeVisible();
-    await expect(page.getByText("80kg")).toBeVisible();
-    await expect(page.getByText("82kg")).toBeVisible();
-    await expect(page.getByText("repetições em reserva")).toBeVisible();
-    await expect(page.getByText("RIR")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Ainda não há o que analisar" })).toBeVisible();
+    await expect(page.getByText("Mudança proposta")).toHaveCount(0);
+    await expect(page.getByText("80kg")).toHaveCount(0);
+    await expect(page.getByText("82kg")).toHaveCount(0);
 
     await page.getByRole("button", { name: "Como está minha evolução?" }).click();
-    await expect(page.getByText("Papel da nutrição")).toBeVisible();
     await expect(page.getByText(/UNKNOWN/)).toBeVisible();
-
-    await page.getByRole("button", { name: "Aceitar alteração" }).click();
-    await expect(page.getByText("Alteração aceita")).toBeVisible();
-
-    await page.getByRole("link", { name: "Quero entender" }).click();
-    await expect(page).toHaveURL(/\/app\/coach\/ajuste/);
-    // Sem check-in que gere adaptação, a tela não inventa um ajuste.
-    await expect(page.getByRole("heading", { name: "Nada foi ajustado hoje" })).toBeVisible();
-    await expect(
-      page.getByText("segue exatamente como foi planejada", { exact: false }),
-    ).toBeVisible();
+    await expect(page.getByText("Papel da nutrição")).toHaveCount(0);
   });
 
   test("ajuste de hoje mostra o que o check-in realmente mudou", async ({ page }) => {
@@ -54,8 +42,8 @@ test.describe("coach", () => {
     await page.getByRole("button", { name: "Não" }).click();
     await page.getByRole("button", { name: /Tenho aproximadamente/ }).click();
     await page.getByRole("button", { name: "40" }).click();
-    await page.getByRole("button", { name: "Começar treino" }).click();
-    await expect(page).toHaveURL(/\/app\/workout$/);
+    await page.getByRole("button", { name: "Salvar check-in" }).click();
+    await expect(page).toHaveURL(/\/app\/today/);
 
     await page.goto("/app/coach/ajuste");
     await expect(page.getByRole("heading", { name: "Seu plano foi ajustado" })).toBeVisible();
@@ -73,7 +61,7 @@ test.describe("coach", () => {
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.locator("html")).not.toHaveClass(/dark/);
     await expect(page.getByRole("heading", { name: "Seu treinador" })).toBeVisible();
-    await expect(page.getByText("Sugerido")).toBeVisible();
+    await expect(page.getByText("Sugerido")).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Devo aumentar a carga?" })).toBeVisible();
   });
 });

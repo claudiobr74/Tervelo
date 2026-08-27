@@ -15,14 +15,10 @@ async function loginPreview(page: import("@playwright/test").Page) {
   await expect(page).toHaveURL(/\/onboarding\/perfil/);
 }
 
-async function skipPreWorkout(page: import("@playwright/test").Page) {
-  await page.getByRole("button", { name: "Pular por hoje" }).click();
-}
-
 test.describe("frequência cardíaca", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("nasce desligada e não aparece no treino", async ({ page }) => {
+  test("nasce desligada e não aparece sem sessão de treino", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await expect(page.getByRole("heading", { name: "Treino e dispositivos" })).toBeVisible();
@@ -33,14 +29,13 @@ test.describe("frequência cardíaca", () => {
     await expect(page.getByRole("button", { name: "Conectar frequencímetro" })).toHaveCount(0);
 
     await page.goto("/app/today");
-    await page.getByRole("button", { name: "Iniciar treino" }).click();
-    await skipPreWorkout(page);
-    await page.getByRole("button", { name: "Começar exercício" }).click();
-    await expect(page.getByRole("heading", { name: "Supino Reto" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
+    await page.goto("/app/workout/exercise");
+    await expect(page.getByRole("heading", { name: "Nenhum treino em andamento" })).toBeVisible();
     await expect(page.getByLabel("Frequência cardíaca")).toHaveCount(0);
   });
 
-  test("ativar mostra dispositivo e o treino segue sem BLE", async ({ page }) => {
+  test("ativar mostra o aviso de dispositivo sem inventar treino", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }).click();
@@ -53,11 +48,8 @@ test.describe("frequência cardíaca", () => {
     await expect(page.getByText("O treino continuará funcionando normalmente.")).toBeVisible();
 
     await page.goto("/app/today");
-    await page.getByRole("button", { name: "Iniciar treino" }).click();
-    await skipPreWorkout(page);
-    await page.getByRole("button", { name: "Começar exercício" }).click();
-    await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Registrar aquecimento" })).toBeEnabled();
+    await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
   });
 
   test("settings funciona no tema claro", async ({ page }) => {
@@ -67,10 +59,11 @@ test.describe("frequência cardíaca", () => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).not.toHaveClass(/dark/);
     await expect(page.getByRole("heading", { name: "Treino e dispositivos" })).toBeVisible();
   });
 
-  test("frequência cardíaca aparece no treino nos dois temas", async ({ page }, testInfo) => {
+  test("frequência cardíaca nas configurações nos dois temas", async ({ page }, testInfo) => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await expect(
@@ -84,13 +77,6 @@ test.describe("frequência cardíaca", () => {
     ).toHaveAttribute("aria-checked", "true");
     await captureEvidence(page, testInfo, "fc_ligada_claro_390");
 
-    await page.goto("/app/today");
-    await page.getByRole("button", { name: "Iniciar treino" }).click();
-    await skipPreWorkout(page);
-    await page.getByRole("button", { name: "Começar exercício" }).click();
-    await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
-    await captureEvidence(page, testInfo, "fc_treino_claro_390");
-
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "dark"));
     await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -98,9 +84,5 @@ test.describe("frequência cardíaca", () => {
       page.getByRole("switch", { name: "Usar frequência cardíaca durante os treinos" }),
     ).toHaveAttribute("aria-checked", "true");
     await captureEvidence(page, testInfo, "fc_ligada_escuro_390");
-
-    await page.goto("/app/workout/exercise");
-    await expect(page.getByLabel("Frequência cardíaca")).toBeVisible();
-    await captureEvidence(page, testInfo, "fc_treino_escuro_390");
   });
 });

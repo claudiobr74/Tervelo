@@ -18,7 +18,7 @@ async function loginPreview(page: import("@playwright/test").Page) {
 test.describe("estado do atleta", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("check-in pré-treino pode ser pulado e não bloqueia o treino", async ({ page }) => {
+  test("check-in pré-treino pode ser pulado e não inventa treino", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/today");
     await expect(
@@ -27,11 +27,12 @@ test.describe("estado do atleta", () => {
     await page.getByRole("link", { name: "Fazer check-in" }).click();
     await expect(page).toHaveURL(/\/app\/workout\/checkin/);
     await expect(page.getByText("Check-in Pré-Treino", { exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Começar treino" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Salvar check-in" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Enviar formulário" })).toHaveCount(0);
     await page.getByRole("button", { name: "Pular por hoje" }).click();
-    await expect(page).toHaveURL(/\/app\/workout$/);
-    await expect(page.getByRole("heading", { name: "Peitoral e Tríceps" })).toBeVisible();
+    await expect(page).toHaveURL(/\/app\/today/);
+    await expect(page.getByText("Peitoral e Tríceps")).toHaveCount(0);
+    await expect(page.getByText("Sem informação aguda hoje")).toBeVisible();
   });
 
   test("check-in completo e pouco tempo abrem ajuste de hoje", async ({ page }) => {
@@ -44,9 +45,8 @@ test.describe("estado do atleta", () => {
     await page.getByRole("button", { name: "Não" }).click();
     await page.getByRole("button", { name: /Tenho aproximadamente/ }).click();
     await page.getByRole("button", { name: "40" }).click();
-    await page.getByRole("button", { name: "Começar treino" }).click();
-    await expect(page).toHaveURL(/\/app\/workout$/);
-    await page.goto("/app/today");
+    await page.getByRole("button", { name: "Salvar check-in" }).click();
+    await expect(page).toHaveURL(/\/app\/today/);
     await expect(page.getByRole("link", { name: "Ver ajuste de hoje" })).toBeVisible();
   });
 
@@ -64,19 +64,14 @@ test.describe("estado do atleta", () => {
     await page.goto("/app/coach");
     await page.getByRole("link", { name: "Revisões Semanais do Coach" }).click();
     await expect(page.getByRole("heading", { name: "Revisões" })).toBeVisible();
-    await expect(page.getByText("Semana consistente")).toBeVisible();
-    await expect(page.getByText("Plano mantido").first()).toBeVisible();
-    await page.getByText("Semana consistente").click();
-    await expect(page.getByRole("heading", { name: "Revisão Semanal do Coach" })).toBeVisible();
-    await expect(page.getByText("Visão geral")).toBeVisible();
-    await expect(page.getByText("Athlete State")).toHaveCount(0);
-    await expect(page.getByText("Weekly Coach Review")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Nenhuma revisão ainda" })).toBeVisible();
+    await expect(page.getByText("Semana consistente")).toHaveCount(0);
+    await expect(page.getByText("Plano mantido")).toHaveCount(0);
   });
 
   test("check-out no resumo pode ser pulado", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/workout/summary");
-    // Sem série registrada o resumo não anuncia treino concluído.
     await expect(page.getByRole("heading", { name: "Sessão encerrada" })).toBeVisible();
     await expect(page.getByText("Nenhuma série foi registrada desta vez.")).toBeVisible();
     await expect(page.getByRole("link", { name: "Voltar" })).toBeVisible();
@@ -100,6 +95,9 @@ test.describe("estado do atleta", () => {
 
     await page.goto("/app/coach/revisoes/rev-26");
     await expect(page.getByRole("heading", { name: "Revisão Semanal do Coach" })).toBeVisible();
+    await expect(
+      page.getByText("Esta revisão não está disponível neste dispositivo."),
+    ).toBeVisible();
     await captureEvidence(page, testInfo, "revisao_claro_390");
 
     await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "dark"));

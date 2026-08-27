@@ -44,7 +44,8 @@ test.describe("hardening", () => {
     await expect(page.getByRole("heading", { name: "Olá, Lucas." })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Navegação principal" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Hoje" })).toHaveAttribute("aria-current", "page");
-    await expect(page.getByRole("button", { name: "Iniciar treino" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Perfil" })).toBeVisible();
   });
 

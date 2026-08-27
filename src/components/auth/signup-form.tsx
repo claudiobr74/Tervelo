@@ -105,7 +105,7 @@ export function SignupForm() {
             id="name"
             value={displayName}
             onChange={(event) => setDisplayName(event.target.value)}
-            placeholder="Ex: Lucas Silva"
+            placeholder="Ex: seu nome completo"
             autoComplete="name"
             className={AUTH_INPUT_CLASS}
           />

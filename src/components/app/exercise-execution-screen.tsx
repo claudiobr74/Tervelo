@@ -23,12 +23,12 @@ import {
 import {
   recordCurrentSet,
   setRir,
-  startWorkout,
   stepLoad,
   stepReps,
   useLiveSession,
 } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { EmptyPanel } from "@/components/ui/empty-panel";
 import { SYNC_COPY } from "@/domain/offline";
 
 const RIR_OPTIONS = [0, 1, 2, 3, 4] as const;
@@ -184,16 +184,36 @@ export function ExerciseExecutionScreen() {
   const router = useRouter();
   const live = useLiveSession();
   const session = PREVIEW_WORKOUT;
+  const idle = live.status === "idle";
 
   useEffect(() => {
-    if (live.status === "idle") startWorkout();
+    if (idle) return;
     if (live.status === "completed" || isSessionComplete(session, live.recorded)) {
       router.replace("/app/workout/summary");
     }
     if (live.status === "resting") {
       router.replace("/app/workout/rest");
     }
-  }, [live.status, live.recorded, router, session]);
+  }, [idle, live.status, live.recorded, router, session]);
+
+  if (idle) {
+    return (
+      <AthleteAppShell hideNav>
+        <div className="flex flex-col gap-4 px-6 pb-6 pt-4">
+          <EmptyPanel
+            title="Nenhum treino em andamento"
+            body="Não há sessão ativa. O app não começa um treino de exemplo sozinho."
+          />
+          <Link
+            href="/app/today"
+            className="flex h-12 items-center justify-center rounded-[var(--radius-lg)] border border-border text-sm font-bold text-foreground"
+          >
+            Voltar para hoje
+          </Link>
+        </div>
+      </AthleteAppShell>
+    );
+  }
 
   const exercise = currentExercise(session, live.recorded);
   const set = currentSet(session, live.recorded);

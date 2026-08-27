@@ -43,6 +43,10 @@ export function RestTimerScreen() {
   const endAt = live.timer?.expectedEndAt ?? null;
 
   useEffect(() => {
+    if (live.status === "idle") {
+      router.replace("/app/today");
+      return;
+    }
     if (live.status === "completed" || isSessionComplete(session, live.recorded)) {
       router.replace("/app/workout/summary");
       return;

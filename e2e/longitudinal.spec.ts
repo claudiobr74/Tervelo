@@ -32,8 +32,9 @@ test.describe("longitudinal", () => {
     await page.getByRole("link", { name: "Evolução" }).click();
     await expect(page).toHaveURL(/\/app\/progress/);
     await expect(page.getByRole("heading", { name: "Evolução" })).toBeVisible();
-    await expect(page.getByText("Progressão no Supino Reto")).toBeVisible();
-    await expect(page.getByText("82 kg")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sem histórico de força" })).toBeVisible();
+    await expect(page.getByText("Progressão no Supino Reto")).toHaveCount(0);
+    await expect(page.getByText("82 kg")).toHaveCount(0);
 
     await page.getByRole("button", { name: "Medidas" }).click();
     await expect(page).toHaveURL(/\/app\/body/);

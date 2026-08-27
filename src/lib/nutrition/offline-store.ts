@@ -6,7 +6,6 @@ import type { NutritionCheckinRecord, NutritionCheckinRepository } from "@/appli
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
-import { PREVIEW_NUTRITION_INTAKE } from "@/lib/nutrition/preview";
 export type NutritionOfflineState = {
   extraFluidMl: number;
   adheredMeals: string[];
@@ -130,10 +129,10 @@ export async function saveNutritionCheckinToday() {
     userId: currentOfflineUserId(),
     checkedInOn: today,
     todayIso: today,
-    energyKcal: PREVIEW_NUTRITION_INTAKE.energyKcal,
-    proteinG: PREVIEW_NUTRITION_INTAKE.proteinG,
-    carbohydrateG: PREVIEW_NUTRITION_INTAKE.carbohydrateG,
-    fatG: PREVIEW_NUTRITION_INTAKE.fatG,
-    fluidMl: PREVIEW_NUTRITION_INTAKE.fluidMl + cached.extraFluidMl,
+    energyKcal: 0,
+    proteinG: 0,
+    carbohydrateG: 0,
+    fatG: 0,
+    fluidMl: cached.extraFluidMl,
   });
 }

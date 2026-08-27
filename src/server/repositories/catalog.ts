@@ -6,7 +6,7 @@ import {
   previewGymInventory,
 } from "@/lib/catalog/preview-catalog";
 import { isLocalNhost } from "@/lib/auth/local-preview";
-import { demoDataEnabled } from "@/lib/demo-data";
+import { catalogDemoEnabled } from "@/lib/demo-data";
 import type { CatalogExercise } from "@/domain/exercise/search";
 import type { CatalogEquipment, PreviewGymInventory } from "@/lib/catalog/preview-catalog";
 
@@ -16,11 +16,11 @@ import type { CatalogEquipment, PreviewGymInventory } from "@/lib/catalog/previe
  * e o catálogo de demonstração deixa de ser servido.
  */
 export function getCatalogExercises(): CatalogExercise[] {
-  return demoDataEnabled() ? PREVIEW_EXERCISES : [];
+  return catalogDemoEnabled() ? PREVIEW_EXERCISES : [];
 }
 
 export function getCatalogEquipment(): CatalogEquipment[] {
-  return demoDataEnabled() ? PREVIEW_EQUIPMENT : [];
+  return catalogDemoEnabled() ? PREVIEW_EQUIPMENT : [];
 }
 
 export function getPreviewInventory(): PreviewGymInventory {

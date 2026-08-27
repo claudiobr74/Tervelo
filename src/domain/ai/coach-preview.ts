@@ -26,6 +26,17 @@ export const previewCoachFacts: CoachKnownFacts = {
   heartRate: null,
 };
 
+/** Fatos reais do atleta logado. Sem treino nem medida, tudo fica desconhecido. */
+export const emptyCoachFacts: CoachKnownFacts = {
+  benchPressKg: null,
+  proposedBenchPressKg: null,
+  repetitionsInReserve: null,
+  recoveryLowerBodyBelowHabitual: null,
+  lastTwoSessionsPerformanceDropped: null,
+  nutrition: emptyNutritionContext(),
+  heartRate: null,
+};
+
 export const COACH_SUGGESTIONS = [
   "Como está minha evolução?",
   "Por que meu treino mudou?",

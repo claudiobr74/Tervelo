@@ -27,7 +27,7 @@ export function AboutYouFields({
           value={draft.displayName}
           onChange={(event) => update({ displayName: event.target.value })}
           className={AUTH_INPUT_CLASS}
-          placeholder="Lucas"
+          placeholder="Seu nome"
         />
       </div>
       <div className="flex flex-col gap-2">

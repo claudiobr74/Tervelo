@@ -11,7 +11,7 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
     path: "/admin" | "/admin/users" | "/admin/audit" | "/admin/exercises" | "/admin/ai",
   ) {
     await persistSession(
-      previewSession({ displayName: "Lucas Mendes", email: "lucas.admin@tervelo.local" }, "admin"),
+      previewSession({ displayName: "Administrador", email: "admin@tervelo.local" }, "admin"),
     );
     router.push(path);
     router.refresh();

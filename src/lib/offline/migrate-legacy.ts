@@ -5,6 +5,7 @@ import { LONGITUDINAL_KEY } from "@/lib/longitudinal/preview-store";
 import { ONBOARDING_STORAGE_KEY } from "@/lib/auth/onboarding";
 
 const CLEARED_UNSCOPED = "tervelo-cleared-unscoped-v1";
+const COACH_PROPOSAL_KEY = "tervelo.preview.coachProposal.v1";
 
 /**
  * Chaves globais misturavam contas no mesmo navegador (nome, medidas, treino).
@@ -20,6 +21,7 @@ export async function migrateLegacyLocalStorage(): Promise<void> {
       window.localStorage.removeItem(HEART_RATE_SESSION_KEY);
       window.localStorage.removeItem(LONGITUDINAL_KEY);
       window.localStorage.removeItem(ONBOARDING_STORAGE_KEY);
+      window.localStorage.removeItem(COACH_PROPOSAL_KEY);
       return;
     }
     window.localStorage.removeItem(LIVE_SESSION_KEY);
@@ -28,6 +30,7 @@ export async function migrateLegacyLocalStorage(): Promise<void> {
     window.localStorage.removeItem(HEART_RATE_SESSION_KEY);
     window.localStorage.removeItem(LONGITUDINAL_KEY);
     window.localStorage.removeItem(ONBOARDING_STORAGE_KEY);
+    window.localStorage.removeItem(COACH_PROPOSAL_KEY);
     window.localStorage.setItem(CLEARED_UNSCOPED, "1");
   } catch {
     /* private mode */

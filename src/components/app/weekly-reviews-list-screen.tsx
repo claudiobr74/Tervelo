@@ -10,6 +10,7 @@ import {
   weeklyDecisionLabel,
 } from "@/lib/athlete-state/session-store";
 import { useWeeklyCoachReviewEnabled } from "@/lib/athlete-state/preference-store";
+import { EmptyPanel } from "@/components/ui/empty-panel";
 
 export function WeeklyReviewsListScreen() {
   const store = useAthleteStateStore();
@@ -40,6 +41,12 @@ export function WeeklyReviewsListScreen() {
           </div>
         ) : null}
         <div className="flex flex-col gap-3">
+          {enabled && store.weeklyReviews.length === 0 ? (
+            <EmptyPanel
+              title="Nenhuma revisão ainda"
+              body="A revisão semanal só aparece depois de treinos e check-ins seus. Semanas de exemplo não são criadas."
+            />
+          ) : null}
           {enabled &&
             store.weeklyReviews.map((review) => (
               <Link

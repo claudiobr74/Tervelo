@@ -24,26 +24,23 @@ test.describe("console admin", () => {
     await expect(page).toHaveURL(/\/admin$/);
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
     await expect(page.getByText("Usuários Ativos", { exact: true })).toBeVisible();
-    await expect(page.getByText("1.247")).toBeVisible();
-    await expect(page.getByText("Custos de API Inteligência Artificial")).toBeVisible();
-    await expect(page.getByText("Aderência Crítica")).toBeVisible();
+    await expect(page.getByText("1.247")).toHaveCount(0);
+    await expect(page.getByText("Lucas Mendes")).toHaveCount(0);
+    await expect(page.getByText("Aderência Crítica")).toHaveCount(0);
 
     await page.getByRole("link", { name: "Usuários" }).click();
     await expect(page).toHaveURL(/\/admin\/users/);
     await expect(page.getByRole("heading", { name: "Usuários" })).toBeVisible();
-    await expect(page.getByText("Lucas Mendes").first()).toBeVisible();
-    await expect(page.getByText("Amanda Santos")).toBeVisible();
-    await page.getByPlaceholder("Pesquisar usuário...").fill("carla");
-    await expect(page.getByText("Carla Oliveira")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Nenhum atleta cadastrado" })).toBeVisible();
     await expect(page.getByText("Amanda Santos")).toHaveCount(0);
+    await page.getByPlaceholder("Pesquisar usuário...").fill("carla");
+    await expect(page.getByText("Carla Oliveira")).toHaveCount(0);
 
     await page.getByRole("link", { name: "Auditoria" }).click();
     await expect(page).toHaveURL(/\/admin\/audit/);
     await expect(page.getByRole("heading", { name: "Auditoria e Decisões da IA" })).toBeVisible();
-    await expect(page.getByText("Redução de Volume")).toBeVisible();
-    await expect(page.getByText("Protocolo de recuperação v3.2")).toBeVisible();
-    await page.getByRole("button", { name: /Amanda Santos/ }).click();
-    await expect(page.getByText("repetições em reserva")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Nenhuma decisão registrada" })).toBeVisible();
+    await expect(page.getByText("Redução de Volume")).toHaveCount(0);
   });
 
   test("dashboard admin no tema claro", async ({ page }) => {
@@ -102,7 +99,7 @@ test.describe("console admin", () => {
 
     await page.getByRole("link", { name: "Usuários" }).click();
     await expect(page.getByRole("heading", { name: "Usuários" })).toBeVisible();
-    await expect(page.getByText("Lucas Mendes").first()).toBeVisible();
+    await expect(page.getByText("Lucas Mendes")).toHaveCount(0);
     const usersOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );

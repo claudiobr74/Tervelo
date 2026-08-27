@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { recoveredSessionCopy, SYNC_COPY } from "@/domain/offline";
-import { endActiveSession, startWorkout, type LiveSessionState } from "@/lib/training/live-session";
+import { endActiveSession, type LiveSessionState } from "@/lib/training/live-session";
 
 export function RecoveredSessionCard({ live }: { live: LiveSessionState }) {
   const router = useRouter();
@@ -16,7 +16,6 @@ export function RecoveredSessionCard({ live }: { live: LiveSessionState }) {
       <button
         type="button"
         onClick={() => {
-          startWorkout();
           router.push(live.status === "resting" ? "/app/workout/rest" : "/app/workout/exercise");
         }}
         className="flex h-12 w-full items-center justify-center rounded-[var(--radius-lg)] bg-brand text-[15px] font-bold text-on-brand"

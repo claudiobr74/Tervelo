@@ -19,18 +19,12 @@ import {
   skippedPreWorkoutCheckin,
   type PreWorkoutCheckin,
 } from "@/domain/athlete-state/pre-workout";
-import {
-  adaptSessionForAvailableTime,
-  exercisesFromSession,
-} from "@/domain/athlete-state/session-adaptation";
 import { PRODUCT_NAMES } from "@/domain/athlete-state/labels";
 import {
   savePreWorkoutCheckin,
   setTodayAdjustment,
   trackProductEvent,
 } from "@/lib/athlete-state/session-store";
-import { startWorkout } from "@/lib/training/live-session";
-import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 
 const TIME_CHIPS = [30, 40, 45, 60] as const;
 
@@ -50,9 +44,8 @@ export function PreWorkoutCheckinScreen() {
   const [blocks, setBlocks] = useState<"nao" | "sim" | "nao_sei" | null>(null);
   const [saving, setSaving] = useState(false);
 
-  function goToWorkout() {
-    startWorkout();
-    router.replace("/app/workout");
+  function goToToday() {
+    router.replace("/app/today");
   }
 
   async function skip() {
@@ -60,7 +53,7 @@ export function PreWorkoutCheckinScreen() {
     setSaving(true);
     await savePreWorkoutCheckin(skippedPreWorkoutCheckin());
     trackProductEvent("checkin_pre_treino_pulado");
-    goToWorkout();
+    goToToday();
   }
 
   function buildCheckin(): PreWorkoutCheckin {
@@ -93,18 +86,11 @@ export function PreWorkoutCheckinScreen() {
 
     const safety = safetyFromPain(checkin);
     if (plannedTime === false) {
-      const adapted = adaptSessionForAvailableTime({
-        plannedMinutes: PREVIEW_WORKOUT.estimatedMinutes,
-        availableMinutes: minutes,
-        exercises: exercisesFromSession(PREVIEW_WORKOUT),
-      });
       setTodayAdjustment({
-        whatChanged: adapted.dropped.length
-          ? `Priorizamos os exercícios principais e retiramos ${adapted.dropped.map((item) => item.name).join(", ")}.`
-          : "A sessão de hoje foi enxugada para caber no tempo informado.",
-        whyChanged: `Você tem cerca de ${minutes} minutos, abaixo dos ${PREVIEW_WORKOUT.estimatedMinutes} planejados.`,
+        whatChanged: "A sessão de hoje foi enxugada para caber no tempo informado.",
+        whyChanged: `Você tem cerca de ${minutes} minutos, abaixo do tempo planejado.`,
         dataConsidered:
-          "Tempo disponível informado no Check-in Pré-Treino. O programa futuro permanece igual.",
+          "Tempo disponível informado no Check-in Pré-Treino. Sem treino prescrito, nenhum exercício foi retirado.",
         onlyToday: true,
         reevaluateWhen: "Na próxima sessão, ou na Revisão Semanal do Coach.",
       });
@@ -119,7 +105,7 @@ export function PreWorkoutCheckinScreen() {
     } else {
       setTodayAdjustment(null);
     }
-    goToWorkout();
+    goToToday();
   }
 
   const ready =
@@ -315,7 +301,7 @@ export function PreWorkoutCheckinScreen() {
           onClick={() => void start()}
           className="flex h-[54px] w-full items-center justify-center rounded-[var(--radius-lg)] bg-brand text-base font-bold text-on-brand disabled:opacity-50"
         >
-          Começar treino
+          Salvar check-in
         </button>
       </div>
     </AthleteAppShell>

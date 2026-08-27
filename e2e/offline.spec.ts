@@ -39,25 +39,17 @@ test.describe("offline", () => {
     await expect(page.getByText("O Tervelo mantém os dados necessários")).toBeVisible();
   });
 
-  test("reload recupera a sessão ativa sem duplicar o início", async ({ page }) => {
+  test("reload não recupera treino inventado", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/today");
     await waitBoot(page);
-    await page.getByRole("button", { name: "Iniciar treino" }).click();
-    await page.getByRole("button", { name: "Pular por hoje" }).click();
-    await expect(page).toHaveURL(/\/app\/workout$/);
-    await page.getByRole("button", { name: "Começar exercício" }).click();
-    await expect(page.getByRole("heading", { name: "Supino Reto" })).toBeVisible();
-    await page.getByRole("button", { name: "Registrar aquecimento" }).click();
+    await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
     await page.reload();
     await waitBoot(page);
-    await expect(page.getByRole("heading", { name: "Supino Reto" })).toBeVisible();
-    await page.goto("/app/today");
-    await waitBoot(page);
-    await expect(page.getByText("Treino em andamento")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Continuar treino" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Encerrar sessão" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
+    await expect(page.getByText("Treino em andamento")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Continuar treino" })).toHaveCount(0);
   });
 
   test("dados e sincronização funcionam nos dois temas", async ({ page }, testInfo) => {
@@ -75,7 +67,7 @@ test.describe("offline", () => {
     await captureEvidence(page, testInfo, "sincronizacao_escuro_390");
 
     await page.goto("/app/today");
-    await expect(page.getByRole("button", { name: "Iniciar treino" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
     await captureEvidence(page, testInfo, "hoje_escuro_390");
   });
 });

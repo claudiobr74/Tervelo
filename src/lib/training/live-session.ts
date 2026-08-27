@@ -146,23 +146,8 @@ function persist(next: LiveSessionState, immediate = true) {
 }
 
 function readStored(): LiveSessionState {
-  if (typeof window === "undefined") return IDLE;
-  try {
-    const raw = window.localStorage.getItem(LIVE_SESSION_KEY);
-    if (!raw) return IDLE;
-    const parsed = JSON.parse(raw) as Partial<LiveSessionState>;
-    return {
-      ...IDLE,
-      ...parsed,
-      recorded: Array.isArray(parsed.recorded) ? parsed.recorded : [],
-      queue: Array.isArray(parsed.queue) ? parsed.queue : [],
-      events: Array.isArray(parsed.events) ? parsed.events : [],
-      syncSessionId: parsed.syncSessionId ?? null,
-      completeSyncId: parsed.completeSyncId ?? null,
-    };
-  } catch {
-    return IDLE;
-  }
+  // localStorage legado só guardava o treino de exemplo. Não reidratar.
+  return IDLE;
 }
 
 function hydrate() {
@@ -196,17 +181,10 @@ export function subscribeLiveSession(listener: () => void): () => void {
   };
 }
 
-export function hydrateLiveSessionFromDurable(state: LiveSessionState) {
+export function hydrateLiveSessionFromDurable(_state: LiveSessionState) {
   if (mutatedSinceBoot) return;
-  cached = withCurrentInputs({
-    ...IDLE,
-    ...state,
-    recorded: Array.isArray(state.recorded) ? state.recorded : [],
-    queue: Array.isArray(state.queue) ? state.queue : [],
-    events: Array.isArray(state.events) ? state.events : [],
-    syncSessionId: state.syncSessionId ?? null,
-    completeSyncId: state.completeSyncId ?? null,
-  });
+  // IndexedDB antigo só tinha o treino de exemplo (Peitoral e Tríceps).
+  cached = IDLE;
   hydrated = true;
   emit();
 }
