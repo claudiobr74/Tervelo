@@ -1,0 +1,34 @@
+table:
+  name: notifications
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns: &a1
+        - id
+        - user_id
+        - type
+        - payload
+        - read_at
+        - created_at
+      filter: &a3
+        user_id:
+          _eq: X-Hasura-User-Id
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a1
+      filter: &a2 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a1
+      filter: *a2
+      limit: 500
+update_permissions:
+  - role: user
+    permission:
+      filter: *a3
+      check: *a3
+      columns:
+        - read_at

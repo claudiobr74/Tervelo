@@ -1,0 +1,7 @@
+query GetHeartRatePreference {
+  athlete_preferences(where: { preference_key: { _eq: "heart_rate_enabled" } }) {
+    id
+    preference_key
+    preference_value
+  }
+}

@@ -1,0 +1,86 @@
+table:
+  name: heart_rate_samples
+  schema: public
+object_relationships:
+  - name: heart_rate_session
+    using:
+      foreign_key_constraint_on: heart_rate_session_id
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-user-id
+      columns:
+        - id
+        - heart_rate_session_id
+        - training_session_id
+        - exercise_id
+        - set_id
+        - recorded_at
+        - bpm
+        - source
+        - is_valid
+        - quality
+        - quality_reason
+        - client_mutation_id
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - heart_rate_session_id
+        - user_id
+        - training_session_id
+        - exercise_id
+        - set_id
+        - recorded_at
+        - bpm
+        - source
+        - is_valid
+        - quality
+        - quality_reason
+        - client_mutation_id
+        - created_at
+      filter: *a1
+      limit: 5000
+  - role: admin
+    permission:
+      columns:
+        - id
+        - heart_rate_session_id
+        - user_id
+        - training_session_id
+        - exercise_id
+        - set_id
+        - recorded_at
+        - bpm
+        - source
+        - is_valid
+        - quality
+        - quality_reason
+        - client_mutation_id
+        - created_at
+      filter: &a2 {}
+      limit: 2000
+  - role: super_admin
+    permission:
+      columns:
+        - id
+        - heart_rate_session_id
+        - user_id
+        - training_session_id
+        - exercise_id
+        - set_id
+        - recorded_at
+        - bpm
+        - source
+        - is_valid
+        - quality
+        - quality_reason
+        - client_mutation_id
+        - created_at
+      filter: *a2
+      limit: 5000
