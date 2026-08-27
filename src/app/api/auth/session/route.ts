@@ -1,12 +1,9 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
+import { allowPreviewSessions } from "@/lib/deploy/runtime";
 import { clientKeyFromRequest, consumeRateLimit } from "@/lib/security/rate-limit";
-import {
-  allowPreviewSessions,
-  MAX_SESSION_BODY_BYTES,
-  sanitizeSessionPayload,
-} from "@/lib/security/session-payload";
+import { MAX_SESSION_BODY_BYTES, sanitizeSessionPayload } from "@/lib/security/session-payload";
 
 export async function POST(request: Request) {
   if (consumeRateLimit(`session:${clientKeyFromRequest(request)}`) === "limited") {

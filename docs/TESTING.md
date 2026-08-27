@@ -34,6 +34,8 @@ Phase 13: Vitest cobre fila idempotente, backoff, motor (oscilação e resposta 
 
 Phase 14: Vitest cobre redaction de logs, sanitização da sessão, headers, proxy (atleta sem sessão / user sem admin) e matriz Hasura (nutrição append-only, revisão, catálogo). Playwright cobre skip link, landmarks, `/api/health` e evidência Light/Dark 390. Sem vídeo.
 
+Phase 15: Vitest cobre `VERCEL_ENV` (preview vs production). Playwright cobre smoke local de health/login. Script `npm run smoke:deploy -- <url>` contra Preview/Production. Sem vídeo.
+
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.
 
 **TERVELO — ADDENDUM**: Vitest cobre `NUTRITION_CONTEXT` UNKNOWN, ordem de ajuste e QA 13–20. Playwright cobre a aba Nutrição do contrato admin.

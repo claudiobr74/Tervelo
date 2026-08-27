@@ -96,7 +96,7 @@ Não usar claim para “autorizar admin” se a role JWT já o faz.
 
 Locale Auth: `pt` default.
 
-Redirects de e-mail: URL do app (local / futuro Vercel) em `auth.clientUrl` / allowed redirect URLs no toml.
+Redirects de e-mail: URL do app (local / Vercel) em `auth.clientUrl` / allowed redirect URLs. Checklist: [`VERCEL.md`](VERCEL.md).
 
 ---
 
@@ -183,7 +183,7 @@ Deploy Nhost = push no repo ligado.
 
 Até lá: desenvolvimento local com `nhost up`.
 
-Não exigir Vercel nesta etapa.
+Não exigir Vercel nesta etapa (Phase 2). O deploy está na Phase 15 (`docs/VERCEL.md`).
 
 ---
 

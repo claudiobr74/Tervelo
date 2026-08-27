@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–14 neste repositório (Phase 14 neste branch).
+Veredito atual: **READY_WITH_FIXES**. Phases 0–15 neste repositório (Phase 15 neste branch).
 
 ---
 
@@ -22,7 +22,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–14 neste repositório (Phase 14
 
 Prompt das fases de produto do atleta (não admin). Fonte: [`docs/MODULO_ALUNO.md`](MODULO_ALUNO.md).
 
-Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, 11, 12 e 13, mais busca/anilhas do aluno na Phase 5). Phase 10 é o módulo admin. Phase 14 endurece o que já existe.
+Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, 11, 12 e 13, mais busca/anilhas do aluno na Phase 5). Phase 14 endurece o que já existe. Phase 15 publica o app na Vercel (preview em PRs; production só com aprovação humana).
 
 **Próximas fases:** evidência só com **imagens das telas** (Light/Dark, 390px). **Vídeo não é necessário.**
 
@@ -54,8 +54,8 @@ Cobre o contrato em `/admin/ai` (escolha de agente no modo administrar) e o pipe
 | 11 | Frequência cardíaca (Web Bluetooth real) | bloco Settings `FIGMA_PENDING`; overlay no treino | concluída neste branch |
 | 12 | Estado do Atleta + check-ins + revisão semanal | UI mínima Design System; **FIGMA_UI_PENDING** | concluída neste branch |
 | 13 | Offline-first + sincronização + PWA | estados nas telas existentes; **FIGMA_UI_PENDING** | concluída neste branch |
-| 14 | Hardening | conforme telas existentes | neste branch |
-| 15 | Vercel | app navegável | só com critérios da spec |
+| 14 | Hardening | conforme telas existentes | concluída neste branch |
+| 15 | Vercel | app navegável | neste branch |
 
 ---
 
@@ -291,14 +291,22 @@ UI existente (Design System). Sem redesign Figma. Nomes em PT-BR.
 
 ## 17. Phase 15 — Vercel
 
-Somente quando:
+Preview em PRs; Production em `main` **após aprovação humana**. Este PR **não** promove production.
 
-- `build` / lint / typecheck / testes críticos passam
-- Auth e Nhost funcionam
-- Fluxo navegável (mesmo que Figma cubra só parte das telas)
-- Secrets fora do git
+Critérios: `build` / lint / typecheck / testes passam (CI); fluxo navegável; secrets fora do git.
 
-Preview em PRs; Production em `main` após aprovação humana.
+Auditoria: [`VERCEL_PRE_IMPLEMENTATION_AUDIT.md`](VERCEL_PRE_IMPLEMENTATION_AUDIT.md). Operação: [`VERCEL.md`](VERCEL.md).
+
+### Entregas
+
+- `vercel.json` (Next.js + `npm ci`)
+- Distinção Preview vs Production (`VERCEL_ENV`): sessão `preview` nunca em production
+- Health com `deploy` + `nhost` (sem secrets)
+- `npm run smoke:deploy -- <url>` (detecta SSO da Vercel)
+- Playwright local `e2e/deploy.spec.ts`
+- Checklist de env Nhost na Vercel e URLs de redirect no console Nhost
+
+Domínio custom fica com o operador. SSO no Preview é esperado; Production deve ser pública para o atleta.
 
 ---
 
@@ -334,7 +342,7 @@ Após Phase 1:
 | 12 | Motor de Estado, check-in/check-out, revisão semanal, QA 31–44 |
 | 13 | fila/idempotência, conflitos, crash da sessão, PWA sem cache GraphQL |
 | 14 | a11y, permissions, observabilidade |
-| 15 | smoke do deploy |
+| 15 | smoke do deploy (`/api/health`, `/login`, SSO vs público) |
 
 ---
 

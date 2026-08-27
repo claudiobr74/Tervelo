@@ -70,6 +70,3 @@ export function sanitizeSessionPayload(
   };
 }
 
-export function allowPreviewSessions(): boolean {
-  return process.env.NODE_ENV !== "production";
-}

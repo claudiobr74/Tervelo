@@ -11,6 +11,7 @@ src/lib/heart-rate/        # Web Bluetooth na borda; domínio não acessa naviga
 src/lib/offline/           # IndexedDB, fila, motor de sync, PWA (borda)
 src/lib/security/          # headers, sanitização de sessão, rate-limit
 src/lib/observability/     # health (sem secrets)
+src/lib/deploy/            # Preview vs Production (Vercel)
 src/graphql/<domínio>/   # documents GraphQL
 src/domain/              # regras puras: anilhas, timer, idade, append-only, agentes de IA, parser/métricas de FC, estado do atleta, fila/conflito offline
 src/application/         # casos de uso + Zod + portas

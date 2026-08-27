@@ -6,7 +6,7 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma). Phase 11: frequência cardíaca opcional (Web Bluetooth real). Phase 12: Estado do Atleta, check-ins e Revisão Semanal do Coach. Phase 13: funcionamento offline (IndexedDB, fila, PWA). Phase 14: hardening (headers, permissions, a11y AA, observabilidade).
+Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma). Phase 11: frequência cardíaca opcional (Web Bluetooth real). Phase 12: Estado do Atleta, check-ins e Revisão Semanal do Coach. Phase 13: funcionamento offline (IndexedDB, fila, PWA). Phase 14: hardening (headers, permissions, a11y AA, observabilidade). Phase 15: Vercel (preview em PRs; production só com aprovação humana).
 
 UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md). Login/admin screens entram nas Phases 4 e 10.
 
@@ -60,6 +60,8 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 | [LOCAL_DATA_MODEL.md](docs/LOCAL_DATA_MODEL.md) | IndexedDB |
 | [PWA.md](docs/PWA.md) | Manifest e Service Worker |
 | [HARDENING_PRE_IMPLEMENTATION_AUDIT.md](docs/HARDENING_PRE_IMPLEMENTATION_AUDIT.md) | Auditoria — hardening (segurança, a11y, observabilidade) |
+| [VERCEL.md](docs/VERCEL.md) | Deploy Vercel, env, SSO, smoke |
+| [VERCEL_PRE_IMPLEMENTATION_AUDIT.md](docs/VERCEL_PRE_IMPLEMENTATION_AUDIT.md) | Auditoria — Phase 15 Vercel |
 
 ## Stack
 
@@ -93,7 +95,7 @@ Rotas desta fase:
 - `/admin/audit` — Figma `2:3112`
 - `/api/health` — liveness
 
-Scripts: `lint`, `typecheck`, `test` (Vitest), `test:e2e` (Playwright, fora do CI), `build`.
+Scripts: `lint`, `typecheck`, `test` (Vitest), `test:e2e` (Playwright, fora do CI), `smoke:deploy`, `build`.
 
 Tema padrão: **escuro**. Persistência em `localStorage` (`tervelo-theme`). Tokens CSS: Handoff Figma `28:527`.
 
