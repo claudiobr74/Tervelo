@@ -23,8 +23,13 @@ describe("proxy guard", () => {
   });
 
   it("login com sessão redireciona", () => {
-    expect(resolveAuthRedirect("/login", { preview: true }, true, true)).toBe("/");
+    expect(resolveAuthRedirect("/login", { preview: true }, true, true)).toBe("/app/today");
     expect(resolveAuthRedirect("/login", { preview: true }, true, false)).toBe("/onboarding/perfil");
+  });
+
+  it("onboarding concluído não reabre o fluxo", () => {
+    expect(resolveAuthRedirect("/onboarding/perfil", { preview: true }, true, true)).toBe("/app/today");
+    expect(resolveAuthRedirect("/onboarding/nutricao", { preview: true }, true, false)).toBeNull();
   });
 
   it("SW e health não redirecionam", () => {

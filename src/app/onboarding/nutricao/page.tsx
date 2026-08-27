@@ -29,7 +29,7 @@ export default function OnboardingNutricaoPage() {
       body: JSON.stringify({ done: true }),
     });
     window.setTimeout(() => {
-      router.push("/");
+      router.push("/app/today");
       router.refresh();
     }, 2200);
   }
@@ -154,7 +154,8 @@ export default function OnboardingNutricaoPage() {
         </div>
       </OnboardingShell>
       {finishing ? (
-        <div className="fixed inset-0 z-10 flex items-center gap-6 bg-background/93 p-6">
+        <div className="fixed inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-background/93 p-6">
+          <div className="flex w-full max-w-[390px] flex-col items-center gap-6 text-center">
           <span className="relative inline-block size-20 shrink-0 overflow-clip">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -171,6 +172,7 @@ export default function OnboardingNutricaoPage() {
               Nossa inteligência artificial está estruturando sua rotina de treinamento e diretrizes
               metabólicas.
             </p>
+          </div>
           </div>
         </div>
       ) : null}

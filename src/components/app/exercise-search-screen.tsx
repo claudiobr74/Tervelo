@@ -90,7 +90,7 @@ export function ExerciseSearchScreen() {
     catalog[0];
 
   return (
-    <AthleteAppShell>
+    <AthleteAppShell active="Treino">
       <div className="flex flex-col gap-3 px-6 pb-3 pt-4">
         <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
           <FigmaIcon src="/icons/search.svg" alt="" size={18} className="text-muted" />

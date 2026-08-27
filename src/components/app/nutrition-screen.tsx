@@ -112,7 +112,7 @@ export function NutritionScreen() {
             </button>
           </div>
           <p className="text-[13px] font-medium text-muted">
-            Gerenciamento de dieta e targets diários
+            Gerenciamento de dieta e metas diárias
           </p>
         </header>
 
@@ -122,7 +122,7 @@ export function NutritionScreen() {
         </article>
 
         <article className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-          <h2 className="text-sm font-bold uppercase text-muted">Targets Diários</h2>
+          <h2 className="text-sm font-bold uppercase text-muted">Metas diárias</h2>
           {targets.map((item) => (
             <div key={item.key} className="flex flex-col gap-1.5">
               <div className="flex items-start justify-between text-[13px] font-medium text-foreground">
@@ -151,22 +151,22 @@ export function NutritionScreen() {
           {PREVIEW_MEALS.map((meal) => (
             <article
               key={meal.name}
-              className="flex items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface p-4"
+              className="flex flex-wrap items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4"
             >
-              <div className="flex flex-col gap-1">
+              <div className="min-w-0 flex-1">
                 <p className="text-base font-bold text-foreground">{meal.name}</p>
                 <p className="text-[11px] font-medium text-muted">
                   {formatInt(meal.energyKcal)} kcal • {meal.proteinG}g prot • {meal.carbohydrateG}g carb
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-muted">
+              <div className="flex shrink-0 items-center gap-1 text-muted">
                 <FigmaIcon src="/icons/clock.svg" alt="" size={14} />
                 <p className="text-[11px] font-medium">{meal.time}</p>
               </div>
               <button
                 type="button"
                 onClick={() => toggleMealAdherence(meal.name)}
-                className={`ml-2 text-[11px] font-bold ${
+                className={`shrink-0 text-[11px] font-bold ${
                   nutrition.adheredMeals.includes(meal.name) ? "text-success" : "text-brand"
                 }`}
               >

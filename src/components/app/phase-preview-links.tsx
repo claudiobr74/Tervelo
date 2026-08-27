@@ -2,10 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { previewSession } from "@/lib/auth/local-preview";
-
-async function persist(session: unknown) {
-  await fetch("/api/auth/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(session) });
-}
+import { persistSession } from "@/lib/auth/persist-session";
 
 export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
   const router = useRouter();
@@ -13,7 +10,7 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
   async function openAdmin(
     path: "/admin" | "/admin/users" | "/admin/audit" | "/admin/exercises" | "/admin/ai",
   ) {
-    await persist(
+    await persistSession(
       previewSession({ displayName: "Lucas Mendes", email: "lucas.admin@tervelo.local" }, "admin"),
     );
     router.push(path);
@@ -24,7 +21,7 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 13 — Funcionamento offline</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Pré-visualização</p>
       <div className="flex flex-wrap gap-3">
         <button
           type="button"

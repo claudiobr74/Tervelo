@@ -119,13 +119,13 @@ export function WorkoutSessionScreen() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between border-t border-border pt-2">
-                  <p className="text-xs text-muted">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-2">
+                  <p className="min-w-0 text-xs text-muted">
                     Intervalo: {formatRest(exercise.restSeconds)}
                     <span className="mx-2 text-tertiary">|</span>
                     Repetições em reserva: {first?.targetRepsInReserve ?? 2}
                   </p>
-                  <div className="flex gap-2">
+                  <div className="flex shrink-0 gap-2">
                     <Link href="/app/exercises" aria-label="Substituir exercício" className="text-muted">
                       <FigmaIcon src="/icons/refresh-cw.svg" alt="" size={16} />
                     </Link>
@@ -138,7 +138,7 @@ export function WorkoutSessionScreen() {
             );
           })}
         </div>
-        <div className="sticky bottom-0 bg-background p-6">
+        <div className="sticky bottom-0 z-10 bg-background p-6">
           <button
             type="button"
             onClick={begin}

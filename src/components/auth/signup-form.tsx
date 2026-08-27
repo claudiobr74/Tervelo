@@ -6,16 +6,9 @@ import { useState, type FormEvent } from "react";
 import { AuthFooterLink, AuthShell, FieldLabel, AUTH_INPUT_CLASS, PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
+import { persistSession } from "@/lib/auth/persist-session";
 import { isValidEmail, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
 import { getBrowserNhostClient } from "@/lib/nhost/browser";
-
-async function persistSession(session: unknown) {
-  await fetch("/api/auth/session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(session),
-  });
-}
 
 export function SignupForm() {
   const router = useRouter();
@@ -155,9 +148,8 @@ export function SignupForm() {
             {accepted ? <FigmaIcon src="/icons/check.svg" alt="" size={12} /> : null}
           </button>
           <span className="text-[13px] leading-[18px] text-muted">
-            Ao continuar, você concorda com os{" "}
-            <span className="font-semibold text-brand">Termos de Serviço</span> e a{" "}
-            <span className="font-semibold text-brand">Política de Privacidade</span>.
+            Ao continuar, você concorda com os Termos de Serviço e a Política de
+            Privacidade.
           </span>
         </label>
         {error ? <p className="text-sm text-error">{error}</p> : null}

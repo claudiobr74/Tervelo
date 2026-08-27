@@ -98,7 +98,7 @@ export function AdminEquipmentScreen() {
             )}
           </div>
           {selected ? (
-            <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5 text-sm">
+            <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5 text-sm lg:col-span-2 xl:col-span-1">
               <h2 className="text-xl font-extrabold">{selected.namePt}</h2>
               <p>
                 <span className="font-bold">Nome Canônico: </span>

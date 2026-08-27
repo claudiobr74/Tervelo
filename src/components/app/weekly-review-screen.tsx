@@ -10,7 +10,23 @@ import { useAthleteStateStore, weeklyDecisionLabel } from "@/lib/athlete-state/s
 export function WeeklyReviewScreen() {
   const params = useParams<{ id: string }>();
   const store = useAthleteStateStore();
-  const review = store.weeklyReviews.find((item) => item.id === params.id) ?? store.weeklyReviews[0];
+  const review = store.weeklyReviews.find((item) => item.id === params.id);
+
+  if (!review) {
+    return (
+      <AthleteAppShell active="Coach">
+        <div className="flex flex-col gap-4 px-6 pb-8 pt-4">
+          <header className="flex items-center gap-3">
+            <Link href="/app/coach/revisoes" aria-label="Voltar" className="text-foreground">
+              <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
+            </Link>
+            <h1 className="text-xl font-extrabold text-foreground">{PRODUCT_NAMES.weeklyCoachReview}</h1>
+          </header>
+          <p className="text-sm text-muted">Esta revisão não está disponível neste dispositivo.</p>
+        </div>
+      </AthleteAppShell>
+    );
+  }
 
   return (
     <AthleteAppShell active="Coach">

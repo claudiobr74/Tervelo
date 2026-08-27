@@ -17,7 +17,7 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const rawSession = request.cookies.get(NHOST_SESSION_COOKIE)?.value;
   const session = parseSessionCookie(rawSession);
-  const hasSession = Boolean(rawSession);
+  const hasSession = session != null;
   const onboardingDone = request.cookies.get(ONBOARDING_COOKIE)?.value === "done";
 
   const dest = resolveAuthRedirect(pathname, session, hasSession, onboardingDone);

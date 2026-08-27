@@ -60,7 +60,7 @@ function LiftCard({ name, currentKg, previousKg, weeks }: (typeof PREVIEW_STRENG
 function StrengthChart() {
   return (
     <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-1">
         <p className="text-base font-bold text-foreground">Progressão no Supino Reto</p>
         <p className="text-[11px] font-medium text-muted">Últimos 3 meses</p>
       </div>
@@ -90,7 +90,7 @@ function StrengthChart() {
 function VolumeChart() {
   return (
     <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-1">
         <p className="text-base font-bold text-foreground">Volume de carga</p>
         <p className="text-[11px] font-medium text-muted">Últimos 3 meses</p>
       </div>
@@ -110,7 +110,7 @@ function VolumeChart() {
 function ConsistencyCard() {
   return (
     <article className="flex flex-col gap-2.5 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-2">
         <p className="text-[11px] font-medium text-muted">Consistência nos Treinos</p>
         <p className="text-sm font-bold text-success">{formatPercent(PREVIEW_CONSISTENCY_PERCENT, 0)} de aderência</p>
       </div>
@@ -128,7 +128,7 @@ function AiCard() {
         <FigmaIcon src="/icons/brain.svg" alt="" size={20} />
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <p className="text-[11px] font-bold uppercase text-brand">Análise de Performance AI</p>
+        <p className="text-[11px] font-bold uppercase text-brand">Análise do Coach</p>
         <p className="text-[13px] font-medium text-foreground">
           “Sua progressão de força está acima da média para o período de treinamento atual. Mantenha o
           volume de séries proposto.”

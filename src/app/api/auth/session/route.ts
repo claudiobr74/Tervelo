@@ -6,7 +6,7 @@ import { clientKeyFromRequest, consumeRateLimit } from "@/lib/security/rate-limi
 import { MAX_SESSION_BODY_BYTES, sanitizeSessionPayload } from "@/lib/security/session-payload";
 
 export async function POST(request: Request) {
-  if (consumeRateLimit(`session:${clientKeyFromRequest(request)}`) === "limited") {
+  if (consumeRateLimit(`session:${clientKeyFromRequest(request)}`, { max: 120 }) === "limited") {
     return NextResponse.json({ ok: false, error: "too_many_requests" }, { status: 429 });
   }
 

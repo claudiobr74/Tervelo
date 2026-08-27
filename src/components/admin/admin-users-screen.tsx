@@ -41,7 +41,7 @@ export function AdminUsersScreen() {
             </label>
             <FilterChip label="Status: Todos" />
             <FilterChip label="Plano: Todos" />
-            <FilterChip label="Objetivo: Hipertrofia" />
+            <FilterChip label="Objetivo: Todos" />
           </div>
           <button
             type="button"
