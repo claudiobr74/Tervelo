@@ -190,7 +190,7 @@ export function AdminAiScreen() {
                 type="button"
                 disabled
                 title="A Function /ai/orchestrate responde 501 até a orquestração real."
-                className="rounded-[var(--radius-md)] bg-surface-secondary px-4 py-2 text-[13px] font-semibold text-foreground opacity-60"
+                className="rounded-[var(--radius-md)] bg-surface-secondary px-4 py-2 text-[13px] font-semibold text-muted"
               >
                 Testar versão
               </button>
@@ -198,7 +198,7 @@ export function AdminAiScreen() {
                 type="button"
                 disabled
                 title="Comparação de versões entra com ai_contract_versions"
-                className="rounded-[var(--radius-md)] bg-brand px-4 py-2 text-[13px] font-semibold text-on-brand opacity-60"
+                className="rounded-[var(--radius-md)] bg-surface-secondary px-4 py-2 text-[13px] font-semibold text-muted"
               >
                 Comparar versões
               </button>
