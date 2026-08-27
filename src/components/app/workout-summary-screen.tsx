@@ -27,10 +27,12 @@ export function WorkoutSummaryScreen() {
   const session = PREVIEW_WORKOUT;
   const endedAt = live.completedAt ?? new Date().toISOString();
   const startedAt = live.startedAt ?? endedAt;
-  const minutes = durationMinutes(startedAt, endedAt) || session.estimatedMinutes;
   const volume = volumeKg(live.recorded);
-  const exercisesDone = completedExercises(session, live.recorded) || session.exercises.length;
   const setsDone = completedWorkingSets(session, live.recorded);
+  // Sem série registrada não há o que resumir: repetir o planejado como se fosse
+  // realizado faria o resumo contradizer a própria mensagem.
+  const minutes = setsDone > 0 ? durationMinutes(startedAt, endedAt) : 0;
+  const exercisesDone = setsDone > 0 ? completedExercises(session, live.recorded) : 0;
   const hr = currentHeartRateDetails();
   const recoveries = setWindowsFromTimeline(live.events)
     .map((window) => metricsForSet(hr.samples, window).recovery60Seconds)
