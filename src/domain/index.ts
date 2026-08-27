@@ -12,6 +12,11 @@ export { classifyRecovery, scoresFromSliders } from "./recovery/score";
 export { recoveryTrend } from "./recovery/trend";
 export { percentChange } from "./progress/change";
 export { METRIC_LABELS } from "./labels";
+export { SYNC_COPY, connectionUiCopy, pendingCountCopy } from "./offline/labels";
+export { FEATURE_CAPABILITY } from "./offline/capability";
+export { enqueueOperation, pendingDataCount } from "./offline/queue";
+export { runSyncPass } from "./offline/engine";
+export { resolveConflict } from "./offline/conflict";
 export { AI_AGENTS, DEFAULT_AI_AGENT, agentLabel } from "./ai/agents";
 export {
   AI_IDENTITY_PROMPT,

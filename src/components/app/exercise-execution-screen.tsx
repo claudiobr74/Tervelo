@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { HeartRateWorkoutIndicator } from "@/components/app/heart-rate-indicator";
+import { WorkoutSyncHint } from "@/components/app/sync-status-indicator";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
   currentExercise,
@@ -28,6 +29,7 @@ import {
   useLiveSession,
 } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { SYNC_COPY } from "@/domain/offline";
 
 const RIR_OPTIONS = [0, 1, 2, 3, 4] as const;
 
@@ -207,8 +209,11 @@ export function ExerciseExecutionScreen() {
   const superLetter = partners.findIndex((item) => item.id === exercise.id) === 0 ? "A" : "B";
   const nextPartner = partners.find((item) => item.id !== exercise.id);
 
+  const [recordedFlash, setRecordedFlash] = useState(false);
+
   function onRecord() {
     const next = recordCurrentSet();
+    setRecordedFlash(true);
     if (next === "rest") router.push("/app/workout/rest");
     else if (next === "summary") router.push("/app/workout/summary");
   }
@@ -232,6 +237,12 @@ export function ExerciseExecutionScreen() {
               </h1>
               <p className="text-base font-semibold text-brand">{subtitle}</p>
               <HeartRateWorkoutIndicator />
+              <WorkoutSyncHint />
+              {recordedFlash ? (
+                <p className="text-xs font-semibold text-success" role="status" aria-live="polite">
+                  ✓ {SYNC_COPY.setRecorded}
+                </p>
+              ) : null}
             </div>
           </div>
 

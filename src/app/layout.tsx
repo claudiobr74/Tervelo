@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { OfflineBoot } from "@/components/app/offline-boot";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
@@ -13,8 +14,19 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "TERVELO",
+  applicationName: "Tervelo",
   description:
     "Treinamento de musculação, evolução corporal, recuperação e nutrição esportiva com acompanhamento longitudinal.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Tervelo",
+    statusBarStyle: "default",
+  },
+  icons: {
+    icon: "/icons/pwa-192.png",
+    apple: "/icons/pwa-192.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -24,7 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <OfflineBoot>{children}</OfflineBoot>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { HeartRateWorkoutIndicator } from "@/components/app/heart-rate-indicator";
+import { WorkoutSyncHint } from "@/components/app/sync-status-indicator";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
   remainingSeconds,
@@ -104,6 +105,7 @@ export function RestTimerScreen() {
         </div>
         <div className="flex flex-col gap-1">
           <h1 className="text-[22px] font-extrabold text-foreground">Descanso</h1>
+          <WorkoutSyncHint />
           <p className="text-sm text-muted">
             {lastExercise?.namePt ?? "Série"} • Série {ordinal ? `${Math.max(1, ordinal.current)} de ${ordinal.total}` : "—"}
           </p>

@@ -15,7 +15,9 @@ import {
   type CompositionPoint,
 } from "@/domain/measurement/composition";
 import { formatMeasure, formatPercent, formatSignedDelta } from "@/lib/longitudinal/format";
-import { useLongitudinal } from "@/lib/longitudinal/preview-store";
+import { appendBodyMeasurement, useLongitudinal } from "@/lib/longitudinal/preview-store";
+import { useSyncStatus } from "@/components/app/sync-status-indicator";
+import { SYNC_COPY } from "@/domain/offline";
 
 function toPoints(rows: { id: string; measuredAt: string; supersedesId?: string; weightKg?: number; bodyFatPercent?: number; waistCm?: number; rightArmCm?: number; rightThighCm?: number }[]): CompositionPoint[] {
   return rows.map((row) => ({
@@ -72,7 +74,10 @@ function CircumferenceRow({
 
 export function BodyMetricsScreen() {
   const { measurements } = useLongitudinal();
+  const sync = useSyncStatus();
   const [periodId, setPeriodId] = useState<BodyPeriodId>("30d");
+  const [weight, setWeight] = useState("82.4");
+  const [waist, setWaist] = useState("84");
   const period = BODY_PERIODS.find((item) => item.id === periodId) ?? BODY_PERIODS[1];
   const now = useMemo(() => new Date(), []);
   const points = useMemo(() => toPoints(measurements), [measurements]);
@@ -170,14 +175,51 @@ export function BodyMetricsScreen() {
           />
         </section>
 
+        <section className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
+          <p className="text-xs font-bold uppercase text-brand">FIGMA_UI_PENDING</p>
+          <h2 className="text-sm font-bold text-foreground">Registrar agora</h2>
+          <label className="flex flex-col gap-1 text-xs text-muted">
+            Peso (kg)
+            <input
+              value={weight}
+              onChange={(event) => setWeight(event.target.value)}
+              inputMode="decimal"
+              className="h-11 rounded-[var(--radius-md)] border border-border bg-background px-3 text-sm text-foreground"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs text-muted">
+            Cintura (cm)
+            <input
+              value={waist}
+              onChange={(event) => setWaist(event.target.value)}
+              inputMode="decimal"
+              className="h-11 rounded-[var(--radius-md)] border border-border bg-background px-3 text-sm text-foreground"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() =>
+              void appendBodyMeasurement({
+                weightKg: Number(weight.replace(",", ".")),
+                waistCm: Number(waist.replace(",", ".")),
+              })
+            }
+            className="flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-brand text-sm font-bold text-on-brand"
+          >
+            Salvar medidas
+          </button>
+        </section>
+
         <article className="flex flex-col gap-2.5 rounded-[var(--radius-xl)] border border-brand bg-brand-soft p-4">
           <div className="flex items-center gap-2">
             <FigmaIcon src="/icons/brain.svg" alt="" size={16} className="text-brand" />
             <p className="text-[11px] font-bold uppercase text-brand">Evolução Recomendada</p>
           </div>
           <p className="text-[13px] font-medium text-foreground">
-            “Seu aumento de peso está ocorrendo com pequena variação da cintura e melhora consistente da
-            força. O progresso é altamente compatível com o objetivo de ganho de massa muscular magra.”
+            “{sync.online
+              ? "Seu aumento de peso está ocorrendo com pequena variação da cintura e melhora consistente da força. O progresso é altamente compatível com o objetivo de ganho de massa muscular magra."
+              : SYNC_COPY.coachAnalysisWhenOnline}
+            ”
           </p>
         </article>
       </div>

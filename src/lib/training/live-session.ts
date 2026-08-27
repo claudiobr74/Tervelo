@@ -22,6 +22,9 @@ import {
   type RecordedSet,
   type SetPrescription,
 } from "@/domain/training/session";
+import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
+import { enqueueSync } from "@/lib/offline/queue-store";
+import { currentOfflineUserId } from "@/lib/offline/user-scope";
 import { PREVIEW_TRAINING_USER_ID, PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 
 export const LIVE_SESSION_KEY = "tervelo-live-session";
@@ -54,6 +57,8 @@ export type LiveSessionState = {
   rir: number;
   boundSetId: string | null;
   queue: QueuedSetResult[];
+  syncSessionId: string | null;
+  completeSyncId: string | null;
 };
 
 const IDLE: LiveSessionState = {
@@ -69,11 +74,15 @@ const IDLE: LiveSessionState = {
   rir: 2,
   boundSetId: null,
   queue: [],
+  syncSessionId: null,
+  completeSyncId: null,
 };
 
 const listeners = new Set<() => void>();
 let cached: LiveSessionState = IDLE;
 let hydrated = false;
+let mutatedSinceBoot = false;
+let durableTimer: ReturnType<typeof setTimeout> | null = null;
 
 function emit() {
   for (const listener of listeners) listener();
@@ -110,13 +119,28 @@ function inputsFromSet(set: SetPrescription): Pick<LiveSessionState, "loadKg" | 
   };
 }
 
-function persist(next: LiveSessionState) {
+function writeDurable(state: LiveSessionState) {
+  if (typeof window === "undefined") return;
+  scheduleKvWrite(currentOfflineUserId(), KV_KEYS.liveSession, state);
+}
+
+function persist(next: LiveSessionState, immediate = true) {
   cached = next;
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(LIVE_SESSION_KEY, JSON.stringify(next));
-    window.localStorage.setItem(SET_RESULT_QUEUE_KEY, JSON.stringify(next.queue));
-  }
+  mutatedSinceBoot = true;
   emit();
+  if (immediate) {
+    if (durableTimer) {
+      clearTimeout(durableTimer);
+      durableTimer = null;
+    }
+    writeDurable(next);
+    return;
+  }
+  if (durableTimer) clearTimeout(durableTimer);
+  durableTimer = setTimeout(() => {
+    durableTimer = null;
+    writeDurable(cached);
+  }, 300);
 }
 
 function readStored(): LiveSessionState {
@@ -131,6 +155,8 @@ function readStored(): LiveSessionState {
       recorded: Array.isArray(parsed.recorded) ? parsed.recorded : [],
       queue: Array.isArray(parsed.queue) ? parsed.queue : [],
       events: Array.isArray(parsed.events) ? parsed.events : [],
+      syncSessionId: parsed.syncSessionId ?? null,
+      completeSyncId: parsed.completeSyncId ?? null,
     };
   } catch {
     return IDLE;
@@ -168,6 +194,25 @@ export function subscribeLiveSession(listener: () => void): () => void {
   };
 }
 
+export function hydrateLiveSessionFromDurable(state: LiveSessionState) {
+  if (mutatedSinceBoot) return;
+  cached = withCurrentInputs({
+    ...IDLE,
+    ...state,
+    recorded: Array.isArray(state.recorded) ? state.recorded : [],
+    queue: Array.isArray(state.queue) ? state.queue : [],
+    events: Array.isArray(state.events) ? state.events : [],
+    syncSessionId: state.syncSessionId ?? null,
+    completeSyncId: state.completeSyncId ?? null,
+  });
+  hydrated = true;
+  emit();
+}
+
+export function isLiveSessionInProgress(state: LiveSessionState = cached): boolean {
+  return state.status === "active" || state.status === "resting";
+}
+
 export function startWorkout(): LiveSessionState {
   hydrate();
   if (cached.status === "active" || cached.status === "resting") {
@@ -176,6 +221,23 @@ export function startWorkout(): LiveSessionState {
   const firstExercise = currentExercise(PREVIEW_WORKOUT, []);
   const first = currentSet(PREVIEW_WORKOUT, []);
   const at = new Date().toISOString();
+  const syncSessionId = crypto.randomUUID();
+  enqueueSync({
+    id: syncSessionId,
+    tipo: "SESSION_STARTED",
+    entidade: "training_session",
+    entity_id: PREVIEW_WORKOUT.id,
+    client_mutation_id: syncSessionId,
+    occurred_at: at,
+    user_id: PREVIEW_TRAINING_USER_ID,
+    payload: { workoutId: PREVIEW_WORKOUT.id, programVersion: "preview-1" },
+  });
+  scheduleKvWrite(currentOfflineUserId(), KV_KEYS.prescriptionSnapshot, {
+    sessionId: PREVIEW_WORKOUT.id,
+    programVersion: "preview-1",
+    frozenAt: at,
+    workout: PREVIEW_WORKOUT,
+  });
   const next: LiveSessionState = {
     ...IDLE,
     status: "active",
@@ -187,6 +249,7 @@ export function startWorkout(): LiveSessionState {
       { type: "SET_STARTED", at, setId: first.id, exerciseId: firstExercise.id },
     ],
     queue: cached.queue,
+    syncSessionId,
     ...inputsFromSet(first),
   };
   persist(next);
@@ -201,14 +264,35 @@ function completeSession(state: LiveSessionState): LiveSessionState {
     extra.push({ type: "EXERCISE_COMPLETED", at, exerciseId: last.sessionExerciseId, setId: last.setId });
   }
   extra.push({ type: "SESSION_COMPLETED", at });
+  const completeSyncId = state.completeSyncId ?? crypto.randomUUID();
+  enqueueSync({
+    id: completeSyncId,
+    tipo: "SESSION_COMPLETED",
+    entidade: "training_session",
+    entity_id: PREVIEW_WORKOUT.id,
+    client_mutation_id: completeSyncId,
+    occurred_at: at,
+    user_id: PREVIEW_TRAINING_USER_ID,
+    dependency_ids: state.syncSessionId ? [state.syncSessionId] : [],
+    payload: { startedAt: state.startedAt, completedAt: at },
+  });
   return {
     ...state,
     status: "completed",
     timer: null,
     completedAt: at,
     currentSetStartedAt: null,
+    completeSyncId,
     events: [...state.events, ...extra],
   };
+}
+
+export function endActiveSession(): LiveSessionState {
+  hydrate();
+  if (cached.status === "idle" || cached.status === "completed") return cached;
+  const next = completeSession(cached);
+  persist(next);
+  return next;
 }
 
 function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelineEvent[] {
@@ -255,6 +339,23 @@ export function recordCurrentSet(): AfterRecord {
     repsInReserve: recorded.repsInReserve ?? undefined,
     methodKind: recorded.methodKind,
     performedAt,
+  });
+  enqueueSync({
+    id: recorded.clientMutationId,
+    tipo: "SET_COMPLETED",
+    entidade: "set_result",
+    entity_id: recorded.setId,
+    client_mutation_id: recorded.clientMutationId,
+    occurred_at: performedAt,
+    user_id: PREVIEW_TRAINING_USER_ID,
+    dependency_ids: cached.syncSessionId ? [cached.syncSessionId] : [],
+    payload: {
+      setId: recorded.setId,
+      weightKg: recorded.weightKg,
+      reps: recorded.reps,
+      repsInReserve: recorded.repsInReserve,
+      methodKind: recorded.methodKind,
+    },
   });
   const timeline: WorkoutTimelineEvent[] = [
     ...cached.events,
@@ -370,7 +471,7 @@ export function tickTimer(now = new Date()) {
   if (ticked.status === cached.timer.status && remainingSeconds(ticked, now) === remainingSeconds(deserializeTimer(cached.timer), now)) {
     return;
   }
-  persist({ ...cached, timer: serializeTimer(ticked) });
+  persist({ ...cached, timer: serializeTimer(ticked) }, false);
 }
 
 export function setLoadKg(value: number) {

@@ -30,6 +30,8 @@ Phase 11: Vitest cobre parser BLE (8/16 bits, flags, inválidos), recuperação,
 
 Phase 12: Vitest cobre Motor de Estado (casos 1–10), qualidade dos dados, tendências, check-in/check-out, orçamento de mudanças, revisão semanal e QA 31–44. Playwright cobre check-in pulável, check-out, revisões e toggles default ligados. Screenshots 390 Light/Dark. Sem vídeo.
 
+Phase 13: Vitest cobre fila idempotente, backoff, motor (oscilação e resposta perdida) e conflitos. Playwright cobre settings de sincronização, recuperação de sessão após reload e evidência Light/Dark 390. Sem cache de GraphQL no Service Worker. Sem vídeo.
+
 **TERVELO — PROMPT MESTRE DE IMPLEMENTAÇÃO DA INTELIGÊNCIA ARTIFICIAL**: Vitest cobre agentes e políticas do contrato. Playwright cobre `/admin/ai` (escolha de agente) no desktop, Dark e Light. Sem vídeo.
 
 **TERVELO — ADDENDUM**: Vitest cobre `NUTRITION_CONTEXT` UNKNOWN, ordem de ajuste e QA 13–20. Playwright cobre a aba Nutrição do contrato admin.

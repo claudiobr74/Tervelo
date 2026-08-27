@@ -11,6 +11,9 @@ import type {
 } from "@/application/ports";
 import type { RecoveryScores } from "@/domain/recovery/trend";
 import { PREVIEW_TRAINING_USER_ID } from "@/lib/training/preview-workout";
+import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
+import { enqueueSync } from "@/lib/offline/queue-store";
+import { currentOfflineUserId } from "@/lib/offline/user-scope";
 
 export const LONGITUDINAL_KEY = "tervelo-longitudinal";
 
@@ -22,6 +25,7 @@ export type LongitudinalState = {
 const listeners = new Set<() => void>();
 let cached: LongitudinalState = { checkins: [], measurements: [] };
 let hydrated = false;
+let mutatedSinceBoot = false;
 
 function emit() {
   for (const listener of listeners) listener();
@@ -123,8 +127,9 @@ function seedState(): LongitudinalState {
 
 function persist(next: LongitudinalState) {
   cached = next;
+  mutatedSinceBoot = true;
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(LONGITUDINAL_KEY, JSON.stringify(next));
+    scheduleKvWrite(currentOfflineUserId(), KV_KEYS.longitudinal, next);
   }
   emit();
 }
@@ -148,9 +153,15 @@ function hydrate() {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
   cached = readStored();
-  if (!window.localStorage.getItem(LONGITUDINAL_KEY)) {
-    window.localStorage.setItem(LONGITUDINAL_KEY, JSON.stringify(cached));
-  }
+}
+
+export function hydrateLongitudinalFromDurable(state: LongitudinalState) {
+  if (mutatedSinceBoot) return;
+  const checkins = Array.isArray(state.checkins) ? state.checkins : [];
+  const measurements = Array.isArray(state.measurements) ? state.measurements : [];
+  cached = checkins.length === 0 && measurements.length === 0 ? seedState() : { checkins, measurements };
+  hydrated = true;
+  emit();
 }
 
 const SERVER_SEED: LongitudinalState = seedState();
@@ -177,6 +188,23 @@ const measurementRepo: MeasurementRepository = {
     hydrate();
     const created: MeasurementRecord = { ...row, id: crypto.randomUUID() };
     persist({ ...cached, measurements: [...cached.measurements, created] });
+    enqueueSync({
+      id: created.id,
+      tipo: "BODY_WEIGHT_RECORDED",
+      entidade: "body_measurement",
+      entity_id: created.id,
+      client_mutation_id: created.id,
+      occurred_at: created.measuredAt,
+      user_id: PREVIEW_TRAINING_USER_ID,
+      payload: {
+        weightKg: created.weightKg,
+        bodyFatPercent: created.bodyFatPercent,
+        waistCm: created.waistCm,
+        rightArmCm: created.rightArmCm,
+        rightThighCm: created.rightThighCm,
+        source: created.source,
+      },
+    });
     return created;
   },
 };

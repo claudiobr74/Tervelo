@@ -1,0 +1,26 @@
+mutation InsertNutritionCheckin(
+  $checked_in_on: date!
+  $energy_kcal: numeric
+  $protein_g: numeric
+  $carbohydrate_g: numeric
+  $fat_g: numeric
+  $fluid_ml: numeric
+  $adherence: String
+  $notes: String
+) {
+  insert_nutrition_checkins_one(
+    object: {
+      checked_in_on: $checked_in_on
+      energy_kcal: $energy_kcal
+      protein_g: $protein_g
+      carbohydrate_g: $carbohydrate_g
+      fat_g: $fat_g
+      fluid_ml: $fluid_ml
+      adherence: $adherence
+      notes: $notes
+    }
+  ) {
+    id
+    checked_in_on
+  }
+}

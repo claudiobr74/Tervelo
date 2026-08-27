@@ -2,7 +2,7 @@
 
 Dependências: `PRE_IMPLEMENTATION_AUDIT.md`, `DATABASE_DESIGN.md`, `NHOST_ARCHITECTURE.md`, `FIGMA_IMPLEMENTATION.md`, `DECISIONS_REQUIRED.md`.
 
-Veredito atual: **READY_WITH_FIXES**. Phases 0–12 neste repositório (Phase 12 neste branch).
+Veredito atual: **READY_WITH_FIXES**. Phases 0–13 neste repositório (Phase 13 neste branch).
 
 ---
 
@@ -14,7 +14,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–12 neste repositório (Phase 12
 4. Histórico longitudinal nunca é sobrescrito.
 5. IA não inventa dados ausentes; memória vem do banco.
 6. Sem Supabase, Firebase ou secrets no cliente.
-7. Vercel só na Phase 14.
+7. Vercel só na Phase 15.
 
 ---
 
@@ -22,7 +22,7 @@ Veredito atual: **READY_WITH_FIXES**. Phases 0–12 neste repositório (Phase 12
 
 Prompt das fases de produto do atleta (não admin). Fonte: [`docs/MODULO_ALUNO.md`](MODULO_ALUNO.md).
 
-Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, 11 e 12, mais busca/anilhas do aluno na Phase 5). Phase 10 é o módulo admin.
+Cobre login, cadastro, onboarding e `/app/*` (Phases 4–9, 11, 12 e 13, mais busca/anilhas do aluno na Phase 5). Phase 10 é o módulo admin.
 
 **Próximas fases:** evidência só com **imagens das telas** (Light/Dark, 390px). **Vídeo não é necessário.**
 
@@ -53,8 +53,9 @@ Cobre o contrato em `/admin/ai` (escolha de agente no modo administrar) e o pipe
 | 10 | Admin | 7 screens Dark + Light | concluída neste branch; Treinamento/Nutrição/Settings **FIGMA_PENDING** |
 | 11 | Frequência cardíaca (Web Bluetooth real) | bloco Settings `FIGMA_PENDING`; overlay no treino | concluída neste branch |
 | 12 | Estado do Atleta + check-ins + revisão semanal | UI mínima Design System; **FIGMA_UI_PENDING** | concluída neste branch |
-| 13 | Hardening | conforme telas existentes | após fluxos reais |
-| 14 | Vercel | app navegável | só com critérios da spec |
+| 13 | Offline-first + sincronização + PWA | estados nas telas existentes; **FIGMA_UI_PENDING** | neste branch |
+| 14 | Hardening | conforme telas existentes | após fluxos reais |
+| 15 | Vercel | app navegável | só com critérios da spec |
 
 ---
 
@@ -255,13 +256,25 @@ Auditoria: [`ATHLETE_STATE_TRIO_PRE_IMPLEMENTATION_AUDIT.md`](ATHLETE_STATE_TRIO
 
 ---
 
-## 15. Phase 13 — Hardening
+## 15. Phase 13 — Funcionamento offline
 
-Security review, testes de permission, a11y AA, offline do treino, observabilidade, performance.
+**TERVELO — FUNCIONAMENTO OFFLINE.** Não substitui Next.js, Nhost, treino, timer, check-ins, FC, nutrição nem medidas.
+
+Local first na execução; PostgreSQL/Nhost após sync. IndexedDB (`tervelo-offline`) + fila idempotente + Motor de Sincronização. PWA (manifest + SW de App Shell, sem cache de GraphQL privado).
+
+Auditoria: [`OFFLINE_PRE_IMPLEMENTATION_AUDIT.md`](OFFLINE_PRE_IMPLEMENTATION_AUDIT.md). Arquitetura: [`OFFLINE_ARCHITECTURE.md`](OFFLINE_ARCHITECTURE.md), [`SYNC_ENGINE.md`](SYNC_ENGINE.md), [`CONFLICT_RESOLUTION.md`](CONFLICT_RESOLUTION.md), [`LOCAL_DATA_MODEL.md`](LOCAL_DATA_MODEL.md), [`PWA.md`](PWA.md).
+
+UI: indicador discreto, Configurações → Dados e sincronização, sessão recuperada. Coach não finge análise offline. Nomes em PT-BR. **FIGMA_UI_PENDING**.
 
 ---
 
-## 16. Phase 14 — Vercel
+## 16. Phase 14 — Hardening
+
+Security review, testes de permission, a11y AA, observabilidade, performance.
+
+---
+
+## 17. Phase 15 — Vercel
 
 Somente quando:
 
@@ -274,7 +287,7 @@ Preview em PRs; Production em `main` após aprovação humana.
 
 ---
 
-## 17. Git
+## 18. Git
 
 Especificação: `main`, `develop`, `feature/*`, `fix/*`.
 
@@ -288,7 +301,7 @@ Após Phase 1:
 
 ---
 
-## 18. Testes por fase
+## 19. Testes por fase
 
 | Fase | Foco |
 | --- | --- |
@@ -304,10 +317,13 @@ Após Phase 1:
 | 10 | dashboard / usuários / auditoria desktop, redirect sem papel admin |
 | 11 | e2e Playwright da spec §56 quando houver UI |
 | 12 | Motor de Estado, check-in/check-out, revisão semanal, QA 31–44 |
+| 13 | fila/idempotência, conflitos, crash da sessão, PWA sem cache GraphQL |
+| 14 | a11y, permissions, observabilidade |
+| 15 | smoke do deploy |
 
 ---
 
-## 19. Definition of Done (feature)
+## 20. Definition of Done (feature)
 
 Só “pronta” com: lógica, persistência, autorização, validação, testes, loading, error, empty, a11y, responsivo, Light, Dark, fidelidade Figma **quando o design existir**.
 

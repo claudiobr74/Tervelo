@@ -24,7 +24,7 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 11 — Frequência cardíaca</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">Phase 13 — Funcionamento offline</p>
       <div className="flex flex-wrap gap-3">
         <button
           type="button"

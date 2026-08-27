@@ -6,7 +6,7 @@ O diferencial não é gerar fichas. É compreender o atleta, o local de treino, 
 
 ## Estado do projeto
 
-Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma). Phase 11: frequência cardíaca opcional (Web Bluetooth real). Phase 12: Estado do Atleta, check-ins e Revisão Semanal do Coach.
+Phase 0 (auditoria) concluída. Phase 1: app Next.js. Phase 2: Nhost com usuário/administrador. Phase 3: domínio. Phase 4: **login, cadastro e onboarding** (Figma). Phase 11: frequência cardíaca opcional (Web Bluetooth real). Phase 12: Estado do Atleta, check-ins e Revisão Semanal do Coach. Phase 13: funcionamento offline (IndexedDB, fila, PWA).
 
 UI de produto só a partir dos nodes em [`docs/FIGMA_IMPLEMENTATION.md`](docs/FIGMA_IMPLEMENTATION.md). Login/admin screens entram nas Phases 4 e 10.
 
@@ -40,7 +40,7 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 | Documento | Conteúdo |
 | --- | --- |
 | [PRE_IMPLEMENTATION_AUDIT.md](docs/PRE_IMPLEMENTATION_AUDIT.md) | Auditoria Figma, GitHub, Nhost, gaps |
-| [IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Fases 1–12 |
+| [IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Fases 1–15 |
 | [DATABASE_DESIGN.md](docs/DATABASE_DESIGN.md) | Schema PostgreSQL |
 | [NHOST_ARCHITECTURE.md](docs/NHOST_ARCHITECTURE.md) | Auth, Hasura, Storage, Functions |
 | [FIGMA_IMPLEMENTATION.md](docs/FIGMA_IMPLEMENTATION.md) | Tokens (`28:527`), mapa rota→node, `FIGMA_UI_PARTIAL` |
@@ -53,6 +53,12 @@ Conflitos: [`docs/DECISIONS_REQUIRED.md`](docs/DECISIONS_REQUIRED.md).
 | [HEART_RATE_IMPLEMENTATION_AUDIT.md](docs/HEART_RATE_IMPLEMENTATION_AUDIT.md) | Auditoria da Phase 11 (frequência cardíaca) |
 | [HEART_RATE_HARDWARE_VALIDATION.md](docs/HEART_RATE_HARDWARE_VALIDATION.md) | Checklist com frequencímetro BLE real |
 | [ATHLETE_STATE_TRIO_PRE_IMPLEMENTATION_AUDIT.md](docs/ATHLETE_STATE_TRIO_PRE_IMPLEMENTATION_AUDIT.md) | Auditoria — Estado do Atleta, Check-ins e Revisão Semanal |
+| [OFFLINE_PRE_IMPLEMENTATION_AUDIT.md](docs/OFFLINE_PRE_IMPLEMENTATION_AUDIT.md) | Auditoria — funcionamento offline |
+| [OFFLINE_ARCHITECTURE.md](docs/OFFLINE_ARCHITECTURE.md) | Camada offline / RepositorioLocal |
+| [SYNC_ENGINE.md](docs/SYNC_ENGINE.md) | Motor de Sincronização |
+| [CONFLICT_RESOLUTION.md](docs/CONFLICT_RESOLUTION.md) | Conflitos por domínio |
+| [LOCAL_DATA_MODEL.md](docs/LOCAL_DATA_MODEL.md) | IndexedDB |
+| [PWA.md](docs/PWA.md) | Manifest e Service Worker |
 
 ## Stack
 

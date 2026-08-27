@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { HeartRateSettingsCard } from "@/components/app/heart-rate-settings";
 import { AthleteStateSettingsCard } from "@/components/app/athlete-state-settings-card";
+import { DataSyncSettingsCard } from "@/components/app/data-sync-settings-card";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 
 export function HeartRateSettingsScreen() {
@@ -21,6 +22,7 @@ export function HeartRateSettingsScreen() {
         </div>
         <HeartRateSettingsCard />
         <AthleteStateSettingsCard />
+        <DataSyncSettingsCard />
       </div>
     </AthleteAppShell>
   );

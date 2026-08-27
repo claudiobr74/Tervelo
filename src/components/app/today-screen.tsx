@@ -10,6 +10,8 @@ import { getPreWorkoutCheckinEnabled } from "@/lib/athlete-state/preference-stor
 import { getAthleteStateStore, useAthleteStateStore } from "@/lib/athlete-state/session-store";
 import { startWorkout, useLiveSession } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { RecoveredSessionCard } from "@/components/app/recovered-session-card";
+import { SyncStatusIndicator } from "@/components/app/sync-status-indicator";
 
 const VOLUME_BARS = [10, 16, 20, 22, 26];
 
@@ -47,6 +49,7 @@ export function TodayScreen() {
           <div className="flex flex-col gap-1">
             <h1 className="text-2xl font-bold text-foreground">Olá, Lucas.</h1>
             <p className="text-sm text-muted">Veja seu dia.</p>
+            <SyncStatusIndicator />
           </div>
           <Link href="/app/settings" className="size-10 shrink-0" aria-label="Configurações">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -59,6 +62,8 @@ export function TodayScreen() {
             />
           </Link>
         </header>
+
+        <RecoveredSessionCard live={live} />
 
         <section className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
           <div className="flex items-center justify-between">
@@ -81,13 +86,15 @@ export function TodayScreen() {
               {session.exercises.length} exercícios
             </span>
           </div>
-          <button
-            type="button"
-            onClick={start}
-            className="flex h-12 w-full items-center justify-center rounded-[var(--radius-lg)] bg-brand text-[15px] font-bold text-on-brand"
-          >
-            {live.status === "idle" ? "Iniciar treino" : "Continuar treino"}
-          </button>
+          {live.status === "idle" || live.status === "completed" ? (
+            <button
+              type="button"
+              onClick={start}
+              className="flex h-12 w-full items-center justify-center rounded-[var(--radius-lg)] bg-brand text-[15px] font-bold text-on-brand"
+            >
+              Iniciar treino
+            </button>
+          ) : null}
           {athlete.todayAdjustment ? (
             <Link href="/app/coach/ajuste" className="text-center text-sm font-semibold text-brand">
               Ver ajuste de hoje

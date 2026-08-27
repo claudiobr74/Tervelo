@@ -17,6 +17,8 @@ import { currentHeartRateDetails } from "@/lib/heart-rate/runtime";
 import { buildHeartRateContext } from "@/domain/heart-rate/context";
 import { metricsForSet, setWindowsFromTimeline } from "@/domain/heart-rate/metrics";
 import { getLiveSession } from "@/lib/training/live-session";
+import { useSyncStatus } from "@/components/app/sync-status-indicator";
+import { SYNC_COPY } from "@/domain/offline";
 
 function liveCoachFacts() {
   const live = getLiveSession();
@@ -41,6 +43,7 @@ const OPENING: CoachPreviewMessage = {
 
 export function CoachScreen() {
   const proposal = useCoachProposal();
+  const sync = useSyncStatus();
   const [thread, setThread] = useState<CoachPreviewMessage[]>([OPENING]);
   const proposalCopy = useMemo(
     () => coachProposalFeedback(proposal.status),
@@ -53,6 +56,18 @@ export function CoachScreen() {
       role: "athlete",
       body: prompt,
     };
+    if (!sync.online) {
+      setThread((current) => [
+        ...current,
+        athlete,
+        {
+          id: `offline-${current.length}`,
+          role: "coach",
+          body: SYNC_COPY.coachUnavailable,
+        },
+      ]);
+      return;
+    }
     const reply = coachReplyForPrompt(prompt, liveCoachFacts());
     setThread((current) => [...current, athlete, { ...reply, id: `${reply.id}-${current.length}` }]);
   }
@@ -73,6 +88,9 @@ export function CoachScreen() {
         <p className="text-[13px] font-medium text-muted">
           Inteligência artificial focada em performance
         </p>
+        {!sync.online ? (
+          <p className="text-xs text-muted">{SYNC_COPY.coachAnalysisWhenOnline}</p>
+        ) : null}
       </header>
 
       <div className="flex flex-wrap content-start gap-2 px-6">

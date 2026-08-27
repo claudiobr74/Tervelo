@@ -8,6 +8,8 @@ import {
 } from "@/domain/heart-rate/buffer";
 import { HEART_RATE_PROCESSING_VERSION } from "@/domain/heart-rate/types";
 import type { HeartRateSample, HeartRateSessionStats } from "@/domain/heart-rate/types";
+import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
+import { currentOfflineUserId } from "@/lib/offline/user-scope";
 
 export const HEART_RATE_SESSION_KEY = "tervelo-heart-rate-session";
 
@@ -52,17 +54,19 @@ const listeners = new Set<() => void>();
 let cached: StoredHeartRateSession = EMPTY_SESSION;
 let wearable: StoredWearable | null = null;
 let hydrated = false;
+let mutatedSinceBoot = false;
 
 function emit() {
   for (const listener of listeners) listener();
 }
 
 function persist() {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(
-    HEART_RATE_SESSION_KEY,
-    JSON.stringify({ session: cached, wearable }),
-  );
+  mutatedSinceBoot = true;
+  if (typeof window === "undefined") {
+    emit();
+    return;
+  }
+  scheduleKvWrite(currentOfflineUserId(), KV_KEYS.heartRateSession, { session: cached, wearable });
   emit();
 }
 
@@ -79,6 +83,17 @@ function hydrate() {
     cached = EMPTY_SESSION;
     wearable = null;
   }
+}
+
+export function hydrateHeartRateFromDurable(raw: {
+  session?: StoredHeartRateSession;
+  wearable?: StoredWearable | null;
+}) {
+  if (mutatedSinceBoot) return;
+  if (raw.session) cached = { ...EMPTY_SESSION, ...raw.session, queue: raw.session.queue ?? [] };
+  wearable = raw.wearable ?? null;
+  hydrated = true;
+  emit();
 }
 
 export function subscribeHeartRateSession(listener: () => void): () => void {

@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
+import { WorkoutSyncHint } from "@/components/app/sync-status-indicator";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { SYNC_COPY } from "@/domain/offline";
 import {
   formatKg,
   formatRest,
@@ -15,6 +18,26 @@ import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 import { shouldPromptPreWorkoutCheckin } from "@/domain/athlete-state/gates";
 import { getPreWorkoutCheckinEnabled } from "@/lib/athlete-state/preference-store";
 import { getAthleteStateStore } from "@/lib/athlete-state/session-store";
+
+function ExerciseThumb({ src }: { src: string }) {
+  const [missing, setMissing] = useState(false);
+  if (missing) {
+    return <p className="max-w-16 text-[10px] leading-tight text-muted">{SYNC_COPY.mediaWhenOnline}</p>;
+  }
+  return (
+    <span className="relative block size-12 shrink-0 overflow-clip rounded-[var(--radius-md)]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        width={48}
+        height={48}
+        className="size-full object-cover"
+        onError={() => setMissing(true)}
+      />
+    </span>
+  );
+}
 
 export function WorkoutSessionScreen() {
   const router = useRouter();
@@ -56,6 +79,7 @@ export function WorkoutSessionScreen() {
             <p className="text-[13px] text-muted">
               {session.programLabel} • {session.estimatedMinutes} min estimados
             </p>
+            <WorkoutSyncHint />
           </div>
         </div>
 
@@ -75,16 +99,7 @@ export function WorkoutSessionScreen() {
                       {index + 1}. {exercise.namePt}
                     </h2>
                   </div>
-                  <span className="relative block size-12 shrink-0 overflow-clip rounded-[var(--radius-md)]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={exercise.imageSrc ?? "/icons/body-placeholder.svg"}
-                      alt=""
-                      width={48}
-                      height={48}
-                      className="size-full object-cover"
-                    />
-                  </span>
+                  <ExerciseThumb src={exercise.imageSrc ?? "/icons/body-placeholder.svg"} />
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="flex flex-col gap-0.5">

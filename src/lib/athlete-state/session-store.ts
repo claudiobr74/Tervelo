@@ -15,6 +15,9 @@ import type { PreWorkoutCheckin } from "@/domain/athlete-state/pre-workout";
 import { CHANGE_SCOPE_COPY } from "@/domain/athlete-state/labels";
 import type { ChangeScope } from "@/domain/athlete-state/types";
 import { PREVIEW_TRAINING_USER_ID } from "@/lib/training/preview-workout";
+import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
+import { enqueueSync } from "@/lib/offline/queue-store";
+import { currentOfflineUserId } from "@/lib/offline/user-scope";
 
 export const ATHLETE_STATE_STORE_KEY = "tervelo-athlete-state";
 
@@ -122,6 +125,7 @@ const EMPTY: AthleteStateStore = {
 const listeners = new Set<() => void>();
 let cached: AthleteStateStore = EMPTY;
 let hydrated = false;
+let mutatedSinceBoot = false;
 
 function emit() {
   for (const listener of listeners) listener();
@@ -129,8 +133,9 @@ function emit() {
 
 function persist(next: AthleteStateStore) {
   cached = next;
+  mutatedSinceBoot = true;
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(ATHLETE_STATE_STORE_KEY, JSON.stringify(next));
+    scheduleKvWrite(currentOfflineUserId(), KV_KEYS.athleteState, next);
   }
   emit();
 }
@@ -161,6 +166,23 @@ function hydrate() {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
   cached = readStored();
+}
+
+export function hydrateAthleteStateFromDurable(state: AthleteStateStore) {
+  if (mutatedSinceBoot) return;
+  const today = todayIsoDate();
+  const staleDay = state.todayDate !== today;
+  cached = {
+    todayDate: today,
+    preWorkout: staleDay ? null : (state.preWorkout ?? null),
+    postWorkout: staleDay ? null : (state.postWorkout ?? null),
+    queue: Array.isArray(state.queue) ? state.queue : [],
+    weeklyReviews: state.weeklyReviews?.length ? state.weeklyReviews : seedReviews(),
+    todayAdjustment: staleDay ? null : (state.todayAdjustment ?? null),
+    sessionKeptCopy: staleDay ? null : (state.sessionKeptCopy ?? null),
+  };
+  hydrated = true;
+  emit();
 }
 
 export function getAthleteStateStore(): AthleteStateStore {
@@ -237,6 +259,16 @@ export async function savePreWorkoutCheckin(checkin: PreWorkoutCheckin): Promise
     kind: "pre_workout_checkin",
     payload: { ...checkin },
   });
+  enqueueSync({
+    id: clientMutationId,
+    tipo: "PRE_WORKOUT_CHECKIN_COMPLETED",
+    entidade: "pre_workout_checkin",
+    entity_id: clientMutationId,
+    client_mutation_id: clientMutationId,
+    occurred_at: new Date().toISOString(),
+    user_id: PREVIEW_TRAINING_USER_ID,
+    payload: { ...checkin },
+  });
   persist({
     ...cached,
     preWorkout: checkin,
@@ -265,6 +297,16 @@ export async function savePostWorkoutCheckout(checkout: PostWorkoutCheckout): Pr
   const queue = enqueueAthleteMutation(cached.queue, {
     clientMutationId,
     kind: "post_workout_checkout",
+    payload: { ...checkout },
+  });
+  enqueueSync({
+    id: clientMutationId,
+    tipo: "POST_WORKOUT_CHECKIN_COMPLETED",
+    entidade: "post_workout_checkout",
+    entity_id: clientMutationId,
+    client_mutation_id: clientMutationId,
+    occurred_at: new Date().toISOString(),
+    user_id: PREVIEW_TRAINING_USER_ID,
     payload: { ...checkout },
   });
   persist({ ...cached, postWorkout: checkout, queue });

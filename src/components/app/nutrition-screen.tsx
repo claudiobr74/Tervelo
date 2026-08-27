@@ -10,6 +10,12 @@ import {
   PREVIEW_NUTRITION_OBJECTIVE,
   PREVIEW_NUTRITION_TARGET,
 } from "@/lib/nutrition/preview";
+import {
+  addHydration,
+  saveNutritionCheckinToday,
+  toggleMealAdherence,
+  useNutritionOffline,
+} from "@/lib/nutrition/offline-store";
 
 function formatInt(value: number): string {
   return value.toLocaleString("pt-BR");
@@ -78,6 +84,18 @@ const TARGETS = [
 ] as const;
 
 export function NutritionScreen() {
+  const nutrition = useNutritionOffline();
+  const fluidCurrent = PREVIEW_NUTRITION_INTAKE.fluidMl + nutrition.extraFluidMl;
+  const targets = TARGETS.map((item) =>
+    item.key === "fluid"
+      ? {
+          ...item,
+          current: formatLiters(fluidCurrent),
+          percent: targetProgressPercent(fluidCurrent, PREVIEW_NUTRITION_TARGET.fluidMl),
+        }
+      : item,
+  );
+
   return (
     <AthleteAppShell active="Mais">
       <div className="flex flex-col gap-5 px-6 pb-6 pt-4">
@@ -105,7 +123,7 @@ export function NutritionScreen() {
 
         <article className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
           <h2 className="text-sm font-bold uppercase text-muted">Targets Diários</h2>
-          {TARGETS.map((item) => (
+          {targets.map((item) => (
             <div key={item.key} className="flex flex-col gap-1.5">
               <div className="flex items-start justify-between text-[13px] font-medium text-foreground">
                 <p>{item.label}</p>
@@ -145,8 +163,38 @@ export function NutritionScreen() {
                 <FigmaIcon src="/icons/clock.svg" alt="" size={14} />
                 <p className="text-[11px] font-medium">{meal.time}</p>
               </div>
+              <button
+                type="button"
+                onClick={() => toggleMealAdherence(meal.name)}
+                className={`ml-2 text-[11px] font-bold ${
+                  nutrition.adheredMeals.includes(meal.name) ? "text-success" : "text-brand"
+                }`}
+              >
+                {nutrition.adheredMeals.includes(meal.name) ? "Registrada" : "Marcar"}
+              </button>
             </article>
           ))}
+        </section>
+
+        <section className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
+          <p className="text-xs font-bold uppercase text-brand">FIGMA_UI_PENDING</p>
+          <h2 className="text-sm font-bold text-foreground">Registros de hoje</h2>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => void addHydration(250)}
+              className="flex h-11 flex-1 items-center justify-center rounded-[var(--radius-md)] border border-border text-sm font-bold text-foreground"
+            >
+              +250 ml água
+            </button>
+            <button
+              type="button"
+              onClick={() => void saveNutritionCheckinToday()}
+              className="flex h-11 flex-1 items-center justify-center rounded-[var(--radius-md)] bg-brand text-sm font-bold text-on-brand"
+            >
+              Check-in nutricional
+            </button>
+          </div>
         </section>
 
         <article className="flex items-center gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">

@@ -15,10 +15,13 @@ import { currentHeartRateDetails, useHeartRateRuntime } from "@/lib/heart-rate/r
 import { useLiveSession } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 import { useState } from "react";
+import { useSyncStatus } from "@/components/app/sync-status-indicator";
+import { SYNC_COPY } from "@/domain/offline";
 
 export function WorkoutSummaryScreen() {
   const live = useLiveSession();
   const runtime = useHeartRateRuntime();
+  const sync = useSyncStatus();
   const [showHrDetails, setShowHrDetails] = useState(false);
   const session = PREVIEW_WORKOUT;
   const endedAt = live.completedAt ?? new Date().toISOString();
@@ -43,7 +46,11 @@ export function WorkoutSummaryScreen() {
           </span>
           <div className="flex flex-col items-center gap-1 text-center">
             <h1 className="text-2xl font-extrabold text-foreground">Treino Concluído!</h1>
-            <p className="text-sm text-muted">Excelente sessão. Sua consistência garante os resultados.</p>
+            <p className="text-sm text-muted">
+              {sync.online
+                ? "Excelente sessão. Sua consistência garante os resultados."
+                : `✓ ${SYNC_COPY.savedOnDevice}`}
+            </p>
           </div>
         </div>
 
@@ -87,8 +94,9 @@ export function WorkoutSummaryScreen() {
           <div className="flex min-w-0 flex-col gap-1">
             <p className="text-xs font-bold uppercase text-brand">Avaliação do treinador</p>
             <p className="text-[13px] text-foreground">
-              “Você apresentou melhora no supino e manteve o desempenho das demais séries. Não há
-              necessidade de alterar o planejamento da próxima sessão.”
+              {sync.online
+                ? "“Você apresentou melhora no supino e manteve o desempenho das demais séries. Não há necessidade de alterar o planejamento da próxima sessão.”"
+                : SYNC_COPY.pendingAnalysis}
             </p>
           </div>
         </article>
