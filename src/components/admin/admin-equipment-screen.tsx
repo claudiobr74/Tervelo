@@ -83,7 +83,7 @@ export function AdminEquipmentScreen() {
                   <span className="relative size-14 shrink-0 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
                     {item.imageSrc ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={item.imageSrc} alt="" className="size-full object-cover" />
+                      <img src={item.imageSrc} alt="" width={48} height={48} className="size-full object-cover" />
                     ) : null}
                   </span>
                   <div className="min-w-0">

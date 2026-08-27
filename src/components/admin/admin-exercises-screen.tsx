@@ -82,7 +82,7 @@ export function AdminExercisesScreen() {
                   <span className="relative size-12 shrink-0 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
                     {exercise.imageSrc ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={exercise.imageSrc} alt="" className="size-full object-cover" />
+                      <img src={exercise.imageSrc} alt="" width={48} height={48} className="size-full object-cover" />
                     ) : null}
                   </span>
                   <div className="min-w-0 flex-1">
@@ -108,11 +108,17 @@ export function AdminExercisesScreen() {
               <div className="grid grid-cols-2 gap-3">
                 <span className="relative h-32 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/catalog/detail-photo.webp" alt="" className="size-full object-cover" />
+                  <img src="/catalog/detail-photo.webp" alt="" width={320} height={128} className="size-full object-cover" />
                 </span>
                 <span className="relative h-32 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={selected.imageSrc ?? "/catalog/thumb-supino.webp"} alt="" className="size-full object-cover" />
+                  <img
+                    src={selected.imageSrc ?? "/catalog/thumb-supino.webp"}
+                    alt=""
+                    width={320}
+                    height={128}
+                    className="size-full object-cover"
+                  />
                 </span>
               </div>
               <div className="flex gap-4 text-sm font-semibold">

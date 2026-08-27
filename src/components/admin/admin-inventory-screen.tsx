@@ -86,7 +86,7 @@ export function AdminInventoryScreen() {
               onClick={() => setSaved(true)}
               className="rounded-[var(--radius-lg)] bg-brand px-4 py-2 text-sm font-bold text-on-brand"
             >
-              {saved ? "Inventário salvo (pré-visualização)" : "Salvar inventário"}
+              {saved ? "Inventário salvo neste navegador" : "Salvar inventário"}
             </button>
           </div>
           {group === "chest" ? (
