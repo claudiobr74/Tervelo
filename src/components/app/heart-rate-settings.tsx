@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import {
   clearHeartRateConnectedBanner,
   connectHeartRateMonitor,
@@ -30,31 +31,20 @@ export function HeartRateSettingsCard() {
 
   return (
     <section className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-1">
-          <h2 className="text-base font-bold text-foreground">Frequência cardíaca</h2>
-          <p className="text-xs text-muted">
-            Conecte um frequencímetro Bluetooth para acompanhar sua resposta durante o treino e incluir
-            esses dados nas análises do Coach.
-          </p>
-        </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={runtime.enabled}
-          aria-label="Usar frequência cardíaca durante os treinos"
-          disabled={busy}
-          onClick={() => void toggle(!runtime.enabled)}
-          className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
-            runtime.enabled ? "bg-brand" : "bg-surface-interactive"
-          }`}
-        >
-          <span
-            className={`absolute top-0.5 size-6 rounded-full bg-background transition-transform ${
-              runtime.enabled ? "translate-x-[22px]" : "translate-x-0.5"
-            }`}
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="min-w-0 text-base font-bold text-foreground">Frequência cardíaca</h2>
+          <ToggleSwitch
+            checked={runtime.enabled}
+            onChange={(next) => void toggle(next)}
+            label="Usar frequência cardíaca durante os treinos"
+            disabled={busy}
           />
-        </button>
+        </div>
+        <p className="text-xs text-muted">
+          Conecte um frequencímetro Bluetooth para acompanhar sua resposta durante o treino e incluir
+          esses dados nas análises do Coach.
+        </p>
       </div>
 
       <p className="text-sm text-muted">

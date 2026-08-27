@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AUTH_INPUT_CLASS, FieldLabel, PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
+import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { ChoiceChip, OnboardingShell } from "@/components/onboarding/onboarding-shell";
 import { useOnboarding } from "@/components/onboarding/onboarding-provider";
@@ -104,19 +105,11 @@ export default function OnboardingNutricaoPage() {
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
             <p className="text-sm font-bold text-foreground">Faz uso de suplementos?</p>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={draft.usesSupplements}
-              onClick={() => update({ usesSupplements: !draft.usesSupplements })}
-              className={`relative h-6 w-[42px] rounded-full ${draft.usesSupplements ? "bg-brand" : "bg-surface-secondary"}`}
-            >
-              <span
-                className={`absolute top-0.5 size-5 rounded-full bg-foreground transition-[left] ${
-                  draft.usesSupplements ? "left-[18px]" : "left-0.5"
-                }`}
-              />
-            </button>
+            <ToggleSwitch
+              checked={draft.usesSupplements}
+              onChange={(next) => update({ usesSupplements: next })}
+              label="Faz uso de suplementos?"
+            />
           </div>
           {draft.usesSupplements ? (
             <div className="flex flex-col gap-1.5">
