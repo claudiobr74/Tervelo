@@ -1,0 +1,49 @@
+table:
+  name: post_workout_checkouts
+  schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: &a1
+        user_id:
+          _eq: X-Hasura-User-Id
+      set:
+        user_id: x-hasura-user-id
+      columns:
+        - training_session_id
+        - checked_out_at
+        - status
+        - expectation
+        - difficulty
+        - plan_completion
+        - partial_reasons
+        - had_pain
+        - client_mutation_id
+select_permissions:
+  - role: user
+    permission:
+      columns: &a2
+        - id
+        - user_id
+        - training_session_id
+        - checked_out_at
+        - status
+        - expectation
+        - difficulty
+        - plan_completion
+        - partial_reasons
+        - had_pain
+        - client_mutation_id
+        - created_at
+      filter: *a1
+      limit: 100
+  - role: admin
+    permission:
+      columns: *a2
+      filter: &a3 {}
+      limit: 200
+  - role: super_admin
+    permission:
+      columns: *a2
+      filter: *a3
+      limit: 500

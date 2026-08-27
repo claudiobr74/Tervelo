@@ -1,0 +1,27 @@
+mutation InsertPostWorkoutCheckout(
+  $training_session_id: uuid
+  $status: String!
+  $expectation: String
+  $difficulty: String
+  $plan_completion: String
+  $partial_reasons: [String!]
+  $had_pain: Boolean
+  $client_mutation_id: uuid!
+) {
+  insert_post_workout_checkouts_one(
+    object: {
+      training_session_id: $training_session_id
+      status: $status
+      expectation: $expectation
+      difficulty: $difficulty
+      plan_completion: $plan_completion
+      partial_reasons: $partial_reasons
+      had_pain: $had_pain
+      client_mutation_id: $client_mutation_id
+    }
+  ) {
+    id
+    status
+    checked_out_at
+  }
+}

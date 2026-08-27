@@ -1,0 +1,24 @@
+mutation InsertSetResult(
+  $set_id: uuid!
+  $weight_kg: numeric
+  $reps: Int
+  $client_mutation_id: uuid!
+  $performed_at: timestamptz!
+) {
+  insert_set_results_one(
+    object: {
+      set_id: $set_id
+      weight_kg: $weight_kg
+      reps: $reps
+      client_mutation_id: $client_mutation_id
+      performed_at: $performed_at
+    }
+  ) {
+    id
+    performed_at
+    weight_kg
+    reps
+    client_mutation_id
+  }
+}
+
