@@ -6,22 +6,62 @@ import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { shouldPromptPreWorkoutCheckin } from "@/domain/athlete-state/gates";
 import { PRODUCT_NAMES } from "@/domain/athlete-state/labels";
+import { greeting } from "@/domain/athlete/display-name";
+import { deltaInWindow, round1 } from "@/domain/measurement/composition";
+import { latestByTime } from "@/domain/measurement/append-only";
+import { percentChange } from "@/domain/progress/change";
+import { recoveryPercent, recoveryReadinessCopy } from "@/domain/recovery/score";
+import { mlToLiters } from "@/domain/nutrition/progress";
+import { formatMeasure, formatPercent, formatSignedDelta } from "@/lib/longitudinal/format";
 import { getPreWorkoutCheckinEnabled } from "@/lib/athlete-state/preference-store";
 import { getAthleteStateStore, useAthleteStateStore } from "@/lib/athlete-state/session-store";
+import { useLongitudinal } from "@/lib/longitudinal/preview-store";
+import { PREVIEW_VOLUME_BARS } from "@/lib/longitudinal/preview-progress";
+import { useNutritionOffline } from "@/lib/nutrition/offline-store";
+import { PREVIEW_NUTRITION_INTAKE, PREVIEW_NUTRITION_TARGET } from "@/lib/nutrition/preview";
+import { useOnboardingDraft } from "@/components/onboarding/onboarding-provider";
 import { startWorkout, useLiveSession } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 import { RecoveredSessionCard } from "@/components/app/recovered-session-card";
 import { SyncStatusIndicator } from "@/components/app/sync-status-indicator";
 
-const VOLUME_BARS = [10, 16, 20, 22, 26];
+const WEIGHT_WINDOW_DAYS = 30;
 
-export function TodayScreen() {
+export function TodayScreen({ sessionName = null }: { sessionName?: string | null }) {
   const router = useRouter();
   const live = useLiveSession();
   const session = PREVIEW_WORKOUT;
   const athlete = useAthleteStateStore();
+  const { draft } = useOnboardingDraft();
+  const longitudinal = useLongitudinal();
+  const nutrition = useNutritionOffline();
   const checkinDone = athlete.preWorkout?.status === "completed";
   const checkinSkipped = athlete.preWorkout?.status === "skipped";
+
+  const hello = greeting(draft.displayName || sessionName);
+
+  // Mesmas fontes de /app/body, /app/recovery, /app/nutrition e /app/progress:
+  // um número diferente aqui seria o app se contradizendo.
+  const points = longitudinal.measurements.map((row) => ({
+    id: row.id,
+    recordedAt: new Date(row.measuredAt),
+    supersedesId: row.supersedesId,
+    weightKg: row.weightKg,
+    bodyFatPercent: row.bodyFatPercent,
+  }));
+  const latestBody = latestByTime(points);
+  const weightDelta = deltaInWindow(points, "weightKg", new Date(), WEIGHT_WINDOW_DAYS);
+  const latestCheckin = longitudinal.checkins
+    .slice()
+    .sort((a, b) => Date.parse(a.checkedInAt) - Date.parse(b.checkedInAt))
+    .at(-1);
+  const recoveryScore = latestCheckin?.perceivedRecovery ?? null;
+
+  const fluidMl = PREVIEW_NUTRITION_INTAKE.fluidMl + nutrition.extraFluidMl;
+  const volumeChange = percentChange(
+    PREVIEW_VOLUME_BARS[PREVIEW_VOLUME_BARS.length - 1],
+    PREVIEW_VOLUME_BARS[PREVIEW_VOLUME_BARS.length - 2],
+  );
 
   function start() {
     if (live.status === "active" || live.status === "resting") {
@@ -47,7 +87,7 @@ export function TodayScreen() {
       <div className="flex flex-col gap-5 px-6 pb-6 pt-4">
         <header className="flex items-center justify-between">
           <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-bold text-foreground">Olá, Lucas.</h1>
+            <h1 className="text-2xl font-bold text-foreground">{hello}</h1>
             <p className="text-sm text-muted">Veja seu dia.</p>
             <SyncStatusIndicator />
           </div>
@@ -137,8 +177,19 @@ export function TodayScreen() {
               <FigmaIcon src="/icons/shield.svg" alt="" size={14} className="text-success" />
             </div>
             <div className="flex flex-col gap-1">
-              <p className="text-2xl font-bold text-success">84%</p>
-              <p className="text-xs text-muted">Pronto para alta carga</p>
+              {recoveryScore !== null ? (
+                <>
+                  <p className="text-2xl font-bold text-success">
+                    {formatPercent(recoveryPercent(recoveryScore), 0)}
+                  </p>
+                  <p className="text-xs text-muted">{recoveryReadinessCopy(recoveryScore)}</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-2xl font-bold text-foreground">—</p>
+                  <p className="text-xs text-muted">Faça seu check-in de recuperação</p>
+                </>
+              )}
             </div>
           </Link>
           <Link
@@ -150,8 +201,18 @@ export function TodayScreen() {
               <FigmaIcon src="/icons/flame.svg" alt="" size={14} className="text-brand" />
             </div>
             <div className="flex flex-col gap-1">
-              <p className="text-base font-bold text-foreground">2.450 / 3.100 kcal</p>
-              <p className="text-xs text-muted">142g de proteína consumida</p>
+              <p className="text-base font-bold text-foreground">
+                {PREVIEW_NUTRITION_INTAKE.energyKcal.toLocaleString("pt-BR")} /{" "}
+                {PREVIEW_NUTRITION_TARGET.energyKcal.toLocaleString("pt-BR")} kcal
+              </p>
+              <p className="text-xs text-muted">
+                {PREVIEW_NUTRITION_INTAKE.proteinG}g de proteína ·{" "}
+                {mlToLiters(fluidMl).toLocaleString("pt-BR", {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                })}
+                {" L"}
+              </p>
             </div>
           </Link>
           <Link
@@ -160,13 +221,26 @@ export function TodayScreen() {
           >
             <p className="text-xs font-semibold text-muted">Peso e Composição</p>
             <div className="flex items-baseline gap-2">
-              <p className="text-[22px] font-bold text-foreground">78,4 kg</p>
-              <span className="flex items-center gap-0.5 text-[11px] font-semibold text-success">
-                <FigmaIcon src="/icons/trending-down.svg" alt="" size={12} className="text-success" />
-                -0,3 kg
-              </span>
+              <p className="text-[22px] font-bold text-foreground">
+                {latestBody?.weightKg !== undefined ? formatMeasure(latestBody.weightKg, "kg") : "—"}
+              </p>
+              {weightDelta !== null && weightDelta !== 0 ? (
+                <span className="flex items-center gap-0.5 text-[11px] font-semibold text-success">
+                  <FigmaIcon
+                    src={weightDelta < 0 ? "/icons/trending-down.svg" : "/icons/trending-up.svg"}
+                    alt=""
+                    size={12}
+                    className="text-success"
+                  />
+                  {formatSignedDelta(round1(weightDelta), "kg")}
+                </span>
+              ) : null}
             </div>
-            <p className="text-[11px] text-tertiary">Massa gorda está em 12,4%</p>
+            <p className="text-[11px] text-tertiary">
+              {latestBody?.bodyFatPercent !== undefined
+                ? `Massa gorda está em ${formatPercent(latestBody.bodyFatPercent)}`
+                : "Registre sua primeira medida"}
+            </p>
           </Link>
           <Link
             href="/app/progress"
@@ -174,15 +248,19 @@ export function TodayScreen() {
           >
             <p className="text-xs font-semibold text-muted">Volume Total de Carga</p>
             <div className="flex h-7 items-end gap-1">
-              {VOLUME_BARS.map((height, index) => (
+              {PREVIEW_VOLUME_BARS.map((height, index) => (
                 <span
                   key={height}
                   className={`w-3.5 rounded-sm ${index >= 3 ? "bg-brand" : "bg-surface-pressed"}`}
-                  style={{ height }}
+                  style={{ height: Math.round(height * 0.45) }}
                 />
               ))}
             </div>
-            <p className="text-[11px] text-muted">+4,2% aumento esta semana</p>
+            <p className="text-[11px] text-muted">
+              {volumeChange !== null
+                ? `${formatSignedDelta(round1(volumeChange), "")}% esta semana`
+                : "Sem histórico suficiente"}
+            </p>
           </Link>
         </div>
 
@@ -195,7 +273,9 @@ export function TodayScreen() {
           </span>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <p className="text-[13px] font-bold uppercase text-brand">Mensagem do treinador</p>
-            <p className="text-[13px] text-foreground">“Seu treino permanece conforme planejado.”</p>
+            <p className="text-[13px] text-foreground">
+              “{athlete.sessionKeptCopy ?? "Seu treino permanece conforme planejado."}”
+            </p>
           </div>
         </Link>
       </div>

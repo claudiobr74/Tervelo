@@ -13,6 +13,7 @@ import type { RecoveryScores } from "@/domain/recovery/trend";
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
+import { demoDataEnabled } from "@/lib/demo-data";
 
 export const LONGITUDINAL_KEY = "tervelo-longitudinal";
 
@@ -70,6 +71,16 @@ const DEFAULT_SCORES: RecoveryScores = {
   stress: 2,
   perceivedRecovery: 4,
 };
+
+const EMPTY_STATE: LongitudinalState = { checkins: [], measurements: [] };
+
+/**
+ * Histórico de demonstração. Com backend real o atleta começa vazio: mostrar
+ * doze meses de evolução que ele nunca teve seria inventar dados.
+ */
+function initialState(): LongitudinalState {
+  return demoDataEnabled() ? seedState() : EMPTY_STATE;
+}
 
 function seedState(): LongitudinalState {
   return {
@@ -134,17 +145,17 @@ function persist(next: LongitudinalState) {
 }
 
 function readStored(): LongitudinalState {
-  if (typeof window === "undefined") return seedState();
+  if (typeof window === "undefined") return EMPTY_STATE;
   try {
     const raw = window.localStorage.getItem(LONGITUDINAL_KEY);
-    if (!raw) return seedState();
+    if (!raw) return initialState();
     const parsed = JSON.parse(raw) as Partial<LongitudinalState>;
     const checkins = Array.isArray(parsed.checkins) ? parsed.checkins : [];
     const measurements = Array.isArray(parsed.measurements) ? parsed.measurements : [];
-    if (checkins.length === 0 && measurements.length === 0) return seedState();
+    if (checkins.length === 0 && measurements.length === 0) return initialState();
     return { checkins, measurements };
   } catch {
-    return seedState();
+    return initialState();
   }
 }
 
@@ -158,12 +169,13 @@ export function hydrateLongitudinalFromDurable(state: LongitudinalState) {
   if (mutatedSinceBoot) return;
   const checkins = Array.isArray(state.checkins) ? state.checkins : [];
   const measurements = Array.isArray(state.measurements) ? state.measurements : [];
-  cached = checkins.length === 0 && measurements.length === 0 ? seedState() : { checkins, measurements };
+  cached =
+    checkins.length === 0 && measurements.length === 0 ? initialState() : { checkins, measurements };
   hydrated = true;
   emit();
 }
 
-const SERVER_SEED: LongitudinalState = seedState();
+const SERVER_SEED: LongitudinalState = EMPTY_STATE;
 
 export function getLongitudinal(): LongitudinalState {
   hydrate();

@@ -96,6 +96,26 @@ export function classifyRecovery(score: number): RecoveryClassification {
   return RECOVERY_CLASSIFICATIONS[clampScore(score) - 1];
 }
 
+/** Mesma nota do check-in apresentada como porcentagem nos resumos. */
+export function recoveryPercent(score: number): number {
+  return Math.round((clampScore(score) / RECOVERY_SLIDER_MAX) * 100);
+}
+
+export function recoveryReadinessCopy(score: number): string {
+  switch (clampScore(score)) {
+    case 1:
+      return "Priorize descanso hoje";
+    case 2:
+      return "Volume conservador hoje";
+    case 3:
+      return "Carga moderada hoje";
+    case 4:
+      return "Pronto para treinar";
+    default:
+      return "Pronto para alta carga";
+  }
+}
+
 export function recoveryResultCopy(score: number): string {
   switch (clampScore(score)) {
     case 1:

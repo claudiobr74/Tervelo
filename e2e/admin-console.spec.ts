@@ -20,7 +20,7 @@ test.describe("console admin", () => {
   test("dashboard, usuários e auditoria no desktop", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/dev");
-    await page.getByRole("button", { name: "Dashboard admin" }).click();
+    await page.getByRole("button", { name: "Painel administrativo" }).click();
     await expect(page).toHaveURL(/\/admin$/);
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
     await expect(page.getByText("Usuários Ativos", { exact: true })).toBeVisible();
@@ -52,7 +52,7 @@ test.describe("console admin", () => {
     });
     await loginPreview(page);
     await page.goto("/dev");
-    await page.getByRole("button", { name: "Dashboard admin" }).click();
+    await page.getByRole("button", { name: "Painel administrativo" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.locator("html")).not.toHaveClass(/dark/);
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
@@ -63,7 +63,7 @@ test.describe("console admin", () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await loginPreview(page);
     await page.goto("/dev");
-    await page.getByRole("button", { name: "Dashboard admin" }).click();
+    await page.getByRole("button", { name: "Painel administrativo" }).click();
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
 
     const kpis = page.locator("article").filter({ hasText: "Usuários Ativos" });

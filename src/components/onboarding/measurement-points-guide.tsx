@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useCallback, useId, useState } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { useModalFocus } from "@/components/ui/use-modal-focus";
 
 export const MEASUREMENT_POINTS_SRC = "/catalog/pontos-de-medida.webp";
 export const MEASUREMENT_POINTS_ALT =
@@ -10,15 +11,8 @@ export const MEASUREMENT_POINTS_ALT =
 export function MeasurementPointsGuide() {
   const [open, setOpen] = useState(false);
   const titleId = useId();
-
-  useEffect(() => {
-    if (!open) return;
-    function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  const close = useCallback(() => setOpen(false), []);
+  const dialogRef = useModalFocus<HTMLDivElement>(open, close);
 
   return (
     <>
@@ -40,6 +34,7 @@ export function MeasurementPointsGuide() {
       </button>
       {open ? (
         <div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
@@ -50,7 +45,7 @@ export function MeasurementPointsGuide() {
               <h2 id={titleId} className="text-lg font-extrabold text-foreground">
                 Pontos de medição
               </h2>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Fechar" className="text-foreground">
+              <button type="button" onClick={close} aria-label="Fechar" className="text-foreground">
                 <FigmaIcon src="/icons/close.svg" alt="" size={24} />
               </button>
             </div>

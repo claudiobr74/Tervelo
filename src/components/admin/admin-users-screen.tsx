@@ -35,18 +35,16 @@ export function AdminUsersScreen() {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
+                aria-label="Pesquisar usuário"
                 placeholder="Pesquisar usuário..."
                 className="min-w-0 flex-1 bg-transparent text-[13px] outline-none"
               />
             </label>
-            <FilterChip label="Status: Todos" />
-            <FilterChip label="Plano: Todos" />
-            <FilterChip label="Objetivo: Todos" />
           </div>
           <button
             type="button"
             disabled
-            title="FIGMA_PENDING — exportação"
+            title="Exportação em breve"
             className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-border bg-surface px-4 py-2 text-[13px] font-semibold opacity-60"
           >
             <FigmaIcon src="/icons/admin/download.svg" alt="" size={14} />
@@ -122,11 +120,3 @@ export function AdminUsersScreen() {
   );
 }
 
-function FilterChip({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-border bg-surface py-2 pl-4 pr-3 text-[13px]">
-      {label}
-      <FigmaIcon src="/icons/admin/chevron-down.svg" alt="" size={14} />
-    </span>
-  );
-}

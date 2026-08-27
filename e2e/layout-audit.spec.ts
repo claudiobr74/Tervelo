@@ -28,7 +28,7 @@ test.describe("layout do app", () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await loginPreview(page);
     await page.goto("/dev");
-    await page.getByRole("button", { name: "Dashboard admin" }).click();
+    await page.getByRole("button", { name: "Painel administrativo" }).click();
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
     expect(await pageOverflow(page)).toBeLessThanOrEqual(1);
 

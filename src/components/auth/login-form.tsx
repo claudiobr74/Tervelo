@@ -65,7 +65,7 @@ export function LoginForm() {
       return;
     }
     if (isLocalNhost()) {
-      setInfo("Se o e-mail existir, enviaremos as instruções. Não há tela de redefinição no Figma (FIGMA_PENDING).");
+      setInfo("Se o e-mail existir, enviaremos as instruções para redefinir a senha.");
       return;
     }
     try {
@@ -74,7 +74,7 @@ export function LoginForm() {
     } catch {
       // Resposta genérica mesmo em falha — não revela se a conta existe.
     }
-    setInfo("Se o e-mail existir, enviaremos as instruções. Não há tela de redefinição no Figma (FIGMA_PENDING).");
+    setInfo("Se o e-mail existir, enviaremos as instruções para redefinir a senha.");
   }
 
   return (

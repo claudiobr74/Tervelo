@@ -66,10 +66,7 @@ export function PostWorkoutCheckoutCard({ onDone }: { onDone?: () => void }) {
   return (
     <article className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-bold uppercase text-brand">FIGMA_UI_PENDING</p>
-          <h2 className="text-sm font-bold text-foreground">{PRODUCT_NAMES.postWorkoutCheckout}</h2>
-        </div>
+        <h2 className="text-sm font-bold text-foreground">{PRODUCT_NAMES.postWorkoutCheckout}</h2>
         <button type="button" onClick={() => void skip()} className="text-xs font-semibold text-brand">
           Concluir sem responder
         </button>

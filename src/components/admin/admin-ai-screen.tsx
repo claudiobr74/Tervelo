@@ -31,18 +31,12 @@ import {
 import { QA_ADDENDUM_CHECKS } from "@/domain/ai/qa-addendum";
 
 const PENDING_COPY: Record<Exclude<AiAdminTabId, "behavior" | "nutrition">, string> = {
-  training:
-    "FIGMA_PENDING — heurísticas de treino entram no jsonb do contrato (Phases 9–10). Sem layout inventado.",
-  recovery:
-    "FIGMA_PENDING — heurísticas de recuperação entram no jsonb do contrato (Phases 9–10). Sem layout inventado.",
-  safety:
-    "FIGMA_PENDING — políticas de segurança desta aba entram no código (ai/policies), não no jsonb.",
-  models:
-    "FIGMA_PENDING — seleção de modelo roda na Nhost Function. Chaves nunca no cliente.",
-  tests:
-    "FIGMA_PENDING — bateria de testes do contrato na Phase 9. Sem orquestração real nesta pré-visualização.",
-  versioning:
-    "FIGMA_PENDING — versionamento em ai_contract_versions e publicações. Rollback = nova publication.",
+  training: "As heurísticas de treino entram nesta aba em breve.",
+  recovery: "As heurísticas de recuperação entram nesta aba em breve.",
+  safety: "As políticas de segurança são definidas no código e aparecerão aqui em breve.",
+  models: "A escolha de modelo roda no servidor. A configuração chega aqui em breve.",
+  tests: "A bateria de testes do contrato chega em breve.",
+  versioning: "O histórico de versões publicadas chega em breve.",
 };
 
 function pillClass(active: boolean): string {

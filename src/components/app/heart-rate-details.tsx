@@ -4,8 +4,10 @@ import { median, metricsForSet, setWindowsFromTimeline } from "@/domain/heart-ra
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { currentHeartRateDetails, useHeartRateRuntime } from "@/lib/heart-rate/runtime";
 import { useLiveSession } from "@/lib/training/live-session";
+import { useModalFocus } from "@/components/ui/use-modal-focus";
 
 export function HeartRateDetailsSheet({ onClose }: { onClose: () => void }) {
+  const dialogRef = useModalFocus<HTMLDivElement>(true, onClose);
   const runtime = useHeartRateRuntime();
   const live = useLiveSession();
   const details = currentHeartRateDetails();
@@ -19,9 +21,16 @@ export function HeartRateDetailsSheet({ onClose }: { onClose: () => void }) {
   const connected = runtime.status === "STREAMING" || runtime.status === "CONNECTED";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 sm:items-center" role="dialog" aria-labelledby="hr-details-title">
-      <button type="button" className="absolute inset-0" aria-label="Fechar" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-[390px] rounded-t-[var(--radius-xl)] border border-border bg-surface p-5 sm:rounded-[var(--radius-xl)]">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 sm:items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hr-details-title"
+    >
+      <div
+        ref={dialogRef}
+        className="relative z-10 w-full max-w-[390px] rounded-t-[var(--radius-xl)] border border-border bg-surface p-5 sm:rounded-[var(--radius-xl)]"
+      >
         <div className="mb-4 flex items-center justify-between">
           <h2 id="hr-details-title" className="text-base font-bold text-foreground">
             Frequência cardíaca

@@ -1,6 +1,8 @@
 export const PUBLIC_PREFIXES = [
   "/login",
   "/signup",
+  "/termos",
+  "/privacidade",
   "/api/health",
   "/api/auth",
   "/sw.js",

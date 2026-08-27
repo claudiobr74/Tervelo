@@ -12,10 +12,7 @@ export function DataSyncSettingsCard() {
 
   return (
     <section className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
-      <div>
-        <p className="text-xs font-bold uppercase text-brand">FIGMA_UI_PENDING</p>
-        <h2 className="text-base font-bold text-foreground">{SYNC_COPY.dataAndSync}</h2>
-      </div>
+      <h2 className="text-base font-bold text-foreground">{SYNC_COPY.dataAndSync}</h2>
       <p className="text-sm text-muted">{SYNC_COPY.settingsIntro}</p>
 
       <div className="flex flex-col gap-2 border-t border-border pt-3">

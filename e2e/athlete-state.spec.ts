@@ -71,7 +71,10 @@ test.describe("estado do atleta", () => {
   test("check-out no resumo pode ser pulado", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/workout/summary");
-    await expect(page.getByRole("heading", { name: "Treino Concluído!" })).toBeVisible();
+    // Sem série registrada o resumo não anuncia treino concluído.
+    await expect(page.getByRole("heading", { name: "Sessão encerrada" })).toBeVisible();
+    await expect(page.getByText("Nenhuma série foi registrada desta vez.")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Voltar" })).toBeVisible();
     await expect(page.getByText("Check-out Pós-Treino")).toBeVisible();
     await page.getByRole("button", { name: "Concluir sem responder" }).click();
     await expect(page.getByText("Check-out concluído")).toBeVisible();

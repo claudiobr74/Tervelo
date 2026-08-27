@@ -28,7 +28,7 @@ export function AthleteBottomNav({ active }: { active?: (typeof TABS)[number]["l
         );
         if (!tab.enabled) {
           return (
-            <span key={tab.label} className={`${className} opacity-70`} title="FIGMA_PENDING">
+            <span key={tab.label} className={`${className} opacity-70`} aria-disabled="true" title="Em breve">
               {inner}
             </span>
           );

@@ -70,9 +70,9 @@ export function WorkoutSessionScreen() {
               <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
             </Link>
             <p className="text-base font-semibold text-foreground">Sessão de Treino</p>
-            <button type="button" title="FIGMA_PENDING" aria-label="Mais opções" className="text-foreground">
-              <FigmaIcon src="/icons/more-vertical.svg" alt="" size={24} />
-            </button>
+            <Link href="/app/plates" aria-label="Calculadora de anilhas" className="text-foreground">
+              <FigmaIcon src="/icons/dumbbell.svg" alt="" size={22} />
+            </Link>
           </div>
           <div className="flex flex-col gap-1">
             <h1 className="text-2xl font-bold text-foreground">{session.title}</h1>
@@ -129,9 +129,6 @@ export function WorkoutSessionScreen() {
                     <Link href="/app/exercises" aria-label="Substituir exercício" className="text-muted">
                       <FigmaIcon src="/icons/refresh-cw.svg" alt="" size={16} />
                     </Link>
-                    <button type="button" title="FIGMA_PENDING" aria-label="Reportar" className="text-muted">
-                      <FigmaIcon src="/icons/alert-triangle.svg" alt="" size={16} />
-                    </button>
                   </div>
                 </div>
               </article>

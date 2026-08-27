@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { BrandLogo } from "@/components/brand/brand-logo";
 
-const PENDING = "FIGMA_PENDING — sem screen no Figma";
+const PENDING = "Em breve";
 
 export type AdminActive =
   | "Dashboard"
@@ -59,7 +59,7 @@ export function AdminShell({
       <aside className="flex h-full w-[220px] shrink-0 flex-col gap-6 overflow-y-auto border-r border-border px-3 py-6 lg:w-[260px] lg:px-4">
         <div className="flex flex-col gap-1 px-1">
           <BrandLogo className="h-9 w-auto max-w-[196px]" />
-          <p className="text-[10px] font-semibold uppercase text-brand">Admin Console</p>
+          <p className="text-[10px] font-semibold uppercase text-brand">Painel administrativo</p>
         </div>
         <nav aria-label="Navegação administrativa" className="flex min-h-0 flex-1 flex-col gap-1.5">
           {NAV.map((item) => {

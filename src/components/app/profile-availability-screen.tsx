@@ -30,15 +30,16 @@ export function ProfileAvailabilityScreen() {
     <ProfileEditShell title="Disponibilidade">
       <div className="flex flex-col gap-2">
         <FieldLabel>Quais dias tem disponível para treinar?</FieldLabel>
-        <div className="flex gap-1.5">
+        <div className="grid grid-cols-4 gap-2">
           {DAYS.map((day) => {
             const selected = draft.days.includes(day.value);
             return (
               <button
                 key={day.value}
                 type="button"
+                aria-pressed={selected}
                 onClick={() => toggleDay(day.value)}
-                className={`flex flex-1 items-center justify-center rounded-[var(--radius-md)] border px-2 py-2.5 text-[12px] font-bold ${
+                className={`flex min-h-11 items-center justify-center rounded-[var(--radius-md)] border px-2 text-[13px] font-bold ${
                   selected ? "border-brand bg-brand text-on-brand" : "border-border bg-surface text-muted"
                 }`}
               >

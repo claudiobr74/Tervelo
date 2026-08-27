@@ -131,7 +131,6 @@ export function PreWorkoutCheckinScreen() {
         </header>
 
         <div>
-          <p className="text-xs font-bold uppercase text-brand">FIGMA_UI_PENDING</p>
           <h1 className="text-xl font-bold text-foreground">Como você está para treinar hoje?</h1>
           <p className="mt-1 text-[13px] text-muted">Resposta rápida, com uma mão. 15 a 30 segundos.</p>
           <WorkoutSyncHint />

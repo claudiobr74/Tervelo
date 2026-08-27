@@ -55,7 +55,7 @@ export function AdminDashboardScreen() {
           <article className="flex h-[280px] flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
             <div className="flex items-start justify-between gap-3">
               <p className="text-[15px] font-bold">Custos de API Inteligência Artificial</p>
-              <p className="text-xs text-brand">USD/Mês</p>
+              <p className="text-xs text-brand">US$ por mês</p>
             </div>
             <div className="flex flex-1 flex-col justify-center gap-4">
               {PREVIEW_DASHBOARD.aiCosts.map((row) => (
@@ -67,7 +67,7 @@ export function AdminDashboardScreen() {
                       style={{ width: `${Math.round((row.usd / MAX_COST) * 100)}%` }}
                     />
                   </div>
-                  <p className="w-[52px] shrink-0 text-right text-xs font-bold">${row.usd}</p>
+                  <p className="w-[60px] shrink-0 text-right text-xs font-bold">US$ {row.usd}</p>
                 </div>
               ))}
             </div>

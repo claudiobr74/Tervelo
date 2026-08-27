@@ -45,7 +45,7 @@ export function AdminExercisesScreen() {
           <button
             type="button"
             disabled
-            title="Formulário de criação FIGMA_PENDING"
+            title="Cadastro de exercício em breve"
             className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-lg)] bg-brand px-4 text-sm font-bold text-on-brand opacity-60"
           >
             <FigmaIcon src="/icons/admin/plus.svg" alt="" size={14} />

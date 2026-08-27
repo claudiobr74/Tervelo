@@ -8,10 +8,12 @@ async function loginPreview(page: import("@playwright/test").Page) {
   await expect(page).toHaveURL(/\/onboarding\/perfil/);
 }
 
-test("busca de exercícios filtra puxadas", async ({ page }) => {
+test("busca de exercícios começa neutra e filtra puxadas", async ({ page }) => {
   await loginPreview(page);
   await page.goto("/app/exercises");
-  await expect(page.getByLabel("Buscar exercício")).toHaveValue("pux");
+  await expect(page.getByRole("heading", { name: "Exercícios", level: 1 })).toBeVisible();
+  await expect(page.getByLabel("Buscar exercício")).toHaveValue("");
+  await page.getByLabel("Buscar exercício").fill("pux");
   await expect(page.getByText("Puxada Alta Aberta").first()).toBeVisible();
   await expect(page.getByText("Puxada Neutra")).toBeVisible();
   await page.getByLabel("Buscar exercício").fill("supino");
@@ -54,5 +56,6 @@ test("login e busca funcionam no tema claro", async ({ page }) => {
   await loginPreview(page);
   await page.goto("/app/exercises");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.getByLabel("Buscar exercício").fill("pux");
   await expect(page.getByText("Puxada Alta Aberta").first()).toBeVisible();
 });

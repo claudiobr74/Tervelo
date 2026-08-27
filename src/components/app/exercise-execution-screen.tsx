@@ -81,9 +81,7 @@ function Header({
         <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
       </button>
       <p className="text-sm font-bold uppercase text-brand">{title}</p>
-      <button type="button" title="FIGMA_PENDING" aria-label="Mais opções" className="text-foreground">
-        <FigmaIcon src="/icons/more-vertical.svg" alt="" size={24} />
-      </button>
+      <span className="size-6" />
     </div>
   );
 }

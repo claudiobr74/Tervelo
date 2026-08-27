@@ -61,7 +61,7 @@ const PLANS = [
     name: "Elite",
     price: "R$ 149",
     blurb: "Para atletas que buscam personalização extrema de nível competitivo internacional.",
-    cta: "Falar com Consultor Elite",
+    cta: "Assinar o Elite",
     featured: false,
     items: [
       "Tudo do plano Pro",
@@ -75,8 +75,8 @@ const PLANS = [
 
 const FAQ = [
   {
-    q: "Como a inteligência artificial calcula minhas cargas?",
-    a: "O modelo analisa o histórico das suas últimas repetições executadas (volume, repetições de reserva, proximidade de falha) combinando com o feedback de cansaço autorelatado e estimativa de re-síntese de glicogênio muscular para prescrever a janela de carga ideal de cada dia.",
+    q: "Como as cargas são calculadas?",
+    a: "O acompanhamento usa o histórico das suas séries registradas — carga, repetições e repetições de reserva — junto com o check-in de recuperação para sugerir a faixa de carga de cada sessão. Toda alteração vem acompanhada da explicação do porquê.",
   },
   {
     q: "Preciso de algum dispositivo vestível (wearable)?",
@@ -88,7 +88,7 @@ const FAQ = [
   },
   {
     q: "Posso cancelar a assinatura quando quiser?",
-    a: "Sim, sem taxas de cancelamento ou prazos de fidelidade escondidos. Você pode assinar, pausar ou migrar de plano diretamente pelo painel de controle da plataforma a qualquer momento.",
+    a: "Sim, sem taxa de cancelamento nem prazo de fidelidade. O cancelamento é feito pelo suporte dentro do aplicativo e o acesso continua até o fim do período já pago.",
   },
 ] as const;
 
@@ -164,9 +164,8 @@ export function MarketingLanding() {
                 Evolução contínua.
               </h1>
               <p className="max-w-xl text-base leading-7 text-muted lg:text-lg">
-                O TERVELO combina inteligência artificial de ponta, ciência do esporte de nível olímpico e
-                nutrição de precisão para criar o plano perfeito para o seu corpo, atualizado em tempo real a
-                cada repetição.
+                O TERVELO reúne treinamento de força, recuperação e nutrição esportiva num acompanhamento
+                só. Você registra cada série, e o plano é revisto a partir do que os seus dados mostram.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-4">
@@ -425,7 +424,14 @@ export function MarketingLanding() {
       <footer className="border-t border-border px-6 py-8 lg:px-20">
         <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-3 text-sm text-muted lg:flex-row lg:items-center lg:justify-between">
           <p>© 2026 TERVELO Technologies Inc. Todos os direitos reservados.</p>
-          <p>Termos de Uso · Políticas de Privacidade</p>
+          <p className="flex gap-3">
+            <Link href="/termos" className="hover:text-foreground">
+              Termos de Serviço
+            </Link>
+            <Link href="/privacidade" className="hover:text-foreground">
+              Política de Privacidade
+            </Link>
+          </p>
         </div>
       </footer>
     </div>

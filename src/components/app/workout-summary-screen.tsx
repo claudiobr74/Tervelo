@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { HeartRateChart } from "@/components/app/heart-rate-chart";
 import { PostWorkoutCheckoutCard } from "@/components/app/post-workout-checkout-card";
@@ -37,19 +38,30 @@ export function WorkoutSummaryScreen() {
   const recoveryMedian = median(recoveries);
   const showHeartRate = runtime.enabled && hr.stats.sampleCount > 0;
 
+  const finished = setsDone > 0;
+
   return (
     <AthleteAppShell hideNav>
       <div className="flex flex-col gap-5 px-6 pb-6 pt-4">
-        <div className="flex flex-col items-center gap-3 pb-2 pt-2">
+        <div className="flex items-center">
+          <Link href="/app/today" aria-label="Voltar" className="text-foreground">
+            <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
+          </Link>
+        </div>
+        <div className="flex flex-col items-center gap-3 pb-2">
           <span className="flex size-16 items-center justify-center rounded-[32px] bg-brand-soft text-brand">
             <FigmaIcon src="/icons/check-circle.svg" alt="" size={32} />
           </span>
           <div className="flex flex-col items-center gap-1 text-center">
-            <h1 className="text-2xl font-extrabold text-foreground">Treino Concluído!</h1>
+            <h1 className="text-2xl font-extrabold text-foreground">
+              {finished ? "Treino concluído!" : "Sessão encerrada"}
+            </h1>
             <p className="text-sm text-muted">
-              {sync.online
-                ? "Excelente sessão. Sua consistência garante os resultados."
-                : `✓ ${SYNC_COPY.savedOnDevice}`}
+              {!sync.online
+                ? `✓ ${SYNC_COPY.savedOnDevice}`
+                : finished
+                  ? `${setsDone} séries registradas nesta sessão.`
+                  : "Nenhuma série foi registrada desta vez."}
             </p>
           </div>
         </div>
@@ -75,16 +87,6 @@ export function WorkoutSummaryScreen() {
           </article>
         </div>
 
-        <article className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
-          <FigmaIcon src="/icons/trending-up.svg" alt="" size={24} className="text-success" />
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <p className="text-sm font-bold text-foreground">Desempenho Geral superior</p>
-            <p className="text-xs text-muted">
-              Volume total de carga aumentado em 5% comparado ao último treino.
-            </p>
-          </div>
-        </article>
-
         <PostWorkoutCheckoutCard />
 
         <article className="flex items-start gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
@@ -93,11 +95,7 @@ export function WorkoutSummaryScreen() {
           </span>
           <div className="flex min-w-0 flex-col gap-1">
             <p className="text-xs font-bold uppercase text-brand">Avaliação do treinador</p>
-            <p className="text-[13px] text-foreground">
-              {sync.online
-                ? "“Você apresentou melhora no supino e manteve o desempenho das demais séries. Não há necessidade de alterar o planejamento da próxima sessão.”"
-                : SYNC_COPY.pendingAnalysis}
-            </p>
+            <p className="text-[13px] text-foreground">{SYNC_COPY.pendingAnalysis}</p>
           </div>
         </article>
 

@@ -5,9 +5,11 @@ import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { PRODUCT_NAMES } from "@/domain/athlete-state/labels";
 import { trackProductEvent, useAthleteStateStore, weeklyDecisionLabel } from "@/lib/athlete-state/session-store";
+import { useWeeklyCoachReviewEnabled } from "@/lib/athlete-state/preference-store";
 
 export function WeeklyReviewsListScreen() {
   const store = useAthleteStateStore();
+  const enabled = useWeeklyCoachReviewEnabled();
 
   return (
     <AthleteAppShell active="Coach">
@@ -21,9 +23,20 @@ export function WeeklyReviewsListScreen() {
             <h1 className="text-xl font-extrabold text-foreground">Revisões</h1>
           </div>
         </header>
-        <p className="text-xs text-muted">FIGMA_UI_PENDING · {PRODUCT_NAMES.weeklyCoachReview}</p>
+        <p className="text-xs text-muted">{PRODUCT_NAMES.weeklyCoachReview}</p>
+        {!enabled ? (
+          <div className="flex flex-col gap-2 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
+            <p className="text-sm font-semibold text-foreground">
+              {PRODUCT_NAMES.weeklyCoachReview} está desligada
+            </p>
+            <p className="text-xs text-muted">
+              Ligue em Mais → Conta → Acompanhamento do Coach para voltar a receber a análise da semana.
+            </p>
+          </div>
+        ) : null}
         <div className="flex flex-col gap-3">
-          {store.weeklyReviews.map((review) => (
+          {enabled &&
+            store.weeklyReviews.map((review) => (
             <Link
               key={review.id}
               href={`/app/coach/revisoes/${review.id}`}

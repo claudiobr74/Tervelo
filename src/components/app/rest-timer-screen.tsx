@@ -99,9 +99,7 @@ export function RestTimerScreen() {
             <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
           </button>
           <p className="text-sm font-bold uppercase text-brand">TERVELO</p>
-          <button type="button" title="FIGMA_PENDING" aria-label="Mais opções" className="text-foreground">
-            <FigmaIcon src="/icons/more-vertical.svg" alt="" size={24} />
-          </button>
+          <span className="size-6" />
         </div>
         <div className="flex flex-col gap-1">
           <h1 className="text-[22px] font-extrabold text-foreground">Descanso</h1>

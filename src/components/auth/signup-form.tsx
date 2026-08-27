@@ -151,8 +151,15 @@ export function SignupForm() {
             {accepted ? <FigmaIcon src="/icons/check.svg" alt="" size={12} /> : null}
           </button>
           <span className="text-[13px] leading-[18px] text-muted">
-            Ao continuar, você concorda com os Termos de Serviço e a Política de
-            Privacidade.
+            Ao continuar, você concorda com os{" "}
+            <Link href="/termos" className="font-semibold text-brand underline">
+              Termos de Serviço
+            </Link>{" "}
+            e a{" "}
+            <Link href="/privacidade" className="font-semibold text-brand underline">
+              Política de Privacidade
+            </Link>
+            .
           </span>
         </label>
         {error ? <p className="text-sm text-error">{error}</p> : null}

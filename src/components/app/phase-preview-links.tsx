@@ -28,7 +28,7 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
           onClick={() => openAdmin("/admin")}
           className="inline-flex h-11 items-center rounded-[var(--radius-md)] bg-brand px-5 text-sm font-semibold text-on-brand"
         >
-          Dashboard admin
+          Painel administrativo
         </button>
         <button
           type="button"

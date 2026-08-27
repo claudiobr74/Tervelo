@@ -6,6 +6,7 @@ import { HeartRateSettingsCard } from "@/components/app/heart-rate-settings";
 import { AthleteStateSettingsCard } from "@/components/app/athlete-state-settings-card";
 import { DataSyncSettingsCard } from "@/components/app/data-sync-settings-card";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 export function HeartRateSettingsScreen() {
   return (
@@ -23,6 +24,10 @@ export function HeartRateSettingsScreen() {
         <HeartRateSettingsCard />
         <AthleteStateSettingsCard />
         <DataSyncSettingsCard />
+        <section className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
+          <h2 className="text-base font-bold text-foreground">Aparência</h2>
+          <ThemeToggle />
+        </section>
       </div>
     </AthleteAppShell>
   );

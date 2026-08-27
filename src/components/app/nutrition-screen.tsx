@@ -102,14 +102,6 @@ export function NutritionScreen() {
         <header className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-extrabold text-foreground">Nutrição</h1>
-            <button
-              type="button"
-              title="FIGMA_PENDING — calendário do atleta"
-              aria-label="Calendário"
-              className="text-muted"
-            >
-              <FigmaIcon src="/icons/calendar.svg" alt="" size={24} />
-            </button>
           </div>
           <p className="text-[13px] font-medium text-muted">
             Gerenciamento de dieta e metas diárias
@@ -177,7 +169,6 @@ export function NutritionScreen() {
         </section>
 
         <section className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
-          <p className="text-xs font-bold uppercase text-brand">FIGMA_UI_PENDING</p>
           <h2 className="text-sm font-bold text-foreground">Registros de hoje</h2>
           <div className="flex gap-2">
             <button

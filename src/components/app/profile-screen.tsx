@@ -61,10 +61,12 @@ export function ProfileScreen() {
               <button
                 key={item.label}
                 type="button"
-                title="FIGMA_PENDING"
-                className="flex w-full items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface p-4 text-left opacity-70"
+                disabled
+                aria-label={`${item.label} — em breve`}
+                className="flex w-full items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface p-4 text-left opacity-60"
               >
-                <MenuRow label={item.label} />
+                <span className="text-sm font-medium text-foreground">{item.label}</span>
+                <span className="text-[11px] font-semibold uppercase text-muted">Em breve</span>
               </button>
             ) : (
               <Link

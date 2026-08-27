@@ -42,7 +42,7 @@ export function AdminInventoryScreen() {
             <button
               type="button"
               disabled
-              title="Cadastro de academia do atleta FIGMA_PENDING"
+              title="Cadastro de academia em breve"
               className="text-xs font-semibold text-brand opacity-60"
             >
               + Adicionar academia
@@ -76,7 +76,7 @@ export function AdminInventoryScreen() {
             <button
               type="button"
               disabled
-              title="Preset de academia completa FIGMA_PENDING"
+              title="Modelo de academia completa em breve"
               className="rounded-[var(--radius-lg)] border border-brand px-4 py-2 text-sm font-semibold text-brand opacity-60"
             >
               Selecionar academia completa padrão

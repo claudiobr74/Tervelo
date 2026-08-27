@@ -40,8 +40,6 @@ export function WeeklyReviewScreen() {
             <h1 className="text-xl font-extrabold text-foreground">{PRODUCT_NAMES.weeklyCoachReview}</h1>
           </div>
         </header>
-        <p className="text-xs text-muted">FIGMA_UI_PENDING</p>
-
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-bold text-foreground">Sua semana</h2>
           <p className="text-xs font-semibold text-brand">{weeklyDecisionLabel(review.decision)}</p>

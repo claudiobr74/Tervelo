@@ -37,10 +37,28 @@ test.describe("coach", () => {
 
     await page.getByRole("link", { name: "Quero entender" }).click();
     await expect(page).toHaveURL(/\/app\/coach\/ajuste/);
+    // Sem check-in que gere adaptação, a tela não inventa um ajuste.
+    await expect(page.getByRole("heading", { name: "Nada foi ajustado hoje" })).toBeVisible();
+    await expect(page.getByText("segue exatamente como foi planejada", { exact: false })).toBeVisible();
+  });
+
+  test("ajuste de hoje mostra o que o check-in realmente mudou", async ({ page }) => {
+    await loginPreview(page);
+    await page.goto("/app/workout/checkin");
+    await page.getByRole("button", { name: "Muito bom" }).click();
+    await page.getByRole("button", { name: "Muito boa" }).click();
+    await page.getByRole("button", { name: "Bem recuperado" }).click();
+    await page.getByRole("button", { name: "Baixo" }).click();
+    await page.getByRole("button", { name: "Não" }).click();
+    await page.getByRole("button", { name: /Tenho aproximadamente/ }).click();
+    await page.getByRole("button", { name: "40" }).click();
+    await page.getByRole("button", { name: "Começar treino" }).click();
+    await expect(page).toHaveURL(/\/app\/workout$/);
+
+    await page.goto("/app/coach/ajuste");
     await expect(page.getByRole("heading", { name: "Seu plano foi ajustado" })).toBeVisible();
-    await expect(page.getByText("Agachamento", { exact: true })).toBeVisible();
-    await expect(page.getByText("3 séries × 8 reps")).toBeVisible();
-    await expect(page.getByText("Versão do contrato: v3.2")).toBeVisible();
+    await expect(page.getByText("cerca de 40 minutos", { exact: false })).toBeVisible();
+    await expect(page.getByText("Check-in Pré-Treino", { exact: false })).toBeVisible();
   });
 
   test("coach funciona no tema claro", async ({ page }) => {
