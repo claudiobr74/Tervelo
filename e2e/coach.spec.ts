@@ -29,7 +29,18 @@ test.describe("coach", () => {
 
     await page.getByRole("button", { name: "Como está minha evolução?" }).click();
     await expect(page.getByText(/UNKNOWN/)).toBeVisible();
+    await expect(page.getByText("benchPressKg")).toHaveCount(0);
+    await expect(page.getByText("carga registrada no supino")).toBeVisible();
     await expect(page.getByText("Papel da nutrição")).toHaveCount(0);
+
+    await page.getByRole("button", { name: "Por que meu treino mudou?" }).click();
+    await expect(
+      page.getByText("Nada no recorte de hoje indica que o treino tenha mudado"),
+    ).toBeVisible();
+    await expect(page.getByText("agachamento")).toHaveCount(0);
+
+    await page.getByRole("button", { name: "Posso substituir um exercício?" }).click();
+    await expect(page.getByText("Não há sessão prescrita")).toBeVisible();
   });
 
   test("ajuste de hoje mostra o que o check-in realmente mudou", async ({ page }) => {
@@ -49,6 +60,12 @@ test.describe("coach", () => {
     await expect(page.getByRole("heading", { name: "Seu plano foi ajustado" })).toBeVisible();
     await expect(page.getByText("cerca de 40 minutos", { exact: false })).toBeVisible();
     await expect(page.getByText("Check-in Pré-Treino", { exact: false })).toBeVisible();
+    await expect(page.getByText("O Coach adaptou a sessão")).toHaveCount(0);
+
+    await page.goto("/app/coach");
+    await page.getByRole("button", { name: "Por que meu treino mudou?" }).click();
+    await expect(page.getByText("cerca de 40 minutos", { exact: false })).toBeVisible();
+    await expect(page.getByText("Papel da nutrição")).toBeVisible();
   });
 
   test("coach funciona no tema claro", async ({ page }) => {

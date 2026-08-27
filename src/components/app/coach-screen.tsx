@@ -8,33 +8,11 @@ import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
   COACH_SUGGESTIONS,
   coachReplyForPrompt,
-  emptyCoachFacts,
   type CoachPreviewMessage,
 } from "@/domain/ai/coach-preview";
-import { getHeartRateEnabled } from "@/lib/heart-rate/preference-store";
-import { currentHeartRateDetails } from "@/lib/heart-rate/runtime";
-import { buildHeartRateContext } from "@/domain/heart-rate/context";
-import { metricsForSet, setWindowsFromTimeline } from "@/domain/heart-rate/metrics";
-import { getLiveSession } from "@/lib/training/live-session";
+import { liveCoachFacts } from "@/lib/ai/live-facts";
 import { useSyncStatus } from "@/components/app/sync-status-indicator";
 import { SYNC_COPY } from "@/domain/offline";
-
-function liveCoachFacts() {
-  const live = getLiveSession();
-  const details = currentHeartRateDetails();
-  const heartRate = buildHeartRateContext({
-    heartRateEnabled: getHeartRateEnabled(),
-    samples: details.samples,
-    startedAt: details.stored.startedAt ?? live.startedAt,
-    endedAt: details.stored.endedAt ?? live.completedAt,
-    setMetrics: setWindowsFromTimeline(live.events).map((window) =>
-      metricsForSet(details.samples, window),
-    ),
-    sameDevice: true,
-    comparableSessions: details.stats.sampleCount > 0 ? 1 : 0,
-  });
-  return { ...emptyCoachFacts, heartRate };
-}
 
 export function CoachScreen() {
   const sync = useSyncStatus();
@@ -84,7 +62,12 @@ export function CoachScreen() {
         </p>
         {!sync.online ? (
           <p className="text-xs text-muted">{SYNC_COPY.coachAnalysisWhenOnline}</p>
-        ) : null}
+        ) : (
+          <p className="text-xs text-muted">
+            Respostas usam só os dados deste aparelho. A orquestração no servidor ainda não está
+            ligada.
+          </p>
+        )}
       </header>
 
       <div className="flex flex-wrap content-start gap-2 px-6">

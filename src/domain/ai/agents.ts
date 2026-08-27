@@ -16,10 +16,10 @@ export const DEFAULT_AI_AGENT: AiAgentId = "orchestrator";
 export const AI_AGENT_PIPELINE: readonly AiAgentId[] = [
   "orchestrator",
   "profiler",
+  "recovery",
   "strength",
   "periodization",
   "nutrition",
-  "recovery",
   "progress",
   "qa",
 ];

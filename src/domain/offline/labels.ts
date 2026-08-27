@@ -22,8 +22,10 @@ export const SYNC_COPY = {
   endSession: "Encerrar sessão",
   setRecorded: "Série registrada",
   coachUnavailable: "Coach temporariamente indisponível offline.",
-  coachAnalysisWhenOnline: "Análise do Coach disponível quando você estiver online.",
-  pendingAnalysis: "Análise será gerada quando você estiver online.",
+  coachAnalysisWhenOnline:
+    "Quando estiver online, o Coach responde com os dados deste aparelho. A orquestração no servidor ainda não está ligada.",
+  pendingAnalysis:
+    "A orquestração no servidor ainda não gera esta avaliação. Use o Coach para um recorte local.",
   savedOnDevice: "Tudo salvo neste dispositivo",
   checkinSavedCoachLater:
     "Seu check-in foi salvo. O Coach poderá analisar quando a conexão voltar.",

@@ -12,8 +12,24 @@ export type CoachKnownFacts = {
   repetitionsInReserve: number | null;
   recoveryLowerBodyBelowHabitual: boolean | null;
   lastTwoSessionsPerformanceDropped: boolean | null;
+  hasPrescribedSession: boolean | null;
+  sessionChangedToday: boolean | null;
+  sessionChangeReason: string | null;
   nutrition: NutritionContext;
   heartRate: HeartRateContext | null;
+};
+
+const FACT_LABEL: Record<
+  Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate" | "sessionChangeReason">,
+  string
+> = {
+  benchPressKg: "carga registrada no supino",
+  proposedBenchPressKg: "carga proposta no supino",
+  repetitionsInReserve: "repetições em reserva",
+  recoveryLowerBodyBelowHabitual: "recuperação de membros inferiores",
+  lastTwoSessionsPerformanceDropped: "desempenho das duas últimas sessões",
+  hasPrescribedSession: "sessão prescrita",
+  sessionChangedToday: "ajuste de sessão de hoje",
 };
 
 export const previewCoachFacts: CoachKnownFacts = {
@@ -22,6 +38,9 @@ export const previewCoachFacts: CoachKnownFacts = {
   repetitionsInReserve: 2,
   recoveryLowerBodyBelowHabitual: true,
   lastTwoSessionsPerformanceDropped: true,
+  hasPrescribedSession: true,
+  sessionChangedToday: true,
+  sessionChangeReason: null,
   nutrition: emptyNutritionContext(),
   heartRate: null,
 };
@@ -33,6 +52,9 @@ export const emptyCoachFacts: CoachKnownFacts = {
   repetitionsInReserve: null,
   recoveryLowerBodyBelowHabitual: null,
   lastTwoSessionsPerformanceDropped: null,
+  hasPrescribedSession: false,
+  sessionChangedToday: false,
+  sessionChangeReason: null,
   nutrition: emptyNutritionContext(),
   heartRate: null,
 };
@@ -48,7 +70,7 @@ export type CoachProposalStatus = "pending" | "accepted" | "kept";
 
 export function requireKnownFacts(
   facts: CoachKnownFacts,
-  keys: Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate">[],
+  keys: Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate" | "sessionChangeReason">[],
 ): { ok: true } | { ok: false; unknown: string[] } {
   const unknown: string[] = [];
   for (const key of keys) {
@@ -60,6 +82,10 @@ export function requireKnownFacts(
     return { ok: false, unknown };
   }
   return { ok: true };
+}
+
+export function unknownFactLabels(keys: string[]): string[] {
+  return keys.map((key) => (key in FACT_LABEL ? FACT_LABEL[key as keyof typeof FACT_LABEL] : key));
 }
 
 export type CoachIntegratedSections = {
@@ -88,13 +114,53 @@ export function coachProposalFeedback(status: CoachProposalStatus): string | nul
 }
 
 export function coachReplyForPrompt(prompt: string, facts: CoachKnownFacts): CoachPreviewMessage {
+  if (prompt.includes("substituir")) {
+    if (facts.hasPrescribedSession !== true) {
+      return {
+        id: "unknown",
+        role: "coach",
+        body: "Não há sessão prescrita neste recorte. UNKNOWN — não vou inventar um plano para substituir.",
+      };
+    }
+    return {
+      id: "substituir",
+      role: "coach",
+      body: "Substituição de exercício só entra se houver restrição, dor ou equipamento indisponível. No recorte atual não há fato desses — o plano permanece com os padrões já prescritos.",
+    };
+  }
+
+  if (prompt.includes("treino mudou")) {
+    if (facts.sessionChangeReason) {
+      const nutritionRole = nutritionRoleCopy(facts.nutrition);
+      return {
+        id: "treino-mudou",
+        role: "coach",
+        body: facts.sessionChangeReason,
+        sections: {
+          observacao: facts.sessionChangeReason,
+          interpretacao: "O ajuste vale só para a sessão de hoje. Não muda o bloco.",
+          recomendacao: "Confira o detalhe em Ajuste de hoje.",
+          papelDaNutricao: nutritionRole,
+          proximaReavaliacao: "Na próxima sessão, ou na Revisão Semanal do Coach.",
+        },
+      };
+    }
+    if (facts.sessionChangedToday === false) {
+      return {
+        id: "treino-mudou",
+        role: "coach",
+        body: "Nada no recorte de hoje indica que o treino tenha mudado. UNKNOWN — não vou inventar uma redução de volume.",
+      };
+    }
+  }
+
   const needed = requiredKeysForPrompt(prompt);
   const check = requireKnownFacts(facts, needed);
   if (!check.ok) {
     return {
       id: "unknown",
       role: "coach",
-      body: `Não tenho dado suficiente para responder com segurança. Faltam: ${check.unknown.join(", ")}. UNKNOWN — não vou inventar.`,
+      body: `Não tenho dado suficiente para responder com segurança. Faltam: ${unknownFactLabels(check.unknown).join(", ")}. UNKNOWN — não vou inventar.`,
     };
   }
 
@@ -120,7 +186,7 @@ export function coachReplyForPrompt(prompt: string, facts: CoachKnownFacts): Coa
     return {
       id: "treino-mudou",
       role: "coach",
-      body: `O volume de agachamento caiu porque a recuperação de membros inferiores está abaixo do habitual e o desempenho caiu nas duas últimas sessões. É um ajuste temporário, não uma troca de objetivo.${heartRateRole ? ` ${heartRateRole}` : ""}`,
+      body: `O volume caiu porque a recuperação de membros inferiores está abaixo do habitual e o desempenho caiu nas duas últimas sessões. É um ajuste temporário, não uma troca de objetivo.${heartRateRole ? ` ${heartRateRole}` : ""}`,
       sections: {
         observacao:
           "Recuperação de membros inferiores abaixo do habitual; desempenho das duas últimas sessões em queda.",
@@ -130,14 +196,6 @@ export function coachReplyForPrompt(prompt: string, facts: CoachKnownFacts): Coa
         proximaReavaliacao:
           "Reavaliar volume quando a recuperação de membros inferiores voltar ao habitual.",
       },
-    };
-  }
-
-  if (prompt.includes("substituir")) {
-    return {
-      id: "substituir",
-      role: "coach",
-      body: "Substituição de exercício só entra se houver restrição, dor ou equipamento indisponível. No recorte atual não há fato desses — o plano permanece com os padrões já prescritos.",
     };
   }
 
@@ -175,14 +233,17 @@ function heartRateRoleCopy(heartRate: HeartRateContext | null): string | null {
   if (trend === "SLOWER") {
     return "A recuperação cardíaca entre séries ficou menos favorável nas sessões comparáveis; isso entra só como contexto, sem provar overtraining nem substituir carga, repetições ou esforço percebido.";
   }
-  return "Sua resposta ao treinamento permanece consistente com as sessões recentes. Não há justificativa pelos dados atuais para alterar o planejamento com base isolada na frequência cardíaca.";
+  if (trend === "STABLE" || trend === "FASTER") {
+    return "Sua resposta ao treinamento permanece consistente com as sessões recentes. Não há justificativa pelos dados atuais para alterar o planejamento com base isolada na frequência cardíaca.";
+  }
+  return null;
 }
 
 export { HEART_RATE_ANALYSIS_RULE };
 
 function requiredKeysForPrompt(
   prompt: string,
-): Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate">[] {
+): Exclude<keyof CoachKnownFacts, "nutrition" | "heartRate" | "sessionChangeReason">[] {
   if (prompt.includes("evolução") || prompt.includes("carga")) {
     return ["benchPressKg", "proposedBenchPressKg", "repetitionsInReserve"];
   }

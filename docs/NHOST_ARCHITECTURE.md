@@ -149,11 +149,10 @@ Permissions em `storage.files` (`uploaded_by_user_id` / `bucket_id`).
 ## 6. Functions (workloads de servidor)
 
 ```text
-functions/ai/orchestrate.ts
-functions/ai/audit.ts          # se necessário webhook
+functions/ai/orchestrate.ts    # JWT + 501 not_implemented (Phase 9)
 ```
 
-Uso: chamar modelos, montar contexto do banco com admin client **no servidor**, aplicar policies, gravar `ai_runs` / `ai_decisions`, rate limit por `user_id`.
+Uso previsto: chamar modelos, montar contexto do banco com admin client **no servidor**, aplicar policies, gravar `ai_runs` / `ai_decisions`, rate limit por `user_id`. Hoje o handler só autentica e recusa. `functions/ai/audit.ts` ainda não existe.
 
 Env injetado pelo Nhost (`NHOST_ADMIN_SECRET`, etc.) + secret de provedor de modelo no dashboard (não no git).
 

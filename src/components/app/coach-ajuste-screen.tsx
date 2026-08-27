@@ -22,8 +22,8 @@ export function CoachAjusteScreen() {
             </h1>
             <p className="text-[14px] text-muted">
               {todayAdjustment
-                ? "O Coach adaptou a sessão de hoje a partir do que você respondeu no check-in."
-                : "Sua sessão de hoje segue exatamente como foi planejada."}
+                ? "O check-in de hoje gerou este recorte temporário. A IA no servidor não publicou sessão nova."
+                : "Sem treino prescrito, não há sessão para manter nem para adaptar."}
             </p>
           </header>
 

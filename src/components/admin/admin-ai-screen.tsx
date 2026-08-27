@@ -12,6 +12,7 @@ import {
   AI_CONTRACT_PREVIEW,
   AI_GLOBAL_PRIORITIES,
   AI_IDENTITY_PROMPT,
+  AI_POLICY_LOCKS,
   AI_SYSTEM_LOCKS,
   AI_TONES,
   DEFAULT_AI_ADMIN_TAB,
@@ -29,20 +30,47 @@ import {
   LONGITUDINAL_SYSTEM,
 } from "@/domain/ai/nutrition-context";
 import { QA_ADDENDUM_CHECKS } from "@/domain/ai/qa-addendum";
+import { QA_HEART_RATE_CHECKS } from "@/domain/heart-rate/qa";
+import { QA_ATHLETE_STATE_CHECKS } from "@/domain/athlete-state/qa";
 
-const PENDING_COPY: Record<Exclude<AiAdminTabId, "behavior" | "nutrition">, string> = {
+const PENDING_COPY: Record<
+  Exclude<AiAdminTabId, "behavior" | "nutrition" | "recovery" | "safety" | "tests">,
+  string
+> = {
   training: "As heurísticas de treino entram nesta aba em breve.",
-  recovery: "As heurísticas de recuperação entram nesta aba em breve.",
-  safety: "As políticas de segurança são definidas no código e aparecerão aqui em breve.",
   models: "A escolha de modelo roda no servidor. A configuração chega aqui em breve.",
-  tests: "A bateria de testes do contrato chega em breve.",
-  versioning: "O histórico de versões publicadas chega em breve.",
+  versioning: "O histórico de versões publicadas chega com ai_contract_versions.",
 };
 
 function pillClass(active: boolean): string {
   return active
     ? "rounded-full border border-brand bg-brand-soft px-3 py-1.5 text-xs font-bold text-brand"
     : "rounded-full border border-border bg-background px-3 py-1.5 text-xs font-bold text-muted";
+}
+
+function QaPanel({
+  title,
+  intro,
+  checks,
+}: {
+  title: string;
+  intro: string;
+  checks: readonly { id: number; label: string }[];
+}) {
+  return (
+    <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+      <h2 className="text-lg font-extrabold">{title}</h2>
+      <p className="mt-2 text-sm text-muted">{intro}</p>
+      <ol className="mt-3 flex flex-col gap-1.5 text-[13px] text-foreground">
+        {checks.map((check) => (
+          <li key={check.id}>
+            {check.id}. {check.label}
+          </li>
+        ))}
+      </ol>
+      <p className="mt-3 text-xs text-muted">Conflito grave entre agentes → FAIL.</p>
+    </article>
+  );
 }
 
 function AutonomyDot({ selected }: { selected: boolean }) {
@@ -150,24 +178,27 @@ export function AdminAiScreen() {
             <div className="flex min-w-0 flex-col gap-1">
               <h2 className="text-lg font-extrabold">Contrato da Inteligência Artificial</h2>
               <p className="text-[13px] text-muted">
-                Edite o comportamento e as heurísticas padrão adotadas pela IA da Tervelo.
+                Modelo do contrato no código. Ainda não grava em ai_contracts nem chama
+                /ai/orchestrate.
               </p>
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-3">
-              <span className="rounded-full bg-success/20 px-2.5 py-1 text-xs font-bold text-success">
+              <span className="rounded-full bg-surface-secondary px-2.5 py-1 text-xs font-bold text-muted">
                 {AI_CONTRACT_PREVIEW.version} — {AI_CONTRACT_PREVIEW.stateLabel}
               </span>
               <button
                 type="button"
-                title="Orquestração real depois da UI. Sem modelo nesta pré-visualização."
-                className="rounded-[var(--radius-md)] bg-surface-secondary px-4 py-2 text-[13px] font-semibold text-foreground"
+                disabled
+                title="A Function /ai/orchestrate responde 501 até a orquestração real."
+                className="rounded-[var(--radius-md)] bg-surface-secondary px-4 py-2 text-[13px] font-semibold text-foreground opacity-60"
               >
                 Testar versão
               </button>
               <button
                 type="button"
+                disabled
                 title="Comparação de versões entra com ai_contract_versions"
-                className="rounded-[var(--radius-md)] bg-brand px-4 py-2 text-[13px] font-semibold text-on-brand"
+                className="rounded-[var(--radius-md)] bg-brand px-4 py-2 text-[13px] font-semibold text-on-brand opacity-60"
               >
                 Comparar versões
               </button>
@@ -216,6 +247,10 @@ export function AdminAiScreen() {
                     rows={4}
                     className="resize-none rounded-[var(--radius-md)] border border-border bg-background p-3 text-[13px] leading-[18px] text-foreground outline-none focus-visible:border-brand"
                   />
+                  <p className="text-[11px] text-muted">
+                    Alterações desta tela ficam só neste navegador. Publicar exige super_admin e a
+                    Function no servidor.
+                  </p>
                 </section>
 
                 <section className="flex flex-col gap-2">
@@ -320,11 +355,43 @@ export function AdminAiScreen() {
             </div>
           ) : tab === "nutrition" ? (
             <AddendumNutritionPanel />
+          ) : tab === "recovery" ? (
+            <QaPanel
+              title="QA Auditor — checks 21 a 30"
+              intro="Frequência cardíaca é complementar. Sem preferência ligada e dados suficientes, HEART_RATE_CONTEXT não existe."
+              checks={QA_HEART_RATE_CHECKS}
+            />
+          ) : tab === "safety" ? (
+            <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+              <h2 className="text-lg font-extrabold">Políticas que o contrato não desliga</h2>
+              <p className="mt-2 text-sm text-muted">
+                Vivem em src/domain/ai, não no jsonb configurável. Publicar no banco só com
+                super_admin.
+              </p>
+              <ul className="mt-3 flex flex-col gap-1.5 text-[13px] text-foreground">
+                {AI_POLICY_LOCKS.map((rule) => (
+                  <li key={rule}>• {rule}</li>
+                ))}
+              </ul>
+            </article>
+          ) : tab === "tests" ? (
+            <QaPanel
+              title="QA Auditor — checks 31 a 44"
+              intro="Estado do Atleta, check-ins e revisão semanal. Sem nota de prontidão 0 a 100."
+              checks={QA_ATHLETE_STATE_CHECKS}
+            />
           ) : (
             <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
               <h2 className="text-lg font-extrabold">{activeTab.label}</h2>
               <p className="mt-2 text-sm text-muted">
-                {PENDING_COPY[tab as Exclude<AiAdminTabId, "behavior" | "nutrition">]}
+                {
+                  PENDING_COPY[
+                    tab as Exclude<
+                      AiAdminTabId,
+                      "behavior" | "nutrition" | "recovery" | "safety" | "tests"
+                    >
+                  ]
+                }
               </p>
             </article>
           )}

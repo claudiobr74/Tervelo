@@ -23,7 +23,7 @@ describe("contrato de IA (admin)", () => {
   it("mantém identidade e tons padrão do Figma", () => {
     expect(AI_IDENTITY_PROMPT).toContain("Coach de IA do Tervelo");
     expect(DEFAULT_AI_TONES).toEqual(["Técnico", "Motivacional"]);
-    expect(AI_CONTRACT_PREVIEW.stateLabel).toBe("Publicado");
+    expect(AI_CONTRACT_PREVIEW.stateLabel).toBe("Rascunho local");
   });
 
   it("não deixa políticas críticas no jsonb configurável", () => {

@@ -1,14 +1,14 @@
 export const QA_HEART_RATE_CHECKS = [
-  { id: 21, label: "heart_rate_enabled está ativo?" },
-  { id: 22, label: "há dados suficientes?" },
-  { id: 23, label: "cobertura é adequada?" },
-  { id: 24, label: "houve troca de dispositivo?" },
-  { id: 25, label: "frequência cardíaca foi usada apenas como contexto?" },
-  { id: 26, label: "uma única leitura influenciou decisão indevidamente?" },
-  { id: 27, label: "IA inferiu esforço muscular a partir de BPM?" },
-  { id: 28, label: "IA inferiu diagnóstico?" },
-  { id: 29, label: "IA atribuiu causalidade sem suporte?" },
-  { id: 30, label: "dados de treino mais específicos contradizem a interpretação cardíaca?" },
+  { id: 21, label: "A preferência de frequência cardíaca está ativa?" },
+  { id: 22, label: "Há dados suficientes?" },
+  { id: 23, label: "A cobertura do sinal é adequada?" },
+  { id: 24, label: "Houve troca de dispositivo?" },
+  { id: 25, label: "A frequência cardíaca foi usada apenas como contexto?" },
+  { id: 26, label: "Uma única leitura influenciou a decisão indevidamente?" },
+  { id: 27, label: "A IA inferiu esforço muscular a partir do BPM?" },
+  { id: 28, label: "A IA inferiu diagnóstico?" },
+  { id: 29, label: "A IA atribuiu causalidade sem suporte?" },
+  { id: 30, label: "Dados de treino mais específicos contradizem a leitura cardíaca?" },
 ] as const;
 
 export type QaHeartRateFlags = {

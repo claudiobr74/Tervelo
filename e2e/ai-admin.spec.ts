@@ -19,6 +19,8 @@ test("admin escolhe o agente de IA no contrato", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Contrato da Inteligência Artificial" }),
   ).toBeVisible();
+  await expect(page.getByText("Rascunho local")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Testar versão" })).toBeDisabled();
   await expect(page.getByRole("radio", { name: "Orquestrador" })).toBeChecked();
   await page.getByRole("radio", { name: "Recuperação" }).click();
   await expect(page.getByRole("radio", { name: "Recuperação" })).toBeChecked();
@@ -35,6 +37,14 @@ test("admin escolhe o agente de IA no contrato", async ({ page }) => {
   await expect(
     page.getByText("13. O contexto nutricional relevante foi considerado?"),
   ).toBeVisible();
+  await page.getByRole("tab", { name: "Recuperação" }).click();
+  await expect(
+    page.getByText("21. A preferência de frequência cardíaca está ativa?"),
+  ).toBeVisible();
+  await page.getByRole("tab", { name: "Segurança" }).click();
+  await expect(page.getByText("Não fabricar dados ausentes")).toBeVisible();
+  await page.getByRole("tab", { name: "Testes" }).click();
+  await expect(page.getByText("31. O check-in diário foi superinterpretado?")).toBeVisible();
 });
 
 test("contrato de IA no tema claro", async ({ page }) => {
