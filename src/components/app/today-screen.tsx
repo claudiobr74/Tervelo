@@ -54,7 +54,7 @@ export function TodayScreen() {
           <Link href="/app/settings" className="size-10 shrink-0" aria-label="Configurações">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/catalog/admin-avatar.webp"
+              src="/catalog/admin-users/lucas.webp"
               alt=""
               width={40}
               height={40}

@@ -60,7 +60,7 @@ export function CoachAjusteScreen() {
             Entendi
           </Link>
           <Link
-            href="/app/coach"
+            href="/app/coach/revisoes"
             className="flex h-12 items-center justify-center rounded-[var(--radius-lg)] border border-border text-[15px] font-semibold text-foreground"
           >
             Quero saber mais

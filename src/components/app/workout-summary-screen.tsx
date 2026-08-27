@@ -38,7 +38,7 @@ export function WorkoutSummaryScreen() {
   const showHeartRate = runtime.enabled && hr.stats.sampleCount > 0;
 
   return (
-    <AthleteAppShell active="Treino">
+    <AthleteAppShell hideNav>
       <div className="flex flex-col gap-5 px-6 pb-6 pt-4">
         <div className="flex flex-col items-center gap-3 pb-2 pt-2">
           <span className="flex size-16 items-center justify-center rounded-[32px] bg-brand-soft text-brand">

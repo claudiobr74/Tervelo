@@ -23,11 +23,12 @@ export function resolveAuthRedirect(
   onboardingDone: boolean,
 ): string | null {
   if ((pathname === "/login" || pathname === "/signup") && hasSession) {
-    return onboardingDone ? "/" : "/onboarding/perfil";
+    return onboardingDone ? "/app/today" : "/onboarding/perfil";
   }
 
-  if (pathname.startsWith("/onboarding") && !hasSession) {
-    return "/login";
+  if (pathname.startsWith("/onboarding")) {
+    if (!hasSession) return "/login";
+    if (onboardingDone) return "/app/today";
   }
 
   if (pathname.startsWith("/app") && !hasSession) {

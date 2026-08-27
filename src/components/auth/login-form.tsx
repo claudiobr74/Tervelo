@@ -6,16 +6,9 @@ import { AuthFooterLink, AuthShell, FieldLabel, AUTH_INPUT_CLASS, PRIMARY_CTA_CL
 import { BrandMark } from "@/components/auth/brand-mark";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
+import { persistSession } from "@/lib/auth/persist-session";
 import { isValidEmail, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
 import { getBrowserNhostClient } from "@/lib/nhost/browser";
-
-async function persistSession(session: unknown) {
-  await fetch("/api/auth/session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(session),
-  });
-}
 
 export function LoginForm() {
   const router = useRouter();

@@ -66,8 +66,8 @@ export function AdminShell({
             const selected = item.label === current;
             const inner = (
               <>
-                <FigmaIcon src={item.icon} alt="" size={18} />
-                {item.label}
+                <FigmaIcon src={item.icon} alt="" size={18} className="shrink-0" />
+                <span className="min-w-0 truncate">{item.label}</span>
               </>
             );
             if (item.pending || !item.href) {
@@ -100,7 +100,7 @@ export function AdminShell({
                 key={item.href}
                 href={item.href}
                 aria-current={item.label === current ? "page" : undefined}
-                className={`ml-7 rounded-[var(--radius-sm)] px-2 py-1.5 text-sm ${
+                className={`ml-7 truncate rounded-[var(--radius-sm)] px-2 py-1.5 text-sm ${
                   item.label === current ? "font-semibold text-brand" : "text-muted"
                 }`}
               >
@@ -112,8 +112,8 @@ export function AdminShell({
             const selected = item.label === current;
             const inner = (
               <>
-                <FigmaIcon src={item.icon} alt="" size={18} />
-                {item.label}
+                <FigmaIcon src={item.icon} alt="" size={18} className="shrink-0" />
+                <span className="min-w-0 truncate">{item.label}</span>
               </>
             );
             if (item.pending || !item.href) {

@@ -33,7 +33,7 @@ export function PlateCalculatorScreen() {
   const missingFine = gym.plates.some((item) => item.weightKg === 1.25 && item.quantity === 0);
 
   return (
-    <AthleteAppShell>
+    <AthleteAppShell active="Treino">
       <header className="flex flex-col gap-3 px-6 py-4">
         <div className="flex items-center justify-between">
           <Link href="/app/exercises" aria-label="Voltar" className="size-6 text-foreground">
@@ -80,36 +80,38 @@ export function PlateCalculatorScreen() {
         {primary ? (
           <div className="flex flex-col items-center gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
             <p className="text-[13px] font-bold uppercase text-foreground">Diagrama de Montagem</p>
-            <div className="flex items-center justify-center gap-1">
-              <span className="h-2 w-8 rounded-sm bg-border-strong" />
+            <div className="w-full overflow-x-auto">
+            <div className="flex min-w-0 items-center justify-center gap-1">
+              <span className="h-2 w-8 shrink-0 rounded-sm bg-border-strong" />
               <div className="flex items-center gap-0.5">
                 {primary.perSide.map((plate) =>
                   Array.from({ length: plate.count }).map((_, index) => (
                     <span
                       key={`L-${plate.weightKg}-${index}`}
-                      className={`h-20 w-5 rounded ${plateColorClass(plate.weightKg)}`}
+                      className={`h-20 w-5 shrink-0 rounded ${plateColorClass(plate.weightKg)}`}
                     />
                   )),
                 )}
               </div>
-              <span className="h-3 w-[100px] rounded bg-muted" />
+              <span className="h-3 w-[100px] shrink-0 rounded bg-surface-pressed" />
               <div className="flex items-center gap-0.5">
                 {[...primary.perSide].reverse().map((plate) =>
                   Array.from({ length: plate.count }).map((_, index) => (
                     <span
                       key={`R-${plate.weightKg}-${index}`}
-                      className={`h-20 w-5 rounded ${plateColorClass(plate.weightKg)}`}
+                      className={`h-20 w-5 shrink-0 rounded ${plateColorClass(plate.weightKg)}`}
                     />
                   )),
                 )}
               </div>
-              <span className="h-2 w-8 rounded-sm bg-border-strong" />
+              <span className="h-2 w-8 shrink-0 rounded-sm bg-border-strong" />
+            </div>
             </div>
             <div className="flex w-full justify-between pt-2 text-[13px] font-bold text-foreground">
               <p>{formatKg(primary.perSideKg)} por lado</p>
               <p>{formatKg(primary.perSideKg)} por lado</p>
             </div>
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex flex-wrap items-center gap-2 pt-1">
               <p className="text-[13px] text-muted">Lado:</p>
               {primary.perSide.flatMap((plate) =>
                 Array.from({ length: plate.count }).map((_, index) => (

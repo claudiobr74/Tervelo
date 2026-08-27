@@ -11,8 +11,6 @@ export const PREVIEW_STRENGTH_LIFTS: StrengthLift[] = [
 ];
 
 export const PREVIEW_BENCH_BARS = [
-  { height: 30, kg: 68 },
-  { height: 42, kg: 72 },
   { height: 50, kg: 75 },
   { height: 64, kg: 79 },
   { height: 78, kg: 82 },

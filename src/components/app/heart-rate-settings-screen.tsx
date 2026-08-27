@@ -9,7 +9,7 @@ import { FigmaIcon } from "@/components/auth/figma-icon";
 
 export function HeartRateSettingsScreen() {
   return (
-    <AthleteAppShell active="Mais">
+    <AthleteAppShell>
       <div className="flex flex-col gap-5 px-6 pb-8 pt-4">
         <div className="flex items-center gap-3">
           <Link href="/app/today" aria-label="Voltar" className="text-foreground">

@@ -53,7 +53,7 @@ export function AdminAuditScreen() {
                     />
                     <div>
                       <p className="text-sm font-bold">{log.name}</p>
-                      <p className="whitespace-pre text-xs text-muted">{log.when}</p>
+                      <p className="whitespace-pre-wrap text-xs text-muted">{log.when}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">

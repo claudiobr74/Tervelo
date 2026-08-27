@@ -156,7 +156,7 @@ function DropList({
       {exercise.sets.map((set, index) => {
         const active = set.id === current.id;
         const done = recordedIds.has(set.id);
-        const label = set.methodKind === "drop_set" ? `Drop ${dropOrdinal(exercise, set).current}` : `Set ${index + 1}`;
+        const label = set.methodKind === "drop_set" ? `Drop ${dropOrdinal(exercise, set).current}` : `Série ${index + 1}`;
         return (
           <div
             key={set.id}
@@ -218,7 +218,7 @@ export function ExerciseExecutionScreen() {
     else if (next === "summary") router.push("/app/workout/summary");
   }
 
-  const headerTitle = isWarmup ? "Aquecimento" : isSuper ? "Modo Treino" : "Modo de Treino";
+  const headerTitle = isWarmup ? "Aquecimento" : "Modo de Treino";
   const subtitle = isWarmup
     ? `Aquecimento ${warmup.current} de ${warmup.total}`
     : isSuper
@@ -385,7 +385,15 @@ export function ExerciseExecutionScreen() {
               </div>
             </>
           ) : isSuper ? (
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={onRecord}
+                className="flex h-12 w-full items-center justify-center rounded-[var(--radius-lg)] bg-brand text-[15px] font-bold text-on-brand"
+              >
+                Registrar {superLetter}
+              </button>
+              <div className="flex gap-3">
               <Link
                 href="/app/workout"
                 className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
@@ -395,17 +403,11 @@ export function ExerciseExecutionScreen() {
               <button
                 type="button"
                 onClick={onRecord}
-                className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] bg-brand text-[15px] font-bold text-on-brand"
-              >
-                Registrar {superLetter}
-              </button>
-              <button
-                type="button"
-                onClick={onRecord}
                 className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
               >
                 Pular
               </button>
+              </div>
             </div>
           ) : (
             <button

@@ -9,7 +9,7 @@ const TABS = [
   { href: "/app/nutrition", label: "Mais", icon: "/icons/nav/mais.svg", enabled: true },
 ] as const;
 
-export function AthleteBottomNav({ active = "Treino" }: { active?: (typeof TABS)[number]["label"] }) {
+export function AthleteBottomNav({ active }: { active?: (typeof TABS)[number]["label"] }) {
   return (
     <nav
       aria-label="Navegação principal"
@@ -50,7 +50,7 @@ export function AthleteBottomNav({ active = "Treino" }: { active?: (typeof TABS)
 
 export function AthleteAppShell({
   children,
-  active = "Treino",
+  active,
   hideNav = false,
 }: {
   children: React.ReactNode;
@@ -58,7 +58,7 @@ export function AthleteAppShell({
   hideNav?: boolean;
 }) {
   return (
-    <div className="mx-auto flex h-dvh w-full max-w-[390px] flex-col bg-background">
+    <div className="mx-auto flex h-dvh max-h-dvh w-full max-w-[390px] flex-col overflow-hidden bg-background">
       <main className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto">{children}</main>
       {hideNav ? null : <AthleteBottomNav active={active} />}
     </div>

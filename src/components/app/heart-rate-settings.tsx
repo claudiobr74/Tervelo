@@ -58,7 +58,7 @@ export function HeartRateSettingsCard() {
       </div>
 
       <p className="text-sm text-muted">
-        Registre sua frequência cardíaca durante os treinos usando um frequencímetro Bluetooth compatível.
+        Frequencímetro Bluetooth compatível. O treino funciona mesmo sem o aparelho.
       </p>
 
       {runtime.enabled ? (

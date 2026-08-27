@@ -37,7 +37,9 @@ export function SyncStatusIndicator({ compact = false }: { compact?: boolean }) 
         className={status.kind === "SYNC_ERROR" ? "text-error" : "text-muted"}
       />
       <span>{label}</span>
-      <span className="sr-only">{SYNC_COPY.noConnectionA11y}</span>
+      <span className="sr-only">
+        {status.online ? label : SYNC_COPY.noConnectionA11y}
+      </span>
     </p>
   );
 }

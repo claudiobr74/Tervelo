@@ -87,7 +87,7 @@ export function RestTimerScreen() {
   }
 
   return (
-    <AthleteAppShell active="Treino">
+    <AthleteAppShell hideNav>
       <div className="flex flex-col gap-4 px-6 pb-6 pt-4">
         <div className="flex items-center justify-between">
           <button
