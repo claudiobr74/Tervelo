@@ -25,6 +25,8 @@ test.describe("nutrição", () => {
     await expect(page.getByText("Lanche pré-treino", { exact: true })).toBeVisible();
     await expect(page.getByText("Recomendações do nutricionista virtual")).toBeVisible();
     await page.getByRole("link", { name: "Mais" }).click();
+    await expect(page).toHaveURL(/\/app\/profile/);
+    await page.getByRole("link", { name: "Nutrição" }).click();
     await expect(page).toHaveURL(/\/app\/nutrition/);
   });
 

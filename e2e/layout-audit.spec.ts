@@ -17,7 +17,7 @@ test.describe("layout do app", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await loginPreview(page);
 
-    for (const path of ["/app/today", "/app/progress", "/app/nutrition", "/app/workout", "/app/plates", "/app/coach"]) {
+    for (const path of ["/app/today", "/app/progress", "/app/nutrition", "/app/workout", "/app/plates", "/app/coach", "/app/profile", "/app/profile/pessoais"]) {
       await page.goto(path);
       await expect(page.locator("h1").first()).toBeVisible();
       expect(await pageOverflow(page), path).toBeLessThanOrEqual(1);

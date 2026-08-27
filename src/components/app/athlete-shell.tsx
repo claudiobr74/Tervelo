@@ -6,7 +6,7 @@ const TABS = [
   { href: "/app/workout", label: "Treino", icon: "/icons/nav/treino.svg", enabled: true },
   { href: "/app/progress", label: "Evolução", icon: "/icons/nav/evolucao.svg", enabled: true },
   { href: "/app/coach", label: "Coach", icon: "/icons/nav/coach.svg", enabled: true },
-  { href: "/app/nutrition", label: "Mais", icon: "/icons/nav/mais.svg", enabled: true },
+  { href: "/app/profile", label: "Mais", icon: "/icons/nav/mais.svg", enabled: true },
 ] as const;
 
 export function AthleteBottomNav({ active }: { active?: (typeof TABS)[number]["label"] }) {

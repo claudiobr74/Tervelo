@@ -45,6 +45,12 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
           Auditoria
         </button>
         <a
+          href="/app/profile"
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"
+        >
+          Perfil
+        </a>
+        <a
           href="/app/settings"
           className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-brand px-5 text-sm font-semibold text-brand"
         >

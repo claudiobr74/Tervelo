@@ -3,17 +3,64 @@ import { DEFAULT_ONBOARDING, ONBOARDING_STORAGE_KEY, type OnboardingDraft } from
 const listeners = new Set<() => void>();
 let cachedRaw: string | null = null;
 let cachedDraft: OnboardingDraft = DEFAULT_ONBOARDING;
+let storageListenerBound = false;
 
 function emit() {
   for (const listener of listeners) listener();
 }
 
-function parse(raw: string | null): OnboardingDraft {
+export function parseOnboardingDraft(raw: string | null): OnboardingDraft {
   if (!raw) return DEFAULT_ONBOARDING;
   try {
     return { ...DEFAULT_ONBOARDING, ...(JSON.parse(raw) as OnboardingDraft) };
   } catch {
     return DEFAULT_ONBOARDING;
+  }
+}
+
+function bindStorageListener() {
+  if (storageListenerBound || typeof window === "undefined") return;
+  storageListenerBound = true;
+  window.addEventListener("storage", (event) => {
+    if (event.key !== ONBOARDING_STORAGE_KEY) return;
+    cachedRaw = null;
+    emit();
+  });
+}
+
+function readRaw(): string | null {
+  if (typeof window === "undefined") return null;
+  bindStorageListener();
+  try {
+    const local = window.localStorage.getItem(ONBOARDING_STORAGE_KEY);
+    if (local) return local;
+  } catch {
+    /* private mode */
+  }
+  try {
+    const session = window.sessionStorage.getItem(ONBOARDING_STORAGE_KEY);
+    if (session) {
+      try {
+        window.localStorage.setItem(ONBOARDING_STORAGE_KEY, session);
+        window.sessionStorage.removeItem(ONBOARDING_STORAGE_KEY);
+      } catch {
+        return session;
+      }
+      return session;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+function writeRaw(raw: string) {
+  try {
+    window.localStorage.setItem(ONBOARDING_STORAGE_KEY, raw);
+    window.sessionStorage.removeItem(ONBOARDING_STORAGE_KEY);
+    return;
+  } catch {
+    window.sessionStorage.setItem(ONBOARDING_STORAGE_KEY, raw);
   }
 }
 
@@ -24,10 +71,10 @@ export function subscribeOnboarding(listener: () => void) {
 
 export function getOnboardingSnapshot(): OnboardingDraft {
   if (typeof window === "undefined") return DEFAULT_ONBOARDING;
-  const raw = window.sessionStorage.getItem(ONBOARDING_STORAGE_KEY);
+  const raw = readRaw();
   if (raw === cachedRaw) return cachedDraft;
   cachedRaw = raw;
-  cachedDraft = parse(raw);
+  cachedDraft = parseOnboardingDraft(raw);
   return cachedDraft;
 }
 
@@ -38,7 +85,7 @@ export function getOnboardingServerSnapshot(): OnboardingDraft {
 export function patchOnboarding(patch: Partial<OnboardingDraft>) {
   const next = { ...getOnboardingSnapshot(), ...patch };
   const raw = JSON.stringify(next);
-  window.sessionStorage.setItem(ONBOARDING_STORAGE_KEY, raw);
+  writeRaw(raw);
   cachedRaw = raw;
   cachedDraft = next;
   emit();

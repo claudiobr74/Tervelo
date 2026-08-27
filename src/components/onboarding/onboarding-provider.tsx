@@ -32,10 +32,23 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
   return <OnboardingContext.Provider value={value}>{children}</OnboardingContext.Provider>;
 }
 
+export function useOnboardingDraft() {
+  const draft = useSyncExternalStore(
+    subscribeOnboarding,
+    getOnboardingSnapshot,
+    getOnboardingServerSnapshot,
+  );
+  return useMemo(
+    () => ({
+      draft,
+      update: patchOnboarding,
+    }),
+    [draft],
+  );
+}
+
 export function useOnboarding() {
   const context = useContext(OnboardingContext);
-  if (!context) {
-    throw new Error("useOnboarding precisa do OnboardingProvider");
-  }
-  return context;
+  const fallback = useOnboardingDraft();
+  return context ?? fallback;
 }
