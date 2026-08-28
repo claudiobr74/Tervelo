@@ -35,6 +35,7 @@ test.describe("layout do app", () => {
       "/app/plan",
       "/app/calendar",
       "/app/equipment",
+      "/app/exercises",
     ]) {
       await page.goto(path);
       await expect(page.locator("h1").first()).toBeVisible();

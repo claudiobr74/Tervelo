@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import {
-  disconnectedOrFail,
-  graphqlFailure,
-  requireAdminContext,
-} from "@/lib/admin/require-session";
+import { graphqlFailure, requireAdminContext } from "@/lib/admin/require-session";
 import { ADMIN_QUERIES } from "@/lib/admin/queries";
+import { presentAdminExercises, type AdminLibraryExercise } from "@/lib/catalog/authorized-library";
 import { runGraphqlAsUser } from "@/lib/nhost/graphql-server";
 
 export async function GET() {
@@ -21,35 +18,44 @@ export async function GET() {
     exercise_aliases: { alias: string; locale: string; canonical_exercise_id: string }[];
     movement_patterns: { id: string; slug: string; name_pt: string }[];
   }>(gate.context.session, ADMIN_QUERIES.exercises, {}, "admin");
-  if (!result.ok) return disconnectedOrFail(result, { patterns: [], exercises: [] })!;
-  const aliases = new Map<string, string[]>();
-  for (const row of result.data.exercise_aliases) {
-    const list = aliases.get(row.canonical_exercise_id) ?? [];
-    list.push(row.alias);
-    aliases.set(row.canonical_exercise_id, list);
-  }
-  const patterns = new Map(result.data.movement_patterns.map((item) => [item.id, item.name_pt]));
+  const patterns = result.ok ? result.data.movement_patterns : [];
+  const nhostExercises: AdminLibraryExercise[] = result.ok
+    ? (() => {
+        const aliases = new Map<string, string[]>();
+        for (const row of result.data.exercise_aliases) {
+          const list = aliases.get(row.canonical_exercise_id) ?? [];
+          list.push(row.alias);
+          aliases.set(row.canonical_exercise_id, list);
+        }
+        const patternNames = new Map(
+          result.data.movement_patterns.map((item) => [item.id, item.name_pt]),
+        );
+        return result.data.canonical_exercises.map((exercise) => ({
+          id: exercise.id,
+          namePt: exercise.name_pt,
+          description: exercise.description,
+          movementPatternId: exercise.movement_pattern_id,
+          movementPattern: exercise.movement_pattern_id
+            ? (patternNames.get(exercise.movement_pattern_id) ?? "")
+            : "",
+          aliases: aliases.get(exercise.id) ?? [],
+        }));
+      })()
+    : [];
   return NextResponse.json({
     ok: true,
     data: {
-      patterns: result.data.movement_patterns,
-      exercises: result.data.canonical_exercises.map((exercise) => ({
-        id: exercise.id,
-        namePt: exercise.name_pt,
-        description: exercise.description,
-        movementPatternId: exercise.movement_pattern_id,
-        movementPattern: exercise.movement_pattern_id
-          ? (patterns.get(exercise.movement_pattern_id) ?? "")
-          : "",
-        aliases: aliases.get(exercise.id) ?? [],
-      })),
+      patterns,
+      exercises: presentAdminExercises(nhostExercises),
     },
+    library: true,
+    disconnected: !result.ok && result.reason === "nhost_unavailable",
   });
 }
 
 const insertSchema = z.object({
   namePt: z.string().trim().min(2).max(120),
-  description: z.string().trim().max(2_000).optional(),
+  description: z.string().trim().max(8_000).optional(),
   movementPatternId: z.string().uuid().optional(),
 });
 

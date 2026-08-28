@@ -37,6 +37,9 @@ Em **pré-visualização local** (e Preview Vercel sem Nhost cloud) o botão **D
 - `migrations/default/` — schema
 - `metadata/` — permissions Hasura (matriz em `src/lib/auth/permission-matrix.ts`)
 - `seeds/default/001_catalog.sql` — músculos, categorias, padrões
+- `seeds/default/002_exercises_equipment.sql` — catálogo mínimo (2 exercícios)
+- `seeds/default/003_gifdotreino_exercises.sql` — nomes + descrições da biblioteca Gif do Treino (autorizada)
+- `seeds/default/004_gifdotreino_media.sql` — `exercise_media.object_key` (GIF local; `file_id` depois do upload)
 - `emails/pt/` — templates Auth
 
 Regenerar YAML público:
@@ -47,20 +50,22 @@ npm run metadata:generate
 
 Este ambiente de cloud **não tem Docker**; `nhost up` fica para a máquina do operador.
 
+Seeds **não** sobem sozinhos para o Nhost Cloud. Depois de `001` e `002`, aplicar `003_gifdotreino_exercises.sql` e `004_gifdotreino_media.sql` com `npm exec nhost -- seed apply` ou `psql -f` (o SQL Editor pode recusar o arquivo de 2,5 MB do `003`). A migration `20260828223000_exercise_media` precisa existir antes do `004`. GIFs no preview: [COMO_VER_OS_GIFS.md](../scripts/gifdotreino-downloader/COMO_VER_OS_GIFS.md).
+
 ## Deploy no Nhost Cloud
 
-O GitHub usa `nhost/nhost.toml`. Qualquer `{{ secrets.NOME }}` **tem** de existir em Settings → Secrets; senão o deploy cai com *invalid configuration*.
+O GitHub usa `nhost/nhost.toml`. Qualquer `{{ secrets.NOME }}` **tem** de existir em Settings → Secrets; senão o deploy cai com _invalid configuration_.
 
-| Secret                         | Quem cria                         |
-| ------------------------------ | --------------------------------- |
-| `HASURA_GRAPHQL_ADMIN_SECRET`  | Nhost (projeto)                   |
-| `NHOST_WEBHOOK_SECRET`         | Nhost                             |
-| `GRAFANA_ADMIN_PASSWORD`       | Nhost                             |
-| `NHOST_JWT_KID`                | `npm run nhost:jwt` — cole no Cloud o valor gerado |
-| `NHOST_JWT_PUBLIC_KEY`         | idem, PEM completo (`BEGIN PUBLIC KEY`) |
-| `NHOST_JWT_PRIVATE_KEY`        | idem, PEM PKCS#8 (`BEGIN PRIVATE KEY`) |
+| Secret                        | Quem cria                                          |
+| ----------------------------- | -------------------------------------------------- |
+| `HASURA_GRAPHQL_ADMIN_SECRET` | Nhost (projeto)                                    |
+| `NHOST_WEBHOOK_SECRET`        | Nhost                                              |
+| `GRAFANA_ADMIN_PASSWORD`      | Nhost                                              |
+| `NHOST_JWT_KID`               | `npm run nhost:jwt` — cole no Cloud o valor gerado |
+| `NHOST_JWT_PUBLIC_KEY`        | idem, PEM completo (`BEGIN PUBLIC KEY`)            |
+| `NHOST_JWT_PRIVATE_KEY`       | idem, PEM PKCS#8 (`BEGIN PRIVATE KEY`)             |
 
-Se o dashboard mostrar Auth em **UpdateError** / `exitCode: 1` e Hasura verde, os *nomes* dos secrets JWT já existem — o deploy passou da validação de config. A replica nova do Auth mesmo assim não sobe porque não consegue **usar** a chave privada:
+Se o dashboard mostrar Auth em **UpdateError** / `exitCode: 1` e Hasura verde, os _nomes_ dos secrets JWT já existem — o deploy passou da validação de config. A replica nova do Auth mesmo assim não sobe porque não consegue **usar** a chave privada:
 
 - Hasura só lê a **pública** (`key`) → pode ficar verde.
 - Auth 0.49.1 exige PEM PKCS#8 em `signing_key` (`-----BEGIN PRIVATE KEY-----` com quebras de linha). Pública ok + privada truncada, numa linha só, `BEGIN RSA PRIVATE KEY` mal colada, ou JSON com `signingKey` em vez de `signing_key` → `exit 1` e `message` vazio no Service State.

@@ -17,7 +17,13 @@ type UserDetail = {
     height_cm: number | string | null;
     experience_level: string | null;
   }[];
-  athlete_goals: { id: string; goal_type: string; status: string; notes: string | null; created_at: string }[];
+  athlete_goals: {
+    id: string;
+    goal_type: string;
+    status: string;
+    notes: string | null;
+    created_at: string;
+  }[];
   training_programs: { id: string; title: string; status: string; started_on: string | null }[];
   training_sessions: {
     id: string;

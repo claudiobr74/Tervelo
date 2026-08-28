@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   // Next 16 bloqueia scripts cross-origin no `next dev`. Playwright e o
   // browser do agente usam 127.0.0.1 ou localhost.
   allowedDevOrigins: ["127.0.0.1", "localhost"],
+  outputFileTracingIncludes: {
+    "/api/me/catalog": ["./scripts/gifdotreino-downloader/output/metadata/exercises.json"],
+    "/api/admin/exercises": ["./scripts/gifdotreino-downloader/output/metadata/exercises.json"],
+    "/api/catalog/gif/[slug]": ["./scripts/gifdotreino-downloader/output/metadata/exercises.json"],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaderList() }];
   },

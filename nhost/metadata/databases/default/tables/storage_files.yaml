@@ -102,7 +102,7 @@ select_permissions:
               _in:
                 - exercise-media
                 - equipment-media
-      limit: 100
+      limit: 2500
   - role: admin
     permission:
       columns:
@@ -114,7 +114,7 @@ select_permissions:
         - uploaded_by_user_id
         - created_at
       filter: {}
-      limit: 200
+      limit: 2500
   - role: super_admin
     permission:
       columns:
@@ -126,7 +126,7 @@ select_permissions:
         - uploaded_by_user_id
         - created_at
       filter: {}
-      limit: 500
+      limit: 2500
 delete_permissions:
   - role: user
     permission:

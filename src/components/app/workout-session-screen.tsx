@@ -91,6 +91,9 @@ export function WorkoutSessionScreen() {
               <Link href="/app/plan" className="text-center text-sm font-semibold text-brand">
                 Montar plano
               </Link>
+              <Link href="/app/exercises" className="text-center text-sm font-semibold text-brand">
+                Ver biblioteca de exercícios
+              </Link>
               <Link
                 href="/app/today"
                 className="flex h-[54px] w-full items-center justify-center rounded-[var(--radius-lg)] border border-border text-base font-bold text-foreground"

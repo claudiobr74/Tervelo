@@ -39,4 +39,13 @@ describe("busca de exercícios", () => {
     const hits = searchCatalogExercises(catalog, "barra", "equipment");
     expect(hits.map((item) => item.id)).toEqual(["ex-supino"]);
   });
+
+  it("encontra pelo texto da descrição", () => {
+    const withDescription = [
+      { ...catalog[0], description: "trabalha o latíssimo em puxada vertical" },
+      catalog[1],
+    ];
+    const hits = searchCatalogExercises(withDescription, "latíssimo em puxada");
+    expect(hits.map((item) => item.id)).toEqual(["ex-puxada-alta"]);
+  });
 });

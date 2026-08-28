@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sessionCanReachNhost } from "@/lib/nhost/graphql-server";
+import { sessionCanReachNhost, storageAuthHeaders } from "@/lib/nhost/graphql-server";
 
 describe("sessionCanReachNhost", () => {
   it("recusa pré-visualização e token sentinela", () => {
@@ -10,5 +10,14 @@ describe("sessionCanReachNhost", () => {
 
   it("aceita sessão real com access token", () => {
     expect(sessionCanReachNhost({ accessToken: "nhost-jwt" })).toBe(true);
+  });
+});
+
+describe("storageAuthHeaders", () => {
+  it("usa Bearer na sessão real e ignora preview", () => {
+    expect(storageAuthHeaders({ preview: true, accessToken: "abc" })).toEqual([]);
+    expect(storageAuthHeaders({ accessToken: "nhost-jwt" })).toEqual([
+      { Authorization: "Bearer nhost-jwt" },
+    ]);
   });
 });

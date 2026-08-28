@@ -27,6 +27,7 @@ export function PlanScreen() {
   const catalog = useAdminQuery<CatalogData>("/api/me/catalog");
   const [title, setTitle] = useState("");
   const [scheduledAt, setScheduledAt] = useState(localDateTimeValue());
+  const [catalogQuery, setCatalogQuery] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const exercises = catalog.data?.exercises ?? [];
@@ -37,6 +38,15 @@ export function PlanScreen() {
     () => exercises.filter((item) => selected.includes(item.id)),
     [exercises, selected],
   );
+  const visibleExercises = useMemo(() => {
+    const needle = catalogQuery.trim().toLocaleLowerCase("pt-BR");
+    if (!needle) return exercises;
+    return exercises.filter(
+      (item) =>
+        item.namePt.toLocaleLowerCase("pt-BR").includes(needle) ||
+        item.primaryMuscle.toLocaleLowerCase("pt-BR").includes(needle),
+    );
+  }, [exercises, catalogQuery]);
 
   function toggle(id: string) {
     setSelected((current) =>
@@ -168,20 +178,31 @@ export function PlanScreen() {
             {catalog.loading ? <p className="text-sm text-muted">Carregando catálogo…</p> : null}
             {!catalog.loading && exercises.length === 0 ? (
               <p className="text-sm text-muted">
-                O catálogo está vazio neste ambiente. O admin grava exercícios em Biblioteca.
+                A biblioteca autorizada ainda não está neste ambiente.
               </p>
             ) : null}
+            {exercises.length > 0 ? (
+              <input
+                value={catalogQuery}
+                onChange={(event) => setCatalogQuery(event.target.value)}
+                aria-label="Filtrar exercícios do catálogo"
+                placeholder="Filtrar pela biblioteca"
+                className="rounded-[var(--radius-md)] border border-border bg-background px-3 py-2 text-sm"
+              />
+            ) : null}
             <div className="flex max-h-56 flex-col gap-1 overflow-y-auto">
-              {exercises.map((exercise) => (
-                <label key={exercise.id} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(exercise.id)}
-                    onChange={() => toggle(exercise.id)}
-                  />
-                  {exercise.namePt}
-                </label>
-              ))}
+              {(catalogQuery.trim() ? visibleExercises : visibleExercises.slice(0, 40)).map(
+                (exercise) => (
+                  <label key={exercise.id} className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(exercise.id)}
+                      onChange={() => toggle(exercise.id)}
+                    />
+                    {exercise.namePt}
+                  </label>
+                ),
+              )}
             </div>
           </fieldset>
           <button type="submit" className={PRIMARY_CTA_CLASS}>

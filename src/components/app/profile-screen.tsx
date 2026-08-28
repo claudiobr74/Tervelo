@@ -13,6 +13,7 @@ const ITEMS: { label: string; href: string }[] = [
   { label: "Objetivos", href: "/app/profile/objetivos" },
   { label: "Academia e equipamentos", href: "/app/profile/academia" },
   { label: "Plano de treino", href: "/app/plan" },
+  { label: "Biblioteca de exercícios", href: "/app/exercises" },
   { label: "Calendário", href: "/app/calendar" },
   { label: "Disponibilidade", href: "/app/profile/disponibilidade" },
   { label: "Preferências de treino", href: "/app/profile/preferencias" },

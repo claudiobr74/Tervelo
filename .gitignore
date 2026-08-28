@@ -48,3 +48,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .tmp-screens/
+
+# migração Gif do Treino (binários; metadata vai no git)
+scripts/gifdotreino-downloader/output/gifs/
+scripts/gifdotreino-downloader/output/logs/

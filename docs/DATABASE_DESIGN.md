@@ -227,7 +227,7 @@ N:N variante (ou canônico) ↔ equipment, com `preference_rank`.
 
 Busca: “bench press”, “supino reto”, etc.
 
-Mídia: `storage.files` + `exercise_media.file_id` (não URL pública permanente).
+Mídia: `exercise_media.object_key` (catálogo) + `storage.files` / `file_id` após o upload. GIFs de catálogo passam pelo proxy autenticado `/api/catalog/gif/[slug]` — não hotlink e não URL pública permanente de PII.
 
 ---
 

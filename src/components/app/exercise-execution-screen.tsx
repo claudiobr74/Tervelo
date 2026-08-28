@@ -187,6 +187,8 @@ export function ExerciseExecutionScreen() {
   const session = getBoundWorkout();
   const idle = live.status === "idle" || !hasSessionWork(session);
 
+  const [recordedFlash, setRecordedFlash] = useState(false);
+
   useEffect(() => {
     if (idle) return;
     if (live.status === "completed" || isSessionComplete(session, live.recorded)) {
@@ -227,8 +229,6 @@ export function ExerciseExecutionScreen() {
   const warmup = warmupOrdinal(exercise, set);
   const superLetter = partners.findIndex((item) => item.id === exercise.id) === 0 ? "A" : "B";
   const nextPartner = partners.find((item) => item.id !== exercise.id);
-
-  const [recordedFlash, setRecordedFlash] = useState(false);
 
   function onRecord() {
     const next = recordCurrentSet();

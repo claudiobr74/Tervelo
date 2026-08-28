@@ -74,6 +74,7 @@ export function mapCatalogExercises(data: CatalogGraphql): CatalogExercise[] {
     return {
       id: exercise.id,
       namePt: exercise.name_pt,
+      description: exercise.description ?? "",
       primaryMuscle: primary.get(exercise.id) ?? "",
       secondaryMuscles: secondary.get(exercise.id) ?? [],
       equipmentName,

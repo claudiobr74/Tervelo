@@ -24,6 +24,21 @@ describe("mapCatalogExercises", () => {
     expect(exercise.movementPattern).toBe("Puxar vertical");
     expect(exercise.aliases).toContain("lat pulldown");
   });
+
+  it("repassa a descrição do canônico", () => {
+    const [exercise] = mapCatalogExercises({
+      ...emptyCatalog,
+      canonical_exercises: [
+        {
+          id: "ex-1",
+          name_pt: "Agachamento",
+          description: "Flexiona joelhos e quadris e volta a ficar de pé.",
+          movement_pattern_id: "p-1",
+        },
+      ],
+    });
+    expect(exercise.description).toBe("Flexiona joelhos e quadris e volta a ficar de pé.");
+  });
 });
 
 describe("mapWorkouts", () => {
@@ -38,7 +53,9 @@ describe("mapWorkouts", () => {
         updated_at: "2026-08-28T00:00:00.000Z",
       },
     ],
-    training_blocks: [{ id: "blk-1", program_id: "prog-1", position: 1, name: "A", intent: "Peito" }],
+    training_blocks: [
+      { id: "blk-1", program_id: "prog-1", position: 1, name: "A", intent: "Peito" },
+    ],
     training_weeks: [{ id: "wk-1", block_id: "blk-1", week_index: 1, notes: null }],
     training_sessions: [
       {

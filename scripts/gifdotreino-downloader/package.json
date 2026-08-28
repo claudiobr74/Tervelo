@@ -1,0 +1,15 @@
+{
+  "name": "gifdotreino-downloader",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "download": "node download_gifdotreino.mjs",
+    "download:headed": "node download_gifdotreino.mjs --browser --headed --limit 5",
+    "download:debug": "node download_gifdotreino.mjs --browser --headed --slow 250 --limit 5",
+    "download:probe": "node download_gifdotreino.mjs --limit 5"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}

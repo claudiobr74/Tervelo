@@ -17,6 +17,13 @@
     "nhost:up": "nhost up",
     "nhost:down": "nhost down",
     "nhost:jwt": "bash scripts/generate-nhost-jwt.sh",
+    "catalog:gifs": "node scripts/gifdotreino-downloader/download_gifdotreino.mjs",
+    "catalog:gifs:probe": "node scripts/gifdotreino-downloader/download_gifdotreino.mjs --limit 5",
+    "catalog:gifs:headed": "node scripts/gifdotreino-downloader/download_gifdotreino.mjs --browser --headed --limit 5",
+    "catalog:gifs:debug": "node scripts/gifdotreino-downloader/download_gifdotreino.mjs --browser --headed --slow 250 --limit 5",
+    "catalog:descriptions": "node scripts/gifdotreino-downloader/fetch_descriptions.mjs",
+    "catalog:media-seed": "node scripts/gifdotreino-downloader/generate_media_seed.mjs",
+    "catalog:gifs:upload": "node scripts/gifdotreino-downloader/upload_gifs_to_nhost.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

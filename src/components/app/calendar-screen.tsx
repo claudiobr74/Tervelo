@@ -120,7 +120,9 @@ export function CalendarScreen() {
               >
                 {day.getDate()}
                 {hasSession ? (
-                  <span className={`mt-0.5 size-1 rounded-full ${isSelected ? "bg-on-brand" : "bg-brand"}`} />
+                  <span
+                    className={`mt-0.5 size-1 rounded-full ${isSelected ? "bg-on-brand" : "bg-brand"}`}
+                  />
                 ) : null}
               </button>
             );

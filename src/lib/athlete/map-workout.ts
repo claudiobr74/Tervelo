@@ -170,7 +170,12 @@ export function mapWorkouts(data: TrainingGraphql): WorkoutSession[] {
 }
 
 export function todaySessionId(
-  sessions: { id: string; scheduledAt?: string | null; scheduled_at?: string | null; status: string }[],
+  sessions: {
+    id: string;
+    scheduledAt?: string | null;
+    scheduled_at?: string | null;
+    status: string;
+  }[],
   now = new Date(),
 ): string | null {
   const start = new Date(now);

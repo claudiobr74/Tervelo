@@ -89,13 +89,13 @@ export const ADMIN_QUERIES = {
   `,
   exercises: `
     query AdminExercises {
-      canonical_exercises(order_by: { name_pt: asc }, limit: 400) {
+      canonical_exercises(order_by: { name_pt: asc }, limit: 2000) {
         id
         name_pt
         description
         movement_pattern_id
       }
-      exercise_aliases(limit: 800) {
+      exercise_aliases(limit: 4000) {
         alias
         locale
         canonical_exercise_id
@@ -235,7 +235,7 @@ export const ADMIN_QUERIES = {
   search: `
     query AdminSearch {
       profiles(limit: 200) { id display_name }
-      canonical_exercises(limit: 200) { id name_pt }
+      canonical_exercises(limit: 2000) { id name_pt }
     }
   `,
   insertAiContract: `

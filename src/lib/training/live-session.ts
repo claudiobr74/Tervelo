@@ -437,7 +437,10 @@ export function skipRest(): AfterRecord {
   const restDone: WorkoutTimelineEvent = { type: "REST_COMPLETED", at };
   if (cached.timer) {
     const skipped = skipRestTimer(deserializeTimer(cached.timer), new Date());
-    if (!hasSessionWork(getBoundWorkout()) || isSessionComplete(getBoundWorkout(), cached.recorded)) {
+    if (
+      !hasSessionWork(getBoundWorkout()) ||
+      isSessionComplete(getBoundWorkout(), cached.recorded)
+    ) {
       persist(
         completeSession({
           ...cached,
