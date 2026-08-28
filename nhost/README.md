@@ -65,8 +65,12 @@ Se o dashboard mostrar Auth em **UpdateError** / `exitCode: 1` e Hasura verde, o
 - Hasura só lê a **pública** (`key`) → pode ficar verde.
 - Auth 0.49.1 exige PEM PKCS#8 em `signing_key` (`-----BEGIN PRIVATE KEY-----` com quebras de linha). Pública ok + privada truncada, numa linha só, `BEGIN RSA PRIVATE KEY` mal colada, ou JSON com `signingKey` em vez de `signing_key` → `exit 1` e `message` vazio no Service State.
 
-Não crie outro secret. Abra **Observability → Logs → hasura-auth** no horário da replica falha e procure `error parsing rsa private key` ou `signing key must be a string`. No secret `NHOST_JWT_PRIVATE_KEY` já existente, o valor tem de ser o PEM inteiro (linhas BEGIN/END visíveis). Depois, Redeploy.
+O Nhost **não preenche** `NHOST_JWT_*`. Secret vazio (só o nome) interpola string vazia: o deploy passa e o Auth cai com `exit 1`. Gerar o par (não buscar no dashboard):
 
-`npm run nhost:jwt` só se o log confirmar PEM inválida e você for **substituir** o valor, não criar o nome.
+```bash
+npm run nhost:jwt
+```
+
+Cole o PEM impresso em Settings → Secrets → editar o nome já criado. Não recrie o secret. Não altere `HASURA_GRAPHQL_ADMIN_SECRET`, `NHOST_WEBHOOK_SECRET` nem `GRAFANA_ADMIN_PASSWORD` — esses o Nhost já preenche na criação do projeto.
 
 Não referenciar secrets extras (`APP_URL`, SMTP, etc.) no TOML até estarem criados no dashboard. Conferir localmente: `cp .secrets.example .secrets && npm run nhost:jwt && npm exec nhost -- config validate`.
