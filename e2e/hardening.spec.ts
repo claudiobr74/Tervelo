@@ -58,6 +58,8 @@ test.describe("hardening", () => {
     await expect(page.getByRole("heading", { name: "Treino e dispositivos" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Sincronizar agora" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Conta" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sair da conta" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Voltar" })).toBeVisible();
   });
 

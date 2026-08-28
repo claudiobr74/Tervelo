@@ -1,10 +1,11 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
+import { NHOST_SESSION_COOKIE, getNhostPublicConfig } from "@/lib/nhost/config";
 import { IDENTITY_COOKIE, isUserId } from "@/lib/auth/identity";
 import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
 import { verifyAccessToken } from "@/lib/auth/jwt";
 import { userIdFromAccessTokenPayload } from "@/lib/auth/roles";
+import { parseSessionCookie } from "@/lib/auth/session-cookie";
 import { allowPreviewSessions } from "@/lib/deploy/runtime";
 import { clientKeyFromRequest, consumeRateLimit } from "@/lib/security/rate-limit";
 import { MAX_SESSION_BODY_BYTES, sanitizeSessionPayload } from "@/lib/security/session-payload";
@@ -71,6 +72,22 @@ export async function POST(request: Request) {
   return NextResponse.json({ ok: true });
 }
 
+async function revokeNhostRefreshToken(rawCookie: string | undefined) {
+  const session = parseSessionCookie(rawCookie);
+  if (!session?.refreshToken || session.preview) return;
+  const { subdomain, region } = getNhostPublicConfig();
+  if (subdomain === "local") return;
+  try {
+    await fetch(`https://${subdomain}.auth.${region}.nhost.run/v1/signout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: session.refreshToken }),
+    });
+  } catch {
+    // Encerrar o cookie mesmo se o Auth não responder.
+  }
+}
+
 export async function DELETE(request: Request) {
   if (
     consumeRateLimit(`session-delete:${clientKeyFromRequest(request)}`, { max: 120 }) === "limited"
@@ -78,6 +95,7 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ ok: false, error: "too_many_requests" }, { status: 429 });
   }
   const store = await cookies();
+  await revokeNhostRefreshToken(store.get(NHOST_SESSION_COOKIE)?.value);
   store.delete(NHOST_SESSION_COOKIE);
   store.delete(IDENTITY_COOKIE);
   // Onboarding é por conta, não por navegador: deixar o cookie faria o próximo
