@@ -28,6 +28,11 @@ export function AdminInventoryScreen() {
 
   const plateChips = [...gym.plates].sort((a, b) => a.weightKg - b.weightKg);
   const missingPlates = plateChips.filter((item) => item.quantity === 0);
+  const selectable = [...chest, ...bars];
+  const registeredPercent =
+    selectable.length === 0
+      ? 0
+      : Math.round((selectable.filter((item) => item.selected).length / selectable.length) * 100);
 
   return (
     <AdminShell
@@ -50,9 +55,9 @@ export function AdminInventoryScreen() {
           </div>
           <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-4">
             <p className="text-[11px] font-bold uppercase text-muted">Maquinário cadastrado</p>
-            <p className="mt-1 text-2xl font-extrabold text-brand">{gym.registeredPercent}%</p>
+            <p className="mt-1 text-2xl font-extrabold text-brand">{registeredPercent}%</p>
             <div className="mt-2 h-2 overflow-clip rounded-full bg-surface-secondary">
-              <div className="h-full bg-brand" style={{ width: `${gym.registeredPercent}%` }} />
+              <div className="h-full bg-brand" style={{ width: `${registeredPercent}%` }} />
             </div>
           </div>
           <div className="flex flex-col gap-1">
