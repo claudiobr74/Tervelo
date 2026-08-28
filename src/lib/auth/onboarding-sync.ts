@@ -1,4 +1,5 @@
 import type { OnboardingDraft } from "@/lib/auth/onboarding";
+import { resolvePostLoginPath } from "@/lib/auth/return-path";
 
 export type OnboardingSaveResult = { ok: true; persisted: boolean } | { ok: false };
 
@@ -47,13 +48,17 @@ export async function saveOnboardingProfile(draft: OnboardingDraft): Promise<Onb
   }
 }
 
-/** Destino após entrar: quem já respondeu o cadastro inicial não deve revê-lo. */
-export async function onboardingLandingPath(): Promise<string> {
+/** Destino após entrar: admin vai ao console; atleta segue o cadastro inicial. */
+export async function onboardingLandingPath(next?: string | null): Promise<string> {
   try {
     const response = await fetch("/api/auth/onboarding", { method: "GET" });
     if (!response.ok) return "/onboarding/perfil";
-    const body = (await response.json()) as { done?: boolean };
-    return body.done ? "/app/today" : "/onboarding/perfil";
+    const body = (await response.json()) as { done?: boolean; admin?: boolean };
+    return resolvePostLoginPath({
+      admin: Boolean(body.admin),
+      onboardingDone: Boolean(body.done),
+      next,
+    });
   } catch {
     return "/onboarding/perfil";
   }

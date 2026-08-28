@@ -7,7 +7,7 @@ import type { ThemePreference } from "@/lib/theme";
 const OPTIONS: { value: ThemePreference; label: string; icon: typeof Sun }[] = [
   { value: "light", label: "Claro", icon: Sun },
   { value: "dark", label: "Escuro", icon: Moon },
-  { value: "system", label: "Usar config. do sistema", icon: Monitor },
+  { value: "system", label: "Padrão do sistema", icon: Monitor },
 ];
 
 export function ThemeToggle() {

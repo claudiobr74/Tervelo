@@ -40,6 +40,17 @@ describe("acesso usuário e administrador", () => {
     expect(roles).toEqual(["user", "me", "admin"]);
     expect(resolveAppAccess(roles)).toBe("admin");
   });
+
+  it("lê roles quando o claim Hasura vem como JSON string", () => {
+    const roles = rolesFromAccessTokenPayload({
+      "https://hasura.io/jwt/claims": JSON.stringify({
+        "x-hasura-default-role": "admin",
+        "x-hasura-allowed-roles": ["user", "me", "admin", "super_admin"],
+      }),
+    });
+    expect(roles).toContain("admin");
+    expect(resolveAppAccess(roles)).toBe("admin");
+  });
 });
 
 describe("matriz Hasura", () => {

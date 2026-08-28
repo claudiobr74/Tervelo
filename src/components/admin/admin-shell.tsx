@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { LogoutButton } from "@/components/auth/logout-button";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { InitialsAvatar } from "@/components/ui/initials-avatar";
 
@@ -145,12 +146,15 @@ export function AdminShell({
             );
           })}
         </nav>
-        <div className="mt-auto flex items-center gap-3 border-t border-border px-2 pt-4">
-          <InitialsAvatar name="A" size={36} />
-          <div className="min-w-0 flex flex-col">
-            <p className="truncate text-sm font-semibold">Administrador</p>
-            <p className="truncate text-xs text-muted">Painel Tervelo</p>
+        <div className="mt-auto flex flex-col gap-3 border-t border-border px-2 pt-4">
+          <div className="flex items-center gap-3">
+            <InitialsAvatar name="A" size={36} />
+            <div className="min-w-0 flex flex-col">
+              <p className="truncate text-sm font-semibold">Administrador</p>
+              <p className="truncate text-xs text-muted">Painel Tervelo</p>
+            </div>
           </div>
+          <LogoutButton />
         </div>
       </aside>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">

@@ -40,14 +40,29 @@ export function resolveAppAccess(roles: readonly string[]): AppAccess | null {
   return null;
 }
 
+function parseHasuraClaims(payload: Record<string, unknown>): HasuraClaims | undefined {
+  const raw = payload[HASURA_CLAIMS];
+  if (typeof raw === "string") {
+    try {
+      return JSON.parse(raw) as HasuraClaims;
+    } catch {
+      return undefined;
+    }
+  }
+  if (raw && typeof raw === "object") {
+    return raw as HasuraClaims;
+  }
+  return undefined;
+}
+
 export function rolesFromAccessTokenPayload(payload: Record<string, unknown>): string[] {
-  const claims = payload[HASURA_CLAIMS] as HasuraClaims | undefined;
+  const claims = parseHasuraClaims(payload);
   const allowed = claims?.["x-hasura-allowed-roles"] ?? [];
   const defaultRole = claims?.["x-hasura-default-role"];
   return [...new Set([defaultRole, ...allowed].filter((role): role is string => Boolean(role)))];
 }
 
 export function userIdFromAccessTokenPayload(payload: Record<string, unknown>): string | null {
-  const claims = payload[HASURA_CLAIMS] as HasuraClaims | undefined;
+  const claims = parseHasuraClaims(payload);
   return claims?.["x-hasura-user-id"] ?? null;
 }

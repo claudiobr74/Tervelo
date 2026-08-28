@@ -6,7 +6,13 @@ import { SYNC_COPY } from "@/domain/offline";
 import { requestSync } from "@/lib/offline/engine-runner";
 import { pendingSyncCount } from "@/lib/offline/queue-store";
 
-export function LogoutButton() {
+const DEFAULT_BUTTON_CLASS =
+  "inline-flex h-11 w-fit items-center justify-center rounded-[var(--radius-md)] border border-border px-6 text-sm font-semibold text-foreground";
+
+const BLOCK_BUTTON_CLASS =
+  "flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] border border-border text-sm font-bold text-error";
+
+export function LogoutButton({ variant = "default" }: { variant?: "default" | "block" }) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
 
@@ -58,9 +64,9 @@ export function LogoutButton() {
     <button
       type="button"
       onClick={() => void logout({ abandon: false })}
-      className="inline-flex h-11 w-fit items-center justify-center rounded-[var(--radius-md)] border border-border px-6 text-sm font-semibold text-foreground"
+      className={variant === "block" ? BLOCK_BUTTON_CLASS : DEFAULT_BUTTON_CLASS}
     >
-      Sair
+      Sair da conta
     </button>
   );
 }

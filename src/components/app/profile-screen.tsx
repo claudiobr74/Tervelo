@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { LogoutButton } from "@/components/auth/logout-button";
 import { InitialsAvatar } from "@/components/ui/initials-avatar";
 import { useOnboardingDraft } from "@/components/onboarding/onboarding-provider";
 import { athleteDisplayName, initialsFromName } from "@/domain/athlete/display-name";
@@ -66,6 +67,9 @@ export function ProfileScreen({ sessionName = null }: { sessionName?: string | n
               </Link>
             ),
           )}
+          <div className="pt-2">
+            <LogoutButton variant="block" />
+          </div>
         </nav>
       </div>
     </AthleteAppShell>

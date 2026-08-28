@@ -64,5 +64,6 @@ test.describe("perfil do atleta", () => {
     await page.goto("/app/profile");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.getByRole("link", { name: "Dados pessoais" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sair da conta" })).toBeVisible();
   });
 });

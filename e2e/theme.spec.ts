@@ -44,4 +44,23 @@ test.describe("tema padrão", () => {
     await page.goto("/app/today");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   });
+
+  test("padrão do sistema segue o esquema de cores do aparelho", async ({ browser }) => {
+    const context = await browser.newContext({
+      colorScheme: "dark",
+      viewport: { width: 390, height: 844 },
+    });
+    const page = await context.newPage();
+    await page.goto("/login");
+    await page.getByLabel("E-mail").fill("lucas.atleta@gmail.com");
+    await page.getByLabel("Senha").fill("senha12345");
+    await page.getByRole("button", { name: "Entrar" }).click();
+    await expect(page).toHaveURL(/\/onboarding\/perfil/);
+
+    await page.goto("/app/settings");
+    await expect(page.getByRole("radio", { name: "Padrão do sistema" })).toBeVisible();
+    await page.getByRole("radio", { name: "Padrão do sistema" }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await context.close();
+  });
 });

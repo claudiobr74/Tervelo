@@ -1,3 +1,5 @@
+import { loginPathWithNext, resolvePostLoginPath } from "@/lib/auth/return-path";
+
 export const PUBLIC_PREFIXES = [
   "/login",
   "/signup",
@@ -34,7 +36,7 @@ export function resolveAuthRedirect(pathname: string, context: AuthContext): str
   }
 
   if ((pathname === "/login" || pathname === "/signup") && hasSession) {
-    return onboardingDone ? "/app/today" : "/onboarding/perfil";
+    return resolvePostLoginPath({ admin: adminAccess, onboardingDone });
   }
 
   if (pathname.startsWith("/onboarding")) {
@@ -48,7 +50,7 @@ export function resolveAuthRedirect(pathname: string, context: AuthContext): str
 
   if (pathname.startsWith("/admin")) {
     if (!hasSession) {
-      return "/login";
+      return loginPathWithNext(pathname);
     }
     if (!adminAccess) {
       return "/";

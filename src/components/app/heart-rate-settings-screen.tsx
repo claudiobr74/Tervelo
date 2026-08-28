@@ -6,6 +6,8 @@ import { HeartRateSettingsCard } from "@/components/app/heart-rate-settings";
 import { AthleteStateSettingsCard } from "@/components/app/athlete-state-settings-card";
 import { DataSyncSettingsCard } from "@/components/app/data-sync-settings-card";
 import { FigmaIcon } from "@/components/auth/figma-icon";
+import { AdminEntryLink } from "@/components/app/admin-entry-link";
+import { LogoutButton } from "@/components/auth/logout-button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 export function HeartRateSettingsScreen() {
@@ -27,6 +29,12 @@ export function HeartRateSettingsScreen() {
         <section className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
           <h2 className="text-base font-bold text-foreground">Aparência</h2>
           <ThemeToggle />
+        </section>
+        <section className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
+          <h2 className="text-base font-bold text-foreground">Conta</h2>
+          <p className="text-sm text-muted">Encerra a sessão neste aparelho.</p>
+          <AdminEntryLink />
+          <LogoutButton variant="block" />
         </section>
       </div>
     </AthleteAppShell>

@@ -71,3 +71,20 @@ test("esqueci senha sem tela FIGMA_PENDING", async ({ page }) => {
   await expect(page.getByText(/Se o e-mail existir/)).toBeVisible();
   await expect(page).toHaveURL(/\/login/);
 });
+
+test("configurações do atleta permitem sair da conta", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/login");
+  await page.getByLabel("E-mail").fill("lucas.atleta@gmail.com");
+  await page.getByLabel("Senha").fill("senha12345");
+  await page.getByRole("button", { name: "Entrar" }).click();
+  await expect(page).toHaveURL(/\/onboarding\/perfil/);
+
+  await page.goto("/app/settings");
+  await expect(page.getByRole("heading", { name: "Conta" })).toBeVisible();
+  await page.getByRole("button", { name: "Sair da conta" }).click();
+  await expect(page).toHaveURL(/\/login/);
+
+  await page.goto("/app/today");
+  await expect(page).toHaveURL(/\/login/);
+});

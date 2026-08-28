@@ -17,6 +17,20 @@ test.describe("console admin", () => {
     await expect(page).toHaveURL(/\/$/);
   });
 
+  test("admin deslogado abre o login e, com papel, entra no console", async ({ page }) => {
+    await page.goto("/admin");
+    await expect(page).toHaveURL(/\/login\?next=/);
+
+    await loginPreview(page);
+    await page.goto("/dev");
+    await page.getByRole("button", { name: "Painel administrativo" }).click();
+    await expect(page).toHaveURL(/\/admin$/);
+    await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+
+    await page.goto("/login");
+    await expect(page).toHaveURL(/\/admin/);
+  });
+
   test("dashboard, usuários e auditoria no desktop", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/dev");

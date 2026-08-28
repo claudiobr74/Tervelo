@@ -28,8 +28,10 @@ export async function proxy(request: NextRequest) {
   const hasSession = session != null;
   const onboardingDone = request.cookies.get(ONBOARDING_COOKIE)?.value === "done";
 
-  // A verificação de assinatura custa uma chamada ao JWKS; só o console admin precisa dela.
-  const adminAccess = pathname.startsWith("/admin") ? await sessionHasAdminAccess(session) : false;
+  // JWKS só quando o destino depende do papel (console admin ou pós-login).
+  const needsRole =
+    pathname.startsWith("/admin") || pathname === "/login" || pathname === "/signup";
+  const adminAccess = needsRole && hasSession ? await sessionHasAdminAccess(session) : false;
 
   const dest = resolveAuthRedirect(pathname, {
     hasSession,
