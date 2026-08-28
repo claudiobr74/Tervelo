@@ -28,6 +28,9 @@ test.describe("layout do app", () => {
       "/app/coach",
       "/app/profile",
       "/app/profile/pessoais",
+      "/app/profile/academia",
+      "/app/profile/privacidade",
+      "/app/profile/notificacoes",
       "/app/settings",
     ]) {
       await page.goto(path);

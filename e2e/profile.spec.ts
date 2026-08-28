@@ -66,4 +66,28 @@ test.describe("perfil do atleta", () => {
     await expect(page.getByRole("link", { name: "Dados pessoais" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Sair da conta" })).toBeVisible();
   });
+
+  test("academia, privacidade e notificações abrem com dados reais", async ({ page }) => {
+    await loginPreview(page);
+    await page.goto("/app/profile");
+    await expect(page.getByText("Em breve")).toHaveCount(0);
+
+    await page.getByRole("link", { name: "Academia e equipamentos" }).click();
+    await expect(page).toHaveURL(/\/app\/profile\/academia/);
+    await expect(page.getByRole("heading", { name: "Academia e equipamentos" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Cadastrar academia" })).toBeVisible();
+
+    await page.goto("/app/profile");
+    await page.getByRole("link", { name: "Privacidade" }).click();
+    await expect(page).toHaveURL(/\/app\/profile\/privacidade/);
+    await expect(page.getByRole("heading", { name: "Privacidade" })).toBeVisible();
+    await expect(page.getByRole("switch", { name: "Atalhos de teclado" })).toBeVisible();
+
+    await page.goto("/app/profile");
+    await page.getByRole("link", { name: "Notificações" }).click();
+    await expect(page).toHaveURL(/\/app\/profile\/notificacoes/);
+    await expect(
+      page.getByRole("heading", { name: /Caixa vazia|Banco indisponível|Notificações/ }),
+    ).toBeVisible();
+  });
 });

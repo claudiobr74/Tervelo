@@ -11,11 +11,8 @@ import {
 } from "@/components/auth/auth-shell";
 import { BrandMark } from "@/components/auth/brand-mark";
 import { FigmaIcon } from "@/components/auth/figma-icon";
-import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
 import { onboardingLandingPath } from "@/lib/auth/onboarding-sync";
-import { persistSession } from "@/lib/auth/persist-session";
 import { isValidEmail, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
-import { getBrowserNhostClient } from "@/lib/nhost/browser";
 
 export function LoginForm() {
   const router = useRouter();
@@ -40,25 +37,23 @@ export function LoginForm() {
     }
     setLoading(true);
     try {
-      if (isLocalNhost()) {
-        await persistSession(previewSession({ email: email.trim() }));
-        router.push(await onboardingLandingPath(searchParams.get("next")));
-        router.refresh();
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      const body = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+      } | null;
+      if (!response.ok || !body?.ok) {
+        setError(body?.error ?? "Não foi possível entrar.");
         return;
       }
-      const nhost = getBrowserNhostClient();
-      const response = await nhost.auth.signInEmailPassword({ email: email.trim(), password });
-      const session = response.body.session;
-      if (!session) {
-        setError("Não foi possível entrar. Confirme o e-mail se ainda não verificou a conta.");
-        return;
-      }
-      await persistSession(session);
       router.push(await onboardingLandingPath(searchParams.get("next")));
       router.refresh();
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Não foi possível entrar.";
-      setError(message);
+    } catch {
+      setError("Não foi possível entrar.");
     } finally {
       setLoading(false);
     }
@@ -71,13 +66,12 @@ export function LoginForm() {
       setError("Informe o e-mail para redefinir a senha.");
       return;
     }
-    if (isLocalNhost()) {
-      setInfo("Se o e-mail existir, enviaremos as instruções para redefinir a senha.");
-      return;
-    }
     try {
-      const nhost = getBrowserNhostClient();
-      await nhost.auth.sendPasswordResetEmail({ email: email.trim() });
+      await fetch("/api/auth/password-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
     } catch {
       // Resposta genérica mesmo em falha — não revela se a conta existe.
     }

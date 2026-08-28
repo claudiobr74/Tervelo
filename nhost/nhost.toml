@@ -43,7 +43,7 @@ mode = 'disabled'
 
 [auth.redirections]
 clientUrl = 'http://localhost:3000'
-allowedUrls = ['http://localhost:3000']
+allowedUrls = ['http://localhost:3000', 'https://tervelo.vercel.app']
 
 [auth.signUp]
 enabled = true
@@ -89,7 +89,8 @@ enabled = false
 
 [auth.method.emailPassword]
 hibpEnabled = false
-emailVerificationRequired = true
+# Sem SMTP no TOML o e-mail de confirmação não chega; cadastro devolve sessão.
+emailVerificationRequired = false
 passwordMinLength = 9
 
 [auth.method.smsPasswordless]

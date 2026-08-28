@@ -9,11 +9,15 @@ test("login mostra marca, entrar e criar conta", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Google" })).toBeDisabled();
 });
 
-test("cadastro mostra campos do Figma", async ({ page }) => {
+test("cadastro local abre o onboarding", async ({ page }) => {
   await page.goto("/signup");
-  await expect(page.getByRole("heading", { name: "Crie sua conta" })).toBeVisible();
-  await expect(page.getByText("Nome completo", { exact: false })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Criar minha conta" })).toBeVisible();
+  await page.getByLabel("Nome completo").fill("Ana Silva");
+  await page.getByLabel("E-mail").fill("ana.nova@tervelo.app");
+  await page.getByLabel("Senha", { exact: true }).fill("senha12345");
+  await page.getByLabel("Confirmar senha").fill("senha12345");
+  await page.getByRole("button", { name: "Criar minha conta" }).click();
+  await expect(page).toHaveURL(/\/onboarding\/perfil/);
+  await expect(page.getByRole("heading", { name: "Sobre você" })).toBeVisible();
 });
 
 test("onboarding sem sessão volta para login", async ({ page }) => {

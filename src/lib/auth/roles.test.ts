@@ -211,6 +211,7 @@ describe("matriz Hasura", () => {
     const toml = readFileSync("nhost/nhost.toml", "utf8");
     expect(toml).toContain("default = 'user'");
     expect(toml).toContain("allowed = ['user', 'me', 'admin', 'super_admin']");
+    expect(toml).toContain("emailVerificationRequired = false");
   });
 
   it("migration registra papéis admin e super_admin em auth.roles", () => {
