@@ -60,10 +60,13 @@ O GitHub usa `nhost/nhost.toml`. Qualquer `{{ secrets.NOME }}` **tem** de existi
 | `NHOST_JWT_PUBLIC_KEY`         | idem, PEM completo (`BEGIN PUBLIC KEY`) |
 | `NHOST_JWT_PRIVATE_KEY`        | idem, PEM PKCS#8 (`BEGIN PRIVATE KEY`) |
 
-Se o dashboard mostrar Auth em **UpdateError** / `exitCode: 1` e Hasura/Postgres/Storage verdes: a replica nova do Auth não conseguiu assinar JWT. Quase sempre a privada está truncada, sem quebra de linha, ou ainda é o placeholder `run-npm-run-nhost-jwt`. Hasura só verifica a pública, então pode continuar saudável.
+Se o dashboard mostrar Auth em **UpdateError** / `exitCode: 1` e Hasura verde, os *nomes* dos secrets JWT já existem — o deploy passou da validação de config. A replica nova do Auth mesmo assim não sobe porque não consegue **usar** a chave privada:
 
-1. `npm run nhost:jwt`
-2. Settings → Secrets: criar/atualizar os três nomes com o PEM inteiro (linhas BEGIN/END visíveis).
-3. Redeploy (ou um commit vazio / “Redeploy” no GitHub).
+- Hasura só lê a **pública** (`key`) → pode ficar verde.
+- Auth 0.49.1 exige PEM PKCS#8 em `signing_key` (`-----BEGIN PRIVATE KEY-----` com quebras de linha). Pública ok + privada truncada, numa linha só, `BEGIN RSA PRIVATE KEY` mal colada, ou JSON com `signingKey` em vez de `signing_key` → `exit 1` e `message` vazio no Service State.
+
+Não crie outro secret. Abra **Observability → Logs → hasura-auth** no horário da replica falha e procure `error parsing rsa private key` ou `signing key must be a string`. No secret `NHOST_JWT_PRIVATE_KEY` já existente, o valor tem de ser o PEM inteiro (linhas BEGIN/END visíveis). Depois, Redeploy.
+
+`npm run nhost:jwt` só se o log confirmar PEM inválida e você for **substituir** o valor, não criar o nome.
 
 Não referenciar secrets extras (`APP_URL`, SMTP, etc.) no TOML até estarem criados no dashboard. Conferir localmente: `cp .secrets.example .secrets && npm run nhost:jwt && npm exec nhost -- config validate`.
