@@ -11,11 +11,13 @@ import {
   PRIMARY_CTA_CLASS,
 } from "@/components/auth/auth-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
-import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
 import { patchOnboarding } from "@/lib/auth/onboarding-store";
-import { persistSession } from "@/lib/auth/persist-session";
-import { isValidEmail, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
-import { getBrowserNhostClient } from "@/lib/nhost/browser";
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  isValidDisplayName,
+  isValidEmail,
+} from "@/lib/auth/password";
 
 export function SignupForm() {
   const router = useRouter();
@@ -32,8 +34,8 @@ export function SignupForm() {
     event.preventDefault();
     setError(null);
     setInfo(null);
-    if (!displayName.trim()) {
-      setError("Informe o nome completo.");
+    if (!isValidDisplayName(displayName)) {
+      setError("Informe o nome completo, sem caracteres especiais.");
       return;
     }
     if (!isValidEmail(email)) {
@@ -53,33 +55,33 @@ export function SignupForm() {
       return;
     }
     setLoading(true);
-    const name = displayName.trim().slice(0, 32);
+    const name = displayName.trim().slice(0, DISPLAY_NAME_MAX_LENGTH);
     try {
-      if (isLocalNhost()) {
-        await persistSession(previewSession({ displayName: name, email: email.trim() }));
-        patchOnboarding({ displayName: name });
-        router.push("/onboarding/perfil");
-        router.refresh();
-        return;
-      }
-      const nhost = getBrowserNhostClient();
-      const response = await nhost.auth.signUpEmailPassword({
-        email: email.trim(),
-        password,
-        options: { displayName: name, locale: "pt" },
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: name, email: email.trim(), password }),
       });
-      const session = response.body.session;
-      if (!session) {
-        setInfo("Conta criada. Confirme o e-mail para entrar.");
+      const body = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+        needsEmail?: boolean;
+        message?: string;
+        destination?: string;
+      } | null;
+      if (body?.needsEmail) {
+        setInfo(body.message ?? "Conta criada. Confirme o e-mail para entrar.");
         return;
       }
-      await persistSession(session);
+      if (!response.ok || !body?.ok) {
+        setError(body?.error ?? "Não foi possível criar a conta.");
+        return;
+      }
       patchOnboarding({ displayName: name });
-      router.push("/onboarding/perfil");
+      router.push(body.destination ?? "/onboarding/perfil");
       router.refresh();
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Não foi possível criar a conta.";
-      setError(message);
+    } catch {
+      setError("Não foi possível criar a conta.");
     } finally {
       setLoading(false);
     }

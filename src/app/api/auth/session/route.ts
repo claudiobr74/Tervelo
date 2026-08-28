@@ -6,12 +6,10 @@ import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
 import { verifyAccessToken } from "@/lib/auth/jwt";
 import { userIdFromAccessTokenPayload } from "@/lib/auth/roles";
 import { parseSessionCookie } from "@/lib/auth/session-cookie";
+import { commitStoredSession } from "@/lib/auth/commit-session";
 import { allowPreviewSessions } from "@/lib/deploy/runtime";
 import { clientKeyFromRequest, consumeRateLimit } from "@/lib/security/rate-limit";
 import { MAX_SESSION_BODY_BYTES, sanitizeSessionPayload } from "@/lib/security/session-payload";
-
-const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
-const IDENTITY_MAX_AGE = SESSION_MAX_AGE;
 
 export async function POST(request: Request) {
   if (consumeRateLimit(`session:${clientKeyFromRequest(request)}`, { max: 120 }) === "limited") {
@@ -50,25 +48,7 @@ export async function POST(request: Request) {
     userId = claimed;
   }
 
-  const store = await cookies();
-  store.set(NHOST_SESSION_COOKIE, JSON.stringify(session), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: SESSION_MAX_AGE,
-  });
-  if (userId) {
-    store.set(IDENTITY_COOKIE, userId, {
-      httpOnly: false,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: IDENTITY_MAX_AGE,
-    });
-  } else {
-    store.delete(IDENTITY_COOKIE);
-  }
+  await commitStoredSession(session, userId);
   return NextResponse.json({ ok: true });
 }
 

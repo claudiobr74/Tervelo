@@ -8,16 +8,16 @@ import { InitialsAvatar } from "@/components/ui/initials-avatar";
 import { useOnboardingDraft } from "@/components/onboarding/onboarding-provider";
 import { athleteDisplayName, initialsFromName } from "@/domain/athlete/display-name";
 
-const ITEMS: ({ label: string; href: string } | { label: string; pending: true })[] = [
+const ITEMS: { label: string; href: string }[] = [
   { label: "Dados pessoais", href: "/app/profile/pessoais" },
   { label: "Objetivos", href: "/app/profile/objetivos" },
-  { label: "Academia e equipamentos", pending: true },
+  { label: "Academia e equipamentos", href: "/app/profile/academia" },
   { label: "Disponibilidade", href: "/app/profile/disponibilidade" },
   { label: "Preferências de treino", href: "/app/profile/preferencias" },
   { label: "Limitações", href: "/app/profile/limitacoes" },
   { label: "Nutrição", href: "/app/nutrition" },
-  { label: "Privacidade", pending: true },
-  { label: "Notificações", pending: true },
+  { label: "Privacidade", href: "/app/profile/privacidade" },
+  { label: "Notificações", href: "/app/profile/notificacoes" },
   { label: "Conta", href: "/app/settings" },
 ];
 
@@ -45,28 +45,15 @@ export function ProfileScreen({ sessionName = null }: { sessionName?: string | n
           </div>
         </div>
         <nav aria-label="Mais opções" className="flex flex-col gap-2.5 px-6 pb-6">
-          {ITEMS.map((item) =>
-            "pending" in item ? (
-              <button
-                key={item.label}
-                type="button"
-                disabled
-                aria-label={`${item.label} — em breve`}
-                className="flex w-full items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface p-4 text-left opacity-60"
-              >
-                <span className="text-sm font-medium text-foreground">{item.label}</span>
-                <span className="text-[11px] font-semibold uppercase text-muted">Em breve</span>
-              </button>
-            ) : (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="flex items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface p-4"
-              >
-                <MenuRow label={item.label} />
-              </Link>
-            ),
-          )}
+          {ITEMS.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="flex items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface p-4"
+            >
+              <MenuRow label={item.label} />
+            </Link>
+          ))}
           <div className="pt-2">
             <LogoutButton variant="block" />
           </div>
