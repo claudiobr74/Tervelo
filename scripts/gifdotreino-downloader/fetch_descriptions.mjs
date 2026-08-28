@@ -9,6 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { categoryFromPath, slugify } from "./download_gifdotreino.mjs";
 import { htmlToPlainText, PATTERN_BY_FOLDER } from "./description-text.mjs";
+import { buildMediaSeed } from "./generate_media_seed.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const START_URL = "https://www.gifdotreino.com/";
@@ -16,6 +17,7 @@ const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36";
 const META = path.join(__dirname, "output", "metadata");
 const SEED = path.join(__dirname, "../../nhost/seeds/default/003_gifdotreino_exercises.sql");
+const MEDIA_SEED = path.join(__dirname, "../../nhost/seeds/default/004_gifdotreino_media.sql");
 const CONCURRENCY = 8;
 
 function descriptionUrl(name) {
@@ -193,8 +195,10 @@ async function main() {
 
   await fs.writeFile(outPath, JSON.stringify(exercises, null, 2), "utf8");
   const seed = buildSeed(exercises);
+  const mediaSeed = buildMediaSeed(exercises);
   await fs.mkdir(path.dirname(SEED), { recursive: true });
   await fs.writeFile(SEED, seed, "utf8");
+  await fs.writeFile(MEDIA_SEED, mediaSeed, "utf8");
 
   const stats = {
     total: exercises.length,
@@ -204,10 +208,12 @@ async function main() {
     error: exercises.filter((item) => item.description_status === "error").length,
     with_pattern: exercises.filter((item) => item.pattern_slug).length,
     seed_bytes: Buffer.byteLength(seed),
+    media_seed_bytes: Buffer.byteLength(mediaSeed),
   };
   await fs.writeFile(path.join(META, "descriptions-stats.json"), JSON.stringify(stats, null, 2), "utf8");
   console.log(JSON.stringify(stats, null, 2));
   console.log(`Seed: ${SEED}`);
+  console.log(`Media seed: ${MEDIA_SEED}`);
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);

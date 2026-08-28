@@ -103,9 +103,12 @@ export function TodayScreen({ sessionName = null }: { sessionName?: string | nul
                 <p className="text-[13px] text-muted">
                   Quando houver um plano para hoje, ele aparece aqui.
                 </p>
-                <div className="mt-2 flex gap-3">
+                <div className="mt-2 flex flex-wrap gap-3">
                   <Link href="/app/plan" className="text-sm font-semibold text-brand">
                     Montar plano
+                  </Link>
+                  <Link href="/app/exercises" className="text-sm font-semibold text-brand">
+                    Biblioteca
                   </Link>
                   <Link href="/app/calendar" className="text-sm font-semibold text-brand">
                     Calendário

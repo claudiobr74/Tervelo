@@ -14,6 +14,8 @@ type Exercise = {
   movementPatternId: string | null;
   movementPattern: string;
   aliases: string[];
+  imageSrc?: string;
+  category?: string;
 };
 type Pattern = { id: string; slug: string; name_pt: string };
 
@@ -34,10 +36,15 @@ export function AdminExercisesScreen() {
       (item) =>
         !needle ||
         item.namePt.toLocaleLowerCase("pt-BR").includes(needle) ||
+        (item.description ?? "").toLocaleLowerCase("pt-BR").includes(needle) ||
+        (item.category ?? "").toLocaleLowerCase("pt-BR").includes(needle) ||
         item.aliases.some((alias) => alias.toLocaleLowerCase("pt-BR").includes(needle)),
     );
   }, [data, query]);
-  const selected = list.find((item) => item.id === selectedId) ?? list[0];
+  const previewCap = 40;
+  const truncated = !query.trim() && list.length > previewCap;
+  const shown = truncated ? list.slice(0, previewCap) : list;
+  const selected = shown.find((item) => item.id === selectedId) ?? shown[0];
 
   async function addExercise() {
     setMessage(null);
@@ -56,7 +63,7 @@ export function AdminExercisesScreen() {
   return (
     <AdminShell
       title="Biblioteca de Exercícios"
-      subtitle="Catálogo canônico no Nhost. Nomes e descrições entram pelo seed da biblioteca."
+      subtitle="Catálogo autorizado: título, descrição e GIF. O banco recebe o mesmo conteúdo pelo seed."
       active="Exercícios"
     >
       <div className="flex flex-col gap-4">
@@ -71,7 +78,7 @@ export function AdminExercisesScreen() {
             />
           </div>
           <span className="text-sm font-semibold text-brand">
-            {data?.exercises.length ?? 0} exercícios no banco
+            {data?.exercises.length ?? 0} exercícios na biblioteca
           </span>
         </div>
         <form
@@ -117,11 +124,16 @@ export function AdminExercisesScreen() {
           error={error}
           empty={!loading && !error && list.length === 0}
           emptyTitle="Catálogo vazio"
-          emptyBody="Nenhum canonical_exercises no banco para esta sessão."
+          emptyBody="A biblioteca autorizada ainda não está neste ambiente."
         />
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div className="flex flex-col gap-2">
-            {list.map((exercise) => (
+            {truncated ? (
+              <p className="text-sm text-muted">
+                Mostrando {shown.length} de {list.length}. Busque pelo nome para ver o restante.
+              </p>
+            ) : null}
+            {shown.map((exercise) => (
               <button
                 key={exercise.id}
                 type="button"
@@ -134,7 +146,7 @@ export function AdminExercisesScreen() {
               >
                 <p className="text-sm font-bold">{exercise.namePt}</p>
                 <p className="text-xs text-muted">
-                  {exercise.movementPattern || "Padrão não informado"}
+                  {exercise.category || exercise.movementPattern || "Sem categoria"}
                 </p>
               </button>
             ))}
@@ -142,8 +154,24 @@ export function AdminExercisesScreen() {
           {selected ? (
             <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
               <h2 className="text-xl font-extrabold">{selected.namePt}</h2>
-              <p className="mt-2 whitespace-pre-wrap text-sm text-muted">
-                {selected.description || "Sem descrição no banco."}
+              {selected.imageSrc ? (
+                <span className="relative mt-4 block aspect-square w-full overflow-clip rounded-[var(--radius-md)] bg-background">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={selected.imageSrc}
+                    alt={`Demonstração em movimento: ${selected.namePt}`}
+                    width={480}
+                    height={480}
+                    className="size-full object-contain"
+                  />
+                </span>
+              ) : null}
+              <p className="mt-4 whitespace-pre-wrap text-sm text-muted">
+                {selected.description || "Sem descrição na ficha."}
+              </p>
+              <p className="mt-3 text-sm">
+                <span className="font-bold">Categoria: </span>
+                {selected.category || "—"}
               </p>
               <p className="mt-3 text-sm">
                 <span className="font-bold">Padrão: </span>

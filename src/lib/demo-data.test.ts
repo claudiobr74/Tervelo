@@ -9,7 +9,7 @@ describe("dados de demonstração", () => {
     expect(PREVIEW_WORKOUT.title).toBe("");
   });
 
-  it("catálogo de exercícios continua disponível só no Nhost local", () => {
+  it("não religa catálogo de demonstração Figma", () => {
     expect(catalogDemoEnabled()).toBe(false);
   });
 });

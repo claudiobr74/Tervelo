@@ -102,7 +102,7 @@ select_permissions:
               _in:
                 - exercise-media
                 - equipment-media
-      limit: 100
+      limit: 2500
   - role: admin
     permission:
       columns:

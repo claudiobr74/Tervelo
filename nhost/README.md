@@ -39,6 +39,7 @@ Em **pré-visualização local** (e Preview Vercel sem Nhost cloud) o botão **D
 - `seeds/default/001_catalog.sql` — músculos, categorias, padrões
 - `seeds/default/002_exercises_equipment.sql` — catálogo mínimo (2 exercícios)
 - `seeds/default/003_gifdotreino_exercises.sql` — nomes + descrições da biblioteca Gif do Treino (autorizada)
+- `seeds/default/004_gifdotreino_media.sql` — `exercise_media.object_key` (GIF local; `file_id` depois do upload)
 - `emails/pt/` — templates Auth
 
 Regenerar YAML público:
@@ -49,7 +50,7 @@ npm run metadata:generate
 
 Este ambiente de cloud **não tem Docker**; `nhost up` fica para a máquina do operador.
 
-Seeds **não** sobem sozinhos para o Nhost Cloud. Depois de `001` e `002`, aplicar `003_gifdotreino_exercises.sql` com `npm exec nhost -- seed apply` ou `psql -f` (o SQL Editor pode recusar o arquivo de 2,5 MB).
+Seeds **não** sobem sozinhos para o Nhost Cloud. Depois de `001` e `002`, aplicar `003_gifdotreino_exercises.sql` e `004_gifdotreino_media.sql` com `npm exec nhost -- seed apply` ou `psql -f` (o SQL Editor pode recusar o arquivo de 2,5 MB do `003`). A migration `20260828223000_exercise_media` precisa existir antes do `004`.
 
 ## Deploy no Nhost Cloud
 

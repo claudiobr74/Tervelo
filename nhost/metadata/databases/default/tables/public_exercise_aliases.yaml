@@ -22,17 +22,17 @@ select_permissions:
         - alias
         - locale
       filter: *a1
-      limit: 1000
+      limit: 2500
   - role: admin
     permission:
       columns: *a3
       filter: *a1
-      limit: 1000
+      limit: 2500
   - role: super_admin
     permission:
       columns: *a3
       filter: *a1
-      limit: 1000
+      limit: 2500
 update_permissions:
   - role: admin
     permission:

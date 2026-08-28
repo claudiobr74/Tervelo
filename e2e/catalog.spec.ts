@@ -8,13 +8,29 @@ async function loginPreview(page: import("@playwright/test").Page) {
   await expect(page).toHaveURL(/\/onboarding\/perfil/);
 }
 
-test("busca de exercícios não inventa catálogo sem banco", async ({ page }) => {
+test("busca de exercícios mostra a biblioteca autorizada", async ({ page }) => {
   await loginPreview(page);
   await page.goto("/app/exercises");
   await expect(page.getByRole("heading", { name: "Exercícios", level: 1 })).toBeVisible();
-  await expect(page.getByLabel("Buscar exercício")).toHaveValue("");
-  await expect(page.getByRole("heading", { name: /Catálogo vazio|Banco indisponível/ })).toBeVisible();
+  await expect(page.getByText("Catálogo vazio")).toHaveCount(0);
   await expect(page.getByText("Puxada Alta Aberta")).toHaveCount(0);
+  await expect(page.getByText(/na biblioteca/)).toBeVisible();
+  await page.getByLabel("Buscar exercício").fill("Abdução Lateral do Quadril com Alavanca");
+  await expect(
+    page.getByRole("button", { name: /Abdução Lateral do Quadril com Alavanca/ }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: /Abdução Lateral do Quadril com Alavanca/ }).click();
+  await expect(
+    page.getByRole("heading", { name: "Abdução Lateral do Quadril com Alavanca" }),
+  ).toBeVisible();
+  await expect(page.getByText(/glúteo médio/i)).toBeVisible();
+  await expect(page.getByRole("img", { name: /Abdução Lateral do Quadril com Alavanca/ })).toBeVisible();
+  await expect(page.getByRole("img", { name: /Abdução Lateral do Quadril com Alavanca/ })).toHaveAttribute(
+    "src",
+    "/api/catalog/gif/abducao-lateral-do-quadril-com-alavanca",
+  );
+  await page.getByRole("button", { name: "Voltar à lista" }).click();
+  await expect(page.getByText("Biblioteca")).toBeVisible();
 });
 
 test("calculadora não monta barra com inventário inventado", async ({ page }) => {
@@ -38,6 +54,11 @@ test("pré-visualização admin de inventário não inventa anilhas", async ({ p
   await page.goto("/dev");
   await page.getByRole("button", { name: "Console admin (pré-visualização)" }).click();
   await expect(page).toHaveURL(/\/admin\/exercises/);
+  await expect(page.getByRole("heading", { name: "Biblioteca de Exercícios" })).toBeVisible();
+  await expect(page.getByText(/exercícios na biblioteca/)).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Abdução Lateral do Quadril com Alavanca" }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Inventário da Academia" }).click();
   await expect(page.getByRole("heading", { name: "Inventário da Academia" })).toBeVisible();
   await expect(page.getByText("1.247")).toHaveCount(0);

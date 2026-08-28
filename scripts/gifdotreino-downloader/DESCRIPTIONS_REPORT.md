@@ -10,7 +10,7 @@ A ficha de verdade está em `https://www.gifdotreino.com/Descrição/{nome}.txt`
 
 O Tervelo guarda isso em `canonical_exercises.name_pt` + `canonical_exercises.description` (texto, não HTML — a UI não usa `innerHTML`).
 
-GIFs **não** entram nesta etapa (sem upload, sem hotlink). Só nome, descrição e pasta como alias.
+GIFs entram no app pela API autenticada `/api/catalog/gif/[slug]` (disco local) e, no Cloud, pelo bucket `exercise-media`. Sem hotlink.
 
 ## Resultado da extração
 
@@ -26,9 +26,11 @@ GIFs **não** entram nesta etapa (sem upload, sem hotlink). Só nome, descriçã
 ## O que entra no app
 
 1. JSON extraído: `scripts/gifdotreino-downloader/output/metadata/exercises.json`
-2. Seed idempotente: `nhost/seeds/default/003_gifdotreino_exercises.sql`
-3. Alias = pasta do site (Peitoral, Costas, …)
-4. Admin e busca do atleta leem `description` do banco; limite GraphQL subiu para 2000
+2. Seed de nomes/descrições: `nhost/seeds/default/003_gifdotreino_exercises.sql`
+3. Seed de mídia: `nhost/seeds/default/004_gifdotreino_media.sql` (`object_key`)
+4. Alias = pasta do site (Peitoral, Costas, …)
+5. Atleta: `/app/exercises` — lista (título + categoria) e ficha (GIF + descrição)
+6. Admin: `/admin/exercises` — a mesma ficha
 
 ## Como aplicar no Nhost (operador)
 
@@ -40,10 +42,10 @@ npm exec nhost -- seed apply
 
 Ou `psql` / SQL Editor com o arquivo `003` (2,5 MB — o editor do dashboard pode recusar; prefira `psql -f`).
 
-Ordem: `001` → `002` → `003`.
+Ordem: migration `exercise_media` → `001` → `002` → `003` → `004`.
 
 ## Não feito
 
-- Upload dos GIFs
-- Aplicar o seed no projeto Cloud desta sessão
+- Upload dos GIFs ao bucket Nhost `exercise-media` (`file_id`)
+- Aplicar seeds no projeto Cloud desta sessão
 - Variantes / músculos / equipment_models para os 963 nomes

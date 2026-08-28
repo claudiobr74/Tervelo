@@ -1,22 +1,22 @@
 table:
-  name: canonical_exercises
+  name: exercise_media
   schema: public
-array_relationships:
-  - name: media
+object_relationships:
+  - name: canonical_exercise
     using:
-      foreign_key_constraint_on:
-        column: canonical_exercise_id
-        table:
-          name: exercise_media
-          schema: public
+      foreign_key_constraint_on: canonical_exercise_id
 insert_permissions:
   - role: admin
     permission:
       check: &a1 {}
       columns: &a2
-        - name_pt
-        - description
-        - movement_pattern_id
+        - canonical_exercise_id
+        - kind
+        - file_id
+        - object_key
+        - mime_type
+        - bytes
+        - sha256
   - role: super_admin
     permission:
       check: *a1
@@ -26,11 +26,14 @@ select_permissions:
     permission:
       columns: &a3
         - id
-        - name_pt
-        - description
-        - movement_pattern_id
+        - canonical_exercise_id
+        - kind
+        - file_id
+        - object_key
+        - mime_type
+        - bytes
+        - sha256
         - created_at
-        - updated_at
       filter: *a1
       limit: 2500
   - role: admin

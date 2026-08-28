@@ -39,8 +39,11 @@ npm run catalog:gifs:probe
 # 3. Biblioteca completa (~960 GIFs, ~3 GB)
 npm run catalog:gifs
 
-# 4. Nomes + descrições → seed SQL
+# 4. Nomes + descrições → seeds 003 e 004
 npm run catalog:descriptions
+
+# 5. Só o seed de mídia (object_key)
+npm run catalog:media-seed
 ```
 
 Playwright (validação do modal **Visualizar**):
@@ -93,9 +96,9 @@ Cada item do manifest:
 
 ## Tervelo
 
-Depois da coleta, **não** fazer upload ao Nhost sem revisar o relatório.
+Como o atleta vê a biblioteca, e o que entra no banco: [LIBRARY.md](./LIBRARY.md).
 
-Próximo passo (outra tarefa): bucket `exercise-media` + `exercise_media.file_id`. Sem hotlink.
+GIFs **não** vão no git. A API `/api/catalog/gif/[slug]` lê `output/gifs/` com sessão. Upload ao bucket `exercise-media` + `file_id` é o passo seguinte. Sem hotlink.
 
 ## Observação
 

@@ -78,6 +78,10 @@ function withFavorites(exercises: CatalogExercise[], ids: string[]): CatalogExer
   }));
 }
 
+function categoryLine(exercise: CatalogExercise): string {
+  return [exercise.primaryMuscle, exercise.movementPattern].filter(Boolean).join(" • ");
+}
+
 export function ExerciseSearchScreen() {
   const catalogQuery = useAdminQuery<{ exercises: CatalogExercise[] }>("/api/me/catalog");
   const [query, setQuery] = useState("");
@@ -93,12 +97,22 @@ export function ExerciseSearchScreen() {
     [catalogQuery.data?.exercises, storedFavorites],
   );
   const results = searchCatalogExercises(catalog, query, filter);
-  const selected = results.find((item) => item.id === selectedId) ?? results[0];
+  const selected = selectedId ? (catalog.find((item) => item.id === selectedId) ?? null) : null;
+  const previewCap = 24;
+  const truncated = !query && filter !== "favorites" && results.length > previewCap;
+  const visible = truncated ? results.slice(0, previewCap) : results;
 
   return (
     <AthleteAppShell active="Treino">
       <div className="flex flex-col gap-3 px-6 pb-3 pt-4">
-        <h1 className="text-2xl font-extrabold text-foreground">Exercícios</h1>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-col gap-1">
+            <h1 className="text-2xl font-extrabold text-foreground">Exercícios</h1>
+            {!catalogQuery.loading && catalog.length > 0 ? (
+              <p className="text-xs text-muted">{catalog.length} na biblioteca</p>
+            ) : null}
+          </div>
+        </div>
         <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
           <FigmaIcon src="/icons/search.svg" alt="" size={18} className="text-muted" />
           <input
@@ -140,104 +154,141 @@ export function ExerciseSearchScreen() {
         </div>
       </div>
       <div className="flex flex-col gap-4 px-6 pb-6">
-        <p className="text-[13px] font-bold uppercase text-muted">Resultados da busca</p>
-        {catalogQuery.loading ? <p className="text-sm text-muted">Consultando o catálogo no banco…</p> : null}
+        {catalogQuery.loading ? <p className="text-sm text-muted">Consultando a biblioteca…</p> : null}
         {catalogQuery.error ? (
-          <EmptyPanel title="Banco indisponível" body="A busca só lista exercícios gravados." />
+          <EmptyPanel title="Biblioteca indisponível" body="Não foi possível ler o catálogo autorizado." />
         ) : null}
         {!catalogQuery.loading && !catalogQuery.error && catalog.length === 0 ? (
           <EmptyPanel
             title="Catálogo vazio"
-            body="O admin grava exercícios na biblioteca. Esta busca não preenche movimento inventado."
+            body="A biblioteca autorizada ainda não está neste ambiente."
           />
         ) : null}
-        <div className="flex flex-col gap-2.5">
-          {results.length === 0 ? (
-            query ? (
-              <p className="text-sm text-muted">Nenhum exercício encontrado para esta busca.</p>
-            ) : catalog.length > 0 ? (
-              <p className="text-sm text-muted">Digite para filtrar o catálogo gravado.</p>
-            ) : null
-          ) : (
-            results.map((exercise) => (
-              <div
-                key={exercise.id}
-                className={`flex items-center justify-between rounded-[var(--radius-lg)] border bg-surface p-3.5 ${
-                  selected?.id === exercise.id ? "border-brand" : "border-border"
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => setSelectedId(exercise.id)}
-                  className="flex min-w-0 flex-1 flex-col gap-1 text-left"
-                >
-                  <p className="text-sm font-bold text-foreground">{exercise.namePt}</p>
-                  <p className="text-xs text-muted">
-                    {exercise.primaryMuscle} • {exercise.equipmentName}
-                  </p>
-                </button>
-                <button
-                  type="button"
-                  aria-label={exercise.favorite ? "Remover dos favoritos" : "Favoritar"}
-                  onClick={() => toggleFavorite(exercise.id)}
-                  className={exercise.favorite ? "text-brand" : "text-muted"}
-                >
-                  <FigmaIcon
-                    src={exercise.favorite ? "/icons/heart-filled.svg" : "/icons/heart.svg"}
-                    alt=""
-                    size={20}
-                  />
-                </button>
-              </div>
-            ))
-          )}
-        </div>
+
         {selected ? (
           <article className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-lg font-extrabold text-foreground">{selected.namePt}</h2>
-              <FigmaIcon
-                src={selected.favorite ? "/icons/heart-filled.svg" : "/icons/heart.svg"}
-                alt=""
-                size={20}
+              <button
+                type="button"
+                onClick={() => setSelectedId(null)}
+                className="text-sm font-semibold text-brand"
+              >
+                Voltar à lista
+              </button>
+              <button
+                type="button"
+                aria-label={selected.favorite ? "Remover dos favoritos" : "Favoritar"}
+                onClick={() => toggleFavorite(selected.id)}
                 className={selected.favorite ? "text-brand" : "text-muted"}
-              />
+              >
+                <FigmaIcon
+                  src={selected.favorite ? "/icons/heart-filled.svg" : "/icons/heart.svg"}
+                  alt=""
+                  size={20}
+                />
+              </button>
             </div>
+            <h2 className="text-lg font-extrabold text-foreground">{selected.namePt}</h2>
             {selected.imageSrc ? (
-              <span className="relative block h-[140px] w-full overflow-clip rounded-[var(--radius-md)]">
+              <span className="relative block aspect-square w-full overflow-clip rounded-[var(--radius-md)] bg-background">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={selected.imageSrc}
-                  alt=""
+                  alt={`Demonstração em movimento: ${selected.namePt}`}
                   width={342}
-                  height={140}
-                  className="size-full object-cover"
+                  height={342}
+                  className="size-full object-contain"
                 />
               </span>
-            ) : null}
+            ) : (
+              <p className="text-sm text-muted">GIF ainda não disponível neste exercício.</p>
+            )}
             <div className="flex flex-col gap-2 text-xs text-muted">
               {selected.description ? (
-                <p className="whitespace-pre-wrap text-sm text-foreground">{selected.description}</p>
+                <p className="whitespace-pre-wrap text-sm leading-5 text-foreground">
+                  {selected.description}
+                </p>
+              ) : (
+                <p className="text-sm">Sem descrição na ficha.</p>
+              )}
+              {selected.primaryMuscle ? (
+                <p>
+                  <span className="font-bold text-foreground">Categoria: </span>
+                  {selected.primaryMuscle}
+                </p>
               ) : null}
-              <p>
-                <span className="font-bold text-foreground">Músculo Principal: </span>
-                {selected.primaryMuscle || "—"}
-              </p>
-              <p>
-                <span className="font-bold text-foreground">Secundários: </span>
-                {selected.secondaryMuscles.join(", ")}
-              </p>
-              <p>
-                <span className="font-bold text-foreground">Equipamento: </span>
-                {selected.equipmentName}
-              </p>
-              <p>
-                <span className="font-bold text-foreground">Padrão: </span>
-                {selected.movementPattern}
-              </p>
+              {selected.secondaryMuscles.length > 0 ? (
+                <p>
+                  <span className="font-bold text-foreground">Secundários: </span>
+                  {selected.secondaryMuscles.join(", ")}
+                </p>
+              ) : null}
+              {selected.equipmentName ? (
+                <p>
+                  <span className="font-bold text-foreground">Equipamento: </span>
+                  {selected.equipmentName}
+                </p>
+              ) : null}
+              {selected.movementPattern ? (
+                <p>
+                  <span className="font-bold text-foreground">Padrão: </span>
+                  {selected.movementPattern}
+                </p>
+              ) : null}
             </div>
           </article>
-        ) : null}
+        ) : (
+          <>
+            <p className="text-[13px] font-bold uppercase text-muted">
+              {query ? "Resultados da busca" : "Biblioteca"}
+            </p>
+            {truncated ? (
+              <p className="text-sm text-muted">
+                Mostrando {visible.length} de {results.length}. Digite o nome ou a categoria para
+                filtrar.
+              </p>
+            ) : null}
+            <div className="flex flex-col gap-2.5">
+              {visible.length === 0 ? (
+                query ? (
+                  <p className="text-sm text-muted">Nenhum exercício encontrado para esta busca.</p>
+                ) : filter === "favorites" ? (
+                  <p className="text-sm text-muted">Nenhum favorito ainda. Toque no coração na ficha.</p>
+                ) : null
+              ) : (
+                visible.map((exercise) => (
+                  <div
+                    key={exercise.id}
+                    className="flex items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface p-3.5"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setSelectedId(exercise.id)}
+                      className="flex min-w-0 flex-1 flex-col gap-1 text-left"
+                    >
+                      <p className="text-sm font-bold text-foreground">{exercise.namePt}</p>
+                      {categoryLine(exercise) ? (
+                        <p className="text-xs text-muted">{categoryLine(exercise)}</p>
+                      ) : null}
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={exercise.favorite ? "Remover dos favoritos" : "Favoritar"}
+                      onClick={() => toggleFavorite(exercise.id)}
+                      className={exercise.favorite ? "text-brand" : "text-muted"}
+                    >
+                      <FigmaIcon
+                        src={exercise.favorite ? "/icons/heart-filled.svg" : "/icons/heart.svg"}
+                        alt=""
+                        size={20}
+                      />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </>
+        )}
       </div>
     </AthleteAppShell>
   );

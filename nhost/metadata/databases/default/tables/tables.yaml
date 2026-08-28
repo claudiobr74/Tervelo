@@ -28,6 +28,7 @@
 - "!include public_exercise_muscles.yaml"
 - "!include public_exercise_equipment.yaml"
 - "!include public_exercise_aliases.yaml"
+- "!include public_exercise_media.yaml"
 - "!include public_gyms.yaml"
 - "!include public_gym_memberships.yaml"
 - "!include public_gym_equipment.yaml"

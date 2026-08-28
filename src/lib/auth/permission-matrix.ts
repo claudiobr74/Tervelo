@@ -105,11 +105,11 @@ function athleteOwn(
 function catalog(columns: string[]): TablePermission[] {
   const mutateCols = withoutMeta(columns);
   return [
-    { role: "user", operations: { select: { filter: OPEN, columns, limit: 1000 } } },
+    { role: "user", operations: { select: { filter: OPEN, columns, limit: 2500 } } },
     {
       role: "admin",
       operations: {
-        select: { filter: OPEN, columns, limit: 1000 },
+        select: { filter: OPEN, columns, limit: 2500 },
         insert: { filter: OPEN, columns: mutateCols },
         update: { filter: OPEN, columns: mutateCols },
         delete: { filter: OPEN },
@@ -118,7 +118,7 @@ function catalog(columns: string[]): TablePermission[] {
     {
       role: "super_admin",
       operations: {
-        select: { filter: OPEN, columns, limit: 1000 },
+        select: { filter: OPEN, columns, limit: 2500 },
         insert: { filter: OPEN, columns: mutateCols },
         update: { filter: OPEN, columns: mutateCols },
         delete: { filter: OPEN },
@@ -490,6 +490,7 @@ export const PUBLIC_TABLES: PublicTable[] = [
     name: "canonical_exercises",
     kind: "catalog",
     columns: ["id", "name_pt", "description", "movement_pattern_id", "created_at", "updated_at"],
+    arrayRelationships: [{ name: "media", table: "exercise_media", column: "canonical_exercise_id" }],
     permissions: catalog([
       "id",
       "name_pt",
@@ -523,6 +524,33 @@ export const PUBLIC_TABLES: PublicTable[] = [
     kind: "catalog",
     columns: ["id", "canonical_exercise_id", "alias", "locale"],
     permissions: catalog(["id", "canonical_exercise_id", "alias", "locale"]),
+  },
+  {
+    name: "exercise_media",
+    kind: "catalog",
+    columns: [
+      "id",
+      "canonical_exercise_id",
+      "kind",
+      "file_id",
+      "object_key",
+      "mime_type",
+      "bytes",
+      "sha256",
+      "created_at",
+    ],
+    objectRelationships: [{ name: "canonical_exercise", column: "canonical_exercise_id" }],
+    permissions: catalog([
+      "id",
+      "canonical_exercise_id",
+      "kind",
+      "file_id",
+      "object_key",
+      "mime_type",
+      "bytes",
+      "sha256",
+      "created_at",
+    ]),
   },
   {
     name: "gyms",
