@@ -35,15 +35,17 @@ test("admin sem papel volta para a home", async ({ page }) => {
   await expect(page).toHaveURL(/\/$/);
 });
 
-test("pré-visualização admin mostra anilha 1,25 kg zerada", async ({ page }) => {
+test("pré-visualização admin de inventário não inventa anilhas", async ({ page }) => {
   await loginPreview(page);
   await page.goto("/dev");
   await page.getByRole("button", { name: "Console admin (pré-visualização)" }).click();
   await expect(page).toHaveURL(/\/admin\/exercises/);
   await page.getByRole("link", { name: "Inventário da Academia" }).click();
-  await expect(page.getByText("1,25 kg", { exact: true })).toBeVisible();
-  await expect(page.getByText(/1,25 kg com 0 un/)).toBeVisible();
-  await expect(page.getByRole("button", { name: "Salvar inventário" })).toBeDisabled();
+  await expect(page.getByRole("heading", { name: "Inventário da Academia" })).toBeVisible();
+  await expect(page.getByText("1.247")).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: /Cadastre uma academia|Banco indisponível/ }),
+  ).toBeVisible();
 });
 
 test("login e busca funcionam no tema claro", async ({ page }) => {

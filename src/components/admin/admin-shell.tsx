@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { BrandLogo } from "@/components/brand/brand-logo";
-import { InitialsAvatar } from "@/components/ui/initials-avatar";
+import { AdminHeaderControls } from "@/components/admin/admin-header-controls";
+import { AdminAccountCard } from "@/components/admin/admin-account-card";
 
 export type AdminActive =
   | "Dashboard"
@@ -18,20 +19,10 @@ export type AdminActive =
   | "Auditoria";
 
 const NAV = [
-  { href: "/admin", label: "Dashboard", icon: "/icons/admin/dashboard.svg", pending: false },
-  { href: "/admin/users", label: "Usuários", icon: "/icons/admin/users.svg", pending: false },
-  {
-    href: "/admin/training",
-    label: "Treinamento",
-    icon: "/icons/admin/dumbbell.svg",
-    pending: true,
-  },
-  {
-    href: "/admin/nutrition",
-    label: "Nutrição",
-    icon: "/icons/admin/nutrition.svg",
-    pending: true,
-  },
+  { href: "/admin", label: "Dashboard", icon: "/icons/admin/dashboard.svg" },
+  { href: "/admin/users", label: "Usuários", icon: "/icons/admin/users.svg" },
+  { href: "/admin/training", label: "Treinamento", icon: "/icons/admin/dumbbell.svg" },
+  { href: "/admin/nutrition", label: "Nutrição", icon: "/icons/admin/nutrition.svg" },
 ] as const;
 
 const LIBRARY = [
@@ -41,19 +32,9 @@ const LIBRARY = [
 ] as const;
 
 const AFTER = [
-  {
-    href: "/admin/ai",
-    label: "Inteligência Artificial",
-    icon: "/icons/admin/cpu.svg",
-    pending: false,
-  },
-  {
-    href: "/admin/settings",
-    label: "Configurações",
-    icon: "/icons/admin/settings.svg",
-    pending: true,
-  },
-  { href: "/admin/audit", label: "Auditoria", icon: "/icons/admin/shield.svg", pending: false },
+  { href: "/admin/ai", label: "Inteligência Artificial", icon: "/icons/admin/cpu.svg" },
+  { href: "/admin/settings", label: "Configurações", icon: "/icons/admin/settings.svg" },
+  { href: "/admin/audit", label: "Auditoria", icon: "/icons/admin/shield.svg" },
 ] as const;
 
 function navClass(selected: boolean): string {
@@ -66,46 +47,18 @@ function AdminNavLink({
   href,
   label,
   icon,
-  pending,
   selected,
 }: {
   href: string;
   label: string;
   icon: string;
-  pending: boolean;
   selected: boolean;
 }) {
   return (
-    <Link
-      href={href}
-      className={navClass(selected)}
-      aria-current={selected ? "page" : undefined}
-      aria-label={pending ? `${label} — em breve` : undefined}
-    >
+    <Link href={href} className={navClass(selected)} aria-current={selected ? "page" : undefined}>
       <FigmaIcon src={icon} alt="" size={18} className="shrink-0" />
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate">{label}</span>
-        {pending ? (
-          <span aria-hidden className="text-[9px] font-bold uppercase tracking-wide text-muted">
-            Em breve
-          </span>
-        ) : null}
-      </span>
+      <span className="min-w-0 truncate">{label}</span>
     </Link>
-  );
-}
-
-function HeaderPendingButton({ icon, label }: { icon: string; label: string }) {
-  return (
-    <button
-      type="button"
-      disabled
-      aria-label={`${label} — em breve`}
-      title={`${label} — em breve`}
-      className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-surface text-muted opacity-60"
-    >
-      <FigmaIcon src={icon} alt="" size={18} />
-    </button>
   );
 }
 
@@ -138,7 +91,6 @@ export function AdminShell({
               href={item.href}
               label={item.label}
               icon={item.icon}
-              pending={item.pending}
               selected={item.label === current}
             />
           ))}
@@ -172,19 +124,12 @@ export function AdminShell({
               href={item.href}
               label={item.label}
               icon={item.icon}
-              pending={item.pending}
               selected={item.label === current}
             />
           ))}
         </nav>
         <div className="mt-auto flex flex-col gap-3 border-t border-border px-2 pt-4">
-          <div className="flex items-center gap-3">
-            <InitialsAvatar name="A" size={36} />
-            <div className="min-w-0 flex flex-col">
-              <p className="truncate text-sm font-semibold">Administrador</p>
-              <p className="truncate text-xs text-muted">Painel Tervelo</p>
-            </div>
-          </div>
+          <AdminAccountCard />
           <LogoutButton variant="sidebar" />
         </div>
       </aside>
@@ -194,19 +139,7 @@ export function AdminShell({
             <h1 className="text-2xl font-extrabold leading-none lg:text-[28px]">{title}</h1>
             {subtitle ? <p className="mt-1 text-sm text-muted">{subtitle}</p> : null}
           </div>
-          <div className="flex items-center gap-3 lg:gap-4">
-            <label className="hidden w-[280px] cursor-not-allowed items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 opacity-60 md:flex">
-              <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
-              <input
-                disabled
-                aria-label="Busca global — em breve"
-                placeholder="Buscar..."
-                className="min-w-0 flex-1 bg-transparent text-[13px] outline-none"
-              />
-            </label>
-            <HeaderPendingButton icon="/icons/admin/bell.svg" label="Notificações" />
-            <HeaderPendingButton icon="/icons/admin/help.svg" label="Ajuda" />
-          </div>
+          <AdminHeaderControls />
         </header>
         <main className="min-h-0 min-w-0 flex-1 overflow-auto px-4 py-6 lg:px-8 lg:py-8">
           {children}

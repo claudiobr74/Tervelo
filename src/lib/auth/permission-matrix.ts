@@ -141,8 +141,24 @@ function gymOwned(columns: string[], insertOmit: string[] = []): TablePermission
         delete: { filter: GYM_OWNER },
       },
     },
-    { role: "admin", operations: { select: { filter: OPEN, columns, limit: 200 } } },
-    { role: "super_admin", operations: { select: { filter: OPEN, columns, limit: 500 } } },
+    {
+      role: "admin",
+      operations: {
+        select: { filter: OPEN, columns, limit: 200 },
+        insert: { filter: OPEN, columns: insertCols },
+        update: { filter: OPEN, columns: insertCols },
+        delete: { filter: OPEN },
+      },
+    },
+    {
+      role: "super_admin",
+      operations: {
+        select: { filter: OPEN, columns, limit: 500 },
+        insert: { filter: OPEN, columns: insertCols },
+        update: { filter: OPEN, columns: insertCols },
+        delete: { filter: OPEN },
+      },
+    },
   ];
 }
 
@@ -567,6 +583,9 @@ export const PUBLIC_TABLES: PublicTable[] = [
             ],
             limit: 200,
           },
+          insert: { filter: OPEN, set: SET_OWNER, columns: ["name", "notes"] },
+          update: { filter: OPEN, columns: ["name", "notes"] },
+          delete: { filter: OPEN },
         },
       },
       {
@@ -585,6 +604,9 @@ export const PUBLIC_TABLES: PublicTable[] = [
             ],
             limit: 500,
           },
+          insert: { filter: OPEN, set: SET_OWNER, columns: ["name", "notes"] },
+          update: { filter: OPEN, columns: ["name", "notes"] },
+          delete: { filter: OPEN },
         },
       },
     ],
@@ -1675,18 +1697,48 @@ export const PUBLIC_TABLES: PublicTable[] = [
       "input_context_snapshot",
       "created_at",
     ],
-    permissions: athleteOwn(
-      [
-        "id",
-        "user_id",
-        "contract_version_id",
-        "model",
-        "status",
-        "input_context_snapshot",
-        "created_at",
-      ],
-      { insert: false, update: false, delete: false },
-    ),
+    permissions: [
+      ...athleteOwn(
+        [
+          "id",
+          "user_id",
+          "contract_version_id",
+          "model",
+          "status",
+          "input_context_snapshot",
+          "created_at",
+        ],
+        { insert: false, update: false, delete: false },
+      ).filter((item) => item.role !== "super_admin"),
+      {
+        role: "super_admin",
+        operations: {
+          select: {
+            filter: OPEN,
+            columns: [
+              "id",
+              "user_id",
+              "contract_version_id",
+              "model",
+              "status",
+              "input_context_snapshot",
+              "created_at",
+            ],
+            limit: 500,
+          },
+          insert: {
+            filter: OPEN,
+            columns: [
+              "user_id",
+              "contract_version_id",
+              "model",
+              "status",
+              "input_context_snapshot",
+            ],
+          },
+        },
+      },
+    ],
   },
   {
     name: "ai_decisions",
@@ -2050,6 +2102,11 @@ export const PUBLIC_TABLES: PublicTable[] = [
               "created_at",
             ],
             limit: 200,
+          },
+          insert: {
+            filter: OPEN,
+            set: { actor_user_id: "x-hasura-user-id" },
+            columns: ["action", "entity_type", "entity_id", "payload"],
           },
         },
       },

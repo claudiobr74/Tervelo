@@ -26,11 +26,25 @@ array_relationships:
 insert_permissions:
   - role: user
     permission:
-      check: &a1
+      check: &a3
         owner_user_id:
           _eq: X-Hasura-User-Id
-      set:
+      set: &a1
         owner_user_id: x-hasura-user-id
+      columns:
+        - name
+        - notes
+  - role: admin
+    permission:
+      check: &a2 {}
+      set: *a1
+      columns:
+        - name
+        - notes
+  - role: super_admin
+    permission:
+      check: *a2
+      set: *a1
       columns:
         - name
         - notes
@@ -45,7 +59,7 @@ select_permissions:
         - notes
         - created_at
         - updated_at
-      filter: *a1
+      filter: *a3
       limit: 50
   - role: admin
     permission:
@@ -57,7 +71,7 @@ select_permissions:
         - notes
         - created_at
         - updated_at
-      filter: &a2 {}
+      filter: *a2
       limit: 200
   - role: super_admin
     permission:
@@ -74,12 +88,32 @@ select_permissions:
 update_permissions:
   - role: user
     permission:
-      filter: *a1
-      check: *a1
+      filter: *a3
+      check: *a3
+      columns:
+        - name
+        - notes
+  - role: admin
+    permission:
+      filter: *a2
+      check: *a2
+      columns:
+        - name
+        - notes
+  - role: super_admin
+    permission:
+      filter: *a2
+      check: *a2
       columns:
         - name
         - notes
 delete_permissions:
   - role: user
     permission:
-      filter: *a1
+      filter: *a3
+  - role: admin
+    permission:
+      filter: *a2
+  - role: super_admin
+    permission:
+      filter: *a2

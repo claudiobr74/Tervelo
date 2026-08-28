@@ -24,19 +24,22 @@ export async function runGraphqlAsUser<T>(
   session: StoredAppSession | null,
   query: string,
   variables: Record<string, unknown>,
+  role?: "admin" | "super_admin",
 ): Promise<GraphqlOutcome<T>> {
   const endpoint = nhostGraphqlEndpoint();
   if (!endpoint || !sessionCanReachNhost(session)) {
     return { ok: false, reason: "nhost_unavailable" };
   }
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${session.accessToken}`,
+  };
+  if (role) headers["x-hasura-role"] = role;
   let response: Response;
   try {
     response = await fetch(endpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.accessToken}`,
-      },
+      headers,
       body: JSON.stringify({ query, variables }),
     });
   } catch {

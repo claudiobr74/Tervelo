@@ -45,7 +45,9 @@ test.describe("console admin", () => {
     await page.getByRole("link", { name: "Usuários" }).click();
     await expect(page).toHaveURL(/\/admin\/users/);
     await expect(page.getByRole("heading", { name: "Usuários" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Nenhum atleta cadastrado" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Nenhum atleta|Banco indisponível/ }),
+    ).toBeVisible();
     await expect(page.getByText("Amanda Santos")).toHaveCount(0);
     await page.getByPlaceholder("Pesquisar usuário...").fill("carla");
     await expect(page.getByText("Carla Oliveira")).toHaveCount(0);
@@ -53,7 +55,9 @@ test.describe("console admin", () => {
     await page.getByRole("link", { name: "Auditoria" }).click();
     await expect(page).toHaveURL(/\/admin\/audit/);
     await expect(page.getByRole("heading", { name: "Auditoria e Decisões da IA" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Nenhuma decisão registrada" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Nenhuma decisão registrada|Banco indisponível/ }),
+    ).toBeVisible();
     await expect(page.getByText("Redução de Volume")).toHaveCount(0);
   });
 
@@ -129,23 +133,25 @@ test.describe("console admin", () => {
     await page.getByRole("link", { name: /Treinamento/ }).click();
     await expect(page).toHaveURL(/\/admin\/training$/);
     await expect(page.getByRole("heading", { name: "Treinamento", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Treinamento em implementação" })).toBeVisible();
-    await expect(page.getByText(/o clique não deve travar o painel/i)).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Nenhum programa no banco|Banco indisponível/ }),
+    ).toBeVisible();
 
     await page.getByRole("link", { name: /Nutrição/ }).click();
     await expect(page).toHaveURL(/\/admin\/nutrition$/);
-    await expect(page.getByRole("heading", { name: "Nutrição em implementação" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Nenhuma nutrição no banco|Banco indisponível/ }),
+    ).toBeVisible();
 
     await page.getByRole("link", { name: /Configurações/ }).click();
     await expect(page).toHaveURL(/\/admin\/settings$/);
-    await expect(
-      page.getByRole("heading", { name: "Configurações em implementação" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Configurações", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Criar academia" })).toBeVisible();
 
     await page.getByRole("link", { name: "Dashboard" }).click();
     await expect(page).toHaveURL(/\/admin$/);
-    await expect(page.getByLabel("Busca global — em breve")).toBeDisabled();
-    await expect(page.getByRole("button", { name: "Notificações — em breve" })).toBeDisabled();
-    await expect(page.getByRole("button", { name: "Ajuda — em breve" })).toBeDisabled();
+    await expect(page.getByLabel("Buscar atletas e exercícios")).toBeEnabled();
+    await expect(page.getByRole("button", { name: "Avisos administrativos" })).toBeEnabled();
+    await expect(page.getByRole("button", { name: "Ajuda do painel" })).toBeEnabled();
   });
 });

@@ -3,151 +3,153 @@
 import { useMemo, useState } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { EQUIPMENT_CATEGORIES, PREVIEW_EQUIPMENT } from "@/lib/catalog/preview-catalog";
-import { normalizeSearchText } from "@/domain/exercise/aliases";
+import { AdminStatusPanel } from "@/components/admin/admin-status-panel";
+import { adminRequest } from "@/lib/admin/http";
+import { useAdminQuery } from "@/lib/admin/use-admin-query";
+
+type Equipment = {
+  id: string;
+  name_pt: string;
+  resistance_system: string | null;
+  starting_load_kg: number | null;
+  increment_kg: number | null;
+  category_id: string | null;
+};
+type Category = { id: string; slug: string; name_pt: string };
 
 export function AdminEquipmentScreen() {
+  const { loading, data, error, reload } = useAdminQuery<{
+    equipment: Equipment[];
+    equipment_categories: Category[];
+  }>("/api/admin/equipment");
   const [query, setQuery] = useState("");
-  const [category, setCategory] =
-    useState<(typeof EQUIPMENT_CATEGORIES)[number]>("M. Seletorizadas");
-  const [selectedId, setSelectedId] = useState("eq-chest-press");
+  const [categoryId, setCategoryId] = useState<string | "all">("all");
+  const [namePt, setNamePt] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const list = useMemo(() => {
-    const needle = normalizeSearchText(query);
-    return PREVIEW_EQUIPMENT.filter((item) => {
-      if (item.category !== category) return false;
-      if (!needle) return true;
-      return normalizeSearchText(
-        `${item.namePt} ${item.muscles} ${item.manufacturers.join(" ")}`,
-      ).includes(needle);
+    const needle = query.trim().toLocaleLowerCase("pt-BR");
+    return (data?.equipment ?? []).filter((item) => {
+      if (categoryId !== "all" && item.category_id !== categoryId) return false;
+      if (needle && !item.name_pt.toLocaleLowerCase("pt-BR").includes(needle)) return false;
+      return true;
     });
-  }, [query, category]);
+  }, [data, query, categoryId]);
   const selected = list.find((item) => item.id === selectedId) ?? list[0];
+
+  async function addEquipment() {
+    setMessage(null);
+    const result = await adminRequest("/api/admin/equipment", {
+      method: "POST",
+      body: JSON.stringify({
+        namePt,
+        categoryId: categoryId === "all" ? undefined : categoryId,
+      }),
+    });
+    if (!result.ok) {
+      setMessage("Não gravou o equipamento no banco.");
+      return;
+    }
+    setNamePt("");
+    await reload();
+  }
 
   return (
     <AdminShell
       title="Biblioteca de Equipamentos"
-      subtitle="Anatomia biomecânica dos aparelhos de musculação"
+      subtitle="Aparelhos cadastrados no Nhost."
       active="Equipamentos"
     >
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col flex-wrap gap-3 xl:flex-row xl:items-center">
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3 text-muted">
-            <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Buscar equipamento..."
-              className="min-w-0 flex-1 bg-transparent text-sm outline-none"
-            />
-          </div>
-          <span className="text-sm font-semibold text-brand">
-            {PREVIEW_EQUIPMENT.length} equipamentos cadastrados
-          </span>
+        <div className="flex min-w-0 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
+          <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Buscar equipamento..."
+            className="min-w-0 flex-1 bg-transparent text-sm outline-none"
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled
-            title="Cadastro de equipamento em breve"
-            className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-lg)] bg-brand px-4 text-sm font-bold text-on-brand opacity-60"
+            onClick={() => setCategoryId("all")}
+            className={`rounded-full border px-3 py-1.5 text-sm ${
+              categoryId === "all" ? "border-brand bg-brand-soft text-brand" : "border-border"
+            }`}
           >
-            <FigmaIcon src="/icons/admin/plus.svg" alt="" size={14} />
+            Todas
+          </button>
+          {(data?.equipment_categories ?? []).map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              onClick={() => setCategoryId(category.id)}
+              className={`rounded-full border px-3 py-1.5 text-sm ${
+                categoryId === category.id
+                  ? "border-brand bg-brand-soft text-brand"
+                  : "border-border"
+              }`}
+            >
+              {category.name_pt}
+            </button>
+          ))}
+        </div>
+        <form
+          className="flex flex-wrap items-end gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void addEquipment();
+          }}
+        >
+          <label className="text-sm font-semibold">
+            Novo equipamento
+            <input
+              value={namePt}
+              onChange={(event) => setNamePt(event.target.value)}
+              className="mt-1 block rounded-[var(--radius-md)] border border-border bg-background px-3 py-2 text-sm"
+            />
+          </label>
+          <button
+            type="submit"
+            className="h-11 rounded-[var(--radius-md)] bg-brand px-4 text-sm font-bold text-on-brand"
+          >
             Adicionar equipamento
           </button>
-        </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_minmax(0,1.1fr)]">
-          <div className="flex flex-col gap-1">
-            {EQUIPMENT_CATEGORIES.map((item) => (
+        </form>
+        {message ? <p className="text-sm text-error">{message}</p> : null}
+        <AdminStatusPanel
+          loading={loading}
+          error={error}
+          empty={!loading && !error && list.length === 0}
+          emptyTitle="Nenhum equipamento no banco"
+          emptyBody="A biblioteca só lista linhas de equipment."
+        />
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            {list.map((item) => (
               <button
-                key={item}
+                key={item.id}
                 type="button"
-                onClick={() => setCategory(item)}
-                className={`rounded-[var(--radius-md)] px-3 py-2 text-left text-sm ${
-                  item === category ? "font-semibold text-brand" : "text-muted"
+                onClick={() => setSelectedId(item.id)}
+                className={`rounded-[var(--radius-lg)] border p-3 text-left ${
+                  item.id === selected?.id ? "border-brand bg-surface" : "border-border bg-surface"
                 }`}
               >
-                {item}
+                <p className="text-sm font-bold">{item.name_pt}</p>
+                <p className="text-xs text-muted">
+                  {item.resistance_system || "Resistência não informada"}
+                </p>
               </button>
             ))}
           </div>
-          <div className="flex flex-col gap-2">
-            {list.length === 0 ? (
-              <p className="text-sm text-muted">
-                Nenhum equipamento nesta categoria na pré-visualização.
-              </p>
-            ) : (
-              list.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setSelectedId(item.id)}
-                  className={`flex gap-3 rounded-[var(--radius-lg)] border p-3 text-left ${
-                    item.id === selected?.id
-                      ? "border-brand bg-surface"
-                      : "border-border bg-surface"
-                  }`}
-                >
-                  <span className="relative size-14 shrink-0 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
-                    {item.imageSrc ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={item.imageSrc}
-                        alt=""
-                        width={48}
-                        height={48}
-                        className="size-full object-cover"
-                      />
-                    ) : null}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold">{item.namePt}</p>
-                    <p className="text-xs text-muted">{item.muscles}</p>
-                    <p className="text-xs text-muted">
-                      {item.resistance} · {item.adjustments} ajustes · {item.range}
-                    </p>
-                  </div>
-                </button>
-              ))
-            )}
-          </div>
           {selected ? (
-            <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5 text-sm lg:col-span-2 xl:col-span-1">
-              <h2 className="text-xl font-extrabold">{selected.namePt}</h2>
-              <p>
-                <span className="font-bold">Nome Canônico: </span>
-                {selected.namePt}
-              </p>
-              <p>
-                <span className="font-bold">Tipo Resistência: </span>
-                {selected.resistance}
-              </p>
-              <p>
-                <span className="font-bold">Músculos Ativados: </span>
-                {selected.muscles}
-              </p>
-              <p>
-                <span className="font-bold">Sistema Carregamento: </span>
-                {selected.loadingSystem}
-              </p>
-              <p>
-                <span className="font-bold">Incrementos de Carga: </span>
-                {selected.increment}
-              </p>
-              <p>
-                <span className="font-bold">Faixa de Resistência: </span>
-                {selected.range}
-              </p>
-              <div>
-                <p className="mb-2 font-bold">Fabricantes conhecidos</p>
-                <div className="flex flex-wrap gap-2">
-                  {selected.manufacturers.map((name) => (
-                    <span
-                      key={name}
-                      className="rounded-full border border-border px-3 py-1 text-xs text-muted"
-                    >
-                      {name}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5 text-sm">
+              <h2 className="text-xl font-extrabold">{selected.name_pt}</h2>
+              <p className="mt-2">Resistência: {selected.resistance_system ?? "—"}</p>
+              <p>Carga inicial: {selected.starting_load_kg ?? "—"} kg</p>
+              <p>Incremento: {selected.increment_kg ?? "—"} kg</p>
             </article>
           ) : null}
         </div>

@@ -27,10 +27,14 @@ describe("functions/ai/orchestrate", () => {
     expect(result()).toEqual({ status: 401, body: { error: "unauthorized" } });
   });
 
-  it("autenticado ainda não orquestra modelo", () => {
+  it("autenticado recusa fabricar atleta", () => {
     const { response, result } = capture();
     orchestrate({ headers: { authorization: "Bearer token" } }, response);
-    expect(result().status).toBe(501);
-    expect(result().body).toMatchObject({ error: "not_implemented", phase: 9 });
+    expect(result().status).toBe(200);
+    expect(result().body).toMatchObject({
+      ok: true,
+      orchestrated: false,
+      athleteFacts: "missing",
+    });
   });
 });

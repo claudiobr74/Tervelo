@@ -1,204 +1,178 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { previewGymInventory } from "@/lib/catalog/preview-catalog";
-import { expandDumbbellWeights } from "@/domain/gym/dumbbells";
-import { plateColorClass } from "@/domain/plates/calculate";
+import { AdminStatusPanel } from "@/components/admin/admin-status-panel";
+import { adminRequest } from "@/lib/admin/http";
+import { useAdminQuery } from "@/lib/admin/use-admin-query";
 
-const GROUPS = [
-  { id: "chest", label: "Peito" },
-  { id: "back", label: "Costas" },
-  { id: "shoulders", label: "Ombros" },
-  { id: "biceps", label: "Bíceps" },
-  { id: "triceps", label: "Tríceps" },
-  { id: "quads", label: "Quadríceps" },
-  { id: "hams", label: "Posterior" },
-  { id: "glutes", label: "Glúteos" },
-] as const;
+type Gym = { id: string; name: string; notes: string | null; owner_user_id: string };
+type Inventory = {
+  gyms: Gym[];
+  gym_plates: { id: string; weight_kg: number; quantity: number }[];
+  gym_bars: {
+    id: string;
+    name: string | null;
+    actual_weight_kg: number;
+    bar_kind: string;
+    quantity: number;
+  }[];
+};
 
 export function AdminInventoryScreen() {
-  const initial = previewGymInventory();
-  const [gym] = useState(initial);
-  const [group, setGroup] = useState<(typeof GROUPS)[number]["id"]>("chest");
-  const [chest, setChest] = useState(initial.chestEquipment);
-  const [bars, setBars] = useState(initial.bars);
-  const dumbbells = expandDumbbellWeights(gym.dumbbells);
+  const gymsQuery = useAdminQuery<{ gyms: Gym[] }>("/api/admin/gyms");
+  const [gymId, setGymId] = useState<string>("");
+  const inventory = useAdminQuery<Inventory>(gymId ? `/api/admin/inventory?gymId=${gymId}` : "");
+  const [weight, setWeight] = useState("20");
+  const [quantity, setQuantity] = useState("2");
+  const [barName, setBarName] = useState("Olímpica");
+  const [message, setMessage] = useState<string | null>(null);
 
-  const plateChips = [...gym.plates].sort((a, b) => a.weightKg - b.weightKg);
-  const missingPlates = plateChips.filter((item) => item.quantity === 0);
-  const selectable = [...chest, ...bars];
-  const registeredPercent =
-    selectable.length === 0
-      ? 0
-      : Math.round((selectable.filter((item) => item.selected).length / selectable.length) * 100);
+  useEffect(() => {
+    if (!gymId && gymsQuery.data?.gyms[0]) setGymId(gymsQuery.data.gyms[0].id);
+  }, [gymId, gymsQuery.data]);
+
+  const plates = inventory.data?.gym_plates ?? [];
+  const bars = inventory.data?.gym_bars ?? [];
+
+  async function savePlate() {
+    if (!gymId) return;
+    setMessage(null);
+    const result = await adminRequest("/api/admin/inventory", {
+      method: "POST",
+      body: JSON.stringify({
+        gymId,
+        weightKg: Number(weight),
+        quantity: Number(quantity),
+      }),
+    });
+    setMessage(result.ok ? "Anilha gravada." : "Não gravou a anilha.");
+    if (result.ok) await inventory.reload();
+  }
+
+  async function saveBar() {
+    if (!gymId) return;
+    setMessage(null);
+    const result = await adminRequest("/api/admin/inventory", {
+      method: "POST",
+      body: JSON.stringify({
+        kind: "bar",
+        gymId,
+        name: barName,
+        actualWeightKg: 20,
+        barKind: "olympic",
+      }),
+    });
+    setMessage(result.ok ? "Barra gravada." : "Não gravou a barra.");
+    if (result.ok) await inventory.reload();
+  }
 
   return (
     <AdminShell
       title="Inventário da Academia"
-      subtitle="Configure o maquinário disponível fisicamente na sua unidade."
+      subtitle="Quantidades físicas no Nhost. Sem academia cadastrada, não há o que salvar."
       active="Inventário da Academia"
     >
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold">{gym.name}</p>
-            <button
-              type="button"
-              disabled
-              title="Cadastro de academia em breve"
-              className="text-xs font-semibold text-brand opacity-60"
-            >
-              + Adicionar academia
-            </button>
-          </div>
-          <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-4">
-            <p className="text-[11px] font-bold uppercase text-muted">Maquinário cadastrado</p>
-            <p className="mt-1 text-2xl font-extrabold text-brand">{registeredPercent}%</p>
-            <div className="mt-2 h-2 overflow-clip rounded-full bg-surface-secondary">
-              <div className="h-full bg-brand" style={{ width: `${registeredPercent}%` }} />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            {GROUPS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setGroup(item.id)}
-                className={`flex items-center justify-between rounded-[var(--radius-md)] px-3 py-2 text-sm ${
-                  item.id === group ? "font-semibold text-brand" : "text-muted"
-                }`}
-              >
-                <span>{item.label}</span>
-                <span className="text-xs">
-                  {item.id === "chest"
-                    ? `${chest.filter((row) => row.selected).length} selecionados`
-                    : "—"}
-                </span>
-              </button>
+      <div className="flex flex-col gap-6">
+        <label className="text-sm font-semibold">
+          Academia
+          <select
+            value={gymId}
+            onChange={(event) => setGymId(event.target.value)}
+            className="mt-1 block w-full max-w-sm rounded-[var(--radius-md)] border border-border bg-background px-3 py-2"
+          >
+            {(gymsQuery.data?.gyms ?? []).map((gym) => (
+              <option key={gym.id} value={gym.id}>
+                {gym.name}
+              </option>
             ))}
-          </div>
-        </div>
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-wrap justify-end gap-3">
-            <button
-              type="button"
-              disabled
-              title="Modelo de academia completa em breve"
-              className="rounded-[var(--radius-lg)] border border-brand px-4 py-2 text-sm font-semibold text-brand opacity-60"
-            >
-              Selecionar academia completa padrão
-            </button>
-            <button
-              type="button"
-              disabled
-              title="A gravação no servidor entra em breve"
-              className="rounded-[var(--radius-lg)] bg-brand px-4 py-2 text-sm font-bold text-on-brand opacity-60"
-            >
-              Salvar inventário
-            </button>
-          </div>
-          <p className="text-right text-xs text-muted">
-            As marcações ficam só nesta tela. A gravação no servidor entra em breve.
-          </p>
-          {group === "chest" ? (
-            <section>
-              <h2 className="mb-3 text-sm font-bold">Equipamentos de Peito Disponíveis</h2>
-              <div className="flex flex-col gap-2">
-                {chest.map((item) => (
-                  <label
-                    key={item.id}
-                    className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm"
+          </select>
+        </label>
+        <AdminStatusPanel
+          loading={gymsQuery.loading || inventory.loading}
+          error={gymsQuery.error ?? (gymId ? inventory.error : null)}
+          empty={!gymsQuery.loading && (gymsQuery.data?.gyms.length ?? 0) === 0}
+          emptyTitle="Cadastre uma academia"
+          emptyBody="Crie a unidade em Configurações. O inventário grava gym_plates e gym_bars."
+        />
+        {gymId ? (
+          <>
+            <section className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+              <h2 className="text-sm font-bold">Anilhas</h2>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {plates.map((plate) => (
+                  <span
+                    key={plate.id}
+                    className="rounded-[var(--radius-md)] border border-border px-3 py-2 text-sm"
                   >
-                    <input
-                      type="checkbox"
-                      checked={item.selected}
-                      onChange={() =>
-                        setChest((rows) =>
-                          rows.map((row) =>
-                            row.id === item.id ? { ...row, selected: !row.selected } : row,
-                          ),
-                        )
-                      }
-                      className="size-4 accent-[var(--brand-primary)]"
-                    />
-                    {item.name}
-                  </label>
+                    {Number(plate.weight_kg).toLocaleString("pt-BR")} kg · {plate.quantity} un
+                  </span>
                 ))}
               </div>
-            </section>
-          ) : (
-            <p className="text-sm text-muted">
-              Lista detalhada deste grupo muscular entra com o catálogo completo no Nhost. Peito
-              está no node Figma.
-            </p>
-          )}
-          <section>
-            <h2 className="mb-3 text-sm font-bold">Anilhas Disponíveis (Quantidade Física)</h2>
-            <div className="flex flex-wrap gap-2">
-              {plateChips.map((plate) => (
-                <div
-                  key={plate.weightKg}
-                  className={`flex flex-col items-center rounded-[var(--radius-md)] px-3 py-2 ${
-                    plate.quantity > 0
-                      ? `${plateColorClass(plate.weightKg)} text-on-status`
-                      : "border border-brand bg-brand-soft text-brand"
-                  }`}
-                >
-                  <span className="text-sm font-bold">
-                    {plate.weightKg.toLocaleString("pt-BR")} kg
-                  </span>
-                  <span className="text-[11px]">{plate.quantity} un</span>
-                </div>
-              ))}
-            </div>
-            {missingPlates.length > 0 ? (
-              <p className="mt-2 text-xs text-muted">
-                {missingPlates
-                  .map((plate) => `${plate.weightKg.toLocaleString("pt-BR")} kg`)
-                  .join(", ")}{" "}
-                com 0 un — não entram na montagem da barra.
-              </p>
-            ) : null}
-          </section>
-          <section>
-            <h2 className="mb-3 text-sm font-bold">Barras</h2>
-            <div className="flex flex-col gap-2">
-              {bars.map((bar) => (
-                <label key={bar.id} className="flex items-center gap-3 text-sm">
+              <form
+                className="mt-4 flex flex-wrap items-end gap-2"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void savePlate();
+                }}
+              >
+                <label className="text-sm">
+                  kg
                   <input
-                    type="checkbox"
-                    checked={bar.selected}
-                    onChange={() =>
-                      setBars((rows) =>
-                        rows.map((row) =>
-                          row.id === bar.id ? { ...row, selected: !row.selected } : row,
-                        ),
-                      )
-                    }
-                    className="size-4 accent-[var(--brand-primary)]"
+                    value={weight}
+                    onChange={(event) => setWeight(event.target.value)}
+                    className="ml-2 w-20 rounded border border-border px-2 py-1"
                   />
-                  {bar.name} — peso real {bar.actualWeightKg} kg
                 </label>
-              ))}
-            </div>
-          </section>
-          <section className="rounded-[var(--radius-xl)] border border-border bg-surface p-4">
-            <h2 className="mb-2 text-sm font-bold">Halteres (Gama Disponível)</h2>
-            {dumbbells.ok ? (
-              <p className="text-lg font-extrabold">
-                {gym.dumbbells.mode === "range"
-                  ? `${gym.dumbbells.minKg} kg até ${gym.dumbbells.maxKg} kg`
-                  : dumbbells.value.join(", ")}
-              </p>
-            ) : null}
-            {gym.dumbbells.mode === "range" ? (
-              <p className="mt-1 text-sm text-muted">
-                Incrementos de {gym.dumbbells.incrementKg} em {gym.dumbbells.incrementKg} kg
-              </p>
-            ) : null}
-          </section>
-        </div>
+                <label className="text-sm">
+                  un
+                  <input
+                    value={quantity}
+                    onChange={(event) => setQuantity(event.target.value)}
+                    className="ml-2 w-16 rounded border border-border px-2 py-1"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="rounded bg-brand px-3 py-2 text-sm font-bold text-on-brand"
+                >
+                  Gravar anilha
+                </button>
+              </form>
+            </section>
+            <section className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+              <h2 className="text-sm font-bold">Barras</h2>
+              <ul className="mt-3 flex flex-col gap-1 text-sm">
+                {bars.map((bar) => (
+                  <li key={bar.id}>
+                    {bar.name || bar.bar_kind} · {Number(bar.actual_weight_kg)} kg
+                  </li>
+                ))}
+              </ul>
+              <form
+                className="mt-4 flex flex-wrap items-end gap-2"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void saveBar();
+                }}
+              >
+                <input
+                  value={barName}
+                  onChange={(event) => setBarName(event.target.value)}
+                  className="rounded border border-border px-2 py-1 text-sm"
+                  aria-label="Nome da barra"
+                />
+                <button
+                  type="submit"
+                  className="rounded bg-brand px-3 py-2 text-sm font-bold text-on-brand"
+                >
+                  Gravar barra
+                </button>
+              </form>
+            </section>
+          </>
+        ) : null}
+        {message ? <p className="text-sm">{message}</p> : null}
       </div>
     </AdminShell>
   );

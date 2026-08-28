@@ -1,6 +1,16 @@
 table:
   name: ai_runs
   schema: public
+insert_permissions:
+  - role: super_admin
+    permission:
+      check: &a2 {}
+      columns:
+        - user_id
+        - contract_version_id
+        - model
+        - status
+        - input_context_snapshot
 select_permissions:
   - role: user
     permission:
@@ -19,10 +29,17 @@ select_permissions:
   - role: admin
     permission:
       columns: *a1
-      filter: &a2 {}
+      filter: *a2
       limit: 200
   - role: super_admin
     permission:
-      columns: *a1
+      columns:
+        - id
+        - user_id
+        - contract_version_id
+        - model
+        - status
+        - input_context_snapshot
+        - created_at
       filter: *a2
       limit: 500

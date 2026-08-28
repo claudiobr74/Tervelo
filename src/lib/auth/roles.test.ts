@@ -144,6 +144,27 @@ describe("matriz Hasura", () => {
     expect(
       table?.permissions.find((p) => p.role === "super_admin")?.operations.select,
     ).toBeDefined();
+    expect(
+      table?.permissions.find((p) => p.role === "super_admin")?.operations.insert,
+    ).toBeDefined();
+  });
+
+  it("admin grava academia e inventário; super_admin cria contrato e ai_runs", () => {
+    const gyms = PUBLIC_TABLES.find((item) => item.name === "gyms");
+    expect(gyms?.permissions.find((p) => p.role === "admin")?.operations.insert).toBeDefined();
+    const plates = PUBLIC_TABLES.find((item) => item.name === "gym_plates");
+    expect(plates?.permissions.find((p) => p.role === "admin")?.operations.insert).toBeDefined();
+    const contracts = PUBLIC_TABLES.find((item) => item.name === "ai_contracts");
+    expect(
+      contracts?.permissions.find((p) => p.role === "super_admin")?.operations.insert,
+    ).toBeDefined();
+    expect(
+      contracts?.permissions.find((p) => p.role === "admin")?.operations.insert,
+    ).toBeUndefined();
+    const runs = PUBLIC_TABLES.find((item) => item.name === "ai_runs");
+    expect(
+      runs?.permissions.find((p) => p.role === "super_admin")?.operations.insert,
+    ).toBeDefined();
   });
 
   it("user não publica contrato de IA", () => {
