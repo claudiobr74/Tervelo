@@ -24,11 +24,12 @@ test("busca de exercícios mostra a biblioteca autorizada", async ({ page }) => 
     page.getByRole("heading", { name: "Abdução Lateral do Quadril com Alavanca" }),
   ).toBeVisible();
   await expect(page.getByText(/glúteo médio/i)).toBeVisible();
-  await expect(page.getByRole("img", { name: /Abdução Lateral do Quadril com Alavanca/ })).toBeVisible();
-  await expect(page.getByRole("img", { name: /Abdução Lateral do Quadril com Alavanca/ })).toHaveAttribute(
-    "src",
-    "/api/catalog/gif/abducao-lateral-do-quadril-com-alavanca",
-  );
+  await expect(
+    page.getByRole("img", { name: /Abdução Lateral do Quadril com Alavanca/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: /Abdução Lateral do Quadril com Alavanca/ }),
+  ).toHaveAttribute("src", "/api/catalog/gif/abducao-lateral-do-quadril-com-alavanca");
   await page.getByRole("button", { name: "Voltar à lista" }).click();
   await expect(page.getByText("Biblioteca")).toBeVisible();
 });

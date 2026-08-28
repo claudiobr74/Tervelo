@@ -1,4 +1,6 @@
 nhost/seeds/default/003_gifdotreino_exercises.sql
+nhost/seeds/default/004_gifdotreino_media.sql
+scripts/gifdotreino-downloader/output/
 .next
 coverage
 playwright-report

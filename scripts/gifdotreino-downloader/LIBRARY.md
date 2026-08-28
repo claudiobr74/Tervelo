@@ -4,12 +4,12 @@ Autorização declarada pelo responsável do conteúdo (Gif do Treino). Sem hotl
 
 ## Avaliação (o que **não** fazer)
 
-| Caminho | Por quê recusar |
-| --- | --- |
-| Commitar ~2,5 GB de GIFs ou copiar para `public/` | Git e Vercel não aguentam; o deploy quebra. |
-| Hotlink `gifdotreino.com` | Fora do contrato; some se o site cair; CSP/`img-src` não libera o domínio. |
-| Religar `PREVIEW_*` / catálogo Figma de 2 nomes | Isso é dado inventado. A biblioteca autorizada é o catálogo real. |
-| UNIQUE em `exercise_media.object_key` | *Stiff com barra* e *Peso muerto…* compartilham o mesmo arquivo. |
+| Caminho                                           | Por quê recusar                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------------- |
+| Commitar ~2,5 GB de GIFs ou copiar para `public/` | Git e Vercel não aguentam; o deploy quebra.                                |
+| Hotlink `gifdotreino.com`                         | Fora do contrato; some se o site cair; CSP/`img-src` não libera o domínio. |
+| Religar `PREVIEW_*` / catálogo Figma de 2 nomes   | Isso é dado inventado. A biblioteca autorizada é o catálogo real.          |
+| UNIQUE em `exercise_media.object_key`             | _Stiff com barra_ e _Peso muerto…_ compartilham o mesmo arquivo.           |
 
 Caminho adequado:
 

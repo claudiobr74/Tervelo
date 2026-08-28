@@ -95,7 +95,13 @@ function sha256(buf) {
   return crypto.createHash("sha256").update(buf).digest("hex");
 }
 
-async function saveBuffer({ buffer, name, sourceUrl, category = "sem-categoria", origin = "unknown" }) {
+async function saveBuffer({
+  buffer,
+  name,
+  sourceUrl,
+  category = "sem-categoria",
+  origin = "unknown",
+}) {
   const hash = sha256(buffer);
   if (byHash.has(hash)) {
     const existing = byHash.get(hash);
@@ -248,13 +254,25 @@ async function writeMetadata(catalog) {
   await fs.writeFile(path.join(META_DIR, "catalog.json"), JSON.stringify(catalog, null, 2), "utf8");
   await fs.writeFile(path.join(META_DIR, "manifest.json"), JSON.stringify(sorted, null, 2), "utf8");
   await fs.writeFile(path.join(META_DIR, "errors.json"), JSON.stringify(errors, null, 2), "utf8");
-  await fs.writeFile(path.join(META_DIR, "duplicates.json"), JSON.stringify(duplicates, null, 2), "utf8");
-  await fs.writeFile(path.join(META_DIR, "network_gifs.json"), JSON.stringify(networkGifs, null, 2), "utf8");
+  await fs.writeFile(
+    path.join(META_DIR, "duplicates.json"),
+    JSON.stringify(duplicates, null, 2),
+    "utf8",
+  );
+  await fs.writeFile(
+    path.join(META_DIR, "network_gifs.json"),
+    JSON.stringify(networkGifs, null, 2),
+    "utf8",
+  );
   const esc = (v) => `"${String(v ?? "").replaceAll('"', '""')}"`;
   const csv = [
-    ["id", "name", "slug", "category", "file", "source_url", "origin", "bytes", "sha256"].map(esc).join(","),
+    ["id", "name", "slug", "category", "file", "source_url", "origin", "bytes", "sha256"]
+      .map(esc)
+      .join(","),
     ...sorted.map((x) =>
-      [x.id, x.name, x.slug, x.category, x.file, x.source_url, x.origin, x.bytes, x.sha256].map(esc).join(","),
+      [x.id, x.name, x.slug, x.category, x.file, x.source_url, x.origin, x.bytes, x.sha256]
+        .map(esc)
+        .join(","),
     ),
   ].join("\n");
   await fs.writeFile(path.join(META_DIR, "manifest.csv"), csv, "utf8");
@@ -301,10 +319,12 @@ Autorização declarada pelo responsável do conteúdo. GIFs copiados sem recomp
 
 ## Por categoria
 
-${Object.entries(byCategory)
-  .sort((a, b) => a[0].localeCompare(b[0], "pt-BR"))
-  .map(([k, v]) => `- ${k}: ${v}`)
-  .join("\n") || "_nenhuma_"}
+${
+  Object.entries(byCategory)
+    .sort((a, b) => a[0].localeCompare(b[0], "pt-BR"))
+    .map(([k, v]) => `- ${k}: ${v}`)
+    .join("\n") || "_nenhuma_"
+}
 
 ## Duplicatas de conteúdo
 
@@ -377,7 +397,9 @@ async function restoreManifest() {
       if (!byHash.has(item.sha256)) byHash.set(item.sha256, item);
       if (item.source_url) seenUrls.add(item.source_url);
       if (String(item.origin || "").includes("duplicate")) {
-        const original = manifest.find((row) => row.sha256 === item.sha256 && row.name !== item.name);
+        const original = manifest.find(
+          (row) => row.sha256 === item.sha256 && row.name !== item.name,
+        );
         duplicates.push({
           name: item.name,
           duplicate_of: original?.name || item.name,
@@ -429,7 +451,8 @@ async function runBrowserValidation(catalog) {
       const headers = await response.allHeaders();
       const ct = headers["content-type"] || "";
       const url = response.url();
-      if (looksLikeGif(url, ct)) networkGifs.push({ url, contentType: ct, status: response.status() });
+      if (looksLikeGif(url, ct))
+        networkGifs.push({ url, contentType: ct, status: response.status() });
     } catch {
       /* ignore */
     }
@@ -442,7 +465,7 @@ async function runBrowserValidation(catalog) {
   await fs.mkdir(LOG_DIR, { recursive: true });
   await fs.writeFile(path.join(LOG_DIR, "page.html"), await page.content(), "utf8");
 
-  const sample = (LIMIT || 5);
+  const sample = LIMIT || 5;
   const buttons = page.getByRole("button", { name: /visualizar/i });
   const count = await buttons.count();
   console.log(`Botões Visualizar visíveis: ${count}`);
@@ -458,8 +481,16 @@ async function runBrowserValidation(catalog) {
       errors.push({ name: `visualizar#${i}`, error: `click: ${String(e)}` });
       continue;
     }
-    const title = ((await page.locator("#modal-name").textContent().catch(() => "")) || "").trim();
-    const src = await page.locator("#modal-gif").getAttribute("src").catch(() => "");
+    const title = (
+      (await page
+        .locator("#modal-name")
+        .textContent()
+        .catch(() => "")) || ""
+    ).trim();
+    const src = await page
+      .locator("#modal-gif")
+      .getAttribute("src")
+      .catch(() => "");
     if (src) {
       const url = src.startsWith("http") ? src : absoluteFromSite(src);
       await downloadUrl(url, {
@@ -468,7 +499,10 @@ async function runBrowserValidation(catalog) {
         origin: "browser-modal",
       });
     } else {
-      errors.push({ name: title || `visualizar#${i}`, error: "GIF não identificado no modal (#modal-gif)" });
+      errors.push({
+        name: title || `visualizar#${i}`,
+        error: "GIF não identificado no modal (#modal-gif)",
+      });
     }
     const closer = page.locator("#close-modal");
     try {
@@ -505,7 +539,8 @@ async function runBrowserFull() {
       const headers = await response.allHeaders();
       const ct = headers["content-type"] || "";
       const url = response.url();
-      if (looksLikeGif(url, ct)) networkGifs.push({ url, contentType: ct, status: response.status() });
+      if (looksLikeGif(url, ct))
+        networkGifs.push({ url, contentType: ct, status: response.status() });
     } catch {
       /* ignore */
     }
@@ -540,14 +575,20 @@ async function runBrowserFull() {
     });
   });
 
-  const unique = cards.filter((c, i, a) => c.title && a.findIndex((x) => x.title === c.title) === i);
+  const unique = cards.filter(
+    (c, i, a) => c.title && a.findIndex((x) => x.title === c.title) === i,
+  );
   const list = LIMIT ? unique.slice(0, LIMIT) : unique;
   console.log(`Cartões .gif-item: ${list.length}`);
 
   for (let i = 0; i < list.length; i++) {
     const card = list[i];
     console.log(`\n[${i + 1}/${list.length}] ${card.title}`);
-    const button = page.locator(".gif-item").filter({ hasText: card.title }).getByRole("button", { name: /visualizar/i }).first();
+    const button = page
+      .locator(".gif-item")
+      .filter({ hasText: card.title })
+      .getByRole("button", { name: /visualizar/i })
+      .first();
     try {
       await button.scrollIntoViewIfNeeded();
       await button.click({ timeout: 8000 });
@@ -555,8 +596,17 @@ async function runBrowserFull() {
     } catch (e) {
       errors.push({ name: card.title, error: `click: ${String(e)}` });
     }
-    const title = ((await page.locator("#modal-name").textContent().catch(() => "")) || card.title).trim();
-    const src = (await page.locator("#modal-gif").getAttribute("src").catch(() => "")) || card.src;
+    const title = (
+      (await page
+        .locator("#modal-name")
+        .textContent()
+        .catch(() => "")) || card.title
+    ).trim();
+    const src =
+      (await page
+        .locator("#modal-gif")
+        .getAttribute("src")
+        .catch(() => "")) || card.src;
     if (src) {
       const url = src.startsWith("http") ? src : absoluteFromSite(src);
       await downloadUrl(url, {
@@ -565,7 +615,10 @@ async function runBrowserFull() {
         origin: "browser-modal",
       });
     } else {
-      errors.push({ name: title, error: "GIF não identificado no DOM/rede após abrir o exercício" });
+      errors.push({
+        name: title,
+        error: "GIF não identificado no DOM/rede após abrir o exercício",
+      });
     }
     try {
       const closer = page.locator("#close-modal");

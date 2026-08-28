@@ -86,8 +86,9 @@ test.describe("perfil do atleta", () => {
     await page.goto("/app/profile");
     await page.getByRole("link", { name: "Notificações" }).click();
     await expect(page).toHaveURL(/\/app\/profile\/notificacoes/);
+    await expect(page.getByRole("heading", { name: "Notificações", level: 1 })).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: /Caixa vazia|Banco indisponível|Notificações/ }),
+      page.getByRole("heading", { name: /Caixa vazia|Banco indisponível/ }),
     ).toBeVisible();
     await page.goto("/app/profile");
     await page.getByRole("link", { name: "Plano de treino" }).click();

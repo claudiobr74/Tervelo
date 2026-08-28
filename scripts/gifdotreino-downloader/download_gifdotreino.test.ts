@@ -16,9 +16,9 @@ describe("gifdotreino downloader helpers", () => {
   });
 
   it("lê a categoria do caminho Exercicios/Pasta/arquivo.gif", () => {
-    expect(
-      categoryFromPath("Exercicios/Glúteos/Abdução Lateral do Quadril com Alavanca.gif"),
-    ).toBe("Glúteos");
+    expect(categoryFromPath("Exercicios/Glúteos/Abdução Lateral do Quadril com Alavanca.gif")).toBe(
+      "Glúteos",
+    );
     expect(categoryFromPath("")).toBe("sem-categoria");
   });
 

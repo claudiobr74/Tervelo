@@ -5,10 +5,7 @@ import { useState } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { EmptyPanel } from "@/components/ui/empty-panel";
 import { FigmaIcon } from "@/components/auth/figma-icon";
-import {
-  COACH_SUGGESTIONS,
-  type CoachPreviewMessage,
-} from "@/domain/ai/coach-preview";
+import { COACH_SUGGESTIONS, type CoachPreviewMessage } from "@/domain/ai/coach-preview";
 import { getAthleteStateStore } from "@/lib/athlete-state/session-store";
 import { useSyncStatus } from "@/components/app/sync-status-indicator";
 import { SYNC_COPY } from "@/domain/offline";
@@ -87,7 +84,8 @@ export function CoachScreen() {
           <p className="text-xs text-muted">{SYNC_COPY.coachAnalysisWhenOnline}</p>
         ) : (
           <p className="text-xs text-muted">
-            As respostas usam treinos, medidas e check-ins gravados. Sem fato, o coach admite UNKNOWN.
+            As respostas usam treinos, medidas e check-ins gravados. Sem fato, o coach admite
+            UNKNOWN.
           </p>
         )}
       </header>

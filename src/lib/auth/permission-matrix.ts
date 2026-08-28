@@ -490,7 +490,9 @@ export const PUBLIC_TABLES: PublicTable[] = [
     name: "canonical_exercises",
     kind: "catalog",
     columns: ["id", "name_pt", "description", "movement_pattern_id", "created_at", "updated_at"],
-    arrayRelationships: [{ name: "media", table: "exercise_media", column: "canonical_exercise_id" }],
+    arrayRelationships: [
+      { name: "media", table: "exercise_media", column: "canonical_exercise_id" },
+    ],
     permissions: catalog([
       "id",
       "name_pt",

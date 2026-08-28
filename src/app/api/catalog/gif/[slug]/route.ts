@@ -8,10 +8,7 @@ import { resolveAuthorizedGifFile } from "@/lib/catalog/authorized-library";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET(
-  _request: Request,
-  context: { params: Promise<{ slug: string }> },
-) {
+export async function GET(_request: Request, context: { params: Promise<{ slug: string }> }) {
   const session = await getServerAppSession();
   if (!session) {
     return NextResponse.json({ ok: false, error: "unauthenticated" }, { status: 401 });

@@ -6,19 +6,19 @@ Autorização declarada pelo responsável do conteúdo. GIFs copiados sem recomp
 
 ## Totais
 
-| Métrica | Valor |
-|---------|-------|
-| Exercícios identificados no catálogo | 963 |
-| Nomes no manifest | 963 |
-| GIFs únicos por SHA-256 | 962 |
-| Duplicatas por SHA-256 (mesmo arquivo, outro nome) | 1 |
-| Nomes do catálogo sem arquivo | 0 |
-| Arquivos inválidos (magic/vazio) | 0 |
-| Falhas/avisos em errors.json | 0 |
-| Volume baixado | 2677.8 MB |
-| Modo | API search_gifs.php |
-| Concorrência | 4 |
-| Limite | nenhum |
+| Métrica                                            | Valor               |
+| -------------------------------------------------- | ------------------- |
+| Exercícios identificados no catálogo               | 963                 |
+| Nomes no manifest                                  | 963                 |
+| GIFs únicos por SHA-256                            | 962                 |
+| Duplicatas por SHA-256 (mesmo arquivo, outro nome) | 1                   |
+| Nomes do catálogo sem arquivo                      | 0                   |
+| Arquivos inválidos (magic/vazio)                   | 0                   |
+| Falhas/avisos em errors.json                       | 0                   |
+| Volume baixado                                     | 2677.8 MB           |
+| Modo                                               | API search_gifs.php |
+| Concorrência                                       | 4                   |
+| Limite                                             | nenhum              |
 
 ## Por categoria
 

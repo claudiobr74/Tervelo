@@ -14,14 +14,14 @@ GIFs entram no app pela API autenticada `/api/catalog/gif/[slug]` (disco local) 
 
 ## Resultado da extração
 
-| Métrica | Valor |
-|---------|-------|
-| Exercícios | 963 |
-| Descrições baixadas | 962 |
-| Sem ficha no site | 1 — *Remada Inclinada a 45 Graus* (404) |
-| Tamanho do texto | 793–1812 caracteres (todas cabem na coluna `text`) |
-| Padrão de movimento inferido da pasta | 480 (Peitoral, Costas, Pernas, etc.) |
-| Sem padrão (Calistenia, Cardio, Mobilidade, Funcional, Crossfit) | 483 |
+| Métrica                                                          | Valor                                              |
+| ---------------------------------------------------------------- | -------------------------------------------------- |
+| Exercícios                                                       | 963                                                |
+| Descrições baixadas                                              | 962                                                |
+| Sem ficha no site                                                | 1 — _Remada Inclinada a 45 Graus_ (404)            |
+| Tamanho do texto                                                 | 793–1812 caracteres (todas cabem na coluna `text`) |
+| Padrão de movimento inferido da pasta                            | 480 (Peitoral, Costas, Pernas, etc.)               |
+| Sem padrão (Calistenia, Cardio, Mobilidade, Funcional, Crossfit) | 483                                                |
 
 ## O que entra no app
 

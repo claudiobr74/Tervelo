@@ -106,9 +106,7 @@ export function mergeAuthorizedCatalog(
     used.add(exercise.namePt);
     return overlayAuthorizedRow(exercise, byName.get(exercise.namePt));
   });
-  const extra = authorized
-    .filter((item) => !used.has(item.name))
-    .map(toCatalogExercise);
+  const extra = authorized.filter((item) => !used.has(item.name)).map(toCatalogExercise);
   return [...fromNhost, ...extra];
 }
 

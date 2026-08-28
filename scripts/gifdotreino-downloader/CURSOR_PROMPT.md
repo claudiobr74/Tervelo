@@ -5,6 +5,7 @@ Temos autorização do responsável pelo conteúdo para migrar os GIFs públicos
 Use o pacote em `scripts/gifdotreino-downloader`.
 
 Objetivos:
+
 1. Instalar as dependências.
 2. Instalar o Chromium do Playwright.
 3. Rodar inicialmente `npm run catalog:gifs:probe` (5 GIFs, headless). Em máquina com display: `npm run catalog:gifs:headed`.

@@ -27,7 +27,9 @@ export async function GET() {
           list.push(row.alias);
           aliases.set(row.canonical_exercise_id, list);
         }
-        const patternNames = new Map(result.data.movement_patterns.map((item) => [item.id, item.name_pt]));
+        const patternNames = new Map(
+          result.data.movement_patterns.map((item) => [item.id, item.name_pt]),
+        );
         return result.data.canonical_exercises.map((exercise) => ({
           id: exercise.id,
           namePt: exercise.name_pt,

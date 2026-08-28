@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { requireAthleteSession } from "@/lib/athlete/require-session";
 import { ATHLETE_QUERIES } from "@/lib/athlete/queries";
-import { mapCatalogExercises, mapCatalogEquipment, type CatalogGraphql } from "@/lib/athlete/map-catalog";
+import {
+  mapCatalogExercises,
+  mapCatalogEquipment,
+  type CatalogGraphql,
+} from "@/lib/athlete/map-catalog";
 import { presentCatalogExercises } from "@/lib/catalog/authorized-library";
 import { runGraphqlAsUser } from "@/lib/nhost/graphql-server";
 

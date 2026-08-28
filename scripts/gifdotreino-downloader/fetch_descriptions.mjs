@@ -160,7 +160,9 @@ async function main() {
       category,
       pattern_slug: PATTERN_BY_FOLDER[category] ?? null,
       gif_file: file?.file ?? null,
-      source_gif: file?.source_url ?? new URL(item.path.split("/").map(encodeURIComponent).join("/"), START_URL).href,
+      source_gif:
+        file?.source_url ??
+        new URL(item.path.split("/").map(encodeURIComponent).join("/"), START_URL).href,
       source_description: descriptionUrl(item.name),
       description_text: prevByName.get(item.name)?.description_text ?? "",
       description_status: prevByName.get(item.name)?.description_status ?? "pending",
@@ -210,7 +212,11 @@ async function main() {
     seed_bytes: Buffer.byteLength(seed),
     media_seed_bytes: Buffer.byteLength(mediaSeed),
   };
-  await fs.writeFile(path.join(META, "descriptions-stats.json"), JSON.stringify(stats, null, 2), "utf8");
+  await fs.writeFile(
+    path.join(META, "descriptions-stats.json"),
+    JSON.stringify(stats, null, 2),
+    "utf8",
+  );
   console.log(JSON.stringify(stats, null, 2));
   console.log(`Seed: ${SEED}`);
   console.log(`Media seed: ${MEDIA_SEED}`);

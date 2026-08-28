@@ -35,7 +35,9 @@ describe("slug e caminho do GIF", () => {
   it("confina o arquivo dentro da pasta de saída", () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "gdt-gifs-"));
     try {
-      expect(confinedGifPath(root, "gifs/gluteos/ok.gif")).toBe(path.join(root, "gifs/gluteos/ok.gif"));
+      expect(confinedGifPath(root, "gifs/gluteos/ok.gif")).toBe(
+        path.join(root, "gifs/gluteos/ok.gif"),
+      );
       expect(confinedGifPath(root, "../secret.gif")).toBeNull();
       expect(confinedGifPath(root, "/etc/passwd.gif")).toBeNull();
       expect(confinedGifPath(root, "gifs/../../etc/passwd.gif")).toBeNull();
@@ -53,9 +55,7 @@ describe("mapa da biblioteca autorizada", () => {
     expect(exercise.primaryMuscle).toBe("Glúteos");
     expect(exercise.description).toBe("Fortalece o glúteo médio.");
     expect(exercise.movementPattern).toBe("Dobrar o quadril");
-    expect(exercise.imageSrc).toBe(
-      "/api/catalog/gif/abducao-lateral-do-quadril-com-alavanca",
-    );
+    expect(exercise.imageSrc).toBe("/api/catalog/gif/abducao-lateral-do-quadril-com-alavanca");
     expect(patternLabel("horizontal_push")).toBe("Empurrar horizontal");
   });
 

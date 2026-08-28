@@ -54,18 +54,18 @@ Seeds **não** sobem sozinhos para o Nhost Cloud. Depois de `001` e `002`, aplic
 
 ## Deploy no Nhost Cloud
 
-O GitHub usa `nhost/nhost.toml`. Qualquer `{{ secrets.NOME }}` **tem** de existir em Settings → Secrets; senão o deploy cai com *invalid configuration*.
+O GitHub usa `nhost/nhost.toml`. Qualquer `{{ secrets.NOME }}` **tem** de existir em Settings → Secrets; senão o deploy cai com _invalid configuration_.
 
-| Secret                         | Quem cria                         |
-| ------------------------------ | --------------------------------- |
-| `HASURA_GRAPHQL_ADMIN_SECRET`  | Nhost (projeto)                   |
-| `NHOST_WEBHOOK_SECRET`         | Nhost                             |
-| `GRAFANA_ADMIN_PASSWORD`       | Nhost                             |
-| `NHOST_JWT_KID`                | `npm run nhost:jwt` — cole no Cloud o valor gerado |
-| `NHOST_JWT_PUBLIC_KEY`         | idem, PEM completo (`BEGIN PUBLIC KEY`) |
-| `NHOST_JWT_PRIVATE_KEY`        | idem, PEM PKCS#8 (`BEGIN PRIVATE KEY`) |
+| Secret                        | Quem cria                                          |
+| ----------------------------- | -------------------------------------------------- |
+| `HASURA_GRAPHQL_ADMIN_SECRET` | Nhost (projeto)                                    |
+| `NHOST_WEBHOOK_SECRET`        | Nhost                                              |
+| `GRAFANA_ADMIN_PASSWORD`      | Nhost                                              |
+| `NHOST_JWT_KID`               | `npm run nhost:jwt` — cole no Cloud o valor gerado |
+| `NHOST_JWT_PUBLIC_KEY`        | idem, PEM completo (`BEGIN PUBLIC KEY`)            |
+| `NHOST_JWT_PRIVATE_KEY`       | idem, PEM PKCS#8 (`BEGIN PRIVATE KEY`)             |
 
-Se o dashboard mostrar Auth em **UpdateError** / `exitCode: 1` e Hasura verde, os *nomes* dos secrets JWT já existem — o deploy passou da validação de config. A replica nova do Auth mesmo assim não sobe porque não consegue **usar** a chave privada:
+Se o dashboard mostrar Auth em **UpdateError** / `exitCode: 1` e Hasura verde, os _nomes_ dos secrets JWT já existem — o deploy passou da validação de config. A replica nova do Auth mesmo assim não sobe porque não consegue **usar** a chave privada:
 
 - Hasura só lê a **pública** (`key`) → pode ficar verde.
 - Auth 0.49.1 exige PEM PKCS#8 em `signing_key` (`-----BEGIN PRIVATE KEY-----` com quebras de linha). Pública ok + privada truncada, numa linha só, `BEGIN RSA PRIVATE KEY` mal colada, ou JSON com `signingKey` em vez de `signing_key` → `exit 1` e `message` vazio no Service State.

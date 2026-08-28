@@ -3,7 +3,11 @@ import { z } from "zod";
 import { requireAthleteSession } from "@/lib/athlete/require-session";
 import { disconnectedOrFail, graphqlFailure } from "@/lib/admin/require-session";
 import { ATHLETE_QUERIES } from "@/lib/athlete/queries";
-import { coachReplyForPrompt, emptyCoachFacts, type CoachKnownFacts } from "@/domain/ai/coach-preview";
+import {
+  coachReplyForPrompt,
+  emptyCoachFacts,
+  type CoachKnownFacts,
+} from "@/domain/ai/coach-preview";
 import { emptyNutritionContext } from "@/domain/ai/nutrition-context";
 import { runGraphqlAsUser } from "@/lib/nhost/graphql-server";
 
@@ -83,11 +87,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ ok: false, error: "invalid_payload" }, { status: 400 });
   }
-  const result = await runGraphqlAsUser<CoachGraphql>(
-    gate.session,
-    ATHLETE_QUERIES.coachFacts,
-    {},
-  );
+  const result = await runGraphqlAsUser<CoachGraphql>(gate.session, ATHLETE_QUERIES.coachFacts, {});
   if (!result.ok) {
     if (result.reason === "nhost_unavailable") {
       const facts: CoachKnownFacts = {
@@ -113,11 +113,7 @@ export async function POST(request: Request) {
 export async function GET() {
   const gate = await requireAthleteSession();
   if (!gate.ok) return gate.response;
-  const result = await runGraphqlAsUser<CoachGraphql>(
-    gate.session,
-    ATHLETE_QUERIES.coachFacts,
-    {},
-  );
+  const result = await runGraphqlAsUser<CoachGraphql>(gate.session, ATHLETE_QUERIES.coachFacts, {});
   if (!result.ok) return disconnectedOrFail(result, { facts: emptyCoachFacts })!;
   return NextResponse.json({
     ok: true,

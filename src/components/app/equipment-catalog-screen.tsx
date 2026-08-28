@@ -58,7 +58,10 @@ export function EquipmentCatalogScreen() {
         </div>
         {catalog.loading ? <p className="text-sm text-muted">Consultando o banco…</p> : null}
         {catalog.error ? (
-          <EmptyPanel title="Banco indisponível" body="O catálogo só lista equipamentos gravados." />
+          <EmptyPanel
+            title="Banco indisponível"
+            body="O catálogo só lista equipamentos gravados."
+          />
         ) : null}
         {!catalog.loading && !catalog.error && equipment.length === 0 ? (
           <EmptyPanel

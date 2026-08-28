@@ -154,9 +154,14 @@ export function ExerciseSearchScreen() {
         </div>
       </div>
       <div className="flex flex-col gap-4 px-6 pb-6">
-        {catalogQuery.loading ? <p className="text-sm text-muted">Consultando a biblioteca…</p> : null}
+        {catalogQuery.loading ? (
+          <p className="text-sm text-muted">Consultando a biblioteca…</p>
+        ) : null}
         {catalogQuery.error ? (
-          <EmptyPanel title="Biblioteca indisponível" body="Não foi possível ler o catálogo autorizado." />
+          <EmptyPanel
+            title="Biblioteca indisponível"
+            body="Não foi possível ler o catálogo autorizado."
+          />
         ) : null}
         {!catalogQuery.loading && !catalogQuery.error && catalog.length === 0 ? (
           <EmptyPanel
@@ -253,7 +258,9 @@ export function ExerciseSearchScreen() {
                 query ? (
                   <p className="text-sm text-muted">Nenhum exercício encontrado para esta busca.</p>
                 ) : filter === "favorites" ? (
-                  <p className="text-sm text-muted">Nenhum favorito ainda. Toque no coração na ficha.</p>
+                  <p className="text-sm text-muted">
+                    Nenhum favorito ainda. Toque no coração na ficha.
+                  </p>
                 ) : null
               ) : (
                 visible.map((exercise) => (

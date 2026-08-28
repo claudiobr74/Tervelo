@@ -53,7 +53,9 @@ describe("mapWorkouts", () => {
         updated_at: "2026-08-28T00:00:00.000Z",
       },
     ],
-    training_blocks: [{ id: "blk-1", program_id: "prog-1", position: 1, name: "A", intent: "Peito" }],
+    training_blocks: [
+      { id: "blk-1", program_id: "prog-1", position: 1, name: "A", intent: "Peito" },
+    ],
     training_weeks: [{ id: "wk-1", block_id: "blk-1", week_index: 1, notes: null }],
     training_sessions: [
       {

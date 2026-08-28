@@ -3,11 +3,7 @@ import { z } from "zod";
 import { requireAthleteSession } from "@/lib/athlete/require-session";
 import { disconnectedOrFail, graphqlFailure } from "@/lib/admin/require-session";
 import { ATHLETE_QUERIES } from "@/lib/athlete/queries";
-import {
-  mapAthleteSessions,
-  mapWorkouts,
-  type TrainingGraphql,
-} from "@/lib/athlete/map-workout";
+import { mapAthleteSessions, mapWorkouts, type TrainingGraphql } from "@/lib/athlete/map-workout";
 import { runGraphqlAsUser } from "@/lib/nhost/graphql-server";
 
 const EMPTY: TrainingGraphql = {
@@ -24,7 +20,11 @@ const EMPTY: TrainingGraphql = {
 export async function GET() {
   const gate = await requireAthleteSession();
   if (!gate.ok) return gate.response;
-  const result = await runGraphqlAsUser<TrainingGraphql>(gate.session, ATHLETE_QUERIES.training, {});
+  const result = await runGraphqlAsUser<TrainingGraphql>(
+    gate.session,
+    ATHLETE_QUERIES.training,
+    {},
+  );
   if (!result.ok) {
     return disconnectedOrFail(result, {
       programs: [],
@@ -108,7 +108,11 @@ export async function POST(request: Request) {
   }
 
   const session = await runGraphqlAsUser<{
-    insert_training_sessions_one: { id: string; scheduled_at: string | null; status: string } | null;
+    insert_training_sessions_one: {
+      id: string;
+      scheduled_at: string | null;
+      status: string;
+    } | null;
   }>(gate.session, ATHLETE_QUERIES.insertSession, {
     week_id: week.data.insert_training_weeks_one.id,
     scheduled_at: body.scheduledAt,
@@ -144,17 +148,13 @@ export async function POST(request: Request) {
             { repsMin: 8, repsMax: 12 },
           ];
     for (const [setIndex, set] of sets.entries()) {
-      const inserted = await runGraphqlAsUser(
-        gate.session,
-        ATHLETE_QUERIES.insertExerciseSet,
-        {
-          session_exercise_id: row.data.insert_session_exercises_one.id,
-          set_index: setIndex + 1,
-          target_reps_min: set.repsMin,
-          target_reps_max: set.repsMax,
-          target_weight_kg: set.weightKg ?? null,
-        },
-      );
+      const inserted = await runGraphqlAsUser(gate.session, ATHLETE_QUERIES.insertExerciseSet, {
+        session_exercise_id: row.data.insert_session_exercises_one.id,
+        set_index: setIndex + 1,
+        target_reps_min: set.repsMin,
+        target_reps_max: set.repsMax,
+        target_weight_kg: set.weightKg ?? null,
+      });
       if (!inserted.ok) return graphqlFailure(inserted.reason);
     }
   }

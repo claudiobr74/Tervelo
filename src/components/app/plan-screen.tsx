@@ -193,15 +193,16 @@ export function PlanScreen() {
             <div className="flex max-h-56 flex-col gap-1 overflow-y-auto">
               {(catalogQuery.trim() ? visibleExercises : visibleExercises.slice(0, 40)).map(
                 (exercise) => (
-                <label key={exercise.id} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(exercise.id)}
-                    onChange={() => toggle(exercise.id)}
-                  />
-                  {exercise.namePt}
-                </label>
-              ))}
+                  <label key={exercise.id} className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(exercise.id)}
+                      onChange={() => toggle(exercise.id)}
+                    />
+                    {exercise.namePt}
+                  </label>
+                ),
+              )}
             </div>
           </fieldset>
           <button type="submit" className={PRIMARY_CTA_CLASS}>
