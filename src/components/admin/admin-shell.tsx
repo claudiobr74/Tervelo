@@ -5,22 +5,33 @@ import { LogoutButton } from "@/components/auth/logout-button";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { InitialsAvatar } from "@/components/ui/initials-avatar";
 
-const PENDING = "Em breve";
-
 export type AdminActive =
   | "Dashboard"
   | "Usuários"
+  | "Treinamento"
+  | "Nutrição"
   | "Exercícios"
   | "Equipamentos"
   | "Inventário da Academia"
   | "Inteligência Artificial"
+  | "Configurações"
   | "Auditoria";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: "/icons/admin/dashboard.svg", pending: false },
   { href: "/admin/users", label: "Usuários", icon: "/icons/admin/users.svg", pending: false },
-  { href: null, label: "Treinamento", icon: "/icons/admin/dumbbell.svg", pending: true },
-  { href: null, label: "Nutrição", icon: "/icons/admin/nutrition.svg", pending: true },
+  {
+    href: "/admin/training",
+    label: "Treinamento",
+    icon: "/icons/admin/dumbbell.svg",
+    pending: true,
+  },
+  {
+    href: "/admin/nutrition",
+    label: "Nutrição",
+    icon: "/icons/admin/nutrition.svg",
+    pending: true,
+  },
 ] as const;
 
 const LIBRARY = [
@@ -36,7 +47,12 @@ const AFTER = [
     icon: "/icons/admin/cpu.svg",
     pending: false,
   },
-  { href: null, label: "Configurações", icon: "/icons/admin/settings.svg", pending: true },
+  {
+    href: "/admin/settings",
+    label: "Configurações",
+    icon: "/icons/admin/settings.svg",
+    pending: true,
+  },
   { href: "/admin/audit", label: "Auditoria", icon: "/icons/admin/shield.svg", pending: false },
 ] as const;
 
@@ -44,6 +60,54 @@ function navClass(selected: boolean): string {
   return `flex min-w-0 items-center gap-3 rounded-[var(--radius-md)] px-3 py-3 text-sm leading-tight lg:px-4 ${
     selected ? "border border-brand bg-brand-soft font-bold text-brand" : "font-medium text-muted"
   }`;
+}
+
+function AdminNavLink({
+  href,
+  label,
+  icon,
+  pending,
+  selected,
+}: {
+  href: string;
+  label: string;
+  icon: string;
+  pending: boolean;
+  selected: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={navClass(selected)}
+      aria-current={selected ? "page" : undefined}
+      aria-label={pending ? `${label} — em breve` : undefined}
+    >
+      <FigmaIcon src={icon} alt="" size={18} className="shrink-0" />
+      <span className="min-w-0 truncate">{label}</span>
+      {pending ? (
+        <span
+          aria-hidden
+          className="ml-auto shrink-0 text-[9px] font-bold uppercase tracking-wide text-muted"
+        >
+          Em breve
+        </span>
+      ) : null}
+    </Link>
+  );
+}
+
+function HeaderPendingButton({ icon, label }: { icon: string; label: string }) {
+  return (
+    <button
+      type="button"
+      disabled
+      aria-label={`${label} — em breve`}
+      title={`${label} — em breve`}
+      className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-surface text-muted opacity-60"
+    >
+      <FigmaIcon src={icon} alt="" size={18} />
+    </button>
+  );
 }
 
 export function AdminShell({
@@ -69,32 +133,16 @@ export function AdminShell({
           <p className="text-[10px] font-semibold uppercase text-brand">Painel administrativo</p>
         </div>
         <nav aria-label="Navegação administrativa" className="flex min-h-0 flex-1 flex-col gap-1.5">
-          {NAV.map((item) => {
-            const selected = item.label === current;
-            const inner = (
-              <>
-                <FigmaIcon src={item.icon} alt="" size={18} className="shrink-0" />
-                <span className="min-w-0 truncate">{item.label}</span>
-              </>
-            );
-            if (item.pending || !item.href) {
-              return (
-                <span key={item.label} title={PENDING} className={navClass(false)}>
-                  {inner}
-                </span>
-              );
-            }
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={navClass(selected)}
-                aria-current={selected ? "page" : undefined}
-              >
-                {inner}
-              </Link>
-            );
-          })}
+          {NAV.map((item) => (
+            <AdminNavLink
+              key={item.label}
+              href={item.href}
+              label={item.label}
+              icon={item.icon}
+              pending={item.pending}
+              selected={item.label === current}
+            />
+          ))}
           <div className="flex flex-col gap-1">
             <div
               className={`flex items-center gap-3 rounded-[var(--radius-md)] px-4 py-3 ${libraryActive ? "text-brand" : "text-muted"}`}
@@ -119,32 +167,16 @@ export function AdminShell({
               </Link>
             ))}
           </div>
-          {AFTER.map((item) => {
-            const selected = item.label === current;
-            const inner = (
-              <>
-                <FigmaIcon src={item.icon} alt="" size={18} className="shrink-0" />
-                <span className="min-w-0 truncate">{item.label}</span>
-              </>
-            );
-            if (item.pending || !item.href) {
-              return (
-                <span key={item.label} title={PENDING} className={navClass(false)}>
-                  {inner}
-                </span>
-              );
-            }
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={navClass(selected)}
-                aria-current={selected ? "page" : undefined}
-              >
-                {inner}
-              </Link>
-            );
-          })}
+          {AFTER.map((item) => (
+            <AdminNavLink
+              key={item.label}
+              href={item.href}
+              label={item.label}
+              icon={item.icon}
+              pending={item.pending}
+              selected={item.label === current}
+            />
+          ))}
         </nav>
         <div className="mt-auto flex flex-col gap-3 border-t border-border px-2 pt-4">
           <div className="flex items-center gap-3">
@@ -154,7 +186,7 @@ export function AdminShell({
               <p className="truncate text-xs text-muted">Painel Tervelo</p>
             </div>
           </div>
-          <LogoutButton />
+          <LogoutButton variant="sidebar" />
         </div>
       </aside>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
@@ -164,16 +196,17 @@ export function AdminShell({
             {subtitle ? <p className="mt-1 text-sm text-muted">{subtitle}</p> : null}
           </div>
           <div className="flex items-center gap-3 lg:gap-4">
-            <div className="hidden w-[280px] items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 md:flex">
+            <label className="hidden w-[280px] cursor-not-allowed items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 opacity-60 md:flex">
               <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
-              <span className="text-[13px] text-muted">Buscar...</span>
-            </div>
-            <span className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-surface text-muted">
-              <FigmaIcon src="/icons/admin/bell.svg" alt="" size={18} />
-            </span>
-            <span className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-surface text-muted">
-              <FigmaIcon src="/icons/admin/help.svg" alt="" size={18} />
-            </span>
+              <input
+                disabled
+                aria-label="Busca global — em breve"
+                placeholder="Buscar..."
+                className="min-w-0 flex-1 bg-transparent text-[13px] outline-none"
+              />
+            </label>
+            <HeaderPendingButton icon="/icons/admin/bell.svg" label="Notificações" />
+            <HeaderPendingButton icon="/icons/admin/help.svg" label="Ajuda" />
           </div>
         </header>
         <main className="min-h-0 min-w-0 flex-1 overflow-auto px-4 py-6 lg:px-8 lg:py-8">

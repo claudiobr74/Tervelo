@@ -52,6 +52,7 @@ export function AdminUsersScreen() {
           >
             <FigmaIcon src="/icons/admin/download.svg" alt="" size={14} />
             Exportar
+            <span className="text-[10px] font-bold uppercase text-muted">Em breve</span>
           </button>
         </div>
 

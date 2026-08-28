@@ -119,4 +119,33 @@ test.describe("console admin", () => {
     );
     expect(usersOverflow).toBeLessThanOrEqual(1);
   });
+
+  test("Treinamento, Nutrição e Configurações abrem sem travar", async ({ page }) => {
+    await loginPreview(page);
+    await page.goto("/dev");
+    await page.getByRole("button", { name: "Painel administrativo" }).click();
+    await expect(page).toHaveURL(/\/admin$/);
+
+    await page.getByRole("link", { name: /Treinamento/ }).click();
+    await expect(page).toHaveURL(/\/admin\/training$/);
+    await expect(page.getByRole("heading", { name: "Treinamento", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Treinamento em implementação" })).toBeVisible();
+    await expect(page.getByText(/o clique não deve travar o painel/i)).toBeVisible();
+
+    await page.getByRole("link", { name: /Nutrição/ }).click();
+    await expect(page).toHaveURL(/\/admin\/nutrition$/);
+    await expect(page.getByRole("heading", { name: "Nutrição em implementação" })).toBeVisible();
+
+    await page.getByRole("link", { name: /Configurações/ }).click();
+    await expect(page).toHaveURL(/\/admin\/settings$/);
+    await expect(
+      page.getByRole("heading", { name: "Configurações em implementação" }),
+    ).toBeVisible();
+
+    await page.getByRole("link", { name: "Dashboard" }).click();
+    await expect(page).toHaveURL(/\/admin$/);
+    await expect(page.getByLabel("Busca global — em breve")).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Notificações — em breve" })).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Ajuda — em breve" })).toBeDisabled();
+  });
 });

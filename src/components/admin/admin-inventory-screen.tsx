@@ -23,7 +23,6 @@ export function AdminInventoryScreen() {
   const [group, setGroup] = useState<(typeof GROUPS)[number]["id"]>("chest");
   const [chest, setChest] = useState(initial.chestEquipment);
   const [bars, setBars] = useState(initial.bars);
-  const [saved, setSaved] = useState(false);
   const dumbbells = expandDumbbellWeights(gym.dumbbells);
 
   const plateChips = [...gym.plates].sort((a, b) => a.weightKg - b.weightKg);
@@ -92,12 +91,16 @@ export function AdminInventoryScreen() {
             </button>
             <button
               type="button"
-              onClick={() => setSaved(true)}
-              className="rounded-[var(--radius-lg)] bg-brand px-4 py-2 text-sm font-bold text-on-brand"
+              disabled
+              title="A gravação no servidor entra em breve"
+              className="rounded-[var(--radius-lg)] bg-brand px-4 py-2 text-sm font-bold text-on-brand opacity-60"
             >
-              {saved ? "Inventário salvo neste navegador" : "Salvar inventário"}
+              Salvar inventário
             </button>
           </div>
+          <p className="text-right text-xs text-muted">
+            As marcações ficam só nesta tela. A gravação no servidor entra em breve.
+          </p>
           {group === "chest" ? (
             <section>
               <h2 className="mb-3 text-sm font-bold">Equipamentos de Peito Disponíveis</h2>

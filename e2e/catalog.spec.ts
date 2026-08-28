@@ -43,6 +43,7 @@ test("pré-visualização admin mostra anilha 1,25 kg zerada", async ({ page }) 
   await page.getByRole("link", { name: "Inventário da Academia" }).click();
   await expect(page.getByText("1,25 kg", { exact: true })).toBeVisible();
   await expect(page.getByText(/1,25 kg com 0 un/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Salvar inventário" })).toBeDisabled();
 });
 
 test("login e busca funcionam no tema claro", async ({ page }) => {

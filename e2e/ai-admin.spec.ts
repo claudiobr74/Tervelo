@@ -45,6 +45,11 @@ test("admin escolhe o agente de IA no contrato", async ({ page }) => {
   await expect(page.getByText("Não fabricar dados ausentes")).toBeVisible();
   await page.getByRole("tab", { name: "Testes" }).click();
   await expect(page.getByText("31. O check-in diário foi superinterpretado?")).toBeVisible();
+  await page.getByRole("tab", { name: /Treinamento/ }).click();
+  await expect(page).toHaveURL(/\/admin\/ai/);
+  await expect(
+    page.getByRole("heading", { name: "Heurísticas de treino em implementação" }),
+  ).toBeVisible();
 });
 
 test("contrato de IA no tema claro", async ({ page }) => {

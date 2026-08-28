@@ -61,6 +61,9 @@ describe("proxy guard", () => {
   it("admin sem sessão preserva o destino no login", () => {
     expect(resolveAuthRedirect("/admin", context())).toBe("/login?next=%2Fadmin");
     expect(resolveAuthRedirect("/admin/users", context())).toBe("/login?next=%2Fadmin%2Fusers");
+    expect(resolveAuthRedirect("/admin/training", context())).toBe(
+      "/login?next=%2Fadmin%2Ftraining",
+    );
   });
 
   it("onboarding concluído não reabre o fluxo", () => {

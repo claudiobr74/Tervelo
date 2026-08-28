@@ -5,6 +5,9 @@ describe("return path", () => {
   it("aceita só rotas internas", () => {
     expect(safeReturnPath("/admin")).toBe("/admin");
     expect(safeReturnPath("/admin/users")).toBe("/admin/users");
+    expect(safeReturnPath("/admin/training")).toBe("/admin/training");
+    expect(safeReturnPath("/admin/nutrition")).toBe("/admin/nutrition");
+    expect(safeReturnPath("/admin/settings")).toBe("/admin/settings");
     expect(safeReturnPath("/app/today")).toBe("/app/today");
     expect(safeReturnPath("/onboarding/perfil")).toBe("/onboarding/perfil");
     expect(safeReturnPath("https://evil.example/admin")).toBe("/admin");
@@ -16,6 +19,7 @@ describe("return path", () => {
   it("admin sem sessão volta ao login com next", () => {
     expect(loginPathWithNext("/admin")).toBe("/login?next=%2Fadmin");
     expect(loginPathWithNext("/admin/ai")).toBe("/login?next=%2Fadmin%2Fai");
+    expect(loginPathWithNext("/admin/training")).toBe("/login?next=%2Fadmin%2Ftraining");
     expect(loginPathWithNext("/app/today")).toBe("/login");
   });
 

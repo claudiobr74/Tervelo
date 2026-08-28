@@ -56,21 +56,24 @@ export function AdminExercisesScreen() {
         </div>
         <div className="flex flex-wrap gap-2 text-sm">
           {[
-            "Grupo muscular: Todos",
-            "Equipamento",
-            "Padrão de movimento",
-            "Unilateral/Bilateral",
-            "Nível",
-            "Peso livre/Máquina",
-          ].map((label, index) => (
-            <span
-              key={label}
+            { label: "Grupo muscular: Todos", current: true },
+            { label: "Equipamento", current: false },
+            { label: "Padrão de movimento", current: false },
+            { label: "Unilateral/Bilateral", current: false },
+            { label: "Nível", current: false },
+            { label: "Peso livre/Máquina", current: false },
+          ].map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              disabled
+              title="Filtros do catálogo entram em breve"
               className={`rounded-full border px-3 py-1.5 ${
-                index === 0 ? "border-brand bg-brand-soft text-brand" : "border-border text-muted"
+                item.current ? "border-brand bg-brand-soft text-brand" : "border-border text-muted"
               }`}
             >
-              {label}
-            </span>
+              {item.label}
+            </button>
           ))}
         </div>
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">

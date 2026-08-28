@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { AdminShell } from "@/components/admin/admin-shell";
+import { EmptyPanel } from "@/components/ui/empty-panel";
 import { AI_AGENTS, agentLabel } from "@/domain/ai/agents";
 import {
   AI_ADMIN_TABS,
@@ -33,13 +34,24 @@ import { QA_ADDENDUM_CHECKS } from "@/domain/ai/qa-addendum";
 import { QA_HEART_RATE_CHECKS } from "@/domain/heart-rate/qa";
 import { QA_ATHLETE_STATE_CHECKS } from "@/domain/athlete-state/qa";
 
+const PENDING_TAB_IDS = new Set<AiAdminTabId>(["training", "models", "versioning"]);
+
 const PENDING_COPY: Record<
   Exclude<AiAdminTabId, "behavior" | "nutrition" | "recovery" | "safety" | "tests">,
-  string
+  { title: string; body: string }
 > = {
-  training: "As heurísticas de treino entram nesta aba em breve.",
-  models: "A escolha de modelo roda no servidor. A configuração chega aqui em breve.",
-  versioning: "O histórico de versões publicadas chega com ai_contract_versions.",
+  training: {
+    title: "Heurísticas de treino em implementação",
+    body: "A aba responde ao clique e não deve travar o painel. As regras de treino do contrato ainda não têm tela nesta seção.",
+  },
+  models: {
+    title: "Modelos em implementação",
+    body: "A escolha de modelo roda no servidor. A configuração chega aqui em breve.",
+  },
+  versioning: {
+    title: "Versionamento em implementação",
+    body: "O histórico de versões publicadas chega com ai_contract_versions.",
+  },
 };
 
 function pillClass(active: boolean): string {
@@ -145,8 +157,6 @@ export function AdminAiScreen() {
     setAutonomy((current) => ({ ...current, [action]: level }));
   }
 
-  const activeTab = AI_ADMIN_TABS.find((item) => item.id === tab) ?? AI_ADMIN_TABS[0];
-
   return (
     <AdminShell title="Inteligência Artificial" active="Inteligência Artificial">
       <div className="flex flex-col items-stretch gap-6 xl:flex-row xl:items-start">
@@ -162,12 +172,18 @@ export function AdminAiScreen() {
                 type="button"
                 role="tab"
                 aria-selected={selected}
+                aria-label={PENDING_TAB_IDS.has(item.id) ? `${item.label} — em breve` : undefined}
                 onClick={() => setTab(item.id)}
-                className={`shrink-0 whitespace-nowrap rounded-[var(--radius-md)] px-4 py-3 text-left text-sm ${
+                className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-[var(--radius-md)] px-4 py-3 text-left text-sm ${
                   selected ? "bg-surface-secondary font-bold text-brand" : "font-medium text-muted"
                 }`}
               >
                 {item.label}
+                {PENDING_TAB_IDS.has(item.id) ? (
+                  <span aria-hidden className="text-[9px] font-bold uppercase text-muted">
+                    Em breve
+                  </span>
+                ) : null}
               </button>
             );
           })}
@@ -381,19 +397,24 @@ export function AdminAiScreen() {
               checks={QA_ATHLETE_STATE_CHECKS}
             />
           ) : (
-            <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-              <h2 className="text-lg font-extrabold">{activeTab.label}</h2>
-              <p className="mt-2 text-sm text-muted">
-                {
-                  PENDING_COPY[
-                    tab as Exclude<
-                      AiAdminTabId,
-                      "behavior" | "nutrition" | "recovery" | "safety" | "tests"
-                    >
-                  ]
-                }
-              </p>
-            </article>
+            <EmptyPanel
+              title={
+                PENDING_COPY[
+                  tab as Exclude<
+                    AiAdminTabId,
+                    "behavior" | "nutrition" | "recovery" | "safety" | "tests"
+                  >
+                ].title
+              }
+              body={
+                PENDING_COPY[
+                  tab as Exclude<
+                    AiAdminTabId,
+                    "behavior" | "nutrition" | "recovery" | "safety" | "tests"
+                  >
+                ].body
+              }
+            />
           )}
         </div>
       </div>
