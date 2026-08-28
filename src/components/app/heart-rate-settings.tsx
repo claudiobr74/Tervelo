@@ -42,8 +42,8 @@ export function HeartRateSettingsCard() {
           />
         </div>
         <p className="text-xs text-muted">
-          Conecte um frequencímetro Bluetooth para acompanhar sua resposta durante o treino e incluir
-          esses dados nas análises do Coach.
+          Conecte um frequencímetro Bluetooth para acompanhar sua resposta durante o treino e
+          incluir esses dados nas análises do Coach.
         </p>
       </div>
 
@@ -106,7 +106,11 @@ export function HeartRateSettingsCard() {
                   <button
                     type="button"
                     disabled={busy}
-                    onClick={() => void (runtime.status === "DISCONNECTED" ? reconnectHeartRateMonitor() : connect())}
+                    onClick={() =>
+                      void (runtime.status === "DISCONNECTED"
+                        ? reconnectHeartRateMonitor()
+                        : connect())
+                    }
                     className="rounded-[var(--radius-md)] bg-brand px-3 py-2 text-xs font-semibold text-on-brand"
                   >
                     Conectar frequencímetro
@@ -114,12 +118,17 @@ export function HeartRateSettingsCard() {
                 )}
               </div>
               <p className="flex items-start gap-2 text-xs text-foreground">
-                <FigmaIcon src="/icons/check.svg" alt="" size={14} className="mt-0.5 text-success" />
+                <FigmaIcon
+                  src="/icons/check.svg"
+                  alt=""
+                  size={14}
+                  className="mt-0.5 text-success"
+                />
                 Incluir nas análises do Coach de IA
               </p>
               <p className="text-xs text-muted">
-                O Coach poderá considerar sua resposta cardíaca e recuperação durante os treinos junto com
-                desempenho, recuperação, nutrição e histórico.
+                O Coach poderá considerar sua resposta cardíaca e recuperação durante os treinos
+                junto com desempenho, recuperação, nutrição e histórico.
               </p>
             </>
           )}
@@ -132,7 +141,11 @@ export function HeartRateSettingsCard() {
           <p className="text-xs text-muted">
             A partir do próximo treino, seus dados poderão fazer parte das análises do Coach.
           </p>
-          <button type="button" onClick={clearHeartRateConnectedBanner} className="self-start text-xs font-semibold text-brand">
+          <button
+            type="button"
+            onClick={clearHeartRateConnectedBanner}
+            className="self-start text-xs font-semibold text-brand"
+          >
             Entendi
           </button>
         </div>

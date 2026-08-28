@@ -21,4 +21,3 @@ mutation InsertSetResult(
     client_mutation_id
   }
 }
-

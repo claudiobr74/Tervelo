@@ -20,7 +20,9 @@ export default async function DevHomePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-6 px-6 py-16">
-      <p className="text-xs font-medium uppercase tracking-wide text-brand">Pré-visualização interna</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-brand">
+        Pré-visualização interna
+      </p>
       <h1>
         <BrandLogo className="h-14 w-auto max-w-[240px]" />
       </h1>
@@ -71,7 +73,9 @@ export default async function DevHomePage() {
         Tokens de desenvolvimento
       </Link>
       <section className="flex flex-col gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted">Aparência (scaffold)</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-muted">
+          Aparência (scaffold)
+        </p>
         <ThemeToggle />
       </section>
     </main>

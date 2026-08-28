@@ -6,14 +6,13 @@ import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { HeartRateWorkoutIndicator } from "@/components/app/heart-rate-indicator";
 import { WorkoutSyncHint } from "@/components/app/sync-status-indicator";
 import { FigmaIcon } from "@/components/auth/figma-icon";
-import {
-  remainingSeconds,
-} from "@/domain/timer/rest-timer";
+import { remainingSeconds } from "@/domain/timer/rest-timer";
 import {
   currentExercise,
   currentSet,
   formatKg,
   formatTimer,
+  hasSessionWork,
   isSessionComplete,
   workingSetOrdinal,
 } from "@/domain/training/session";
@@ -45,6 +44,10 @@ export function RestTimerScreen() {
   const endAt = live.timer?.expectedEndAt ?? null;
 
   useEffect(() => {
+    if (live.status === "idle" || !hasSessionWork(session)) {
+      router.replace("/app/today");
+      return;
+    }
     if (live.status === "completed" || isSessionComplete(session, live.recorded)) {
       router.replace("/app/workout/summary");
       return;
@@ -65,12 +68,13 @@ export function RestTimerScreen() {
   }, [running, endAt]);
 
   const nextSet = useMemo(() => {
-    if (isSessionComplete(session, live.recorded)) return null;
+    if (!hasSessionWork(session) || isSessionComplete(session, live.recorded)) return null;
     return currentSet(session, live.recorded);
   }, [live.recorded, session]);
-  const nextExercise = isSessionComplete(session, live.recorded)
-    ? session.exercises.at(-1)
-    : currentExercise(session, live.recorded);
+  const nextExercise =
+    !hasSessionWork(session) || isSessionComplete(session, live.recorded)
+      ? session.exercises.at(-1)
+      : currentExercise(session, live.recorded);
   const ordinal = nextExercise && nextSet ? workingSetOrdinal(nextExercise, nextSet) : null;
   const lastExercise = live.recorded.at(-1)
     ? session.exercises.find((item) => item.id === live.recorded.at(-1)?.sessionExerciseId)
@@ -99,15 +103,14 @@ export function RestTimerScreen() {
             <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
           </button>
           <p className="text-sm font-bold uppercase text-brand">TERVELO</p>
-          <button type="button" title="FIGMA_PENDING" aria-label="Mais opções" className="text-foreground">
-            <FigmaIcon src="/icons/more-vertical.svg" alt="" size={24} />
-          </button>
+          <span className="size-6" />
         </div>
         <div className="flex flex-col gap-1">
           <h1 className="text-[22px] font-extrabold text-foreground">Descanso</h1>
           <WorkoutSyncHint />
           <p className="text-sm text-muted">
-            {lastExercise?.namePt ?? "Série"} • Série {ordinal ? `${Math.max(1, ordinal.current)} de ${ordinal.total}` : "—"}
+            {lastExercise?.namePt ?? "Série"} • Série{" "}
+            {ordinal ? `${Math.max(1, ordinal.current)} de ${ordinal.total}` : "—"}
           </p>
           <HeartRateWorkoutIndicator compact />
         </div>
@@ -121,7 +124,9 @@ export function RestTimerScreen() {
             aria-label={`Restante ${formatTimer(remaining)}`}
           >
             <div className="flex size-[168px] flex-col items-center justify-center gap-1 rounded-full bg-background">
-              <p className="text-[42px] font-extrabold tabular-nums text-foreground">{formatTimer(remaining)}</p>
+              <p className="text-[42px] font-extrabold tabular-nums text-foreground">
+                {formatTimer(remaining)}
+              </p>
               <p className="text-xs font-bold uppercase text-brand">Restantes</p>
             </div>
           </div>

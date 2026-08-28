@@ -22,7 +22,8 @@ export function clampReferenceWeeks(weeks: number | undefined): number {
 
 function trainingDomain(input: AthleteStateInput): TrainingDomainState {
   if (input.recentPerformance === "progressing") return "PROGREDINDO";
-  if (input.recentPerformance === "declining" && input.decliningSessionCount >= 2) return "EM_QUEDA";
+  if (input.recentPerformance === "declining" && input.decliningSessionCount >= 2)
+    return "EM_QUEDA";
   if (input.recentPerformance === "stable" || input.singleBadSession) return "ESTAVEL";
   if (input.recentPerformance === "unknown") return "INDEFINIDO";
   return "ESTAVEL";
@@ -142,7 +143,11 @@ function reasons(input: AthleteStateInput, overall: OverallAthleteState): string
   if (input.singleBadSession) {
     items.push("Uma sessão isolada não caracteriza estagnação.");
   }
-  if (input.heartRateEnabled && input.heartRateVsHabitual === "changed" && input.recentPerformance !== "declining") {
+  if (
+    input.heartRateEnabled &&
+    input.heartRateVsHabitual === "changed" &&
+    input.recentPerformance !== "declining"
+  ) {
     items.push("A frequência cardíaca isolada não justifica alterar o treino.");
   }
   if (!input.checkinPresent) {
@@ -164,7 +169,8 @@ export function missingDataKeys(input: AthleteStateInput): string[] {
   if (!input.checkinPresent) missing.push("checkin_pre_treino");
   if (!input.checkoutPresent) missing.push("checkout_pos_treino");
   if (input.nutritionAdherence === "unknown") missing.push("nutricao");
-  if (input.recoveryVsHabitual === "unknown" && !input.checkinPresent) missing.push("recuperacao_aguda");
+  if (input.recoveryVsHabitual === "unknown" && !input.checkinPresent)
+    missing.push("recuperacao_aguda");
   if (!input.heartRateEnabled) {
     /* desligada: ignorar completamente */
   } else if (input.heartRateVsHabitual === "unknown") {

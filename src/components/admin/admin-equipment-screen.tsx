@@ -8,16 +8,17 @@ import { normalizeSearchText } from "@/domain/exercise/aliases";
 
 export function AdminEquipmentScreen() {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<(typeof EQUIPMENT_CATEGORIES)[number]>("M. Seletorizadas");
+  const [category, setCategory] =
+    useState<(typeof EQUIPMENT_CATEGORIES)[number]>("M. Seletorizadas");
   const [selectedId, setSelectedId] = useState("eq-chest-press");
   const list = useMemo(() => {
     const needle = normalizeSearchText(query);
     return PREVIEW_EQUIPMENT.filter((item) => {
       if (item.category !== category) return false;
       if (!needle) return true;
-      return normalizeSearchText(`${item.namePt} ${item.muscles} ${item.manufacturers.join(" ")}`).includes(
-        needle,
-      );
+      return normalizeSearchText(
+        `${item.namePt} ${item.muscles} ${item.manufacturers.join(" ")}`,
+      ).includes(needle);
     });
   }, [query, category]);
   const selected = list.find((item) => item.id === selectedId) ?? list[0];
@@ -45,7 +46,7 @@ export function AdminEquipmentScreen() {
           <button
             type="button"
             disabled
-            title="Formulário de criação FIGMA_PENDING"
+            title="Cadastro de equipamento em breve"
             className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-lg)] bg-brand px-4 text-sm font-bold text-on-brand opacity-60"
           >
             <FigmaIcon src="/icons/admin/plus.svg" alt="" size={14} />
@@ -69,7 +70,9 @@ export function AdminEquipmentScreen() {
           </div>
           <div className="flex flex-col gap-2">
             {list.length === 0 ? (
-              <p className="text-sm text-muted">Nenhum equipamento nesta categoria na pré-visualização.</p>
+              <p className="text-sm text-muted">
+                Nenhum equipamento nesta categoria na pré-visualização.
+              </p>
             ) : (
               list.map((item) => (
                 <button
@@ -77,13 +80,21 @@ export function AdminEquipmentScreen() {
                   type="button"
                   onClick={() => setSelectedId(item.id)}
                   className={`flex gap-3 rounded-[var(--radius-lg)] border p-3 text-left ${
-                    item.id === selected?.id ? "border-brand bg-surface" : "border-border bg-surface"
+                    item.id === selected?.id
+                      ? "border-brand bg-surface"
+                      : "border-border bg-surface"
                   }`}
                 >
                   <span className="relative size-14 shrink-0 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
                     {item.imageSrc ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={item.imageSrc} alt="" className="size-full object-cover" />
+                      <img
+                        src={item.imageSrc}
+                        alt=""
+                        width={48}
+                        height={48}
+                        className="size-full object-cover"
+                      />
                     ) : null}
                   </span>
                   <div className="min-w-0">
@@ -128,7 +139,10 @@ export function AdminEquipmentScreen() {
                 <p className="mb-2 font-bold">Fabricantes conhecidos</p>
                 <div className="flex flex-wrap gap-2">
                   {selected.manufacturers.map((name) => (
-                    <span key={name} className="rounded-full border border-border px-3 py-1 text-xs text-muted">
+                    <span
+                      key={name}
+                      className="rounded-full border border-border px-3 py-1 text-xs text-muted"
+                    >
                       {name}
                     </span>
                   ))}

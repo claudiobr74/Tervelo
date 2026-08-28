@@ -118,16 +118,15 @@ export function sensorCoverage(
   const end = atMs(endedAt);
   const duration = end - start;
   if (duration <= 0) return null;
-  const valid = validSamples(samples).sort(
-    (a, b) => atMs(a.recordedAt) - atMs(b.recordedAt),
-  );
+  const valid = validSamples(samples).sort((a, b) => atMs(a.recordedAt) - atMs(b.recordedAt));
   if (valid.length === 0) return 0;
 
   let covered = 0;
   let cursor = start;
   for (let index = 0; index < valid.length; index += 1) {
     const t = Math.min(end, Math.max(start, atMs(valid[index].recordedAt)));
-    const prev = index === 0 ? start : Math.min(end, Math.max(start, atMs(valid[index - 1].recordedAt)));
+    const prev =
+      index === 0 ? start : Math.min(end, Math.max(start, atMs(valid[index - 1].recordedAt)));
     const gap = t - prev;
     if (index === 0) {
       if (t - start <= GAP_UNCOVERED_MS) covered += t - start;

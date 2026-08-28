@@ -10,14 +10,14 @@ Estados: `PENDENTE` → `SINCRONIZANDO` → `SINCRONIZADO` | `ERRO_RECUPERAVEL` 
 
 ## Ordem
 
-1. Sessão ativa  
-2. Séries  
-3. Finalização  
-4. Check-ins  
-5. Frequência cardíaca  
-6. Medidas  
-7. Nutrição  
-8. Restante  
+1. Sessão ativa
+2. Séries
+3. Finalização
+4. Check-ins
+5. Frequência cardíaca
+6. Medidas
+7. Nutrição
+8. Restante
 
 Lane `FILE` não bloqueia lane `DATA`. Filho não sai antes do pai (`dependency_ids`).
 

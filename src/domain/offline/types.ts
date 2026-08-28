@@ -1,11 +1,7 @@
 export const LOCAL_SCHEMA_VERSION = 1;
 
 export type SyncOpStatus =
-  | "PENDENTE"
-  | "SINCRONIZANDO"
-  | "SINCRONIZADO"
-  | "ERRO_RECUPERAVEL"
-  | "ERRO_PERMANENTE";
+  "PENDENTE" | "SINCRONIZANDO" | "SINCRONIZADO" | "ERRO_RECUPERAVEL" | "ERRO_PERMANENTE";
 
 export type OfflineCapability = "OFFLINE_CRITICAL" | "OFFLINE_SUPPORTED" | "ONLINE_REQUIRED";
 
@@ -95,11 +91,7 @@ export type ConflictDomain =
   | "heart_rate";
 
 export type ConflictDecision =
-  | "keep_local"
-  | "keep_remote"
-  | "keep_both"
-  | "preserve_for_reconciliation"
-  | "apply_domain_rule";
+  "keep_local" | "keep_remote" | "keep_both" | "preserve_for_reconciliation" | "apply_domain_rule";
 
 export type ConflictResolution = {
   decision: ConflictDecision;

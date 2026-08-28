@@ -33,7 +33,9 @@ function emit() {
   for (const listener of listeners) listener();
 }
 
-function withKind(next: Omit<SyncStatusState, "kind"> & Partial<Pick<SyncStatusState, "kind">>): SyncStatusState {
+function withKind(
+  next: Omit<SyncStatusState, "kind"> & Partial<Pick<SyncStatusState, "kind">>,
+): SyncStatusState {
   return {
     ...next,
     kind: deriveConnectionUiKind({

@@ -27,7 +27,7 @@ export function AboutYouFields({
           value={draft.displayName}
           onChange={(event) => update({ displayName: event.target.value })}
           className={AUTH_INPUT_CLASS}
-          placeholder="Lucas"
+          placeholder="Seu nome"
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -59,7 +59,9 @@ export function AboutYouFields({
           onChange={(event) => update({ birthDate: event.target.value })}
           className={AUTH_INPUT_CLASS}
         />
-        {draft.birthDate ? <p className="text-sm text-muted">{ageHint(draft.birthDate).trim()}</p> : null}
+        {draft.birthDate ? (
+          <p className="text-sm text-muted">{ageHint(draft.birthDate).trim()}</p>
+        ) : null}
       </div>
       <div className="flex gap-3">
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">

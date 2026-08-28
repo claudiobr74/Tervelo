@@ -12,6 +12,7 @@ import {
   currentSet,
   dropOrdinal,
   groupPartners,
+  hasSessionWork,
   isSessionComplete,
   warmupOrdinal,
   warmupSets,
@@ -23,12 +24,12 @@ import {
 import {
   recordCurrentSet,
   setRir,
-  startWorkout,
   stepLoad,
   stepReps,
   useLiveSession,
 } from "@/lib/training/live-session";
 import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { EmptyPanel } from "@/components/ui/empty-panel";
 import { SYNC_COPY } from "@/domain/offline";
 
 const RIR_OPTIONS = [0, 1, 2, 3, 4] as const;
@@ -68,22 +69,14 @@ function Stepper({
   );
 }
 
-function Header({
-  title,
-  onBack,
-}: {
-  title: string;
-  onBack: () => void;
-}) {
+function Header({ title, onBack }: { title: string; onBack: () => void }) {
   return (
     <div className="flex items-center justify-between">
       <button type="button" aria-label="Voltar" onClick={onBack} className="text-foreground">
         <FigmaIcon src="/icons/arrow-left.svg" alt="" size={24} />
       </button>
       <p className="text-sm font-bold uppercase text-brand">{title}</p>
-      <button type="button" title="FIGMA_PENDING" aria-label="Mais opções" className="text-foreground">
-        <FigmaIcon src="/icons/more-vertical.svg" alt="" size={24} />
-      </button>
+      <span className="size-6" />
     </div>
   );
 }
@@ -134,7 +127,8 @@ function WarmupList({
         <div className="flex items-start justify-between rounded-[var(--radius-md)] border border-border bg-surface p-3 text-sm text-foreground">
           <p className="font-semibold">Série 1 de {workingSets(exercise).length}</p>
           <p className="font-bold">
-            {firstWorking.suggestedWeightKg} kg × {firstWorking.targetRepsMin}-{firstWorking.targetRepsMax}
+            {firstWorking.suggestedWeightKg} kg × {firstWorking.targetRepsMin}-
+            {firstWorking.targetRepsMax}
           </p>
         </div>
       ) : null}
@@ -156,7 +150,10 @@ function DropList({
       {exercise.sets.map((set, index) => {
         const active = set.id === current.id;
         const done = recordedIds.has(set.id);
-        const label = set.methodKind === "drop_set" ? `Drop ${dropOrdinal(exercise, set).current}` : `Série ${index + 1}`;
+        const label =
+          set.methodKind === "drop_set"
+            ? `Drop ${dropOrdinal(exercise, set).current}`
+            : `Série ${index + 1}`;
         return (
           <div
             key={set.id}
@@ -168,7 +165,9 @@ function DropList({
                   done ? "bg-success" : active ? "bg-brand" : "bg-tertiary"
                 }`}
               />
-              <p className={`text-sm ${active ? "font-bold text-brand" : done ? "text-muted" : "text-tertiary"}`}>
+              <p
+                className={`text-sm ${active ? "font-bold text-brand" : done ? "text-muted" : "text-tertiary"}`}
+              >
                 {label}
               </p>
             </div>
@@ -186,16 +185,36 @@ export function ExerciseExecutionScreen() {
   const router = useRouter();
   const live = useLiveSession();
   const session = PREVIEW_WORKOUT;
+  const idle = live.status === "idle" || !hasSessionWork(session);
 
   useEffect(() => {
-    if (live.status === "idle") startWorkout();
+    if (idle) return;
     if (live.status === "completed" || isSessionComplete(session, live.recorded)) {
       router.replace("/app/workout/summary");
     }
     if (live.status === "resting") {
       router.replace("/app/workout/rest");
     }
-  }, [live.status, live.recorded, router, session]);
+  }, [idle, live.status, live.recorded, router, session]);
+
+  if (idle) {
+    return (
+      <AthleteAppShell hideNav>
+        <div className="flex flex-col gap-4 px-6 pb-6 pt-4">
+          <EmptyPanel
+            title="Nenhum treino em andamento"
+            body="Não há sessão ativa. O app não começa um treino de exemplo sozinho."
+          />
+          <Link
+            href="/app/today"
+            className="flex h-12 items-center justify-center rounded-[var(--radius-lg)] border border-border text-sm font-bold text-foreground"
+          >
+            Voltar para hoje
+          </Link>
+        </div>
+      </AthleteAppShell>
+    );
+  }
 
   const exercise = currentExercise(session, live.recorded);
   const set = currentSet(session, live.recorded);
@@ -246,7 +265,9 @@ export function ExerciseExecutionScreen() {
             </div>
           </div>
 
-          {isWarmup ? <WarmupList exercise={exercise} current={set} recordedIds={recordedIds} /> : null}
+          {isWarmup ? (
+            <WarmupList exercise={exercise} current={set} recordedIds={recordedIds} />
+          ) : null}
 
           {isDrop && !isWarmup ? (
             <>
@@ -255,7 +276,9 @@ export function ExerciseExecutionScreen() {
                   <FigmaIcon src="/icons/info.svg" alt="" size={16} className="text-brand" />
                   <p className="text-sm font-bold uppercase text-brand">Método: Drop Set</p>
                 </div>
-                <p className="text-[13px] font-medium text-foreground">Reduza a carga e continue sem descanso.</p>
+                <p className="text-[13px] font-medium text-foreground">
+                  Reduza a carga e continue sem descanso.
+                </p>
               </div>
               <DropList exercise={exercise} current={set} recordedIds={recordedIds} />
             </>
@@ -319,7 +342,8 @@ export function ExerciseExecutionScreen() {
                 <FigmaIcon src="/icons/chevron-right.svg" alt="" size={16} className="text-brand" />
               </p>
               <p className="text-center text-xs text-muted">
-                O descanso de {exercise.restSeconds}s será iniciado após completar ambos os exercícios.
+                O descanso de {exercise.restSeconds}s será iniciado após completar ambos os
+                exercícios.
               </p>
             </div>
           ) : null}
@@ -341,7 +365,9 @@ export function ExerciseExecutionScreen() {
                       type="button"
                       onClick={() => setRir(value)}
                       className={`flex size-12 items-center justify-center rounded-full text-sm font-bold ${
-                        selected ? "bg-brand text-on-brand" : "bg-surface-interactive text-foreground"
+                        selected
+                          ? "bg-brand text-on-brand"
+                          : "bg-surface-interactive text-foreground"
                       }`}
                     >
                       {value === 4 ? "4+" : value}
@@ -394,19 +420,19 @@ export function ExerciseExecutionScreen() {
                 Registrar {superLetter}
               </button>
               <div className="flex gap-3">
-              <Link
-                href="/app/workout"
-                className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
-              >
-                Anterior
-              </Link>
-              <button
-                type="button"
-                onClick={onRecord}
-                className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
-              >
-                Pular
-              </button>
+                <Link
+                  href="/app/workout"
+                  className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
+                >
+                  Anterior
+                </Link>
+                <button
+                  type="button"
+                  onClick={onRecord}
+                  className="flex h-12 flex-1 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-surface text-[15px] font-bold text-muted"
+                >
+                  Pular
+                </button>
               </div>
             </div>
           ) : (

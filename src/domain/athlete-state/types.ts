@@ -41,7 +41,11 @@ export type TrainingDomainState = (typeof TRAINING_DOMAIN_STATES)[number];
 export const RECOVERY_DOMAIN_STATES = ["NORMAL", "ABAIXO_DO_HABITUAL", "INDEFINIDO"] as const;
 export type RecoveryDomainState = (typeof RECOVERY_DOMAIN_STATES)[number];
 
-export const NUTRITION_DOMAIN_STATES = ["DENTRO_DO_PLANEJADO", "ABAIXO_DO_PLANEJADO", "INDEFINIDO"] as const;
+export const NUTRITION_DOMAIN_STATES = [
+  "DENTRO_DO_PLANEJADO",
+  "ABAIXO_DO_PLANEJADO",
+  "INDEFINIDO",
+] as const;
 export type NutritionDomainState = (typeof NUTRITION_DOMAIN_STATES)[number];
 
 export const BODY_DOMAIN_STATES = ["DENTRO_DO_OBJETIVO", "FORA_DO_OBJETIVO", "INDEFINIDO"] as const;

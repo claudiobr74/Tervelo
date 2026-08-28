@@ -21,7 +21,9 @@ describe("adaptação da sessão por tempo", () => {
     expect(result.dropped.some((item) => item.priority === "finisher")).toBe(true);
     expect(result.kept.some((item) => item.priority === "primary")).toBe(true);
     const proportional = exercises.map((item) => Math.round(item.sets * (40 / 75)));
-    expect(result.kept.map((item) => item.sets)).not.toEqual(proportional.filter((_, index) => index < result.kept.length));
+    expect(result.kept.map((item) => item.sets)).not.toEqual(
+      proportional.filter((_, index) => index < result.kept.length),
+    );
   });
 
   it("tempo suficiente não muda a sessão", () => {

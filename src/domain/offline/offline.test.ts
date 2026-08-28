@@ -1,13 +1,22 @@
 import { describe, expect, it } from "vitest";
 import { canRetryAt, nextRetryAt, retryDelayMs } from "./backoff";
 import { coachUnavailableCopy, FEATURE_CAPABILITY } from "./capability";
+import { SYNC_COPY } from "./labels";
 import { resolveConflict } from "./conflict";
 import { runSyncPass } from "./engine";
-import { connectionUiCopy, deriveConnectionUiKind, pendingCountCopy, recoveredSessionCopy } from "./labels";
+import {
+  connectionUiCopy,
+  deriveConnectionUiKind,
+  pendingCountCopy,
+  recoveredSessionCopy,
+} from "./labels";
 import { enqueueOperation, orderOperations, pendingDataCount } from "./queue";
 import type { NewSyncOperation, SyncOperation, SyncSendResult } from "./types";
 
-function op(partial: Partial<NewSyncOperation> & Pick<NewSyncOperation, "id" | "client_mutation_id" | "entity_id">): NewSyncOperation {
+function op(
+  partial: Partial<NewSyncOperation> &
+    Pick<NewSyncOperation, "id" | "client_mutation_id" | "entity_id">,
+): NewSyncOperation {
   return {
     tipo: "SET_COMPLETED",
     entidade: "set_result",
@@ -20,8 +29,14 @@ function op(partial: Partial<NewSyncOperation> & Pick<NewSyncOperation, "id" | "
 
 describe("fila de sincronização", () => {
   it("não duplica pelo client_mutation_id", () => {
-    const first = enqueueOperation([], op({ id: "a", client_mutation_id: "m1", entity_id: "set-1" }));
-    const second = enqueueOperation(first, op({ id: "b", client_mutation_id: "m1", entity_id: "set-1", payload: { reps: 99 } }));
+    const first = enqueueOperation(
+      [],
+      op({ id: "a", client_mutation_id: "m1", entity_id: "set-1" }),
+    );
+    const second = enqueueOperation(
+      first,
+      op({ id: "b", client_mutation_id: "m1", entity_id: "set-1", payload: { reps: 99 } }),
+    );
     expect(second).toHaveLength(1);
     expect(second[0].payload.reps).toBe(8);
   });
@@ -63,7 +78,10 @@ describe("fila de sincronização", () => {
       payload: {},
       lane: "FILE",
     });
-    const set = enqueueOperation(file, op({ id: "set", client_mutation_id: "cm-set", entity_id: "set-1" }));
+    const set = enqueueOperation(
+      file,
+      op({ id: "set", client_mutation_id: "cm-set", entity_id: "set-1" }),
+    );
     expect(orderOperations(set)[0].lane).toBe("DATA");
   });
 });
@@ -75,12 +93,16 @@ describe("motor de sincronização", () => {
       applied.add(item.client_mutation_id);
       return { kind: "acked" };
     };
-    let queue = enqueueOperation([], op({ id: "set", client_mutation_id: "cm-1", entity_id: "set-1" }));
+    let queue = enqueueOperation(
+      [],
+      op({ id: "set", client_mutation_id: "cm-1", entity_id: "set-1" }),
+    );
     queue = (await runSyncPass({ operations: queue, send, isOnline: false })).operations;
     expect(pendingDataCount(queue)).toBe(1);
     queue = (await runSyncPass({ operations: queue, send, isOnline: true })).operations;
     queue = (await runSyncPass({ operations: queue, send, isOnline: false })).operations;
-    queue = (await runSyncPass({ operations: queue, send, isOnline: true, forceRetry: true })).operations;
+    queue = (await runSyncPass({ operations: queue, send, isOnline: true, forceRetry: true }))
+      .operations;
     expect(queue[0].status).toBe("SINCRONIZADO");
     expect(applied.size).toBe(1);
   });
@@ -97,7 +119,10 @@ describe("motor de sincronização", () => {
       }
       return { kind: "acked" };
     };
-    let queue = enqueueOperation([], op({ id: "set", client_mutation_id: "cm-lost", entity_id: "set-1" }));
+    let queue = enqueueOperation(
+      [],
+      op({ id: "set", client_mutation_id: "cm-lost", entity_id: "set-1" }),
+    );
     queue = (await runSyncPass({ operations: queue, send, isOnline: true })).operations;
     expect(queue[0].status).toBe("ERRO_RECUPERAVEL");
     queue = (
@@ -114,8 +139,14 @@ describe("motor de sincronização", () => {
   });
 
   it("erro permanente não entra em loop", async () => {
-    const send = async (): Promise<SyncSendResult> => ({ kind: "permanent", errorCode: "permission_denied" });
-    let queue = enqueueOperation([], op({ id: "set", client_mutation_id: "cm-perm", entity_id: "set-1" }));
+    const send = async (): Promise<SyncSendResult> => ({
+      kind: "permanent",
+      errorCode: "permission_denied",
+    });
+    let queue = enqueueOperation(
+      [],
+      op({ id: "set", client_mutation_id: "cm-perm", entity_id: "set-1" }),
+    );
     queue = (await runSyncPass({ operations: queue, send, isOnline: true })).operations;
     const second = await runSyncPass({ operations: queue, send, isOnline: true, forceRetry: true });
     expect(second.operations[0].status).toBe("ERRO_PERMANENTE");
@@ -193,6 +224,7 @@ describe("copy de interface", () => {
     expect(connectionUiCopy("ONLINE_SYNCING")).toBe("Sincronizando...");
     expect(pendingCountCopy(3)).toBe("3 alterações aguardando sincronização");
     expect(coachUnavailableCopy()).toBe("Coach temporariamente indisponível offline.");
+    expect(SYNC_COPY.pendingAnalysis).toContain("orquestração no servidor ainda não gera");
     expect(FEATURE_CAPABILITY.remote_coach).toBe("ONLINE_REQUIRED");
     expect(recoveredSessionCopy("2026-08-26T21:07:00.000Z")).toMatch(
       /Você iniciou esta sessão às \d{2}:\d{2}\./,
@@ -223,6 +255,8 @@ describe("recuperação após fechamento", () => {
       [],
       op({ id: "set", client_mutation_id: "cm-1", entity_id: "set-1" }),
     );
-    expect(enqueueOperation(queue, op({ id: "dup", client_mutation_id: "cm-1", entity_id: "set-1" }))).toHaveLength(1);
+    expect(
+      enqueueOperation(queue, op({ id: "dup", client_mutation_id: "cm-1", entity_id: "set-1" })),
+    ).toHaveLength(1);
   });
 });

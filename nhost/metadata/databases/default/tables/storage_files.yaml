@@ -76,12 +76,13 @@ insert_permissions:
             - exercise-media
             - equipment-media
             - avatars
+      set:
+        uploaded_by_user_id: x-hasura-user-id
       columns:
         - bucket_id
         - name
         - mime_type
         - size
-        - uploaded_by_user_id
 select_permissions:
   - role: user
     permission:

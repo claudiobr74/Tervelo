@@ -10,14 +10,14 @@ Este documento precede a primeira migration. Schema real entra em `nhost/migrati
 
 ## 1. Fronteiras de tenant
 
-| Classe | Exemplos | Dono |
-| --- | --- | --- |
-| Identidade | `auth.users`, `profiles` | usuário Nhost |
-| Atleta | perfil, objetivos, preferências, medidas, recuperação, nutrição, sessões | `user_id` |
-| Local | `gyms`, inventário | `owner_user_id` no MVP |
-| Catálogo | músculos, exercícios canônicos, equipamentos canônicos | global (admin write) |
-| IA operacional | contratos publicados | global |
-| Auditoria / decisões IA | por usuário | `user_id` |
+| Classe                  | Exemplos                                                                 | Dono                   |
+| ----------------------- | ------------------------------------------------------------------------ | ---------------------- |
+| Identidade              | `auth.users`, `profiles`                                                 | usuário Nhost          |
+| Atleta                  | perfil, objetivos, preferências, medidas, recuperação, nutrição, sessões | `user_id`              |
+| Local                   | `gyms`, inventário                                                       | `owner_user_id` no MVP |
+| Catálogo                | músculos, exercícios canônicos, equipamentos canônicos                   | global (admin write)   |
+| IA operacional          | contratos publicados                                                     | global                 |
+| Auditoria / decisões IA | por usuário                                                              | `user_id`              |
 
 **MVP B2C:** o atleta é o tenant.  
 **Futuro B2B:** `organizations` + `organization_members` + `gyms.organization_id` nullable. Não criar membership org agora.
@@ -72,29 +72,29 @@ equipment_categories
 
 Espelho público mínimo de `auth.users`. PK = `auth.users.id`.
 
-| Coluna | Tipo | Notas |
-| --- | --- | --- |
-| `id` | uuid PK | = user id |
-| `display_name` | text | |
-| `locale` | text | default `pt` |
-| `theme_preference` | text | `light` \| `dark` \| `system` |
-| `shortcuts_enabled` | boolean | default true |
-| `created_at` / `updated_at` | timestamptz | |
+| Coluna                      | Tipo        | Notas                         |
+| --------------------------- | ----------- | ----------------------------- |
+| `id`                        | uuid PK     | = user id                     |
+| `display_name`              | text        |                               |
+| `locale`                    | text        | default `pt`                  |
+| `theme_preference`          | text        | `light` \| `dark` \| `system` |
+| `shortcuts_enabled`         | boolean     | default true                  |
+| `created_at` / `updated_at` | timestamptz |                               |
 
 Criado por trigger após insert em `auth.users`. Usuário atualiza só a própria linha.
 
 ### `athlete_profiles`
 
-| Coluna | Tipo | Notas |
-| --- | --- | --- |
-| `id` | uuid PK | |
-| `user_id` | uuid unique | → profiles |
-| `birth_date` | date | idade derivada na aplicação |
-| `sex` | text nullable | só quando relevante à avaliação; não obrigatório |
-| `height_cm` | numeric nullable | |
-| `experience_level` | text nullable | iniciante / intermediário / avançado — **não** enum rígido no PG se o vocabulário crescer; check opcional |
-| `availability_json` | jsonb | dias/horários |
-| `created_at` / `updated_at` | timestamptz | |
+| Coluna                      | Tipo             | Notas                                                                                                     |
+| --------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------- |
+| `id`                        | uuid PK          |                                                                                                           |
+| `user_id`                   | uuid unique      | → profiles                                                                                                |
+| `birth_date`                | date             | idade derivada na aplicação                                                                               |
+| `sex`                       | text nullable    | só quando relevante à avaliação; não obrigatório                                                          |
+| `height_cm`                 | numeric nullable |                                                                                                           |
+| `experience_level`          | text nullable    | iniciante / intermediário / avançado — **não** enum rígido no PG se o vocabulário crescer; check opcional |
+| `availability_json`         | jsonb            | dias/horários                                                                                             |
+| `created_at` / `updated_at` | timestamptz      |                                                                                                           |
 
 Peso e % gordura **não** vivem aqui como valor corrente único. Último valor = query em `body_measurements`.
 
@@ -114,22 +114,22 @@ Chave/valor ou colunas: unidades, ênfase muscular, equipamentos evitados, idiom
 
 Uma linha = um ponto no tempo. Nunca UPDATE de métricas.
 
-| Coluna | Tipo |
-| --- | --- |
-| `id` | uuid |
-| `user_id` | uuid |
-| `measured_at` | timestamptz |
-| `source` | text | `user` \| `coach` \| `device` \| `import` |
-| `weight_kg` | numeric |
-| `body_fat_percent` | numeric |
-| `waist_cm`, `abdomen_cm`, `hip_cm`, `chest_cm` | numeric |
-| `left_arm_cm`, `right_arm_cm` | numeric |
-| `left_forearm_cm`, `right_forearm_cm` | numeric |
-| `left_thigh_cm`, `right_thigh_cm` | numeric |
-| `left_calf_cm`, `right_calf_cm` | numeric |
-| `extra_json` | jsonb | medidas configuráveis |
-| `notes` | text |
-| `supersedes_id` | uuid nullable | correção explícita |
+| Coluna                                         | Tipo          |
+| ---------------------------------------------- | ------------- |
+| `id`                                           | uuid          |
+| `user_id`                                      | uuid          |
+| `measured_at`                                  | timestamptz   |
+| `source`                                       | text          | `user` \| `coach` \| `device` \| `import` |
+| `weight_kg`                                    | numeric       |
+| `body_fat_percent`                             | numeric       |
+| `waist_cm`, `abdomen_cm`, `hip_cm`, `chest_cm` | numeric       |
+| `left_arm_cm`, `right_arm_cm`                  | numeric       |
+| `left_forearm_cm`, `right_forearm_cm`          | numeric       |
+| `left_thigh_cm`, `right_thigh_cm`              | numeric       |
+| `left_calf_cm`, `right_calf_cm`                | numeric       |
+| `extra_json`                                   | jsonb         | medidas configuráveis                     |
+| `notes`                                        | text          |
+| `supersedes_id`                                | uuid nullable | correção explícita                        |
 
 Índice `(user_id, measured_at desc)`.
 
@@ -139,18 +139,18 @@ Uma linha = um ponto no tempo. Nunca UPDATE de métricas.
 
 ### `recovery_checkins`
 
-| Coluna | Tipo |
-| --- | --- |
-| `user_id` | uuid |
-| `checked_in_at` | timestamptz |
-| `sleep_quality` | smallint | escala 1–5 (documentar na UI por extenso) |
-| `energy` | smallint |
-| `mood` | smallint | disposição |
-| `muscle_soreness` | smallint |
-| `discomfort` | smallint |
-| `stress` | smallint |
-| `perceived_recovery` | smallint |
-| `notes` | text |
+| Coluna               | Tipo        |
+| -------------------- | ----------- |
+| `user_id`            | uuid        |
+| `checked_in_at`      | timestamptz |
+| `sleep_quality`      | smallint    | escala 1–5 (documentar na UI por extenso) |
+| `energy`             | smallint    |
+| `mood`               | smallint    | disposição                                |
+| `muscle_soreness`    | smallint    |
+| `discomfort`         | smallint    |
+| `stress`             | smallint    |
+| `perceived_recovery` | smallint    |
+| `notes`              | text        |
 
 IA deve agregar janelas, não um único ponto.
 
@@ -160,12 +160,12 @@ IA deve agregar janelas, não um único ponto.
 
 ### `gyms`
 
-| Coluna | Notas |
-| --- | --- |
-| `owner_user_id` | atleta que cadastrou (MVP) |
+| Coluna            | Notas                                                |
+| ----------------- | ---------------------------------------------------- |
+| `owner_user_id`   | atleta que cadastrou (MVP)                           |
 | `organization_id` | uuid nullable — **reservado**, sem FK org na Phase 2 |
-| `name` | |
-| `notes` | |
+| `name`            |                                                      |
+| `notes`           |                                                      |
 
 Um usuário pode ter várias academias.
 
@@ -269,22 +269,22 @@ Prescrição: `session_exercise_id`, `set_index`, `target_reps_min/max`, `target
 
 Resultado real, append-only.
 
-| Coluna | Notas |
-| --- | --- |
-| `set_id` | FK |
-| `user_id` | denormalizado para permission |
-| `performed_at` | timestamp |
-| `weight_kg` | |
-| `reps` | |
-| `duration_seconds` | |
-| `rest_after_seconds` | |
-| `perceived_exertion` | |
-| `reps_in_reserve` | |
-| `equipment_id` | o que de fato usou |
-| `side` | `both` \| `left` \| `right` |
-| `method_kind` | |
-| `client_mutation_id` | uuid — **idempotência** offline |
-| Unique | `(client_mutation_id)` where not null |
+| Coluna               | Notas                                 |
+| -------------------- | ------------------------------------- |
+| `set_id`             | FK                                    |
+| `user_id`            | denormalizado para permission         |
+| `performed_at`       | timestamp                             |
+| `weight_kg`          |                                       |
+| `reps`               |                                       |
+| `duration_seconds`   |                                       |
+| `rest_after_seconds` |                                       |
+| `perceived_exertion` |                                       |
+| `reps_in_reserve`    |                                       |
+| `equipment_id`       | o que de fato usou                    |
+| `side`               | `both` \| `left` \| `right`           |
+| `method_kind`        |                                       |
+| `client_mutation_id` | uuid — **idempotência** offline       |
+| Unique               | `(client_mutation_id)` where not null |
 
 ### Frequência cardíaca (Phase 11)
 
@@ -314,17 +314,17 @@ Preferências default **true**: `pre_workout_checkin_enabled`, `weekly_coach_rev
 
 Timer robusto (não só `setInterval`):
 
-| Coluna | Tipo |
-| --- | --- |
-| `id` | uuid |
-| `user_id` | uuid |
-| `session_id` / `session_exercise_id` / `set_result_id` | FKs nullable |
-| `started_at` | timestamptz |
-| `expected_end_at` | timestamptz |
-| `duration_seconds` | int |
-| `paused_at` | timestamptz nullable |
-| `remaining_at_pause_seconds` | int nullable |
-| `status` | `running` \| `paused` \| `completed` \| `skipped` |
+| Coluna                                                 | Tipo                                              |
+| ------------------------------------------------------ | ------------------------------------------------- |
+| `id`                                                   | uuid                                              |
+| `user_id`                                              | uuid                                              |
+| `session_id` / `session_exercise_id` / `set_result_id` | FKs nullable                                      |
+| `started_at`                                           | timestamptz                                       |
+| `expected_end_at`                                      | timestamptz                                       |
+| `duration_seconds`                                     | int                                               |
+| `paused_at`                                            | timestamptz nullable                              |
+| `remaining_at_pause_seconds`                           | int nullable                                      |
+| `status`                                               | `running` \| `paused` \| `completed` \| `skipped` |
 
 Restante = cálculo a partir de relógio real. Espelho local (IndexedDB) para background/throttle.
 
@@ -368,20 +368,20 @@ Orquestração: `user_id`, `contract_version_id`, `model`, `status`, `input_cont
 
 ### `ai_decisions`
 
-| Coluna | Notas |
-| --- | --- |
-| `run_id` / `user_id` | |
-| `agent` | orchestrator, profiler, strength, periodization, nutrition, recovery, progress, qa |
-| `action` | |
-| `input_snapshot` | jsonb |
-| `recommendation` | jsonb |
-| `rationale` | texto curto objetivo — **não** chain-of-thought privado |
-| `contract_version_id` | |
-| `model` | |
-| `confidence` | numeric nullable |
-| `accepted` | boolean nullable |
-| `overridden` | boolean |
-| `override_reason` | text |
+| Coluna                | Notas                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| `run_id` / `user_id`  |                                                                                    |
+| `agent`               | orchestrator, profiler, strength, periodization, nutrition, recovery, progress, qa |
+| `action`              |                                                                                    |
+| `input_snapshot`      | jsonb                                                                              |
+| `recommendation`      | jsonb                                                                              |
+| `rationale`           | texto curto objetivo — **não** chain-of-thought privado                            |
+| `contract_version_id` |                                                                                    |
+| `model`               |                                                                                    |
+| `confidence`          | numeric nullable                                                                   |
+| `accepted`            | boolean nullable                                                                   |
+| `overridden`          | boolean                                                                            |
+| `override_reason`     | text                                                                               |
 
 ---
 
@@ -401,31 +401,31 @@ Não criar na Phase 2: `organizations`, `coach_client_links`, `teams` — docume
 
 ## 13. Tabelas da spec vs Phase 2
 
-| Spec | Phase 2 | Notas |
-| --- | --- | --- |
-| profiles | sim | |
-| athlete_profiles | sim | |
-| athlete_goals | sim | |
-| athlete_preferences | sim | |
-| body_measurements | sim | |
-| recovery_checkins | sim | |
-| gyms, gym_memberships | sim | |
-| equipment_categories, manufacturers, equipment, equipment_models | sim | |
-| gym_equipment, gym_bars, gym_plates, gym_dumbbell_sets | sim | nomes alinhados à spec (`bars`/`plates`/`dumbbell_sets` como tabelas de ginásio) |
-| muscle_groups, muscles, movement_patterns | sim | |
-| canonical_exercises, exercise_variants, exercise_equipment, exercise_aliases | sim | |
-| training_* / session_exercises / exercise_sets / set_results | sim | |
-| wearable_devices / heart_rate_sessions / heart_rate_samples | sim | Phase 11; samples append-only |
-| pre_workout_checkins / post_workout_checkouts | sim | Phase 12; append-only; `client_mutation_id` |
-| athlete_state_snapshots | sim | Phase 12; versão `athlete-state-v1` |
-| weekly_coach_reviews / weekly_review_decisions | sim | Phase 12; acompanhamento da decisão |
-| exercise_substitutions | sim | |
-| rest_timers | sim | extra necessário |
-| nutrition_* | sim | |
-| ai_contracts / versions / publications / runs / decisions | sim | |
-| notifications, audit_logs | sim | |
-| organizations | **não** | D-010 |
-| catálogo completo de milhares de exercícios | seed incremental | não bloquear schema |
+| Spec                                                                         | Phase 2          | Notas                                                                            |
+| ---------------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------- |
+| profiles                                                                     | sim              |                                                                                  |
+| athlete_profiles                                                             | sim              |                                                                                  |
+| athlete_goals                                                                | sim              |                                                                                  |
+| athlete_preferences                                                          | sim              |                                                                                  |
+| body_measurements                                                            | sim              |                                                                                  |
+| recovery_checkins                                                            | sim              |                                                                                  |
+| gyms, gym_memberships                                                        | sim              |                                                                                  |
+| equipment_categories, manufacturers, equipment, equipment_models             | sim              |                                                                                  |
+| gym_equipment, gym_bars, gym_plates, gym_dumbbell_sets                       | sim              | nomes alinhados à spec (`bars`/`plates`/`dumbbell_sets` como tabelas de ginásio) |
+| muscle_groups, muscles, movement_patterns                                    | sim              |                                                                                  |
+| canonical_exercises, exercise_variants, exercise_equipment, exercise_aliases | sim              |                                                                                  |
+| training_* / session_exercises / exercise_sets / set_results                 | sim              |                                                                                  |
+| wearable_devices / heart_rate_sessions / heart_rate_samples                  | sim              | Phase 11; samples append-only                                                    |
+| pre_workout_checkins / post_workout_checkouts                                | sim              | Phase 12; append-only; `client_mutation_id`                                      |
+| athlete_state_snapshots                                                      | sim              | Phase 12; versão `athlete-state-v1`                                              |
+| weekly_coach_reviews / weekly_review_decisions                               | sim              | Phase 12; acompanhamento da decisão                                              |
+| exercise_substitutions                                                       | sim              |                                                                                  |
+| rest_timers                                                                  | sim              | extra necessário                                                                 |
+| nutrition_*                                                                  | sim              |                                                                                  |
+| ai_contracts / versions / publications / runs / decisions                    | sim              |                                                                                  |
+| notifications, audit_logs                                                    | sim              |                                                                                  |
+| organizations                                                                | **não**          | D-010                                                                            |
+| catálogo completo de milhares de exercícios                                  | seed incremental | não bloquear schema                                                              |
 
 ---
 

@@ -17,6 +17,7 @@ import { enqueueSetResult, type QueuedSetResult } from "@/domain/training/offlin
 import {
   currentExercise,
   currentSet,
+  hasSessionWork,
   isSessionComplete,
   restSecondsAfter,
   type RecordedSet,
@@ -25,7 +26,7 @@ import {
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
-import { PREVIEW_TRAINING_USER_ID, PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
 
 export const LIVE_SESSION_KEY = "tervelo-live-session";
 export const SET_RESULT_QUEUE_KEY = "tervelo-set-result-queue";
@@ -69,9 +70,9 @@ const IDLE: LiveSessionState = {
   completedAt: null,
   currentSetStartedAt: null,
   events: [],
-  loadKg: 80,
-  reps: 8,
-  rir: 2,
+  loadKg: 0,
+  reps: 0,
+  rir: 0,
   boundSetId: null,
   queue: [],
   syncSessionId: null,
@@ -110,7 +111,9 @@ export function deserializeTimer(raw: SerializedTimer): RestTimer {
   };
 }
 
-function inputsFromSet(set: SetPrescription): Pick<LiveSessionState, "loadKg" | "reps" | "rir" | "boundSetId"> {
+function inputsFromSet(
+  set: SetPrescription,
+): Pick<LiveSessionState, "loadKg" | "reps" | "rir" | "boundSetId"> {
   return {
     loadKg: set.suggestedWeightKg ?? set.targetWeightKg ?? set.previousWeightKg ?? 0,
     reps: set.targetRepsMin,
@@ -144,23 +147,8 @@ function persist(next: LiveSessionState, immediate = true) {
 }
 
 function readStored(): LiveSessionState {
-  if (typeof window === "undefined") return IDLE;
-  try {
-    const raw = window.localStorage.getItem(LIVE_SESSION_KEY);
-    if (!raw) return IDLE;
-    const parsed = JSON.parse(raw) as Partial<LiveSessionState>;
-    return {
-      ...IDLE,
-      ...parsed,
-      recorded: Array.isArray(parsed.recorded) ? parsed.recorded : [],
-      queue: Array.isArray(parsed.queue) ? parsed.queue : [],
-      events: Array.isArray(parsed.events) ? parsed.events : [],
-      syncSessionId: parsed.syncSessionId ?? null,
-      completeSyncId: parsed.completeSyncId ?? null,
-    };
-  } catch {
-    return IDLE;
-  }
+  // localStorage legado só guardava o treino de exemplo. Não reidratar.
+  return IDLE;
 }
 
 function hydrate() {
@@ -171,9 +159,11 @@ function hydrate() {
 
 function withCurrentInputs(state: LiveSessionState): LiveSessionState {
   if (state.status !== "active" && state.status !== "resting") return state;
-  if (isSessionComplete(PREVIEW_WORKOUT, state.recorded)) return state;
+  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, state.recorded)) {
+    return state;
+  }
   const set = currentSet(PREVIEW_WORKOUT, state.recorded);
-  if (state.boundSetId === set.id) return state;
+  if (!set || state.boundSetId === set.id) return state;
   return { ...state, ...inputsFromSet(set) };
 }
 
@@ -194,17 +184,10 @@ export function subscribeLiveSession(listener: () => void): () => void {
   };
 }
 
-export function hydrateLiveSessionFromDurable(state: LiveSessionState) {
+export function hydrateLiveSessionFromDurable(_state: LiveSessionState) {
   if (mutatedSinceBoot) return;
-  cached = withCurrentInputs({
-    ...IDLE,
-    ...state,
-    recorded: Array.isArray(state.recorded) ? state.recorded : [],
-    queue: Array.isArray(state.queue) ? state.queue : [],
-    events: Array.isArray(state.events) ? state.events : [],
-    syncSessionId: state.syncSessionId ?? null,
-    completeSyncId: state.completeSyncId ?? null,
-  });
+  // IndexedDB antigo só tinha o treino de exemplo (Peitoral e Tríceps).
+  cached = IDLE;
   hydrated = true;
   emit();
 }
@@ -218,8 +201,14 @@ export function startWorkout(): LiveSessionState {
   if (cached.status === "active" || cached.status === "resting") {
     return cached;
   }
+  if (!hasSessionWork(PREVIEW_WORKOUT)) {
+    return cached;
+  }
   const firstExercise = currentExercise(PREVIEW_WORKOUT, []);
   const first = currentSet(PREVIEW_WORKOUT, []);
+  if (!firstExercise || !first) {
+    return cached;
+  }
   const at = new Date().toISOString();
   const syncSessionId = crypto.randomUUID();
   enqueueSync({
@@ -229,7 +218,7 @@ export function startWorkout(): LiveSessionState {
     entity_id: PREVIEW_WORKOUT.id,
     client_mutation_id: syncSessionId,
     occurred_at: at,
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     payload: { workoutId: PREVIEW_WORKOUT.id, programVersion: "preview-1" },
   });
   scheduleKvWrite(currentOfflineUserId(), KV_KEYS.prescriptionSnapshot, {
@@ -261,7 +250,12 @@ function completeSession(state: LiveSessionState): LiveSessionState {
   const last = state.recorded.at(-1);
   const extra: WorkoutTimelineEvent[] = [];
   if (last) {
-    extra.push({ type: "EXERCISE_COMPLETED", at, exerciseId: last.sessionExerciseId, setId: last.setId });
+    extra.push({
+      type: "EXERCISE_COMPLETED",
+      at,
+      exerciseId: last.sessionExerciseId,
+      setId: last.setId,
+    });
   }
   extra.push({ type: "SESSION_COMPLETED", at });
   const completeSyncId = state.completeSyncId ?? crypto.randomUUID();
@@ -272,7 +266,7 @@ function completeSession(state: LiveSessionState): LiveSessionState {
     entity_id: PREVIEW_WORKOUT.id,
     client_mutation_id: completeSyncId,
     occurred_at: at,
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     dependency_ids: state.syncSessionId ? [state.syncSessionId] : [],
     payload: { startedAt: state.startedAt, completedAt: at },
   });
@@ -296,13 +290,21 @@ export function endActiveSession(): LiveSessionState {
 }
 
 function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelineEvent[] {
-  if (isSessionComplete(PREVIEW_WORKOUT, recorded)) return [];
+  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, recorded)) {
+    return [];
+  }
   const previous = recorded.at(-1);
   const exercise = currentExercise(PREVIEW_WORKOUT, recorded);
   const set = currentSet(PREVIEW_WORKOUT, recorded);
+  if (!exercise || !set) return [];
   const events: WorkoutTimelineEvent[] = [];
   if (previous && previous.sessionExerciseId !== exercise.id) {
-    events.push({ type: "EXERCISE_COMPLETED", at, exerciseId: previous.sessionExerciseId, setId: previous.setId });
+    events.push({
+      type: "EXERCISE_COMPLETED",
+      at,
+      exerciseId: previous.sessionExerciseId,
+      setId: previous.setId,
+    });
     events.push({ type: "EXERCISE_STARTED", at, exerciseId: exercise.id });
   }
   events.push({ type: "SET_STARTED", at, setId: set.id, exerciseId: exercise.id });
@@ -312,12 +314,16 @@ function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelin
 export function recordCurrentSet(): AfterRecord {
   hydrate();
   const session = PREVIEW_WORKOUT;
-  if (isSessionComplete(session, cached.recorded)) {
+  if (!hasSessionWork(session) || isSessionComplete(session, cached.recorded)) {
     persist(completeSession(cached));
     return "summary";
   }
   const exercise = currentExercise(session, cached.recorded);
   const set = currentSet(session, cached.recorded);
+  if (!exercise || !set) {
+    persist(completeSession(cached));
+    return "summary";
+  }
   const performedAt = new Date().toISOString();
   const recorded: RecordedSet = {
     setId: set.id,
@@ -332,7 +338,7 @@ export function recordCurrentSet(): AfterRecord {
   const recordedAll = [...cached.recorded, recorded];
   const queued = enqueueSetResult(cached.queue, {
     clientMutationId: recorded.clientMutationId,
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     setId: recorded.setId,
     weightKg: recorded.weightKg ?? undefined,
     reps: recorded.reps,
@@ -347,7 +353,7 @@ export function recordCurrentSet(): AfterRecord {
     entity_id: recorded.setId,
     client_mutation_id: recorded.clientMutationId,
     occurred_at: performedAt,
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     dependency_ids: cached.syncSessionId ? [cached.syncSessionId] : [],
     payload: {
       setId: recorded.setId,
@@ -362,7 +368,15 @@ export function recordCurrentSet(): AfterRecord {
     { type: "SET_COMPLETED", at: performedAt, setId: set.id, exerciseId: exercise.id },
   ];
   if (isSessionComplete(session, recordedAll)) {
-    persist(completeSession({ ...cached, recorded: recordedAll, queue: queued, timer: null, events: timeline }));
+    persist(
+      completeSession({
+        ...cached,
+        recorded: recordedAll,
+        queue: queued,
+        timer: null,
+        events: timeline,
+      }),
+    );
     return "summary";
   }
   const rest = restSecondsAfter(session, recordedAll);
@@ -373,7 +387,10 @@ export function recordCurrentSet(): AfterRecord {
       queue: queued,
       status: "resting",
       timer: serializeTimer(startRestTimer(new Date(), rest)),
-      events: [...timeline, { type: "REST_STARTED", at: performedAt, setId: set.id, exerciseId: exercise.id }],
+      events: [
+        ...timeline,
+        { type: "REST_STARTED", at: performedAt, setId: set.id, exerciseId: exercise.id },
+      ],
       currentSetStartedAt: null,
       ...inputsFromSet(currentSet(session, recordedAll)),
     });
@@ -401,7 +418,9 @@ function mutateTimer(map: (timer: RestTimer, now: Date) => RestTimer) {
 }
 
 export function pauseOrResumeTimer() {
-  mutateTimer((timer, now) => (timer.status === "paused" ? resumeRestTimer(timer, now) : pauseRestTimer(timer, now)));
+  mutateTimer((timer, now) =>
+    timer.status === "paused" ? resumeRestTimer(timer, now) : pauseRestTimer(timer, now),
+  );
 }
 
 export function restartTimer() {
@@ -418,8 +437,14 @@ export function skipRest(): AfterRecord {
   const restDone: WorkoutTimelineEvent = { type: "REST_COMPLETED", at };
   if (cached.timer) {
     const skipped = skipRestTimer(deserializeTimer(cached.timer), new Date());
-    if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
-      persist(completeSession({ ...cached, timer: serializeTimer(skipped), events: [...cached.events, restDone] }));
+    if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
+      persist(
+        completeSession({
+          ...cached,
+          timer: serializeTimer(skipped),
+          events: [...cached.events, restDone],
+        }),
+      );
       return "summary";
     }
     persist({
@@ -448,7 +473,7 @@ export function skipRest(): AfterRecord {
 export function beginNextSet(): AfterRecord {
   hydrate();
   const at = new Date().toISOString();
-  if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
+  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
     persist(completeSession(cached));
     return "summary";
   }
@@ -458,7 +483,11 @@ export function beginNextSet(): AfterRecord {
       status: "active",
       timer: null,
       currentSetStartedAt: at,
-      events: [...cached.events, { type: "REST_COMPLETED", at }, ...startNextSetEvents(cached.recorded, at)],
+      events: [
+        ...cached.events,
+        { type: "REST_COMPLETED", at },
+        ...startNextSetEvents(cached.recorded, at),
+      ],
     }),
   });
   return "exercise";
@@ -468,7 +497,10 @@ export function tickTimer(now = new Date()) {
   hydrate();
   if (!cached.timer || cached.status !== "resting") return;
   const ticked = tickRestTimer(deserializeTimer(cached.timer), now);
-  if (ticked.status === cached.timer.status && remainingSeconds(ticked, now) === remainingSeconds(deserializeTimer(cached.timer), now)) {
+  if (
+    ticked.status === cached.timer.status &&
+    remainingSeconds(ticked, now) === remainingSeconds(deserializeTimer(cached.timer), now)
+  ) {
     return;
   }
   persist({ ...cached, timer: serializeTimer(ticked) }, false);

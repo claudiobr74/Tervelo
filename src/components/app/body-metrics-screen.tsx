@@ -14,12 +14,25 @@ import {
   type BodyPeriodId,
   type CompositionPoint,
 } from "@/domain/measurement/composition";
+import { bodyTrendCopy } from "@/domain/measurement/trend-copy";
+import { parseDecimalInRange } from "@/domain/athlete/decimal";
 import { formatMeasure, formatPercent, formatSignedDelta } from "@/lib/longitudinal/format";
 import { appendBodyMeasurement, useLongitudinal } from "@/lib/longitudinal/preview-store";
 import { useSyncStatus } from "@/components/app/sync-status-indicator";
 import { SYNC_COPY } from "@/domain/offline";
 
-function toPoints(rows: { id: string; measuredAt: string; supersedesId?: string; weightKg?: number; bodyFatPercent?: number; waistCm?: number; rightArmCm?: number; rightThighCm?: number }[]): CompositionPoint[] {
+function toPoints(
+  rows: {
+    id: string;
+    measuredAt: string;
+    supersedesId?: string;
+    weightKg?: number;
+    bodyFatPercent?: number;
+    waistCm?: number;
+    rightArmCm?: number;
+    rightThighCm?: number;
+  }[],
+): CompositionPoint[] {
   return rows.map((row) => ({
     id: row.id,
     recordedAt: new Date(row.measuredAt),
@@ -32,15 +45,7 @@ function toPoints(rows: { id: string; measuredAt: string; supersedesId?: string;
   }));
 }
 
-function MetricBox({
-  label,
-  value,
-  trend,
-}: {
-  label: string;
-  value: string;
-  trend?: string;
-}) {
+function MetricBox({ label, value, trend }: { label: string; value: string; trend?: string }) {
   return (
     <article className="flex min-w-0 flex-1 flex-col gap-1.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3.5">
       <p className="text-[11px] font-medium text-muted">{label}</p>
@@ -65,7 +70,9 @@ function CircumferenceRow({
       <div className="flex items-center gap-3">
         <p className="text-sm font-bold text-foreground">{value}</p>
         {delta ? (
-          <span className="rounded bg-success/20 px-1.5 py-0.5 text-[11px] font-bold text-success">{delta}</span>
+          <span className="rounded bg-success/20 px-1.5 py-0.5 text-[11px] font-bold text-success">
+            {delta}
+          </span>
         ) : null}
       </div>
     </article>
@@ -76,8 +83,10 @@ export function BodyMetricsScreen() {
   const { measurements } = useLongitudinal();
   const sync = useSyncStatus();
   const [periodId, setPeriodId] = useState<BodyPeriodId>("30d");
-  const [weight, setWeight] = useState("82.4");
-  const [waist, setWaist] = useState("84");
+  const [weight, setWeight] = useState("");
+  const [waist, setWaist] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
   const period = BODY_PERIODS.find((item) => item.id === periodId) ?? BODY_PERIODS[1];
   const now = useMemo(() => new Date(), []);
   const points = useMemo(() => toPoints(measurements), [measurements]);
@@ -92,6 +101,25 @@ export function BodyMetricsScreen() {
   const waistDelta = deltaInWindow(points, "waistCm", now, period.days);
   const armDelta = deltaInWindow(points, "rightArmCm", now, period.days);
   const thighDelta = deltaInWindow(points, "rightThighCm", now, period.days);
+  const analysis = bodyTrendCopy({ weightDelta, waistDelta, fatDelta });
+
+  async function saveMeasurement() {
+    const weightKg = parseDecimalInRange(weight, 20, 400);
+    const waistCm = parseDecimalInRange(waist, 30, 250);
+    if (weightKg === null && waistCm === null) {
+      setSaved(false);
+      setFormError("Informe um peso ou uma medida de cintura válidos.");
+      return;
+    }
+    setFormError(null);
+    await appendBodyMeasurement({
+      ...(weightKg !== null ? { weightKg } : {}),
+      ...(waistCm !== null ? { waistCm } : {}),
+    });
+    setWeight("");
+    setWaist("");
+    setSaved(true);
+  }
 
   return (
     <AthleteAppShell active="Evolução">
@@ -134,7 +162,9 @@ export function BodyMetricsScreen() {
           />
           <MetricBox
             label="Gordura Corporal"
-            value={latest?.bodyFatPercent !== undefined ? formatPercent(latest.bodyFatPercent) : "—"}
+            value={
+              latest?.bodyFatPercent !== undefined ? formatPercent(latest.bodyFatPercent) : "—"
+            }
             trend={
               fatDelta !== null && fatDelta !== 0
                 ? `${formatSignedDelta(round1(fatDelta), "")}% ${period.deltaLabel}`
@@ -146,7 +176,9 @@ export function BodyMetricsScreen() {
         <div className="flex gap-3">
           <article className="flex min-w-0 flex-1 flex-col gap-1.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3.5">
             <p className="text-[11px] font-medium text-muted">Massa Magra Est.</p>
-            <p className="text-lg font-bold text-foreground">{lean !== null ? formatMeasure(lean, "kg") : "—"}</p>
+            <p className="text-lg font-bold text-foreground">
+              {lean !== null ? formatMeasure(lean, "kg") : "—"}
+            </p>
           </article>
           <article className="flex min-w-0 flex-1 flex-col gap-1.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3.5">
             <p className="text-[11px] font-medium text-muted">Peso Médio (7d)</p>
@@ -170,13 +202,14 @@ export function BodyMetricsScreen() {
           />
           <CircumferenceRow
             label="Coxa D"
-            value={latest?.rightThighCm !== undefined ? formatMeasure(latest.rightThighCm, "cm", 0) : "—"}
+            value={
+              latest?.rightThighCm !== undefined ? formatMeasure(latest.rightThighCm, "cm", 0) : "—"
+            }
             delta={thighDelta !== null ? formatSignedDelta(round1(thighDelta), "cm") : null}
           />
         </section>
 
         <section className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
-          <p className="text-xs font-bold uppercase text-brand">FIGMA_UI_PENDING</p>
           <h2 className="text-sm font-bold text-foreground">Registrar agora</h2>
           <label className="flex flex-col gap-1 text-xs text-muted">
             Peso (kg)
@@ -184,6 +217,7 @@ export function BodyMetricsScreen() {
               value={weight}
               onChange={(event) => setWeight(event.target.value)}
               inputMode="decimal"
+              placeholder="Ex: 82,4"
               className="h-11 rounded-[var(--radius-md)] border border-border bg-background px-3 text-sm text-foreground"
             />
           </label>
@@ -193,35 +227,32 @@ export function BodyMetricsScreen() {
               value={waist}
               onChange={(event) => setWaist(event.target.value)}
               inputMode="decimal"
+              placeholder="Ex: 84"
               className="h-11 rounded-[var(--radius-md)] border border-border bg-background px-3 text-sm text-foreground"
             />
           </label>
+          {formError ? <p className="text-xs text-error">{formError}</p> : null}
+          {saved ? <p className="text-xs text-success">Medidas registradas.</p> : null}
           <button
             type="button"
-            onClick={() =>
-              void appendBodyMeasurement({
-                weightKg: Number(weight.replace(",", ".")),
-                waistCm: Number(waist.replace(",", ".")),
-              })
-            }
+            onClick={() => void saveMeasurement()}
             className="flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-brand text-sm font-bold text-on-brand"
           >
             Salvar medidas
           </button>
         </section>
 
-        <article className="flex flex-col gap-2.5 rounded-[var(--radius-xl)] border border-brand bg-brand-soft p-4">
-          <div className="flex items-center gap-2">
-            <FigmaIcon src="/icons/brain.svg" alt="" size={16} className="text-brand" />
-            <p className="text-[11px] font-bold uppercase text-brand">Evolução Recomendada</p>
-          </div>
-          <p className="text-[13px] font-medium text-foreground">
-            “{sync.online
-              ? "Seu aumento de peso está ocorrendo com pequena variação da cintura e melhora consistente da força. O progresso é altamente compatível com o objetivo de ganho de massa muscular magra."
-              : SYNC_COPY.coachAnalysisWhenOnline}
-            ”
-          </p>
-        </article>
+        {analysis ? (
+          <article className="flex flex-col gap-2.5 rounded-[var(--radius-xl)] border border-brand bg-brand-soft p-4">
+            <div className="flex items-center gap-2">
+              <FigmaIcon src="/icons/brain.svg" alt="" size={16} className="text-brand" />
+              <p className="text-[11px] font-bold uppercase text-brand">Evolução Recomendada</p>
+            </div>
+            <p className="text-[13px] font-medium text-foreground">
+              “{sync.online ? analysis : SYNC_COPY.coachAnalysisWhenOnline}”
+            </p>
+          </article>
+        ) : null}
       </div>
     </AthleteAppShell>
   );

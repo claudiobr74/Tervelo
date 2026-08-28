@@ -4,8 +4,7 @@ import type { NutritionCheckinRecord, NutritionCheckinRepository } from "../port
 import { issuesOf, nutritionCheckinInputSchema } from "../validation/schemas";
 
 export type RecordNutritionError =
-  | { code: "invalid_input"; issues: string[] }
-  | { code: "closed_day" };
+  { code: "invalid_input"; issues: string[] } | { code: "closed_day" };
 
 export async function recordNutritionCheckin(
   repo: NutritionCheckinRepository,

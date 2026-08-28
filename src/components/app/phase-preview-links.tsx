@@ -11,7 +11,7 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
     path: "/admin" | "/admin/users" | "/admin/audit" | "/admin/exercises" | "/admin/ai",
   ) {
     await persistSession(
-      previewSession({ displayName: "Lucas Mendes", email: "lucas.admin@tervelo.local" }, "admin"),
+      previewSession({ displayName: "Administrador", email: "admin@tervelo.local" }, "admin"),
     );
     router.push(path);
     router.refresh();
@@ -28,7 +28,7 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
           onClick={() => openAdmin("/admin")}
           className="inline-flex h-11 items-center rounded-[var(--radius-md)] bg-brand px-5 text-sm font-semibold text-on-brand"
         >
-          Dashboard admin
+          Painel administrativo
         </button>
         <button
           type="button"

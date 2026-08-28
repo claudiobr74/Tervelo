@@ -9,12 +9,14 @@ import type {
   PreWorkoutCheckinRecord,
   PreWorkoutCheckinRepository,
 } from "@/application/ports";
-import { enqueueAthleteMutation, type QueuedAthleteMutation } from "@/domain/athlete-state/offline-queue";
+import {
+  enqueueAthleteMutation,
+  type QueuedAthleteMutation,
+} from "@/domain/athlete-state/offline-queue";
 import type { PostWorkoutCheckout } from "@/domain/athlete-state/post-workout";
 import type { PreWorkoutCheckin } from "@/domain/athlete-state/pre-workout";
 import { CHANGE_SCOPE_COPY } from "@/domain/athlete-state/labels";
 import type { ChangeScope } from "@/domain/athlete-state/types";
-import { PREVIEW_TRAINING_USER_ID } from "@/lib/training/preview-workout";
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
@@ -59,57 +61,14 @@ function todayIsoDate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function seedReviews(): WeeklyReviewPreview[] {
-  return [
-    {
-      id: "rev-26",
-      dateLabel: "26 ago",
-      headline: "Semana consistente",
-      decision: "SEM_MUDANCA",
-      overview:
-        "Você completou as quatro sessões planejadas e apresentou progressão em três exercícios. Sua recuperação permaneceu próxima ao seu padrão habitual e a estratégia nutricional apresentou boa aderência. Não há justificativa pelos dados atuais para modificar o bloco.",
-      whatImproved: "Progressão em três exercícios comparáveis.",
-      whatNeedsAttention: "Nada neste recorte pede mudança estrutural.",
-      training: "O planejamento atual continua funcionando para este atleta.",
-      nutrition: "Sua ingestão de proteína permaneceu próxima ao planejamento na maior parte da semana.",
-      body: null,
-      recovery: "A recuperação permaneceu próxima ao seu padrão habitual.",
-      heartRate: null,
-      nextWeek: "Manter o plano e observar a resposta.",
-    },
-    {
-      id: "rev-19",
-      dateLabel: "19 ago",
-      headline: "Recuperação reduzida",
-      decision: "AJUSTE_DA_SEMANA",
-      overview:
-        "Nas últimas duas semanas houve queda de desempenho acompanhada por maior percepção de esforço e recuperação abaixo do seu padrão habitual. A aderência nutricional permaneceu adequada.",
-      whatImproved: "A aderência às sessões permanece utilizável para decidir com segurança.",
-      whatNeedsAttention: "Sono, energia e recuperação muscular ficaram abaixo do habitual.",
-      training: "Volume da semana foi redistribuído de forma temporária.",
-      nutrition: "A estratégia nutricional não aparece como o limitante principal.",
-      body: null,
-      recovery: "A recuperação ficou abaixo do seu padrão habitual.",
-      heartRate: null,
-      nextWeek: "Reavaliar volume no fechamento da próxima semana.",
-    },
-    {
-      id: "rev-12",
-      dateLabel: "12 ago",
-      headline: "Progressão adequada",
-      decision: "SEM_MUDANCA",
-      overview:
-        "Embora seu peso esteja praticamente estável, cintura e dobras diminuíram enquanto seu desempenho melhorou. O conjunto dos dados favorece manter a estratégia atual.",
-      whatImproved: "Desempenho em alta, com medidas corporais no sentido do objetivo.",
-      whatNeedsAttention: "Nada neste recorte pede troca de bloco.",
-      training: "Manter treino.",
-      nutrition: "Manter estratégia nutricional.",
-      body: "Peso estável não contradiz a recomposição quando cintura e dobras caem juntos.",
-      recovery: "Recuperação compatível com o padrão habitual.",
-      heartRate: null,
-      nextWeek: "Seguir o plano e observar a mesma tendência.",
-    },
-  ];
+const INVENTED_REVIEW_IDS = new Set(["rev-26", "rev-19", "rev-12"]);
+
+function storedReviews(list: unknown): WeeklyReviewPreview[] {
+  if (!Array.isArray(list)) return [];
+  return list.filter((item): item is WeeklyReviewPreview => {
+    if (!item || typeof item !== "object" || !("id" in item)) return false;
+    return !INVENTED_REVIEW_IDS.has(String((item as WeeklyReviewPreview).id));
+  });
 }
 
 const EMPTY: AthleteStateStore = {
@@ -117,7 +76,7 @@ const EMPTY: AthleteStateStore = {
   preWorkout: null,
   postWorkout: null,
   queue: [],
-  weeklyReviews: seedReviews(),
+  weeklyReviews: [],
   todayAdjustment: null,
   sessionKeptCopy: null,
 };
@@ -141,10 +100,10 @@ function persist(next: AthleteStateStore) {
 }
 
 function readStored(): AthleteStateStore {
-  if (typeof window === "undefined") return { ...EMPTY, weeklyReviews: seedReviews() };
+  if (typeof window === "undefined") return { ...EMPTY, weeklyReviews: [] };
   try {
     const raw = window.localStorage.getItem(ATHLETE_STATE_STORE_KEY);
-    if (!raw) return { ...EMPTY, weeklyReviews: seedReviews() };
+    if (!raw) return { ...EMPTY, weeklyReviews: [] };
     const parsed = JSON.parse(raw) as Partial<AthleteStateStore>;
     const today = todayIsoDate();
     const staleDay = parsed.todayDate !== today;
@@ -153,12 +112,12 @@ function readStored(): AthleteStateStore {
       preWorkout: staleDay ? null : (parsed.preWorkout ?? null),
       postWorkout: staleDay ? null : (parsed.postWorkout ?? null),
       queue: Array.isArray(parsed.queue) ? parsed.queue : [],
-      weeklyReviews: parsed.weeklyReviews?.length ? parsed.weeklyReviews : seedReviews(),
+      weeklyReviews: storedReviews(parsed.weeklyReviews),
       todayAdjustment: staleDay ? null : (parsed.todayAdjustment ?? null),
       sessionKeptCopy: staleDay ? null : (parsed.sessionKeptCopy ?? null),
     };
   } catch {
-    return { ...EMPTY, weeklyReviews: seedReviews() };
+    return { ...EMPTY, weeklyReviews: [] };
   }
 }
 
@@ -177,7 +136,7 @@ export function hydrateAthleteStateFromDurable(state: AthleteStateStore) {
     preWorkout: staleDay ? null : (state.preWorkout ?? null),
     postWorkout: staleDay ? null : (state.postWorkout ?? null),
     queue: Array.isArray(state.queue) ? state.queue : [],
-    weeklyReviews: state.weeklyReviews?.length ? state.weeklyReviews : seedReviews(),
+    weeklyReviews: storedReviews(state.weeklyReviews),
     todayAdjustment: staleDay ? null : (state.todayAdjustment ?? null),
     sessionKeptCopy: staleDay ? null : (state.sessionKeptCopy ?? null),
   };
@@ -209,7 +168,7 @@ const preRepo: PreWorkoutCheckinRepository = {
     if (!match) return null;
     return {
       id,
-      userId: PREVIEW_TRAINING_USER_ID,
+      userId: currentOfflineUserId(),
       clientMutationId: id,
       status: (match.payload.status as "completed" | "skipped") ?? "skipped",
       checkedInAt: new Date().toISOString(),
@@ -229,7 +188,7 @@ const postRepo: PostWorkoutCheckoutRepository = {
     if (!match) return null;
     return {
       id,
-      userId: PREVIEW_TRAINING_USER_ID,
+      userId: currentOfflineUserId(),
       clientMutationId: id,
       status: (match.payload.status as "completed" | "skipped") ?? "skipped",
       checkedOutAt: new Date().toISOString(),
@@ -240,11 +199,13 @@ const postRepo: PostWorkoutCheckoutRepository = {
   },
 };
 
-export async function savePreWorkoutCheckin(checkin: PreWorkoutCheckin): Promise<PreWorkoutCheckinRecord | null> {
+export async function savePreWorkoutCheckin(
+  checkin: PreWorkoutCheckin,
+): Promise<PreWorkoutCheckinRecord | null> {
   hydrate();
   const clientMutationId = crypto.randomUUID();
   const result = await recordPreWorkoutCheckin(preRepo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     clientMutationId,
     status: checkin.status,
     sleepQuality: checkin.sleepQuality ?? undefined,
@@ -266,7 +227,7 @@ export async function savePreWorkoutCheckin(checkin: PreWorkoutCheckin): Promise
     entity_id: clientMutationId,
     client_mutation_id: clientMutationId,
     occurred_at: new Date().toISOString(),
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     payload: { ...checkin },
   });
   persist({
@@ -274,18 +235,22 @@ export async function savePreWorkoutCheckin(checkin: PreWorkoutCheckin): Promise
     preWorkout: checkin,
     queue,
     sessionKeptCopy:
-      checkin.status === "completed" && checkin.hasPain !== true && (checkin.availableMinutes == null || checkin.hasPlannedTime)
+      checkin.status === "completed" &&
+      checkin.hasPain !== true &&
+      (checkin.availableMinutes == null || checkin.hasPlannedTime)
         ? "Treino mantido conforme planejado."
         : cached.sessionKeptCopy,
   });
   return result.ok ? result.value : null;
 }
 
-export async function savePostWorkoutCheckout(checkout: PostWorkoutCheckout): Promise<PostWorkoutCheckoutRecord | null> {
+export async function savePostWorkoutCheckout(
+  checkout: PostWorkoutCheckout,
+): Promise<PostWorkoutCheckoutRecord | null> {
   hydrate();
   const clientMutationId = crypto.randomUUID();
   const result = await recordPostWorkoutCheckout(postRepo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     clientMutationId,
     status: checkout.status,
     expectation: checkout.expectation ?? undefined,
@@ -306,7 +271,7 @@ export async function savePostWorkoutCheckout(checkout: PostWorkoutCheckout): Pr
     entity_id: clientMutationId,
     client_mutation_id: clientMutationId,
     occurred_at: new Date().toISOString(),
-    user_id: PREVIEW_TRAINING_USER_ID,
+    user_id: currentOfflineUserId(),
     payload: { ...checkout },
   });
   persist({ ...cached, postWorkout: checkout, queue });

@@ -5,7 +5,9 @@ describe("deploy runtime", () => {
   it("classifica local, preview e production", () => {
     expect(resolveDeployTarget({ NODE_ENV: "development" })).toBe("local");
     expect(resolveDeployTarget({ VERCEL_ENV: "preview", NODE_ENV: "production" })).toBe("preview");
-    expect(resolveDeployTarget({ VERCEL_ENV: "production", NODE_ENV: "production" })).toBe("production");
+    expect(resolveDeployTarget({ VERCEL_ENV: "production", NODE_ENV: "production" })).toBe(
+      "production",
+    );
     expect(resolveDeployTarget({ NODE_ENV: "production" })).toBe("production");
   });
 

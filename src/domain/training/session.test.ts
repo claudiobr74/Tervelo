@@ -7,6 +7,8 @@ import {
   currentSet,
   flattenSession,
   formatTimer,
+  hasSessionWork,
+  isSessionComplete,
   restSecondsAfter,
   volumeKg,
   type RecordedSet,
@@ -15,7 +17,9 @@ import {
 } from "./session";
 import { enqueueSetResult, flushSetResultQueue } from "./offline-queue";
 
-function exercise(partial: Partial<SessionExercise> & Pick<SessionExercise, "id" | "namePt" | "sets">): SessionExercise {
+function exercise(
+  partial: Partial<SessionExercise> & Pick<SessionExercise, "id" | "namePt" | "sets">,
+): SessionExercise {
   return {
     position: 1,
     muscleGroup: "Peitoral",
@@ -274,7 +278,12 @@ describe("sessão de treino", () => {
   });
 
   it("intercala supersérie e só descansa depois de A e B", () => {
-    expect(flattenSession(superSession).map((item) => item.set.id)).toEqual(["a1", "b1", "a2", "b2"]);
+    expect(flattenSession(superSession).map((item) => item.set.id)).toEqual([
+      "a1",
+      "b1",
+      "a2",
+      "b2",
+    ]);
     const a1 = row({ setId: "a1", sessionExerciseId: "a", weightKg: 30, reps: 10 });
     const b1 = row({ setId: "b1", sessionExerciseId: "b", weightKg: 25, reps: 10 });
     const a2 = row({ setId: "a2", sessionExerciseId: "a", weightKg: 30, reps: 10 });
@@ -333,5 +342,12 @@ describe("fila offline de resultados", () => {
     });
     const flushed = await flushSetResultQueue(queued, async () => undefined);
     expect(flushed[0].status).toBe("synced");
+  });
+
+  it("sessão sem exercícios não inventa trabalho nem conclusão", () => {
+    const empty = { ...session, exercises: [] };
+    expect(hasSessionWork(empty)).toBe(false);
+    expect(isSessionComplete(empty, [])).toBe(false);
+    expect(flattenSession(empty)).toHaveLength(0);
   });
 });

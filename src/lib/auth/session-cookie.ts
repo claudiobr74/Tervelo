@@ -1,4 +1,5 @@
 import { hasAdminAccess, rolesFromAccessTokenPayload } from "@/lib/auth/roles";
+import { verifyAccessToken } from "@/lib/auth/jwt";
 
 export type StoredAppSession = {
   accessToken?: string;
@@ -17,23 +18,15 @@ export function parseSessionCookie(raw: string | undefined | null): StoredAppSes
   }
 }
 
-export function payloadFromJwt(token: string): Record<string, unknown> | null {
-  const parts = token.split(".");
-  if (parts.length < 2) return null;
-  try {
-    const normalized = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-    const json = atob(normalized);
-    return JSON.parse(json) as Record<string, unknown>;
-  } catch {
-    return null;
-  }
-}
-
-export function sessionHasAdminAccess(session: StoredAppSession | null): boolean {
+/**
+ * Papel de administrador só a partir de um token com assinatura verificada.
+ * Sessão de pré-visualização é aceita apenas onde ela pode existir (sem backend real),
+ * e quem decide isso é `allowPreviewSessions` na hora de gravar o cookie.
+ */
+export async function sessionHasAdminAccess(session: StoredAppSession | null): Promise<boolean> {
   if (!session) return false;
   if (session.preview) return session.previewRole === "admin";
-  if (!session.accessToken || session.accessToken === "preview") return false;
-  const payload = payloadFromJwt(session.accessToken);
+  const payload = await verifyAccessToken(session.accessToken);
   if (!payload) return false;
   return hasAdminAccess(rolesFromAccessTokenPayload(payload));
 }

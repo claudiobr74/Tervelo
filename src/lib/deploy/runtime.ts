@@ -7,11 +7,13 @@ type DeployEnv = {
 };
 
 function readEnv(env?: DeployEnv): DeployEnv {
-  return env ?? {
-    VERCEL_ENV: process.env.VERCEL_ENV,
-    NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_NHOST_SUBDOMAIN: process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN,
-  };
+  return (
+    env ?? {
+      VERCEL_ENV: process.env.VERCEL_ENV,
+      NODE_ENV: process.env.NODE_ENV,
+      NEXT_PUBLIC_NHOST_SUBDOMAIN: process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN,
+    }
+  );
 }
 
 export function resolveDeployTarget(env?: DeployEnv): DeployTarget {
@@ -37,4 +39,12 @@ export function allowPreviewSessions(env?: DeployEnv): boolean {
 
 export function nhostMode(env?: DeployEnv): "local-preview" | "configured" {
   return isLocalNhostSubdomain(env) ? "local-preview" : "configured";
+}
+
+/**
+ * Atalhos de pré-visualização (`/dev`) trocam a sessão por uma de administrador.
+ * Só podem existir onde não há backend real para expor.
+ */
+export function devToolsEnabled(env?: DeployEnv): boolean {
+  return allowPreviewSessions(env);
 }

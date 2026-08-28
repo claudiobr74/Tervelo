@@ -12,14 +12,14 @@ Este workspace **não autenticou** o console Nhost. Subdomain/region devem ser p
 
 ## 1. Papel de cada produto Nhost
 
-| Produto | Uso no TERVELO |
-| --- | --- |
-| PostgreSQL | Fonte de verdade longitudinal |
-| Hasura GraphQL | CRUD estruturado, permissions, relationships |
-| Auth | Cadastro, sessão, JWT, roles, e-mail |
-| Storage | Avatares, mídia de exercício/equipamento, progresso, documentos |
-| Functions | IA, rate limit, webhooks, jobs que precisam de secrets |
-| Hasura Events (quando necessário) | side-effects (notificações), não regra de treino |
+| Produto                           | Uso no TERVELO                                                  |
+| --------------------------------- | --------------------------------------------------------------- |
+| PostgreSQL                        | Fonte de verdade longitudinal                                   |
+| Hasura GraphQL                    | CRUD estruturado, permissions, relationships                    |
+| Auth                              | Cadastro, sessão, JWT, roles, e-mail                            |
+| Storage                           | Avatares, mídia de exercício/equipamento, progresso, documentos |
+| Functions                         | IA, rate limit, webhooks, jobs que precisam de secrets          |
+| Hasura Events (quando necessário) | side-effects (notificações), não regra de treino                |
 
 Lógica de negócio **não** vive em componentes React nem em resolvers Hasura ad hoc. Hasura persiste e autoriza; `src/domain` decide; Functions orquestram IA.
 
@@ -60,12 +60,12 @@ Social: entradas em `nhost.toml` **desabilitadas** até não serem blocker.
 
 ### 3.2 Roles iniciais
 
-| Role | Default | Uso |
-| --- | --- | --- |
-| `public` | anônimo | zero dados de atleta |
-| `user` | autenticado | próprio atleta |
-| `admin` | allowed | catálogo, suporte operacional |
-| `super_admin` | allowed | contratos IA, auditoria, roles |
+| Role          | Default     | Uso                            |
+| ------------- | ----------- | ------------------------------ |
+| `public`      | anônimo     | zero dados de atleta           |
+| `user`        | autenticado | próprio atleta                 |
+| `admin`       | allowed     | catálogo, suporte operacional  |
+| `super_admin` | allowed     | contratos IA, auditoria, roles |
 
 Preparar nomes futuros **sem** permissions amplas agora: `coach`, `nutritionist`, `support`, `content_manager`.
 
@@ -133,13 +133,13 @@ Ocultar colunas internas (`client_mutation_id` pode ser insert-only). Admins nã
 
 Buckets (migration `INSERT INTO storage.buckets`):
 
-| Bucket | Conteúdo | Presign | Visibilidade |
-| --- | --- | --- | --- |
-| `avatars` | foto de perfil | sim, curta | dono write; read dono (público opcional depois) |
-| `exercise-media` | catálogo | sim | read autenticado; write admin |
-| `equipment-media` | catálogo | sim | idem |
-| `progress-media` | fotos de evolução | sim, curta | só dono |
-| `documents` | laudos etc. | sim, curta | só dono |
+| Bucket            | Conteúdo          | Presign    | Visibilidade                                    |
+| ----------------- | ----------------- | ---------- | ----------------------------------------------- |
+| `avatars`         | foto de perfil    | sim, curta | dono write; read dono (público opcional depois) |
+| `exercise-media`  | catálogo          | sim        | read autenticado; write admin                   |
+| `equipment-media` | catálogo          | sim        | idem                                            |
+| `progress-media`  | fotos de evolução | sim, curta | só dono                                         |
+| `documents`       | laudos etc.       | sim, curta | só dono                                         |
 
 Permissions em `storage.files` (`uploaded_by_user_id` / `bucket_id`).  
 **Não** servir mídia privada por URL permanente pública.
@@ -149,11 +149,10 @@ Permissions em `storage.files` (`uploaded_by_user_id` / `bucket_id`).
 ## 6. Functions (workloads de servidor)
 
 ```text
-functions/ai/orchestrate.ts
-functions/ai/audit.ts          # se necessário webhook
+functions/ai/orchestrate.ts    # JWT + 501 not_implemented (Phase 9)
 ```
 
-Uso: chamar modelos, montar contexto do banco com admin client **no servidor**, aplicar policies, gravar `ai_runs` / `ai_decisions`, rate limit por `user_id`.
+Uso previsto: chamar modelos, montar contexto do banco com admin client **no servidor**, aplicar policies, gravar `ai_runs` / `ai_decisions`, rate limit por `user_id`. Hoje o handler só autentica e recusa. `functions/ai/audit.ts` ainda não existe.
 
 Env injetado pelo Nhost (`NHOST_ADMIN_SECRET`, etc.) + secret de provedor de modelo no dashboard (não no git).
 
@@ -172,7 +171,7 @@ Rate limit: token bucket em tabela `ai_rate_limits` ou equivalente na Function (
 - SMTP via `provider.smtp` (secrets no cloud, não no repo)
 - Hasura allowed roles alinhados
 
-Arquivo versionado. Secrets em `./secrets` local (gitignored) e dashboard cloud.
+Arquivo versionado. Secrets em `./.secrets` local (gitignored) e dashboard cloud. Todo `{{ secrets.X }}` no TOML precisa existir no Cloud — um nome ausente aborta o deploy com *invalid configuration* (foi o caso de `APP_URL` no CORS do Hasura). JWT RS256: gerar com `npm run nhost:jwt` e colar o PEM completo no dashboard; chave privada placeholder faz o Auth sair com `exit 1` (Hasura pode continuar verde).
 
 ---
 

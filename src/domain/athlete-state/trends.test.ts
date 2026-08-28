@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { classifyAdherence, classifySlope, linearSlope, movingAverage, weightTrajectory } from "./trends";
+import {
+  classifyAdherence,
+  classifySlope,
+  linearSlope,
+  movingAverage,
+  weightTrajectory,
+} from "./trends";
 
 describe("Motor de Tendências", () => {
   it("calcula média móvel e recusa janela curta", () => {

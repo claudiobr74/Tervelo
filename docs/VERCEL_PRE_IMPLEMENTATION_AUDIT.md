@@ -8,16 +8,16 @@ Veredito: **READY_WITH_FIXES**. Sem P0 de código. Há ações de operador no da
 
 ## Superfícies inspecionadas
 
-| Superfície | Situação | Gap |
-| --- | --- | --- |
-| GitHub → Vercel | Preview automático nos PRs (ex. Phase 14 Ready) | Production em `main` só após aprovação humana |
-| `vercel.json` | ausente | Next.js é detectado; declarar framework + `npm ci` |
-| Env Vercel | este agente **não** acessa o projeto Tervelo no MCP | Operador: `NEXT_PUBLIC_NHOST_SUBDOMAIN` / `REGION` |
-| Cookie / preview session | `allowPreview` usa `NODE_ENV !== production` | Na Vercel `NODE_ENV=production` também no Preview → login fake quebra |
-| Protection | Preview responde **302 SSO** (`vercel.com/sso-api`) | Bloqueia smoke público e links de e-mail Nhost no preview |
-| Health | `{ status, service, version }` | Sem `deploy` (local / preview / production) |
-| Nhost `clientUrl` | `http://localhost:3000` | Operador adiciona URL estável no console Nhost |
-| Domínio custom | Phase 15 não compra domínio | Documentar; produção pode usar `*.vercel.app` até haver domínio |
+| Superfície               | Situação                                            | Gap                                                                   |
+| ------------------------ | --------------------------------------------------- | --------------------------------------------------------------------- |
+| GitHub → Vercel          | Preview automático nos PRs (ex. Phase 14 Ready)     | Production em `main` só após aprovação humana                         |
+| `vercel.json`            | ausente                                             | Next.js é detectado; declarar framework + `npm ci`                    |
+| Env Vercel               | este agente **não** acessa o projeto Tervelo no MCP | Operador: `NEXT_PUBLIC_NHOST_SUBDOMAIN` / `REGION`                    |
+| Cookie / preview session | `allowPreview` usa `NODE_ENV !== production`        | Na Vercel `NODE_ENV=production` também no Preview → login fake quebra |
+| Protection               | Preview responde **302 SSO** (`vercel.com/sso-api`) | Bloqueia smoke público e links de e-mail Nhost no preview             |
+| Health                   | `{ status, service, version }`                      | Sem `deploy` (local / preview / production)                           |
+| Nhost `clientUrl`        | `http://localhost:3000`                             | Operador adiciona URL estável no console Nhost                        |
+| Domínio custom           | Phase 15 não compra domínio                         | Documentar; produção pode usar `*.vercel.app` até haver domínio       |
 
 ---
 

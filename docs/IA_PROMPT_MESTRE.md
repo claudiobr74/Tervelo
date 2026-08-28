@@ -8,29 +8,30 @@ Cobre o contrato administrativo e o pipeline de agentes. O coach do atleta (`/ap
 
 - Admin: `/admin/ai` — contrato, escolha de agente (Dark `2:2954`, Light `15:6902`)
 - App do aluno: `/app/coach` (Phase 9, node `2:944`) e alteração pontual (`10:2651`)
-- Execução: Nhost Functions (`functions/ai/`). Chaves de modelo **nunca** no cliente
-- Persistência: `ai_contracts`, `ai_contract_versions`, `ai_contract_publications`, `ai_runs`, `ai_decisions`
+- Execução: Nhost Functions (`functions/ai/`). Chaves de modelo **nunca** no cliente. `functions/ai/orchestrate.ts` autentica JWT e responde **501** (`not_implemented`) até a orquestração real.
+- Persistência prevista: `ai_contracts`, `ai_contract_versions`, `ai_contract_publications`, `ai_runs`, `ai_decisions`. O seed só cria o slug `default-athlete-coach`. O admin e o coach **não** leem nem gravam essas tabelas nesta fase.
+- Coach do atleta (`/app/coach`): análise **local** com os fatos deste aparelho. Sem chamada à Function.
 
 ## Agentes (pipeline)
 
 Escolha operacional no **modo administrar** (`/admin/ai`, aba Comportamento). Nomes por extenso na UI. O Figma não tem picker; a seleção existe porque o pipeline precisa de um agente em foco.
 
-| Identificador | Nome na UI |
-| --- | --- |
-| `orchestrator` | Orquestrador |
-| `profiler` | Perfilador |
-| `strength` | Força |
-| `periodization` | Periodização |
-| `nutrition` | Nutrição |
-| `recovery` | Recuperação |
-| `progress` | Evolução |
-| `qa` | Controle de qualidade |
+| Identificador   | Nome na UI            |
+| --------------- | --------------------- |
+| `orchestrator`  | Orquestrador          |
+| `profiler`      | Perfilador            |
+| `strength`      | Força                 |
+| `periodization` | Periodização          |
+| `nutrition`     | Nutrição              |
+| `recovery`      | Recuperação           |
+| `progress`      | Evolução              |
+| `qa`            | Controle de qualidade |
 
-Padrão: Orquestrador. Fluxo: contexto → segurança → programa → recuperação → desempenho → força → periodização → nutrição (se necessário) → evolução → controle de qualidade → resposta.
+Padrão: Orquestrador. Fluxo: orquestrador → perfilador → recuperação → força → periodização → nutrição → evolução → controle de qualidade.
 
 ## Regras que o contrato **não** pode desligar
 
-Ficam em `src/domain/ai` e `ai/policies`, não no JSON configurável:
+Ficam em `src/domain/ai/contract.ts` (`AI_POLICY_LOCKS`), não no JSON configurável:
 
 1. Não fabricar dados ausentes; memória vem do banco.
 2. Tendências exigem janela (≥3 pontos), não um ponto único.

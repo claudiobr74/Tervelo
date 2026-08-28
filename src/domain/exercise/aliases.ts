@@ -12,10 +12,7 @@ export type ExerciseAlias = {
   alias: string;
 };
 
-export function matchExerciseAliases(
-  query: string,
-  aliases: readonly ExerciseAlias[],
-): string[] {
+export function matchExerciseAliases(query: string, aliases: readonly ExerciseAlias[]): string[] {
   const needle = normalizeSearchText(query);
   if (!needle) return [];
   const ids = new Set<string>();

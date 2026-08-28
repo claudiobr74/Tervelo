@@ -31,7 +31,11 @@ export function assessDataQuality(input: DataQualityInput): DataQualityResult {
   else if (input.sessionCount >= MIN_POINTS_FOR_TREND) score += 1;
   else motivos.push("Poucas sessões registradas.");
 
-  if (input.comparableSessions >= MIN_POINTS_FOR_TREND && input.sameExercise && input.sameEquipment) {
+  if (
+    input.comparableSessions >= MIN_POINTS_FOR_TREND &&
+    input.sameExercise &&
+    input.sameEquipment
+  ) {
     score += 2;
   } else if (input.comparableSessions >= 1) {
     score += 1;
@@ -81,7 +85,10 @@ export function assessDataQuality(input: DataQualityInput): DataQualityResult {
   }
 
   if (input.sessionCount < 2) {
-    return { nivel: "INSUFICIENTE", motivos: motivos.length ? motivos : ["Histórico insuficiente."] };
+    return {
+      nivel: "INSUFICIENTE",
+      motivos: motivos.length ? motivos : ["Histórico insuficiente."],
+    };
   }
   if (score >= 7) return { nivel: "ALTA", motivos };
   if (score >= 4) return { nivel: "MODERADA", motivos };

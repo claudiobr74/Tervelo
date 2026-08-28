@@ -16,10 +16,5 @@ export function isOnboardingCompleteCookie(raw: string | undefined | null): bool
   return raw === "done";
 }
 
-export {
-  parseSessionCookie,
-  sessionHasAdminAccess,
-  NHOST_SESSION_COOKIE,
-  ONBOARDING_COOKIE,
-};
+export { parseSessionCookie, sessionHasAdminAccess, NHOST_SESSION_COOKIE, ONBOARDING_COOKIE };
 export type { StoredAppSession };

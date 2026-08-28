@@ -51,7 +51,9 @@ export function PostWorkoutCheckoutCard({ onDone }: { onDone?: () => void }) {
   }
 
   function toggleReason(value: PartialReasonValue) {
-    setReasons((current) => (current.includes(value) ? current.filter((item) => item !== value) : [...current, value]));
+    setReasons((current) =>
+      current.includes(value) ? current.filter((item) => item !== value) : [...current, value],
+    );
   }
 
   if (done) {
@@ -66,11 +68,12 @@ export function PostWorkoutCheckoutCard({ onDone }: { onDone?: () => void }) {
   return (
     <article className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-bold uppercase text-brand">FIGMA_UI_PENDING</p>
-          <h2 className="text-sm font-bold text-foreground">{PRODUCT_NAMES.postWorkoutCheckout}</h2>
-        </div>
-        <button type="button" onClick={() => void skip()} className="text-xs font-semibold text-brand">
+        <h2 className="text-sm font-bold text-foreground">{PRODUCT_NAMES.postWorkoutCheckout}</h2>
+        <button
+          type="button"
+          onClick={() => void skip()}
+          className="text-xs font-semibold text-brand"
+        >
           Concluir sem responder
         </button>
       </div>
@@ -81,7 +84,12 @@ export function PostWorkoutCheckoutCard({ onDone }: { onDone?: () => void }) {
         value={expectation}
         onChange={setExpectation}
       />
-      <ChoiceGroup legend="Como foi a dificuldade geral?" options={DIFFICULTY_OPTIONS} value={difficulty} onChange={setDifficulty} />
+      <ChoiceGroup
+        legend="Como foi a dificuldade geral?"
+        options={DIFFICULTY_OPTIONS}
+        value={difficulty}
+        onChange={setDifficulty}
+      />
       <ChoiceGroup
         legend="Você conseguiu cumprir o planejado?"
         options={PLAN_COMPLETION_OPTIONS}
@@ -111,7 +119,13 @@ export function PostWorkoutCheckoutCard({ onDone }: { onDone?: () => void }) {
           </div>
         </fieldset>
       ) : null}
-      <ChoiceGroup legend="Sentiu alguma dor ou desconforto durante o treino?" options={YES_NO} value={pain} onChange={setPain} columns={2} />
+      <ChoiceGroup
+        legend="Sentiu alguma dor ou desconforto durante o treino?"
+        options={YES_NO}
+        value={pain}
+        onChange={setPain}
+        columns={2}
+      />
 
       <button
         type="button"

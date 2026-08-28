@@ -30,7 +30,9 @@ function SliderField({
   return (
     <article className="flex flex-col gap-2.5 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="min-w-0 flex-1 truncate text-[13px] font-semibold text-foreground">{question}</p>
+        <p className="min-w-0 flex-1 truncate text-[13px] font-semibold text-foreground">
+          {question}
+        </p>
         <p className="shrink-0 text-xs font-bold text-brand">{label}</p>
       </div>
       <div className="relative flex h-4 items-center">
@@ -110,8 +112,12 @@ export function RecoveryCheckinScreen() {
           <article className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-success bg-success/20 p-4">
             <FigmaIcon src="/icons/check-circle.svg" alt="" size={20} className="text-success" />
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-              <p className="text-sm font-bold text-foreground">Recuperação de hoje: {classification}</p>
-              <p className="text-xs text-foreground/80">{recoveryResultCopy(scores.perceivedRecovery)}</p>
+              <p className="text-sm font-bold text-foreground">
+                Recuperação de hoje: {classification}
+              </p>
+              <p className="text-xs text-foreground/80">
+                {recoveryResultCopy(scores.perceivedRecovery)}
+              </p>
             </div>
           </article>
 

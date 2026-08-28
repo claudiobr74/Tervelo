@@ -1,7 +1,10 @@
 mutation InsertHeartRateSamples($objects: [heart_rate_samples_insert_input!]!) {
   insert_heart_rate_samples(
     objects: $objects
-    on_conflict: { constraint: heart_rate_samples_user_id_client_mutation_id_key, update_columns: [] }
+    on_conflict: {
+      constraint: heart_rate_samples_user_id_client_mutation_id_key
+      update_columns: []
+    }
   ) {
     affected_rows
   }

@@ -60,13 +60,15 @@ export function buildWeeklyReview(input: WeeklyReviewInput): WeeklyReview {
       oQueEvoluiu: "Os primeiros registros já ajudam a formar a referência individual.",
       oQueMereceAtencao: "Evitar mudanças estruturais enquanto o padrão ainda está em construção.",
       treinamento: "O plano da semana permanece. Coletar mais, alterar menos.",
-      nutricao: input.nutritionOnPlan == null
-        ? "Ainda não há contexto nutricional suficiente para revisar metas."
-        : "A ingestão registrada entra no aprendizado do padrão, sem recalcular metas agora.",
+      nutricao:
+        input.nutritionOnPlan == null
+          ? "Ainda não há contexto nutricional suficiente para revisar metas."
+          : "A ingestão registrada entra no aprendizado do padrão, sem recalcular metas agora.",
       corpoEMedidas: input.newBodyMeasurementThisWeek
         ? "Há medidas novas; elas entram na referência, sem exigir avaliação semanal."
         : null,
-      recuperacao: "Check-ins, quando houver, servem para aprender o habitual — não para mudar o bloco.",
+      recuperacao:
+        "Check-ins, quando houver, servem para aprender o habitual — não para mudar o bloco.",
       frequenciaCardiaca: input.heartRateEnabled ? input.heartRateRelevantCopy : null,
       proximaSemana: "Manter o plano e observar a resposta.",
       decisao: "SEM_MUDANCA",
@@ -83,14 +85,20 @@ export function buildWeeklyReview(input: WeeklyReviewInput): WeeklyReview {
       titulo: "Revisão nutricional",
       visaoGeral:
         "Seu desempenho caiu nas últimas sessões enquanto sua média de peso vem diminuindo mais rapidamente que o planejado. Sua ingestão registrada também ficou abaixo da meta durante boa parte da semana. Antes de reduzir o treinamento, vale corrigir a aderência nutricional e observar a resposta.",
-      oQueEvoluiu: "O treino segue sendo executado; o sinal mais claro não está no volume estrutural.",
-      oQueMereceAtencao: "A principal limitação nutricional foi a aderência energética, e não a necessidade de recalcular suas metas.",
-      treinamento: "Manter o treino neste momento. Uma queda de desempenho não vira corte de volume automático.",
-      nutricao: "Sua ingestão de proteína e energia precisa voltar para perto do planejamento antes de mexer no bloco.",
-      corpoEMedidas: "A tendência de peso — não um registro isolado — ficou mais rápida que o combinado.",
-      recuperacao: input.athleteState.recuperacao.estado === "ABAIXO_DO_HABITUAL"
-        ? "A recuperação também ficou abaixo do habitual, mas o conjunto aponta primeiro para a nutrição."
-        : "A recuperação não é o principal sinal desta semana.",
+      oQueEvoluiu:
+        "O treino segue sendo executado; o sinal mais claro não está no volume estrutural.",
+      oQueMereceAtencao:
+        "A principal limitação nutricional foi a aderência energética, e não a necessidade de recalcular suas metas.",
+      treinamento:
+        "Manter o treino neste momento. Uma queda de desempenho não vira corte de volume automático.",
+      nutricao:
+        "Sua ingestão de proteína e energia precisa voltar para perto do planejamento antes de mexer no bloco.",
+      corpoEMedidas:
+        "A tendência de peso — não um registro isolado — ficou mais rápida que o combinado.",
+      recuperacao:
+        input.athleteState.recuperacao.estado === "ABAIXO_DO_HABITUAL"
+          ? "A recuperação também ficou abaixo do habitual, mas o conjunto aponta primeiro para a nutrição."
+          : "A recuperação não é o principal sinal desta semana.",
       frequenciaCardiaca: input.heartRateEnabled ? input.heartRateRelevantCopy : null,
       proximaSemana: "Revisar aderência nutricional e reavaliar o desempenho na próxima semana.",
       decisao: "SEM_MUDANCA",
@@ -109,13 +117,17 @@ export function buildWeeklyReview(input: WeeklyReviewInput): WeeklyReview {
       visaoGeral:
         "Nas últimas duas semanas houve queda de desempenho acompanhada por maior percepção de esforço e recuperação abaixo do seu padrão habitual. A aderência nutricional permaneceu adequada.",
       oQueEvoluiu: "A aderência às sessões permanece utilizável para decidir com segurança.",
-      oQueMereceAtencao: "Sono, energia e recuperação muscular ficaram abaixo do habitual em várias sessões.",
+      oQueMereceAtencao:
+        "Sono, energia e recuperação muscular ficaram abaixo do habitual em várias sessões.",
       treinamento: considerar
         ? "Se as regras do Arquiteto de Treinamento permitirem, uma semana de recuperação pode ser considerada."
         : "Ainda não há evidência suficiente para alterar o bloco inteiro. Observar mais uma semana.",
       nutricao: "A estratégia nutricional não aparece como o limitante principal.",
-      corpoEMedidas: input.newBodyMeasurementThisWeek ? "Medidas novas entram como contexto, sem forçar reavaliação." : null,
-      recuperacao: "A recuperação ficou abaixo do seu padrão — comparação individual, não populacional.",
+      corpoEMedidas: input.newBodyMeasurementThisWeek
+        ? "Medidas novas entram como contexto, sem forçar reavaliação."
+        : null,
+      recuperacao:
+        "A recuperação ficou abaixo do seu padrão — comparação individual, não populacional.",
       frequenciaCardiaca: input.heartRateEnabled ? input.heartRateRelevantCopy : null,
       proximaSemana: considerar
         ? "Se a semana de recuperação for aceita, reavaliar volume no fechamento seguinte."
@@ -138,7 +150,8 @@ export function buildWeeklyReview(input: WeeklyReviewInput): WeeklyReview {
       oQueMereceAtencao: "Nada neste recorte pede troca de bloco.",
       treinamento: "Manter treino.",
       nutricao: "Manter estratégia nutricional.",
-      corpoEMedidas: "Peso estável não contradiz a recomposição quando cintura e dobras caem juntos.",
+      corpoEMedidas:
+        "Peso estável não contradiz a recomposição quando cintura e dobras caem juntos.",
       recuperacao: "Recuperação compatível com o padrão habitual.",
       frequenciaCardiaca: input.heartRateEnabled ? input.heartRateRelevantCopy : null,
       proximaSemana: "Seguir o plano e observar a mesma tendência.",
@@ -158,7 +171,8 @@ export function buildWeeklyReview(input: WeeklyReviewInput): WeeklyReview {
         "Há pouca progressão em exercícios comparáveis ao longo do bloco. Uma sessão isolada não basta; o sinal aparece só com persistência.",
       oQueEvoluiu: "A aderência permite comparar semanas.",
       oQueMereceAtencao: "Cargas e repetições avançam pouco nas sessões comparáveis.",
-      treinamento: "Ainda preferimos a menor alteração. Reavaliar no fechamento da próxima semana antes de mexer no programa.",
+      treinamento:
+        "Ainda preferimos a menor alteração. Reavaliar no fechamento da próxima semana antes de mexer no programa.",
       nutricao: input.nutritionOnPlan
         ? "A ingestão registrada permaneceu próxima ao planejamento na maior parte da semana."
         : "A nutrição entra como contexto, sem número isolado.",
@@ -188,7 +202,9 @@ export function buildWeeklyReview(input: WeeklyReviewInput): WeeklyReview {
     nutricao: input.nutritionOnPlan
       ? "Sua ingestão de proteína permaneceu próxima ao planejamento na maior parte da semana."
       : "Não há contexto nutricional suficiente para revisar metas.",
-    corpoEMedidas: input.newBodyMeasurementThisWeek ? "Medidas novas entram na tendência, sem exigir avaliação semanal." : null,
+    corpoEMedidas: input.newBodyMeasurementThisWeek
+      ? "Medidas novas entram na tendência, sem exigir avaliação semanal."
+      : null,
     recuperacao: "A recuperação permaneceu próxima ao seu padrão habitual.",
     frequenciaCardiaca: input.heartRateEnabled ? input.heartRateRelevantCopy : null,
     proximaSemana: "Manter o plano e observar a resposta.",
@@ -211,6 +227,8 @@ export type DecisionFollowUp = {
   assertCausality: false;
 };
 
-export function recordDecisionOutcome(input: Omit<DecisionFollowUp, "assertCausality">): DecisionFollowUp {
+export function recordDecisionOutcome(
+  input: Omit<DecisionFollowUp, "assertCausality">,
+): DecisionFollowUp {
   return { ...input, assertCausality: false };
 }

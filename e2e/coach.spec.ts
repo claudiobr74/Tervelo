@@ -14,7 +14,7 @@ async function loginPreview(page: import("@playwright/test").Page) {
 test.describe("coach", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("hoje abre o treinador com chips e proposta", async ({ page }) => {
+  test("hoje abre o treinador sem proposta inventada", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/today");
     await page.getByRole("link", { name: "Coach" }).click();
@@ -22,25 +22,50 @@ test.describe("coach", () => {
     await expect(page.getByRole("heading", { name: "Seu treinador" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Como está minha evolução?" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Por que meu treino mudou?" })).toBeVisible();
-    await expect(page.getByText("Mudança proposta")).toBeVisible();
-    await expect(page.getByText("80kg")).toBeVisible();
-    await expect(page.getByText("82kg")).toBeVisible();
-    await expect(page.getByText("repetições em reserva")).toBeVisible();
-    await expect(page.getByText("RIR")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Ainda não há o que analisar" })).toBeVisible();
+    await expect(page.getByText("Mudança proposta")).toHaveCount(0);
+    await expect(page.getByText("80kg")).toHaveCount(0);
+    await expect(page.getByText("82kg")).toHaveCount(0);
 
     await page.getByRole("button", { name: "Como está minha evolução?" }).click();
-    await expect(page.getByText("Papel da nutrição")).toBeVisible();
     await expect(page.getByText(/UNKNOWN/)).toBeVisible();
+    await expect(page.getByText("benchPressKg")).toHaveCount(0);
+    await expect(page.getByText("carga registrada no supino")).toBeVisible();
+    await expect(page.getByText("Papel da nutrição")).toHaveCount(0);
 
-    await page.getByRole("button", { name: "Aceitar alteração" }).click();
-    await expect(page.getByText("Alteração aceita")).toBeVisible();
+    await page.getByRole("button", { name: "Por que meu treino mudou?" }).click();
+    await expect(
+      page.getByText("Nada no recorte de hoje indica que o treino tenha mudado"),
+    ).toBeVisible();
+    await expect(page.getByText("agachamento")).toHaveCount(0);
 
-    await page.getByRole("link", { name: "Quero entender" }).click();
-    await expect(page).toHaveURL(/\/app\/coach\/ajuste/);
+    await page.getByRole("button", { name: "Posso substituir um exercício?" }).click();
+    await expect(page.getByText("Não há sessão prescrita")).toBeVisible();
+  });
+
+  test("ajuste de hoje mostra o que o check-in realmente mudou", async ({ page }) => {
+    await loginPreview(page);
+    await page.goto("/app/workout/checkin");
+    await page.getByRole("button", { name: "Muito bom" }).click();
+    await page.getByRole("button", { name: "Muito boa" }).click();
+    await page.getByRole("button", { name: "Bem recuperado" }).click();
+    await page.getByRole("button", { name: "Baixo" }).click();
+    await page.getByRole("button", { name: "Não" }).click();
+    await page.getByRole("button", { name: /Tenho aproximadamente/ }).click();
+    await page.getByRole("button", { name: "40" }).click();
+    await page.getByRole("button", { name: "Salvar check-in" }).click();
+    await expect(page).toHaveURL(/\/app\/today/);
+
+    await page.goto("/app/coach/ajuste");
     await expect(page.getByRole("heading", { name: "Seu plano foi ajustado" })).toBeVisible();
-    await expect(page.getByText("Agachamento", { exact: true })).toBeVisible();
-    await expect(page.getByText("3 séries × 8 reps")).toBeVisible();
-    await expect(page.getByText("Versão do contrato: v3.2")).toBeVisible();
+    await expect(page.getByText("cerca de 40 minutos", { exact: false })).toBeVisible();
+    await expect(page.getByText("Check-in Pré-Treino", { exact: false })).toBeVisible();
+    await expect(page.getByText("O Coach adaptou a sessão")).toHaveCount(0);
+
+    await page.goto("/app/coach");
+    await page.getByRole("button", { name: "Por que meu treino mudou?" }).click();
+    await expect(page.getByText("cerca de 40 minutos", { exact: false })).toHaveCount(2);
+    await expect(page.getByText("Papel da nutrição")).toBeVisible();
   });
 
   test("coach funciona no tema claro", async ({ page }) => {
@@ -53,7 +78,7 @@ test.describe("coach", () => {
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect(page.locator("html")).not.toHaveClass(/dark/);
     await expect(page.getByRole("heading", { name: "Seu treinador" })).toBeVisible();
-    await expect(page.getByText("Sugerido")).toBeVisible();
+    await expect(page.getByText("Sugerido")).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Devo aumentar a carga?" })).toBeVisible();
   });
 });

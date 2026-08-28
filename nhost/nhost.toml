@@ -5,6 +5,8 @@ version = 'v2.48.10-ce'
 adminSecret = '{{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}'
 webhookSecret = '{{ secrets.NHOST_WEBHOOK_SECRET }}'
 
+# Auth assina com a privada (PKCS#8). Pública inválida derruba o Hasura;
+# privada inválida derruba só o Auth (UpdateError, exit 1). Gerar: npm run nhost:jwt
 [[hasura.jwtSecrets]]
 type = 'RS256'
 key = '{{ secrets.NHOST_JWT_PUBLIC_KEY }}'
@@ -12,10 +14,11 @@ signingKey = '{{ secrets.NHOST_JWT_PRIVATE_KEY }}'
 kid = '{{ secrets.NHOST_JWT_KID }}'
 
 [hasura.settings]
+# `*` evita secret extra no Cloud (APP_URL quebrava o deploy). JWT + permissions autorizam.
 corsDomain = ['*']
-devMode = true
+devMode = false
 enableAllowList = false
-enableConsole = true
+enableConsole = false
 enableRemoteSchemaPermissions = false
 enabledAPIs = ['metadata', 'graphql', 'pgdump', 'config']
 inferFunctionPermissions = true
@@ -165,7 +168,8 @@ expiresIn = 2592000
 enabled = false
 
 [auth.misc]
-concealErrors = false
+# Não revelar se um e-mail existe: a mensagem ao usuário já é genérica no cliente.
+concealErrors = true
 
 [auth.rateLimit]
 [auth.rateLimit.emails]

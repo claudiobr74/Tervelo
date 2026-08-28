@@ -1,4 +1,24 @@
 import { describe, expect, it } from "vitest";
+import { recoveryPercent, recoveryReadinessCopy } from "@/domain/recovery/score";
+
+describe("resumo de recuperação", () => {
+  it("converte a nota do check-in em porcentagem", () => {
+    expect(recoveryPercent(5)).toBe(100);
+    expect(recoveryPercent(4)).toBe(80);
+    expect(recoveryPercent(1)).toBe(20);
+  });
+
+  it("mantém a porcentagem dentro da escala mesmo com nota inválida", () => {
+    expect(recoveryPercent(0)).toBe(20);
+    expect(recoveryPercent(9)).toBe(100);
+  });
+
+  it("descreve a prontidão sem prometer alta carga em nota baixa", () => {
+    expect(recoveryReadinessCopy(1)).toContain("descanso");
+    expect(recoveryReadinessCopy(5)).toContain("alta carga");
+  });
+});
+
 import { DEFAULT_RECOVERY_SLIDERS } from "./score";
 import {
   classifyRecovery,

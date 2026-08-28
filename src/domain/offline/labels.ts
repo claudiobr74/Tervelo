@@ -9,8 +9,8 @@ export const SYNC_COPY = {
   syncError: "Não foi possível sincronizar",
   pendingOne: "1 alteração aguardando sincronização",
   everythingSynced: "Tudo sincronizado",
-  nextWorkoutReady: "Próximo treino disponível offline",
-  nextWorkoutPartial: "Parte dos dados do próximo treino ainda não está neste dispositivo",
+  nextWorkoutReady: "Registros deste aparelho disponíveis offline",
+  nextWorkoutPartial: "Parte dos dados ainda não está neste dispositivo",
   syncNow: "Sincronizar agora",
   lastSync: "Última sincronização",
   notYetSynced: "Ainda não sincronizado com o servidor",
@@ -22,10 +22,13 @@ export const SYNC_COPY = {
   endSession: "Encerrar sessão",
   setRecorded: "Série registrada",
   coachUnavailable: "Coach temporariamente indisponível offline.",
-  coachAnalysisWhenOnline: "Análise do Coach disponível quando você estiver online.",
-  pendingAnalysis: "Análise será gerada quando você estiver online.",
+  coachAnalysisWhenOnline:
+    "Quando estiver online, o Coach responde com os dados deste aparelho. A orquestração no servidor ainda não está ligada.",
+  pendingAnalysis:
+    "A orquestração no servidor ainda não gera esta avaliação. Use o Coach para um recorte local.",
   savedOnDevice: "Tudo salvo neste dispositivo",
-  checkinSavedCoachLater: "Seu check-in foi salvo. O Coach poderá analisar quando a conexão voltar.",
+  checkinSavedCoachLater:
+    "Seu check-in foi salvo. O Coach poderá analisar quando a conexão voltar.",
   mediaWhenOnline: "Vídeo disponível quando estiver online.",
   photoWaiting: "Foto aguardando envio",
   logoutPendingTitle: "Existem alterações neste dispositivo que ainda não foram sincronizadas.",
@@ -92,7 +95,9 @@ export function recoveredSessionCopy(startedAtIso: string): string {
   const time = Number.isNaN(date.getTime())
     ? ""
     : date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-  return time ? `Você iniciou esta sessão às ${time}.` : "Você iniciou esta sessão neste dispositivo.";
+  return time
+    ? `Você iniciou esta sessão às ${time}.`
+    : "Você iniciou esta sessão neste dispositivo.";
 }
 
 export function deriveConnectionUiKind(input: {

@@ -41,11 +41,13 @@ export function AdminExercisesScreen() {
               className="min-w-0 flex-1 bg-transparent text-sm outline-none"
             />
           </div>
-          <span className="text-sm font-semibold text-brand">{PREVIEW_EXERCISES.length} exercícios cadastrados</span>
+          <span className="text-sm font-semibold text-brand">
+            {PREVIEW_EXERCISES.length} exercícios cadastrados
+          </span>
           <button
             type="button"
             disabled
-            title="Formulário de criação FIGMA_PENDING"
+            title="Cadastro de exercício em breve"
             className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-lg)] bg-brand px-4 text-sm font-bold text-on-brand opacity-60"
           >
             <FigmaIcon src="/icons/admin/plus.svg" alt="" size={14} />
@@ -53,18 +55,23 @@ export function AdminExercisesScreen() {
           </button>
         </div>
         <div className="flex flex-wrap gap-2 text-sm">
-          {["Grupo muscular: Todos", "Equipamento", "Padrão de movimento", "Unilateral/Bilateral", "Nível", "Peso livre/Máquina"].map(
-            (label, index) => (
-              <span
-                key={label}
-                className={`rounded-full border px-3 py-1.5 ${
-                  index === 0 ? "border-brand bg-brand-soft text-brand" : "border-border text-muted"
-                }`}
-              >
-                {label}
-              </span>
-            ),
-          )}
+          {[
+            "Grupo muscular: Todos",
+            "Equipamento",
+            "Padrão de movimento",
+            "Unilateral/Bilateral",
+            "Nível",
+            "Peso livre/Máquina",
+          ].map((label, index) => (
+            <span
+              key={label}
+              className={`rounded-full border px-3 py-1.5 ${
+                index === 0 ? "border-brand bg-brand-soft text-brand" : "border-border text-muted"
+              }`}
+            >
+              {label}
+            </span>
+          ))}
         </div>
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div className="flex flex-col gap-2">
@@ -82,7 +89,13 @@ export function AdminExercisesScreen() {
                   <span className="relative size-12 shrink-0 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
                     {exercise.imageSrc ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={exercise.imageSrc} alt="" className="size-full object-cover" />
+                      <img
+                        src={exercise.imageSrc}
+                        alt=""
+                        width={48}
+                        height={48}
+                        className="size-full object-cover"
+                      />
                     ) : null}
                   </span>
                   <div className="min-w-0 flex-1">
@@ -92,7 +105,9 @@ export function AdminExercisesScreen() {
                       <span className="text-muted">{exercise.movementPattern}</span>
                     </div>
                   </div>
-                  <p className="max-w-[7rem] shrink-0 truncate text-xs text-muted">{exercise.equipmentName}</p>
+                  <p className="max-w-[7rem] shrink-0 truncate text-xs text-muted">
+                    {exercise.equipmentName}
+                  </p>
                 </button>
               );
             })}
@@ -108,11 +123,23 @@ export function AdminExercisesScreen() {
               <div className="grid grid-cols-2 gap-3">
                 <span className="relative h-32 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/catalog/detail-photo.webp" alt="" className="size-full object-cover" />
+                  <img
+                    src="/catalog/detail-photo.webp"
+                    alt=""
+                    width={320}
+                    height={128}
+                    className="size-full object-cover"
+                  />
                 </span>
                 <span className="relative h-32 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={selected.imageSrc ?? "/catalog/thumb-supino.webp"} alt="" className="size-full object-cover" />
+                  <img
+                    src={selected.imageSrc ?? "/catalog/thumb-supino.webp"}
+                    alt=""
+                    width={320}
+                    height={128}
+                    className="size-full object-cover"
+                  />
                 </span>
               </div>
               <div className="flex gap-4 text-sm font-semibold">
@@ -131,8 +158,8 @@ export function AdminExercisesScreen() {
                 {selected.secondaryMuscles.join(", ")}
               </p>
               <p className="text-sm leading-5 text-muted">
-                Um canônico no catálogo. Fabricantes ficam em modelos de equipamento, não em exercícios
-                duplicados.
+                Um canônico no catálogo. Fabricantes ficam em modelos de equipamento, não em
+                exercícios duplicados.
               </p>
             </article>
           ) : null}

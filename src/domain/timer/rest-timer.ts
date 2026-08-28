@@ -70,11 +70,7 @@ export function resumeRestTimer(timer: RestTimer, now: Date): RestTimer {
   };
 }
 
-export function adjustRestTimer(
-  timer: RestTimer,
-  now: Date,
-  deltaSeconds: number,
-): RestTimer {
+export function adjustRestTimer(timer: RestTimer, now: Date, deltaSeconds: number): RestTimer {
   if (timer.status === "completed" || timer.status === "skipped") {
     return timer;
   }

@@ -4,17 +4,18 @@ Backend versionado: PostgreSQL, Hasura, Auth, Storage, Functions.
 
 ```bash
 # Docker necessário para o stack local
-cp .secrets.example .secrets   # preencher; `nhost init` também gera
+cp .secrets.example .secrets
+npm run nhost:jwt              # par RS256 PKCS#8 em .secrets
 npm exec nhost -- up
 ```
 
 ## Acesso
 
-| Papel JWT | Quem | Como nasce |
-| --- | --- | --- |
-| `user` | atleta | signup (default) |
-| `admin` | administrador operacional | operador SQL em `auth.user_roles` |
-| `super_admin` | contratos IA + auditoria | operador SQL |
+| Papel JWT     | Quem                      | Como nasce                        |
+| ------------- | ------------------------- | --------------------------------- |
+| `user`        | atleta                    | signup (default)                  |
+| `admin`       | administrador operacional | operador SQL em `auth.user_roles` |
+| `super_admin` | contratos IA + auditoria  | operador SQL                      |
 
 O cliente **nunca** atribui admin. Não existe formulário de “criar administrador”.
 
@@ -45,3 +46,31 @@ npm run metadata:generate
 ```
 
 Este ambiente de cloud **não tem Docker**; `nhost up` fica para a máquina do operador.
+
+## Deploy no Nhost Cloud
+
+O GitHub usa `nhost/nhost.toml`. Qualquer `{{ secrets.NOME }}` **tem** de existir em Settings → Secrets; senão o deploy cai com *invalid configuration*.
+
+| Secret                         | Quem cria                         |
+| ------------------------------ | --------------------------------- |
+| `HASURA_GRAPHQL_ADMIN_SECRET`  | Nhost (projeto)                   |
+| `NHOST_WEBHOOK_SECRET`         | Nhost                             |
+| `GRAFANA_ADMIN_PASSWORD`       | Nhost                             |
+| `NHOST_JWT_KID`                | `npm run nhost:jwt` — cole no Cloud o valor gerado |
+| `NHOST_JWT_PUBLIC_KEY`         | idem, PEM completo (`BEGIN PUBLIC KEY`) |
+| `NHOST_JWT_PRIVATE_KEY`        | idem, PEM PKCS#8 (`BEGIN PRIVATE KEY`) |
+
+Se o dashboard mostrar Auth em **UpdateError** / `exitCode: 1` e Hasura verde, os *nomes* dos secrets JWT já existem — o deploy passou da validação de config. A replica nova do Auth mesmo assim não sobe porque não consegue **usar** a chave privada:
+
+- Hasura só lê a **pública** (`key`) → pode ficar verde.
+- Auth 0.49.1 exige PEM PKCS#8 em `signing_key` (`-----BEGIN PRIVATE KEY-----` com quebras de linha). Pública ok + privada truncada, numa linha só, `BEGIN RSA PRIVATE KEY` mal colada, ou JSON com `signingKey` em vez de `signing_key` → `exit 1` e `message` vazio no Service State.
+
+O Nhost **não preenche** `NHOST_JWT_*`. Secret vazio (só o nome) interpola string vazia: o deploy passa e o Auth cai com `exit 1`. Gerar o par (não buscar no dashboard):
+
+```bash
+npm run nhost:jwt
+```
+
+Cole o PEM impresso em Settings → Secrets → editar o nome já criado. Não recrie o secret. Não altere `HASURA_GRAPHQL_ADMIN_SECRET`, `NHOST_WEBHOOK_SECRET` nem `GRAFANA_ADMIN_PASSWORD` — esses o Nhost já preenche na criação do projeto.
+
+Não referenciar secrets extras (`APP_URL`, SMTP, etc.) no TOML até estarem criados no dashboard. Conferir localmente: `cp .secrets.example .secrets && npm run nhost:jwt && npm exec nhost -- config validate`.

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { CHECKOUT_FORBIDDEN_QUESTIONS, needsPartialReason, skippedPostWorkoutCheckout } from "./post-workout";
+import {
+  CHECKOUT_FORBIDDEN_QUESTIONS,
+  needsPartialReason,
+  skippedPostWorkoutCheckout,
+} from "./post-workout";
 
 describe("Check-out Pós-Treino", () => {
   it("pode ser pulado sem invalidar a sessão", () => {

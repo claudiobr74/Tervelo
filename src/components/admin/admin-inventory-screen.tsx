@@ -7,14 +7,14 @@ import { expandDumbbellWeights } from "@/domain/gym/dumbbells";
 import { plateColorClass } from "@/domain/plates/calculate";
 
 const GROUPS = [
-  { id: "chest", label: "Peito", count: 12 },
-  { id: "back", label: "Costas", count: 10 },
-  { id: "shoulders", label: "Ombros", count: 8 },
-  { id: "biceps", label: "Bíceps", count: 6 },
-  { id: "triceps", label: "Tríceps", count: 6 },
-  { id: "quads", label: "Quadríceps", count: 9 },
-  { id: "hams", label: "Posterior", count: 7 },
-  { id: "glutes", label: "Glúteos", count: 5 },
+  { id: "chest", label: "Peito" },
+  { id: "back", label: "Costas" },
+  { id: "shoulders", label: "Ombros" },
+  { id: "biceps", label: "Bíceps" },
+  { id: "triceps", label: "Tríceps" },
+  { id: "quads", label: "Quadríceps" },
+  { id: "hams", label: "Posterior" },
+  { id: "glutes", label: "Glúteos" },
 ] as const;
 
 export function AdminInventoryScreen() {
@@ -28,6 +28,11 @@ export function AdminInventoryScreen() {
 
   const plateChips = [...gym.plates].sort((a, b) => a.weightKg - b.weightKg);
   const missingPlates = plateChips.filter((item) => item.quantity === 0);
+  const selectable = [...chest, ...bars];
+  const registeredPercent =
+    selectable.length === 0
+      ? 0
+      : Math.round((selectable.filter((item) => item.selected).length / selectable.length) * 100);
 
   return (
     <AdminShell
@@ -42,7 +47,7 @@ export function AdminInventoryScreen() {
             <button
               type="button"
               disabled
-              title="Cadastro de academia do atleta FIGMA_PENDING"
+              title="Cadastro de academia em breve"
               className="text-xs font-semibold text-brand opacity-60"
             >
               + Adicionar academia
@@ -50,9 +55,9 @@ export function AdminInventoryScreen() {
           </div>
           <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-4">
             <p className="text-[11px] font-bold uppercase text-muted">Maquinário cadastrado</p>
-            <p className="mt-1 text-2xl font-extrabold text-brand">{gym.registeredPercent}%</p>
+            <p className="mt-1 text-2xl font-extrabold text-brand">{registeredPercent}%</p>
             <div className="mt-2 h-2 overflow-clip rounded-full bg-surface-secondary">
-              <div className="h-full bg-brand" style={{ width: `${gym.registeredPercent}%` }} />
+              <div className="h-full bg-brand" style={{ width: `${registeredPercent}%` }} />
             </div>
           </div>
           <div className="flex flex-col gap-1">
@@ -66,7 +71,11 @@ export function AdminInventoryScreen() {
                 }`}
               >
                 <span>{item.label}</span>
-                <span className="text-xs">{item.count} selecionados</span>
+                <span className="text-xs">
+                  {item.id === "chest"
+                    ? `${chest.filter((row) => row.selected).length} selecionados`
+                    : "—"}
+                </span>
               </button>
             ))}
           </div>
@@ -76,7 +85,7 @@ export function AdminInventoryScreen() {
             <button
               type="button"
               disabled
-              title="Preset de academia completa FIGMA_PENDING"
+              title="Modelo de academia completa em breve"
               className="rounded-[var(--radius-lg)] border border-brand px-4 py-2 text-sm font-semibold text-brand opacity-60"
             >
               Selecionar academia completa padrão
@@ -86,7 +95,7 @@ export function AdminInventoryScreen() {
               onClick={() => setSaved(true)}
               className="rounded-[var(--radius-lg)] bg-brand px-4 py-2 text-sm font-bold text-on-brand"
             >
-              {saved ? "Inventário salvo (pré-visualização)" : "Salvar inventário"}
+              {saved ? "Inventário salvo neste navegador" : "Salvar inventário"}
             </button>
           </div>
           {group === "chest" ? (
@@ -94,13 +103,18 @@ export function AdminInventoryScreen() {
               <h2 className="mb-3 text-sm font-bold">Equipamentos de Peito Disponíveis</h2>
               <div className="flex flex-col gap-2">
                 {chest.map((item) => (
-                  <label key={item.id} className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm">
+                  <label
+                    key={item.id}
+                    className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm"
+                  >
                     <input
                       type="checkbox"
                       checked={item.selected}
                       onChange={() =>
                         setChest((rows) =>
-                          rows.map((row) => (row.id === item.id ? { ...row, selected: !row.selected } : row)),
+                          rows.map((row) =>
+                            row.id === item.id ? { ...row, selected: !row.selected } : row,
+                          ),
                         )
                       }
                       className="size-4 accent-[var(--brand-primary)]"
@@ -112,8 +126,8 @@ export function AdminInventoryScreen() {
             </section>
           ) : (
             <p className="text-sm text-muted">
-              Lista detalhada deste grupo muscular entra com o catálogo completo no Nhost. Peito está no node
-              Figma.
+              Lista detalhada deste grupo muscular entra com o catálogo completo no Nhost. Peito
+              está no node Figma.
             </p>
           )}
           <section>
@@ -154,7 +168,9 @@ export function AdminInventoryScreen() {
                     checked={bar.selected}
                     onChange={() =>
                       setBars((rows) =>
-                        rows.map((row) => (row.id === bar.id ? { ...row, selected: !row.selected } : row)),
+                        rows.map((row) =>
+                          row.id === bar.id ? { ...row, selected: !row.selected } : row,
+                        ),
                       )
                     }
                     className="size-4 accent-[var(--brand-primary)]"

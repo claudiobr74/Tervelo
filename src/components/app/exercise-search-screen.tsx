@@ -3,7 +3,11 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
-import { searchCatalogExercises, type CatalogExercise, type ExerciseSearchFilter } from "@/domain/exercise/search";
+import {
+  searchCatalogExercises,
+  type CatalogExercise,
+  type ExerciseSearchFilter,
+} from "@/domain/exercise/search";
 import { PREVIEW_EXERCISES } from "@/lib/catalog/preview-catalog";
 
 const FILTERS: { id: ExerciseSearchFilter; label: string }[] = [
@@ -74,24 +78,25 @@ function withFavorites(exercises: CatalogExercise[], ids: string[]): CatalogExer
 }
 
 export function ExerciseSearchScreen() {
-  const [query, setQuery] = useState("pux");
+  const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<ExerciseSearchFilter>("muscle");
-  const [selectedId, setSelectedId] = useState("ex-puxada-alta");
-  const storedFavorites = useSyncExternalStore(subscribeFavorites, readFavorites, getServerFavorites);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const storedFavorites = useSyncExternalStore(
+    subscribeFavorites,
+    readFavorites,
+    getServerFavorites,
+  );
   const catalog = useMemo(
     () => withFavorites(PREVIEW_EXERCISES, storedFavorites),
     [storedFavorites],
   );
   const results = searchCatalogExercises(catalog, query, filter);
-  const selected =
-    results.find((item) => item.id === selectedId) ??
-    results[0] ??
-    catalog.find((item) => item.id === "ex-puxada-alta") ??
-    catalog[0];
+  const selected = results.find((item) => item.id === selectedId) ?? results[0];
 
   return (
     <AthleteAppShell active="Treino">
       <div className="flex flex-col gap-3 px-6 pb-3 pt-4">
+        <h1 className="text-2xl font-extrabold text-foreground">Exercícios</h1>
         <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
           <FigmaIcon src="/icons/search.svg" alt="" size={18} className="text-muted" />
           <input
@@ -102,7 +107,12 @@ export function ExerciseSearchScreen() {
             placeholder="Buscar exercício"
           />
           {query ? (
-            <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="text-muted">
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label="Limpar busca"
+              className="text-muted"
+            >
               <FigmaIcon src="/icons/close.svg" alt="" size={18} />
             </button>
           ) : null}
@@ -169,7 +179,7 @@ export function ExerciseSearchScreen() {
         {selected ? (
           <article className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-4">
             <div className="flex items-start justify-between gap-3">
-              <h1 className="text-lg font-extrabold text-foreground">{selected.namePt}</h1>
+              <h2 className="text-lg font-extrabold text-foreground">{selected.namePt}</h2>
               <FigmaIcon
                 src={selected.favorite ? "/icons/heart-filled.svg" : "/icons/heart.svg"}
                 alt=""

@@ -3,11 +3,7 @@ export { canUpdateMetrics, effectiveHistory, latestByTime } from "./measurement/
 export { leanMassKg, round1 } from "./measurement/composition";
 export { calculatePlates, listPlateAssemblies, typicalPlateStock } from "./plates/calculate";
 export { searchCatalogExercises } from "./exercise/search";
-export {
-  adjustRestTimer,
-  remainingSeconds,
-  startRestTimer,
-} from "./timer/rest-timer";
+export { adjustRestTimer, remainingSeconds, startRestTimer } from "./timer/rest-timer";
 export { classifyRecovery, scoresFromSliders } from "./recovery/score";
 export { recoveryTrend } from "./recovery/trend";
 export { percentChange } from "./progress/change";
@@ -18,11 +14,7 @@ export { enqueueOperation, pendingDataCount } from "./offline/queue";
 export { runSyncPass } from "./offline/engine";
 export { resolveConflict } from "./offline/conflict";
 export { AI_AGENTS, DEFAULT_AI_AGENT, agentLabel } from "./ai/agents";
-export {
-  AI_IDENTITY_PROMPT,
-  AI_POLICY_LOCKS,
-  DEFAULT_AI_AUTONOMY,
-} from "./ai/contract";
+export { AI_IDENTITY_PROMPT, AI_POLICY_LOCKS, DEFAULT_AI_AUTONOMY } from "./ai/contract";
 export { emptyNutritionContext, nutritionAdjustmentAction } from "./ai/nutrition-context";
 export { QA_ADDENDUM_CHECKS, auditIntegratedDecision } from "./ai/qa-addendum";
 export { parseHeartRateMeasurement } from "./heart-rate/parse-measurement";

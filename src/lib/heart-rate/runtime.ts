@@ -7,6 +7,7 @@ import type { HeartRateStatus } from "@/domain/heart-rate/types";
 import {
   currentExercise,
   currentSet,
+  hasSessionWork,
   isSessionComplete,
 } from "@/domain/training/session";
 import {
@@ -31,7 +32,8 @@ import {
 import { isWebBluetoothSupported } from "./bluetooth";
 import { WebBluetoothHeartRateProvider } from "./web-bluetooth-provider";
 import { getLiveSession, subscribeLiveSession } from "@/lib/training/live-session";
-import { PREVIEW_TRAINING_USER_ID, PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { currentOfflineUserId } from "@/lib/offline/user-scope";
 
 export type HeartRateRuntimeState = {
   status: HeartRateStatus;
@@ -74,13 +76,14 @@ function setState(patch: Partial<HeartRateRuntimeState>) {
   emit();
 }
 
-function deriveStatus(enabled: boolean, supported: boolean, current: HeartRateStatus): HeartRateStatus {
+function deriveStatus(
+  enabled: boolean,
+  supported: boolean,
+  current: HeartRateStatus,
+): HeartRateStatus {
   if (!enabled) return "DISABLED";
   if (!supported) return "UNSUPPORTED";
-  if (
-    current === "DISABLED" ||
-    current === "UNSUPPORTED"
-  ) {
+  if (current === "DISABLED" || current === "UNSUPPORTED") {
     return "READY";
   }
   return current;
@@ -116,12 +119,10 @@ function ensureProvider(): WebBluetoothHeartRateProvider {
         justConnected: false,
       });
       if (!capturing || !capturingSessionId) return;
-      const exercise = isSessionComplete(PREVIEW_WORKOUT, live.recorded)
-        ? null
-        : currentExercise(PREVIEW_WORKOUT, live.recorded);
-      const set = isSessionComplete(PREVIEW_WORKOUT, live.recorded)
-        ? null
-        : currentSet(PREVIEW_WORKOUT, live.recorded);
+      const hasWork = hasSessionWork(PREVIEW_WORKOUT);
+      const done = !hasWork || isSessionComplete(PREVIEW_WORKOUT, live.recorded);
+      const exercise = done ? null : currentExercise(PREVIEW_WORKOUT, live.recorded);
+      const set = done ? null : currentSet(PREVIEW_WORKOUT, live.recorded);
       appendHeartRateSample({
         id: crypto.randomUUID(),
         recordedAt: recordedAt.toISOString(),
@@ -172,14 +173,18 @@ function syncFromPreference() {
 function onLiveChange() {
   if (!getHeartRateEnabled()) return;
   const live = getLiveSession();
-  const exercise = live.status === "idle" || live.status === "completed" || isSessionComplete(PREVIEW_WORKOUT, live.recorded)
-    ? null
-    : currentExercise(PREVIEW_WORKOUT, live.recorded);
+  const exercise =
+    live.status === "idle" ||
+    live.status === "completed" ||
+    !hasSessionWork(PREVIEW_WORKOUT) ||
+    isSessionComplete(PREVIEW_WORKOUT, live.recorded)
+      ? null
+      : currentExercise(PREVIEW_WORKOUT, live.recorded);
 
   if (live.status === "active" && live.startedAt && capturingSessionId !== live.startedAt) {
     capturingSessionId = live.startedAt;
     beginHeartRateCapture({
-      userId: PREVIEW_TRAINING_USER_ID,
+      userId: currentOfflineUserId(),
       trainingSessionId: PREVIEW_WORKOUT.id,
       startedAt: live.startedAt,
     });
@@ -243,7 +248,11 @@ export function getServerHeartRateRuntime(): HeartRateRuntimeState {
 }
 
 export function useHeartRateRuntime(): HeartRateRuntimeState {
-  return useSyncExternalStore(subscribeHeartRateRuntime, getHeartRateRuntime, getServerHeartRateRuntime);
+  return useSyncExternalStore(
+    subscribeHeartRateRuntime,
+    getHeartRateRuntime,
+    getServerHeartRateRuntime,
+  );
 }
 
 export async function enableHeartRate(enabled: boolean) {

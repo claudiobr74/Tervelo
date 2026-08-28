@@ -167,8 +167,12 @@ export function findCursor(session: WorkoutSession, recorded: RecordedSet[]): Li
   return { ...indexesFor(session, items[flattenIndex]), flattenIndex };
 }
 
+export function hasSessionWork(session: WorkoutSession): boolean {
+  return flattenSession(session).length > 0;
+}
+
 export function isSessionComplete(session: WorkoutSession, recorded: RecordedSet[]): boolean {
-  const total = session.exercises.reduce((sum, exercise) => sum + exercise.sets.length, 0);
+  const total = flattenSession(session).length;
   return total > 0 && recorded.length >= total;
 }
 
@@ -192,7 +196,10 @@ function locateSet(
   return null;
 }
 
-export function nextPrescription(session: WorkoutSession, recorded: RecordedSet[]): SetPrescription | null {
+export function nextPrescription(
+  session: WorkoutSession,
+  recorded: RecordedSet[],
+): SetPrescription | null {
   if (isSessionComplete(session, recorded)) return null;
   return currentSet(session, recorded);
 }
@@ -211,7 +218,8 @@ export function restSecondsAfter(
   const next = currentSet(session, recordedIncludingJustFinished);
   const nextLocated = locateSet(session, next.id);
   if (!nextLocated) return null;
-  if (next.methodKind === "drop_set" && nextLocated.exercise.id === located.exercise.id) return null;
+  if (next.methodKind === "drop_set" && nextLocated.exercise.id === located.exercise.id)
+    return null;
   if (located.set.methodKind === "drop_set" && next.methodKind === "drop_set") return null;
   if (
     located.exercise.groupId &&
@@ -258,7 +266,10 @@ export function formatTimer(seconds: number): string {
   return `${String(minutes).padStart(2, "0")}:${String(rest).padStart(2, "0")}`;
 }
 
-export function groupPartners(session: WorkoutSession, exercise: SessionExercise): SessionExercise[] {
+export function groupPartners(
+  session: WorkoutSession,
+  exercise: SessionExercise,
+): SessionExercise[] {
   if (!exercise.groupId) return [exercise];
   return session.exercises.filter((item) => item.groupId === exercise.groupId);
 }

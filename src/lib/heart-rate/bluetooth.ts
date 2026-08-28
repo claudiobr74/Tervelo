@@ -45,17 +45,32 @@ export type WebBluetoothApi = {
   getDevices?: () => Promise<BluetoothHeartRateDevice[]>;
 };
 
-export function getWebBluetoothApi(root: { navigator?: { bluetooth?: WebBluetoothApi } } = globalThis as { navigator?: { bluetooth?: WebBluetoothApi } }): WebBluetoothApi | null {
+export function getWebBluetoothApi(
+  root: { navigator?: { bluetooth?: WebBluetoothApi } } = globalThis as {
+    navigator?: { bluetooth?: WebBluetoothApi };
+  },
+): WebBluetoothApi | null {
   const bluetooth = root.navigator?.bluetooth;
   return bluetooth ?? null;
 }
 
-export function isWebBluetoothSupported(root: { navigator?: { bluetooth?: WebBluetoothApi } } = globalThis as { navigator?: { bluetooth?: WebBluetoothApi } }): boolean {
+export function isWebBluetoothSupported(
+  root: { navigator?: { bluetooth?: WebBluetoothApi } } = globalThis as {
+    navigator?: { bluetooth?: WebBluetoothApi };
+  },
+): boolean {
   return getWebBluetoothApi(root) !== null;
 }
 
 export type HeartRateConnectionListener = (event: {
-  status: "REQUESTING_DEVICE" | "CONNECTING" | "CONNECTED" | "STREAMING" | "DISCONNECTED" | "RECONNECTING" | "ERROR";
+  status:
+    | "REQUESTING_DEVICE"
+    | "CONNECTING"
+    | "CONNECTED"
+    | "STREAMING"
+    | "DISCONNECTED"
+    | "RECONNECTING"
+    | "ERROR";
   displayName: string | null;
   errorMessage: string | null;
 }) => void;

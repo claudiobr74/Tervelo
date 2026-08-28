@@ -41,7 +41,11 @@ async function main() {
   }
 
   const loginRes = await fetch(`${base}/login`, { redirect: "manual" });
-  if (loginRes.status >= 300 && loginRes.status < 400 && (loginRes.headers.get("location") ?? "").includes(SSO_HINT)) {
+  if (
+    loginRes.status >= 300 &&
+    loginRes.status < 400 &&
+    (loginRes.headers.get("location") ?? "").includes(SSO_HINT)
+  ) {
     console.error(JSON.stringify({ ok: false, reason: "vercel_sso", path: "/login" }));
     process.exit(2);
   }

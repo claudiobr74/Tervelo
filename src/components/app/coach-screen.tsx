@@ -1,54 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
+import { EmptyPanel } from "@/components/ui/empty-panel";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
   COACH_SUGGESTIONS,
-  coachProposalFeedback,
   coachReplyForPrompt,
-  previewCoachFacts,
   type CoachPreviewMessage,
 } from "@/domain/ai/coach-preview";
-import { setCoachProposalStatus, useCoachProposal } from "@/lib/coach-proposal-store";
-import { getHeartRateEnabled } from "@/lib/heart-rate/preference-store";
-import { currentHeartRateDetails } from "@/lib/heart-rate/runtime";
-import { buildHeartRateContext } from "@/domain/heart-rate/context";
-import { metricsForSet, setWindowsFromTimeline } from "@/domain/heart-rate/metrics";
-import { getLiveSession } from "@/lib/training/live-session";
+import { liveCoachFacts } from "@/lib/ai/live-facts";
 import { useSyncStatus } from "@/components/app/sync-status-indicator";
 import { SYNC_COPY } from "@/domain/offline";
 
-function liveCoachFacts() {
-  const live = getLiveSession();
-  const details = currentHeartRateDetails();
-  const heartRate = buildHeartRateContext({
-    heartRateEnabled: getHeartRateEnabled(),
-    samples: details.samples,
-    startedAt: details.stored.startedAt ?? live.startedAt,
-    endedAt: details.stored.endedAt ?? live.completedAt,
-    setMetrics: setWindowsFromTimeline(live.events).map((window) => metricsForSet(details.samples, window)),
-    sameDevice: true,
-    comparableSessions: details.stats.sampleCount > 0 ? 1 : 0,
-  });
-  return { ...previewCoachFacts, heartRate };
-}
-
-const OPENING: CoachPreviewMessage = {
-  id: "opening",
-  role: "coach",
-  body: "Notei uma excelente progressão de força no Supino Reto na sua última sessão. Proponho um ajuste para manter o estímulo hipertrófico correto.",
-};
-
 export function CoachScreen() {
-  const proposal = useCoachProposal();
   const sync = useSyncStatus();
-  const [thread, setThread] = useState<CoachPreviewMessage[]>([OPENING]);
-  const proposalCopy = useMemo(
-    () => coachProposalFeedback(proposal.status),
-    [proposal.status],
-  );
+  const [thread, setThread] = useState<CoachPreviewMessage[]>([]);
 
   function ask(prompt: string) {
     const athlete: CoachPreviewMessage = {
@@ -69,7 +37,11 @@ export function CoachScreen() {
       return;
     }
     const reply = coachReplyForPrompt(prompt, liveCoachFacts());
-    setThread((current) => [...current, athlete, { ...reply, id: `${reply.id}-${current.length}` }]);
+    setThread((current) => [
+      ...current,
+      athlete,
+      { ...reply, id: `${reply.id}-${current.length}` },
+    ]);
   }
 
   return (
@@ -90,7 +62,12 @@ export function CoachScreen() {
         </p>
         {!sync.online ? (
           <p className="text-xs text-muted">{SYNC_COPY.coachAnalysisWhenOnline}</p>
-        ) : null}
+        ) : (
+          <p className="text-xs text-muted">
+            Respostas usam só os dados deste aparelho. A orquestração no servidor ainda não está
+            ligada.
+          </p>
+        )}
       </header>
 
       <div className="flex flex-wrap content-start gap-2 px-6">
@@ -107,6 +84,12 @@ export function CoachScreen() {
       </div>
 
       <div className="flex flex-col gap-4 px-6 pb-6 pt-5">
+        {thread.length === 0 ? (
+          <EmptyPanel
+            title="Ainda não há o que analisar"
+            body="Quando houver treinos, medidas e check-ins seus, o coach responde com base nisso. Sem inventar carga, refeição ou atleta."
+          />
+        ) : null}
         {thread.map((message) =>
           message.role === "coach" ? (
             <CoachBubble key={message.id} message={message} />
@@ -114,54 +97,6 @@ export function CoachScreen() {
             <AthleteBubble key={message.id} body={message.body} />
           ),
         )}
-
-        <article className="flex flex-col gap-3 rounded-[var(--radius-xl)] border border-brand bg-surface p-4">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[11px] font-bold uppercase text-brand">Mudança proposta</p>
-            <span className="rounded-[4px] bg-brand-soft px-1.5 py-0.5 text-[11px] font-bold text-brand">
-              Sugerido
-            </span>
-          </div>
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[14px] font-bold text-foreground">Supino Reto</p>
-            <div className="flex items-center gap-2">
-              <span className="text-[14px] font-medium text-muted line-through">80kg</span>
-              <FigmaIcon src="/icons/coach-arrow.svg" size={14} className="text-brand" />
-              <span className="text-[14px] font-bold text-brand">82kg</span>
-            </div>
-          </div>
-          <p className="text-[11px] font-medium text-muted">
-            Motivo: Você completou todas as séries mantendo boa margem de execução e 2 repetições em
-            reserva.
-          </p>
-          {proposalCopy ? (
-            <p className="text-[12px] font-semibold text-success">{proposalCopy}</p>
-          ) : null}
-          <div className="flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={() => setCoachProposalStatus("accepted")}
-              className="flex h-10 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand text-[14px] font-bold text-on-brand"
-            >
-              Aceitar alteração
-            </button>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setCoachProposalStatus("kept")}
-                className="flex h-9 flex-1 items-center justify-center rounded-[var(--radius-md)] border border-border bg-surface text-[11px] font-bold text-muted"
-              >
-                Manter como está
-              </button>
-              <Link
-                href="/app/coach/ajuste"
-                className="flex h-9 flex-1 items-center justify-center rounded-[var(--radius-md)] border border-border bg-surface text-[11px] font-bold text-muted"
-              >
-                Quero entender
-              </Link>
-            </div>
-          </div>
-        </article>
       </div>
     </AthleteAppShell>
   );
@@ -175,7 +110,9 @@ function CoachBubble({ message }: { message: CoachPreviewMessage }) {
       </span>
       <div className="min-w-0 flex-1 rounded-[12px] rounded-tl-none border border-border bg-surface p-3">
         <p className="text-[11px] font-bold text-brand">Coach TERVELO</p>
-        <p className="mt-1 text-[13px] font-medium leading-normal text-foreground">{message.body}</p>
+        <p className="mt-1 text-[13px] font-medium leading-normal text-foreground">
+          {message.body}
+        </p>
         {message.sections ? (
           <dl className="mt-3 flex flex-col gap-2 border-t border-border pt-3 text-[12px] leading-4">
             <Section label="Observação" value={message.sections.observacao} />

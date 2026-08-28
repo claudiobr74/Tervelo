@@ -53,7 +53,13 @@ export const RECOVERY_QUESTIONS: {
   },
 ];
 
-export const RECOVERY_CLASSIFICATIONS = ["Ruim", "Regular", "Moderada", "Boa", "Excelente"] as const;
+export const RECOVERY_CLASSIFICATIONS = [
+  "Ruim",
+  "Regular",
+  "Moderada",
+  "Boa",
+  "Excelente",
+] as const;
 
 export type RecoveryClassification = (typeof RECOVERY_CLASSIFICATIONS)[number];
 
@@ -80,7 +86,9 @@ export function scoresFromSliders(sliders: RecoverySliders): RecoveryScores {
     sliders.pain,
     sliders.stress,
   ].map(clampScore);
-  const perceivedRecovery = clampScore(goodness.reduce((sum, value) => sum + value, 0) / goodness.length);
+  const perceivedRecovery = clampScore(
+    goodness.reduce((sum, value) => sum + value, 0) / goodness.length,
+  );
   return {
     sleepQuality: goodness[0],
     energy: goodness[1],
@@ -94,6 +102,26 @@ export function scoresFromSliders(sliders: RecoverySliders): RecoveryScores {
 
 export function classifyRecovery(score: number): RecoveryClassification {
   return RECOVERY_CLASSIFICATIONS[clampScore(score) - 1];
+}
+
+/** Mesma nota do check-in apresentada como porcentagem nos resumos. */
+export function recoveryPercent(score: number): number {
+  return Math.round((clampScore(score) / RECOVERY_SLIDER_MAX) * 100);
+}
+
+export function recoveryReadinessCopy(score: number): string {
+  switch (clampScore(score)) {
+    case 1:
+      return "Priorize descanso hoje";
+    case 2:
+      return "Volume conservador hoje";
+    case 3:
+      return "Carga moderada hoje";
+    case 4:
+      return "Pronto para treinar";
+    default:
+      return "Pronto para alta carga";
+  }
 }
 
 export function recoveryResultCopy(score: number): string {

@@ -2,8 +2,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { BrandLogo } from "@/components/brand/brand-logo";
+import { InitialsAvatar } from "@/components/ui/initials-avatar";
 
-const PENDING = "FIGMA_PENDING — sem screen no Figma";
+const PENDING = "Em breve";
 
 export type AdminActive =
   | "Dashboard"
@@ -28,7 +29,12 @@ const LIBRARY = [
 ] as const;
 
 const AFTER = [
-  { href: "/admin/ai", label: "Inteligência Artificial", icon: "/icons/admin/cpu.svg", pending: false },
+  {
+    href: "/admin/ai",
+    label: "Inteligência Artificial",
+    icon: "/icons/admin/cpu.svg",
+    pending: false,
+  },
   { href: null, label: "Configurações", icon: "/icons/admin/settings.svg", pending: true },
   { href: "/admin/audit", label: "Auditoria", icon: "/icons/admin/shield.svg", pending: false },
 ] as const;
@@ -59,7 +65,7 @@ export function AdminShell({
       <aside className="flex h-full w-[220px] shrink-0 flex-col gap-6 overflow-y-auto border-r border-border px-3 py-6 lg:w-[260px] lg:px-4">
         <div className="flex flex-col gap-1 px-1">
           <BrandLogo className="h-9 w-auto max-w-[196px]" />
-          <p className="text-[10px] font-semibold uppercase text-brand">Admin Console</p>
+          <p className="text-[10px] font-semibold uppercase text-brand">Painel administrativo</p>
         </div>
         <nav aria-label="Navegação administrativa" className="flex min-h-0 flex-1 flex-col gap-1.5">
           {NAV.map((item) => {
@@ -89,9 +95,13 @@ export function AdminShell({
             );
           })}
           <div className="flex flex-col gap-1">
-            <div className={`flex items-center gap-3 rounded-[var(--radius-md)] px-4 py-3 ${libraryActive ? "text-brand" : "text-muted"}`}>
+            <div
+              className={`flex items-center gap-3 rounded-[var(--radius-md)] px-4 py-3 ${libraryActive ? "text-brand" : "text-muted"}`}
+            >
               <FigmaIcon src="/icons/admin/book.svg" alt="" size={18} />
-              <span className={`text-sm ${libraryActive ? "font-semibold text-brand" : "font-medium"}`}>
+              <span
+                className={`text-sm ${libraryActive ? "font-semibold text-brand" : "font-medium"}`}
+              >
                 Biblioteca
               </span>
             </div>
@@ -136,13 +146,10 @@ export function AdminShell({
           })}
         </nav>
         <div className="mt-auto flex items-center gap-3 border-t border-border px-2 pt-4">
-          <span className="relative size-9 shrink-0 overflow-clip rounded-full">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/catalog/admin-users/lucas.webp" alt="" width={36} height={36} className="size-full object-cover" />
-          </span>
+          <InitialsAvatar name="A" size={36} />
           <div className="min-w-0 flex flex-col">
-            <p className="truncate text-sm font-semibold">Lucas Mendes</p>
-            <p className="truncate text-xs text-muted">Diretor Técnico</p>
+            <p className="truncate text-sm font-semibold">Administrador</p>
+            <p className="truncate text-xs text-muted">Painel Tervelo</p>
           </div>
         </div>
       </aside>
@@ -165,7 +172,9 @@ export function AdminShell({
             </span>
           </div>
         </header>
-        <main className="min-h-0 min-w-0 flex-1 overflow-auto px-4 py-6 lg:px-8 lg:py-8">{children}</main>
+        <main className="min-h-0 min-w-0 flex-1 overflow-auto px-4 py-6 lg:px-8 lg:py-8">
+          {children}
+        </main>
       </div>
     </div>
   );

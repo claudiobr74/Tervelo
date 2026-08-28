@@ -1,27 +1,38 @@
-import { sessionHasAdminAccess, type StoredAppSession } from "@/lib/auth/session-cookie";
-
 export const PUBLIC_PREFIXES = [
   "/login",
   "/signup",
-  "/dev",
+  "/termos",
+  "/privacidade",
   "/api/health",
   "/api/auth",
   "/sw.js",
   "/manifest.webmanifest",
 ] as const;
 
-export function isPublicPath(pathname: string): boolean {
+/** Atalhos internos de pré-visualização: só onde não existe backend real. */
+export const DEV_PREFIX = "/dev";
+
+export function isPublicPath(pathname: string, devToolsEnabled = false): boolean {
   if (pathname === "/") return true;
+  if (pathname === DEV_PREFIX || pathname.startsWith(`${DEV_PREFIX}/`)) return devToolsEnabled;
   return PUBLIC_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
 }
 
+export type AuthContext = {
+  hasSession: boolean;
+  adminAccess: boolean;
+  onboardingDone: boolean;
+  devToolsEnabled: boolean;
+};
+
 /** Destino relativo ou `null` se a requisição segue. */
-export function resolveAuthRedirect(
-  pathname: string,
-  session: StoredAppSession | null,
-  hasSession: boolean,
-  onboardingDone: boolean,
-): string | null {
+export function resolveAuthRedirect(pathname: string, context: AuthContext): string | null {
+  const { hasSession, adminAccess, onboardingDone, devToolsEnabled } = context;
+
+  if (pathname === DEV_PREFIX || pathname.startsWith(`${DEV_PREFIX}/`)) {
+    return devToolsEnabled ? null : "/";
+  }
+
   if ((pathname === "/login" || pathname === "/signup") && hasSession) {
     return onboardingDone ? "/app/today" : "/onboarding/perfil";
   }
@@ -39,7 +50,7 @@ export function resolveAuthRedirect(
     if (!hasSession) {
       return "/login";
     }
-    if (!sessionHasAdminAccess(session)) {
+    if (!adminAccess) {
       return "/";
     }
   }

@@ -49,7 +49,11 @@ export function setHeartRateEnabled(enabled: boolean) {
 }
 
 export function useHeartRateEnabled(): boolean {
-  return useSyncExternalStore(subscribeHeartRateEnabled, getHeartRateEnabled, getServerHeartRateEnabled);
+  return useSyncExternalStore(
+    subscribeHeartRateEnabled,
+    getHeartRateEnabled,
+    getServerHeartRateEnabled,
+  );
 }
 
 export { HEART_RATE_PREFERENCE_KEY };

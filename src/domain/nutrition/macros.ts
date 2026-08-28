@@ -18,6 +18,8 @@ export function isOpenNutritionDay(checkedInOnIso: string, todayIso: string): bo
   return checkedInOnIso === todayIso;
 }
 
-export function energyFromMacros(macros: Pick<NutritionMacros, "proteinG" | "carbohydrateG" | "fatG">): number {
+export function energyFromMacros(
+  macros: Pick<NutritionMacros, "proteinG" | "carbohydrateG" | "fatG">,
+): number {
   return macros.proteinG * 4 + macros.carbohydrateG * 4 + macros.fatG * 9;
 }

@@ -25,7 +25,10 @@ export function adherenceTone(percent: number): "success" | "brand" | "error" {
   return "error";
 }
 
-export function filterAdminUsers(users: readonly AdminUser[], filters: AdminUserFilters): AdminUser[] {
+export function filterAdminUsers(
+  users: readonly AdminUser[],
+  filters: AdminUserFilters,
+): AdminUser[] {
   const query = filters.query.trim().toLocaleLowerCase("pt-BR");
   return users.filter((user) => {
     if (query && !user.name.toLocaleLowerCase("pt-BR").includes(query)) return false;

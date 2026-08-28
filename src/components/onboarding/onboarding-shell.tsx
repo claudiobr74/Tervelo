@@ -51,7 +51,9 @@ export function OnboardingShell({
             {continueLabel}
           </button>
         )}
-        {footerNote ? <p className="w-full text-center text-[13px] text-tertiary">{footerNote}</p> : null}
+        {footerNote ? (
+          <p className="w-full text-center text-[13px] text-tertiary">{footerNote}</p>
+        ) : null}
       </div>
     </main>
   );

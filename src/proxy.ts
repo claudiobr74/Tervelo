@@ -2,30 +2,48 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
 import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
-import { parseSessionCookie } from "@/lib/auth/session-cookie";
+import { parseSessionCookie, sessionHasAdminAccess } from "@/lib/auth/session-cookie";
 import { resolveAuthRedirect } from "@/lib/auth/proxy-guard";
-import { securityHeaders } from "@/lib/security/headers";
+import { devToolsEnabled } from "@/lib/deploy/runtime";
+import { NONCE_HEADER, securityHeaders } from "@/lib/security/headers";
 
-function withSecurityHeaders(response: NextResponse): NextResponse {
-  for (const [key, value] of Object.entries(securityHeaders())) {
+function createNonce(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes));
+}
+
+function withSecurityHeaders(response: NextResponse, nonce: string): NextResponse {
+  for (const [key, value] of Object.entries(securityHeaders(nonce))) {
     response.headers.set(key, value);
   }
   return response;
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const nonce = createNonce();
   const rawSession = request.cookies.get(NHOST_SESSION_COOKIE)?.value;
   const session = parseSessionCookie(rawSession);
   const hasSession = session != null;
   const onboardingDone = request.cookies.get(ONBOARDING_COOKIE)?.value === "done";
 
-  const dest = resolveAuthRedirect(pathname, session, hasSession, onboardingDone);
+  // A verificação de assinatura custa uma chamada ao JWKS; só o console admin precisa dela.
+  const adminAccess = pathname.startsWith("/admin") ? await sessionHasAdminAccess(session) : false;
+
+  const dest = resolveAuthRedirect(pathname, {
+    hasSession,
+    adminAccess,
+    onboardingDone,
+    devToolsEnabled: devToolsEnabled(),
+  });
   if (dest) {
-    return withSecurityHeaders(NextResponse.redirect(new URL(dest, request.url)));
+    return withSecurityHeaders(NextResponse.redirect(new URL(dest, request.url)), nonce);
   }
 
-  return withSecurityHeaders(NextResponse.next());
+  const headers = new Headers(request.headers);
+  headers.set(NONCE_HEADER, nonce);
+  return withSecurityHeaders(NextResponse.next({ request: { headers } }), nonce);
 }
 
 export const config = {

@@ -4,10 +4,17 @@ import Link from "next/link";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { PRODUCT_NAMES } from "@/domain/athlete-state/labels";
-import { trackProductEvent, useAthleteStateStore, weeklyDecisionLabel } from "@/lib/athlete-state/session-store";
+import {
+  trackProductEvent,
+  useAthleteStateStore,
+  weeklyDecisionLabel,
+} from "@/lib/athlete-state/session-store";
+import { useWeeklyCoachReviewEnabled } from "@/lib/athlete-state/preference-store";
+import { EmptyPanel } from "@/components/ui/empty-panel";
 
 export function WeeklyReviewsListScreen() {
   const store = useAthleteStateStore();
+  const enabled = useWeeklyCoachReviewEnabled();
 
   return (
     <AthleteAppShell active="Coach">
@@ -21,20 +28,40 @@ export function WeeklyReviewsListScreen() {
             <h1 className="text-xl font-extrabold text-foreground">Revisões</h1>
           </div>
         </header>
-        <p className="text-xs text-muted">FIGMA_UI_PENDING · {PRODUCT_NAMES.weeklyCoachReview}</p>
+        <p className="text-xs text-muted">{PRODUCT_NAMES.weeklyCoachReview}</p>
+        {!enabled ? (
+          <div className="flex flex-col gap-2 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
+            <p className="text-sm font-semibold text-foreground">
+              {PRODUCT_NAMES.weeklyCoachReview} está desligada
+            </p>
+            <p className="text-xs text-muted">
+              Ligue em Mais → Conta → Acompanhamento do Coach para voltar a receber a análise da
+              semana.
+            </p>
+          </div>
+        ) : null}
         <div className="flex flex-col gap-3">
-          {store.weeklyReviews.map((review) => (
-            <Link
-              key={review.id}
-              href={`/app/coach/revisoes/${review.id}`}
-              onClick={() => trackProductEvent("revisao_semanal_aberta")}
-              className="flex flex-col gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-4"
-            >
-              <p className="text-xs text-muted">{review.dateLabel}</p>
-              <p className="text-sm font-bold text-foreground">{review.headline}</p>
-              <p className="text-xs font-semibold text-brand">{weeklyDecisionLabel(review.decision)}</p>
-            </Link>
-          ))}
+          {enabled && store.weeklyReviews.length === 0 ? (
+            <EmptyPanel
+              title="Nenhuma revisão ainda"
+              body="A revisão semanal só aparece depois de treinos e check-ins seus. Semanas de exemplo não são criadas."
+            />
+          ) : null}
+          {enabled &&
+            store.weeklyReviews.map((review) => (
+              <Link
+                key={review.id}
+                href={`/app/coach/revisoes/${review.id}`}
+                onClick={() => trackProductEvent("revisao_semanal_aberta")}
+                className="flex flex-col gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-4"
+              >
+                <p className="text-xs text-muted">{review.dateLabel}</p>
+                <p className="text-sm font-bold text-foreground">{review.headline}</p>
+                <p className="text-xs font-semibold text-brand">
+                  {weeklyDecisionLabel(review.decision)}
+                </p>
+              </Link>
+            ))}
         </div>
       </div>
     </AthleteAppShell>

@@ -10,7 +10,6 @@ import type {
   RecoveryCheckinRepository,
 } from "@/application/ports";
 import type { RecoveryScores } from "@/domain/recovery/trend";
-import { PREVIEW_TRAINING_USER_ID } from "@/lib/training/preview-workout";
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
@@ -31,98 +30,10 @@ function emit() {
   for (const listener of listeners) listener();
 }
 
-function daysAgoIso(days: number): string {
-  return new Date(Date.now() - days * 24 * 60 * 60 * 1000 - 1000).toISOString();
-}
+const EMPTY_STATE: LongitudinalState = { checkins: [], measurements: [] };
 
-function seedCheckin(
-  id: string,
-  daysAgo: number,
-  scores: RecoveryScores,
-): RecoveryCheckinRecord {
-  return {
-    id,
-    userId: PREVIEW_TRAINING_USER_ID,
-    checkedInAt: daysAgoIso(daysAgo),
-    ...scores,
-  };
-}
-
-function seedMeasurement(
-  id: string,
-  daysAgo: number,
-  values: Omit<MeasurementRecord, "id" | "userId" | "measuredAt" | "source">,
-): MeasurementRecord {
-  return {
-    id,
-    userId: PREVIEW_TRAINING_USER_ID,
-    measuredAt: daysAgoIso(daysAgo),
-    source: "user",
-    ...values,
-  };
-}
-
-const DEFAULT_SCORES: RecoveryScores = {
-  sleepQuality: 4,
-  energy: 4,
-  mood: 4,
-  muscleSoreness: 2,
-  discomfort: 2,
-  stress: 2,
-  perceivedRecovery: 4,
-};
-
-function seedState(): LongitudinalState {
-  return {
-    checkins: [
-      seedCheckin("seed-r1", 6, { ...DEFAULT_SCORES, energy: 3, perceivedRecovery: 3 }),
-      seedCheckin("seed-r2", 4, DEFAULT_SCORES),
-      seedCheckin("seed-r3", 2, { ...DEFAULT_SCORES, energy: 5, perceivedRecovery: 4 }),
-    ],
-    measurements: [
-      seedMeasurement("seed-m365", 360, {
-        weightKg: 80,
-        bodyFatPercent: 18,
-        waistCm: 88,
-        rightArmCm: 36.5,
-        rightThighCm: 58,
-      }),
-      seedMeasurement("seed-m180", 170, {
-        weightKg: 80.8,
-        bodyFatPercent: 17.4,
-        waistCm: 87,
-        rightArmCm: 37,
-        rightThighCm: 59,
-      }),
-      seedMeasurement("seed-m90", 85, {
-        weightKg: 81.4,
-        bodyFatPercent: 16.9,
-        waistCm: 86,
-        rightArmCm: 37.4,
-        rightThighCm: 59.5,
-      }),
-      seedMeasurement("seed-m30", 29, {
-        weightKg: 82.1,
-        bodyFatPercent: 16.6,
-        waistCm: 85,
-        rightArmCm: 38,
-        rightThighCm: 60.2,
-      }),
-      seedMeasurement("seed-m6", 6, { weightKg: 82.0, bodyFatPercent: 16.4 }),
-      seedMeasurement("seed-m5", 5, { weightKg: 81.9, bodyFatPercent: 16.4 }),
-      seedMeasurement("seed-m4", 4, { weightKg: 82.1, bodyFatPercent: 16.3 }),
-      seedMeasurement("seed-m3", 3, { weightKg: 82.0, bodyFatPercent: 16.3 }),
-      seedMeasurement("seed-m2", 2, { weightKg: 82.2, bodyFatPercent: 16.3 }),
-      seedMeasurement("seed-m1", 1, { weightKg: 82.1, bodyFatPercent: 16.2 }),
-      seedMeasurement("seed-m0", 0, {
-        weightKg: 82.4,
-        bodyFatPercent: 16.2,
-        waistCm: 84,
-        rightArmCm: 38.5,
-        rightThighCm: 61,
-      }),
-    ],
-  };
+function initialState(): LongitudinalState {
+  return EMPTY_STATE;
 }
 
 function persist(next: LongitudinalState) {
@@ -135,17 +46,17 @@ function persist(next: LongitudinalState) {
 }
 
 function readStored(): LongitudinalState {
-  if (typeof window === "undefined") return seedState();
+  if (typeof window === "undefined") return EMPTY_STATE;
   try {
     const raw = window.localStorage.getItem(LONGITUDINAL_KEY);
-    if (!raw) return seedState();
+    if (!raw) return initialState();
     const parsed = JSON.parse(raw) as Partial<LongitudinalState>;
     const checkins = Array.isArray(parsed.checkins) ? parsed.checkins : [];
     const measurements = Array.isArray(parsed.measurements) ? parsed.measurements : [];
-    if (checkins.length === 0 && measurements.length === 0) return seedState();
+    if (checkins.length === 0 && measurements.length === 0) return initialState();
     return { checkins, measurements };
   } catch {
-    return seedState();
+    return initialState();
   }
 }
 
@@ -159,12 +70,15 @@ export function hydrateLongitudinalFromDurable(state: LongitudinalState) {
   if (mutatedSinceBoot) return;
   const checkins = Array.isArray(state.checkins) ? state.checkins : [];
   const measurements = Array.isArray(state.measurements) ? state.measurements : [];
-  cached = checkins.length === 0 && measurements.length === 0 ? seedState() : { checkins, measurements };
+  cached =
+    checkins.length === 0 && measurements.length === 0
+      ? initialState()
+      : { checkins, measurements };
   hydrated = true;
   emit();
 }
 
-const SERVER_SEED: LongitudinalState = seedState();
+const SERVER_SEED: LongitudinalState = EMPTY_STATE;
 
 export function getLongitudinal(): LongitudinalState {
   hydrate();
@@ -195,7 +109,7 @@ const measurementRepo: MeasurementRepository = {
       entity_id: created.id,
       client_mutation_id: created.id,
       occurred_at: created.measuredAt,
-      user_id: PREVIEW_TRAINING_USER_ID,
+      user_id: currentOfflineUserId(),
       payload: {
         weightKg: created.weightKg,
         bodyFatPercent: created.bodyFatPercent,
@@ -220,7 +134,7 @@ const recoveryRepo: RecoveryCheckinRepository = {
 
 export async function appendRecoveryCheckin(scores: RecoveryScores) {
   return recordRecoveryCheckin(recoveryRepo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     ...scores,
   });
 }
@@ -229,7 +143,7 @@ export async function appendBodyMeasurement(
   input: Omit<MeasurementRecord, "id" | "userId" | "measuredAt" | "source">,
 ) {
   return recordBodyMeasurement(measurementRepo, {
-    userId: PREVIEW_TRAINING_USER_ID,
+    userId: currentOfflineUserId(),
     ...input,
   });
 }

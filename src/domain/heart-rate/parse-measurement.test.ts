@@ -35,9 +35,7 @@ describe("parseHeartRateMeasurement", () => {
   });
 
   it("lê energia gasta e intervalos RR quando presentes", () => {
-    const parsed = parseHeartRateMeasurement(
-      view([0x18, 118, 0x2a, 0x00, 0x00, 0x04, 0x00, 0x02]),
-    );
+    const parsed = parseHeartRateMeasurement(view([0x18, 118, 0x2a, 0x00, 0x00, 0x04, 0x00, 0x02]));
     expect(parsed.ok).toBe(true);
     if (!parsed.ok) return;
     expect(parsed.value.bpm).toBe(118);

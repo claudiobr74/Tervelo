@@ -1,6 +1,8 @@
 import { DEFAULT_PRE_WORKOUT_CHECKIN_ENABLED, type AthleteStateInput } from "./types";
 
-export function defaultAthleteStateInput(overrides: Partial<AthleteStateInput> = {}): AthleteStateInput {
+export function defaultAthleteStateInput(
+  overrides: Partial<AthleteStateInput> = {},
+): AthleteStateInput {
   return {
     weeksOfHistory: 8,
     referenceWeeks: 3,

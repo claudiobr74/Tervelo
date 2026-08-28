@@ -1,10 +1,49 @@
-export type { ConnectionUiKind, ConflictDecision, ConflictDomain, NewSyncOperation, OfflineCapability, SyncEntity, SyncLane, SyncOperation, SyncOpStatus, SyncPassMetrics, SyncSendResult } from "./types";
+export type {
+  ConnectionUiKind,
+  ConflictDecision,
+  ConflictDomain,
+  NewSyncOperation,
+  OfflineCapability,
+  SyncEntity,
+  SyncLane,
+  SyncOperation,
+  SyncOpStatus,
+  SyncPassMetrics,
+  SyncSendResult,
+} from "./types";
 export { LOCAL_SCHEMA_VERSION } from "./types";
-export { SYNC_COPY, connectionUiCopy, deriveConnectionUiKind, formatLastSyncedAt, pendingCountCopy, recoveredSessionCopy } from "./labels";
-export { FEATURE_CAPABILITY, coachUnavailableCopy, isOnlineRequired, pendingAnalysisCopy } from "./capability";
-export { PERMANENT_ERROR_CODES, RECOVERABLE_ERROR_CODES, canRetryAt, classifyErrorCode, nextRetryAt, retryDelayMs } from "./backoff";
+export {
+  SYNC_COPY,
+  connectionUiCopy,
+  deriveConnectionUiKind,
+  formatLastSyncedAt,
+  pendingCountCopy,
+  recoveredSessionCopy,
+} from "./labels";
+export {
+  FEATURE_CAPABILITY,
+  coachUnavailableCopy,
+  isOnlineRequired,
+  pendingAnalysisCopy,
+} from "./capability";
+export {
+  PERMANENT_ERROR_CODES,
+  RECOVERABLE_ERROR_CODES,
+  canRetryAt,
+  classifyErrorCode,
+  nextRetryAt,
+  retryDelayMs,
+} from "./backoff";
 export { SYNC_PRIORITY, priorityFor } from "./priority";
-export { enqueueOperation, isolateByUser, markStatus, orderOperations, pendingDataCount, pendingOperations, readyToSend } from "./queue";
+export {
+  enqueueOperation,
+  isolateByUser,
+  markStatus,
+  orderOperations,
+  pendingDataCount,
+  pendingOperations,
+  readyToSend,
+} from "./queue";
 export { runSyncPass } from "./engine";
 export { neverLastWriteWinsGlobally, resolveConflict } from "./conflict";
 export { metricEvent, sanitizeSyncLog } from "./observability";

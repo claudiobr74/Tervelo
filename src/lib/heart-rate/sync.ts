@@ -1,4 +1,5 @@
 import { isLocalNhost } from "@/lib/auth/local-preview";
+import { SYNC_GRAPHQL_ENDPOINT } from "@/lib/offline/sync-endpoint";
 import type { BufferedHeartRateSample } from "@/domain/heart-rate/buffer";
 import { HEART_RATE_PROCESSING_VERSION } from "@/domain/heart-rate/types";
 import type { HeartRateSessionStats } from "@/domain/heart-rate/types";
@@ -10,66 +11,48 @@ type WearablePayload = {
   isActive: boolean;
 };
 
-function graphqlUrl(): string | null {
-  const subdomain = process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN || "local";
-  const region = process.env.NEXT_PUBLIC_NHOST_REGION || "local";
-  if (subdomain === "local") return null;
-  return `https://${subdomain}.graphql.${region}.nhost.run/v1`;
-}
-
+/** Mesma ponte da fila offline: o token de sessão não é legível pelo navegador. */
 async function graphql<T>(query: string, variables: Record<string, unknown>): Promise<T | null> {
-  const url = graphqlUrl();
-  if (!url || isLocalNhost()) return null;
-  const token =
-    typeof document !== "undefined"
-      ? document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("nhostSession="))
-          ?.split("=")
-          .slice(1)
-          .join("=")
-      : null;
-  const response = await fetch(url, {
+  if (isLocalNhost()) return null;
+  const response = await fetch(SYNC_GRAPHQL_ENDPOINT, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${safeAccessToken(token)}` } : {}),
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query, variables }),
   });
+  if (response.status === 503) return null;
   if (!response.ok) throw new Error("nhost_graphql_failed");
   const json = (await response.json()) as { data?: T; errors?: unknown };
   if (json.errors) throw new Error("nhost_graphql_errors");
   return json.data ?? null;
 }
 
-function safeAccessToken(rawCookie: string): string {
-  try {
-    const parsed = JSON.parse(decodeURIComponent(rawCookie)) as { accessToken?: string };
-    return parsed.accessToken || "";
-  } catch {
-    return "";
-  }
-}
-
 export async function upsertWearableDevice(device: WearablePayload): Promise<void> {
   await graphql(
-    `mutation UpsertWearable($id: uuid!, $display_name: String!, $last_connected_at: timestamptz!, $is_active: Boolean!) {
-      insert_wearable_devices_one(
-        object: {
-          id: $id
-          provider: "web_bluetooth"
-          display_name: $display_name
-          device_type: "heart_rate_monitor"
-          last_connected_at: $last_connected_at
-          is_active: $is_active
+    `
+      mutation UpsertWearable(
+        $id: uuid!
+        $display_name: String!
+        $last_connected_at: timestamptz!
+        $is_active: Boolean!
+      ) {
+        insert_wearable_devices_one(
+          object: {
+            id: $id
+            provider: "web_bluetooth"
+            display_name: $display_name
+            device_type: "heart_rate_monitor"
+            last_connected_at: $last_connected_at
+            is_active: $is_active
+          }
+          on_conflict: {
+            constraint: wearable_devices_pkey
+            update_columns: [display_name, last_connected_at, is_active]
+          }
+        ) {
+          id
         }
-        on_conflict: {
-          constraint: wearable_devices_pkey
-          update_columns: [display_name, last_connected_at, is_active]
-        }
-      ) { id }
-    }`,
+      }
+    `,
     {
       id: device.id,
       display_name: device.displayName,
@@ -159,9 +142,19 @@ export async function insertHeartRateSamples(input: {
     client_mutation_id: sample.clientMutationId,
   }));
   await graphql(
-    `mutation InsertHeartRateSamples($objects: [heart_rate_samples_insert_input!]!) {
-      insert_heart_rate_samples(objects: $objects, on_conflict: { constraint: heart_rate_samples_user_id_client_mutation_id_key, update_columns: [] }) { affected_rows }
-    }`,
+    `
+      mutation InsertHeartRateSamples($objects: [heart_rate_samples_insert_input!]!) {
+        insert_heart_rate_samples(
+          objects: $objects
+          on_conflict: {
+            constraint: heart_rate_samples_user_id_client_mutation_id_key
+            update_columns: []
+          }
+        ) {
+          affected_rows
+        }
+      }
+    `,
     { objects },
   );
 }

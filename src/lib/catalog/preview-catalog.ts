@@ -221,8 +221,8 @@ export const EQUIPMENT_CATEGORIES = [
 export function previewGymInventory(): PreviewGymInventory {
   return {
     id: "gym-a",
-    name: "Academia A — Principal Sede",
-    registeredPercent: 73,
+    name: "Inventário de exemplo",
+    registeredPercent: 0,
     plates: typicalPlateStock().map((item) =>
       item.weightKg === 1.25 ? { ...item, quantity: 0 } : item,
     ),

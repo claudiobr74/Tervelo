@@ -2,10 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { AuthFooterLink, AuthShell, FieldLabel, AUTH_INPUT_CLASS, PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
+import {
+  AuthFooterLink,
+  AuthShell,
+  FieldLabel,
+  AUTH_INPUT_CLASS,
+  PRIMARY_CTA_CLASS,
+} from "@/components/auth/auth-shell";
 import { BrandMark } from "@/components/auth/brand-mark";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
+import { onboardingLandingPath } from "@/lib/auth/onboarding-sync";
 import { persistSession } from "@/lib/auth/persist-session";
 import { isValidEmail, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
 import { getBrowserNhostClient } from "@/lib/nhost/browser";
@@ -34,7 +41,7 @@ export function LoginForm() {
     try {
       if (isLocalNhost()) {
         await persistSession(previewSession({ email: email.trim() }));
-        router.push("/onboarding/perfil");
+        router.push(await onboardingLandingPath());
         router.refresh();
         return;
       }
@@ -46,7 +53,7 @@ export function LoginForm() {
         return;
       }
       await persistSession(session);
-      router.push("/onboarding/perfil");
+      router.push(await onboardingLandingPath());
       router.refresh();
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : "Não foi possível entrar.";
@@ -64,7 +71,7 @@ export function LoginForm() {
       return;
     }
     if (isLocalNhost()) {
-      setInfo("Se o e-mail existir, enviaremos as instruções. Não há tela de redefinição no Figma (FIGMA_PENDING).");
+      setInfo("Se o e-mail existir, enviaremos as instruções para redefinir a senha.");
       return;
     }
     try {
@@ -73,14 +80,12 @@ export function LoginForm() {
     } catch {
       // Resposta genérica mesmo em falha — não revela se a conta existe.
     }
-    setInfo("Se o e-mail existir, enviaremos as instruções. Não há tela de redefinição no Figma (FIGMA_PENDING).");
+    setInfo("Se o e-mail existir, enviaremos as instruções para redefinir a senha.");
   }
 
   return (
     <AuthShell
-      footer={
-        <AuthFooterLink prompt="Não tem uma conta?" href="/signup" action="Criar conta" />
-      }
+      footer={<AuthFooterLink prompt="Não tem uma conta?" href="/signup" action="Criar conta" />}
     >
       <BrandMark subtitle="Sua jornada para alta performance começa aqui." />
       <form onSubmit={onSubmit} className="flex w-full flex-col gap-[18px] px-6" noValidate>
@@ -128,7 +133,9 @@ export function LoginForm() {
           </button>
           <div className="flex items-center gap-3">
             <span className="h-px flex-1 bg-border" />
-            <span className="text-[12px] font-semibold uppercase text-tertiary">ou continue com</span>
+            <span className="text-[12px] font-semibold uppercase text-tertiary">
+              ou continue com
+            </span>
             <span className="h-px flex-1 bg-border" />
           </div>
           <div className="flex gap-3">

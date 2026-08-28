@@ -1,4 +1,9 @@
-import { LOCAL_SCHEMA_VERSION, type NewSyncOperation, type SyncOperation, type SyncOpStatus } from "./types";
+import {
+  LOCAL_SCHEMA_VERSION,
+  type NewSyncOperation,
+  type SyncOperation,
+  type SyncOpStatus,
+} from "./types";
 import { priorityFor } from "./priority";
 
 const OPEN_STATUSES: SyncOpStatus[] = ["PENDENTE", "SINCRONIZANDO", "ERRO_RECUPERAVEL"];
@@ -43,7 +48,12 @@ export function pendingDataCount(queue: SyncOperation[]): number {
 export function markStatus(
   queue: SyncOperation[],
   id: string,
-  patch: Partial<Pick<SyncOperation, "status" | "error_code" | "synced_at" | "attempt_count" | "last_attempt_at" | "updated_at">>,
+  patch: Partial<
+    Pick<
+      SyncOperation,
+      "status" | "error_code" | "synced_at" | "attempt_count" | "last_attempt_at" | "updated_at"
+    >
+  >,
 ): SyncOperation[] {
   return queue.map((row) => (row.id === id ? { ...row, ...patch } : row));
 }

@@ -3,9 +3,16 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { AuthFooterLink, AuthShell, FieldLabel, AUTH_INPUT_CLASS, PRIMARY_CTA_CLASS } from "@/components/auth/auth-shell";
+import {
+  AuthFooterLink,
+  AuthShell,
+  FieldLabel,
+  AUTH_INPUT_CLASS,
+  PRIMARY_CTA_CLASS,
+} from "@/components/auth/auth-shell";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { isLocalNhost, previewSession } from "@/lib/auth/local-preview";
+import { patchOnboarding } from "@/lib/auth/onboarding-store";
 import { persistSession } from "@/lib/auth/persist-session";
 import { isValidEmail, PASSWORD_MIN_LENGTH } from "@/lib/auth/password";
 import { getBrowserNhostClient } from "@/lib/nhost/browser";
@@ -50,6 +57,7 @@ export function SignupForm() {
     try {
       if (isLocalNhost()) {
         await persistSession(previewSession({ displayName: name, email: email.trim() }));
+        patchOnboarding({ displayName: name });
         router.push("/onboarding/perfil");
         router.refresh();
         return;
@@ -66,6 +74,7 @@ export function SignupForm() {
         return;
       }
       await persistSession(session);
+      patchOnboarding({ displayName: name });
       router.push("/onboarding/perfil");
       router.refresh();
     } catch (caught) {
@@ -77,7 +86,9 @@ export function SignupForm() {
   }
 
   return (
-    <AuthShell footer={<AuthFooterLink prompt="Já tem uma conta?" href="/login" action="Fazer login" />}>
+    <AuthShell
+      footer={<AuthFooterLink prompt="Já tem uma conta?" href="/login" action="Fazer login" />}
+    >
       <header className="flex flex-col gap-3 px-6 pb-5 pt-4">
         <div className="flex items-center justify-between">
           <Link href="/login" aria-label="Voltar" className="size-6 text-foreground">
@@ -94,7 +105,7 @@ export function SignupForm() {
             id="name"
             value={displayName}
             onChange={(event) => setDisplayName(event.target.value)}
-            placeholder="Ex: Lucas Silva"
+            placeholder="Ex: seu nome completo"
             autoComplete="name"
             className={AUTH_INPUT_CLASS}
           />
@@ -148,8 +159,15 @@ export function SignupForm() {
             {accepted ? <FigmaIcon src="/icons/check.svg" alt="" size={12} /> : null}
           </button>
           <span className="text-[13px] leading-[18px] text-muted">
-            Ao continuar, você concorda com os Termos de Serviço e a Política de
-            Privacidade.
+            Ao continuar, você concorda com os{" "}
+            <Link href="/termos" className="font-semibold text-brand underline">
+              Termos de Serviço
+            </Link>{" "}
+            e a{" "}
+            <Link href="/privacidade" className="font-semibold text-brand underline">
+              Política de Privacidade
+            </Link>
+            .
           </span>
         </label>
         {error ? <p className="text-sm text-error">{error}</p> : null}

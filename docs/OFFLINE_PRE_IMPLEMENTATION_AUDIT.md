@@ -8,20 +8,20 @@ Veredito: **READY_WITH_FIXES**. Sem P0. Prosseguir.
 
 ## Superfícies inspecionadas
 
-| Superfície | Situação | Gap |
-| --- | --- | --- |
-| Next.js 16 App Router | `next.config.ts` simples | Manifest + Service Worker |
-| TanStack Query | não utilizado | — |
-| GraphQL | documents em `src/graphql/`; HR em `src/lib/heart-rate/sync.ts` | Preview local (`subdomain=local`) **não envia** ao Nhost |
-| Treino ativo | `src/lib/training/live-session.ts` persistia **localStorage** | Spec exige IndexedDB |
-| Fila de séries | `src/domain/training/offline-queue.ts` — memória + LS; `clientMutationId` | Motor + transporter reais |
-| Check-ins | `session-store` + fila em localStorage | IndexedDB |
-| Timer | `startedAt` / `expectedEndAt` (não setInterval como verdade) | Persistir com a sessão no IDB |
-| FC | buffer + BLE em `runtime.ts`; persistência LS | IDB; internet não corta Bluetooth |
-| Medidas / nutrição | preview-store LS; nutrição era estática | IDB + fila |
-| Auth | preview local `isLocalNhost()` | Isolar IDB por `user_id`; logout com pendências |
-| SW / manifest | inexistentes | PWA |
-| Admin | `/admin/*` | Offline **não** exigido nesta etapa |
+| Superfície            | Situação                                                                  | Gap                                                      |
+| --------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Next.js 16 App Router | `next.config.ts` simples                                                  | Manifest + Service Worker                                |
+| TanStack Query        | não utilizado                                                             | —                                                        |
+| GraphQL               | documents em `src/graphql/`; HR em `src/lib/heart-rate/sync.ts`           | Preview local (`subdomain=local`) **não envia** ao Nhost |
+| Treino ativo          | `src/lib/training/live-session.ts` persistia **localStorage**             | Spec exige IndexedDB                                     |
+| Fila de séries        | `src/domain/training/offline-queue.ts` — memória + LS; `clientMutationId` | Motor + transporter reais                                |
+| Check-ins             | `session-store` + fila em localStorage                                    | IndexedDB                                                |
+| Timer                 | `startedAt` / `expectedEndAt` (não setInterval como verdade)              | Persistir com a sessão no IDB                            |
+| FC                    | buffer + BLE em `runtime.ts`; persistência LS                             | IDB; internet não corta Bluetooth                        |
+| Medidas / nutrição    | preview-store LS; nutrição era estática                                   | IDB + fila                                               |
+| Auth                  | preview local `isLocalNhost()`                                            | Isolar IDB por `user_id`; logout com pendências          |
+| SW / manifest         | inexistentes                                                              | PWA                                                      |
+| Admin                 | `/admin/*`                                                                | Offline **não** exigido nesta etapa                      |
 
 ---
 

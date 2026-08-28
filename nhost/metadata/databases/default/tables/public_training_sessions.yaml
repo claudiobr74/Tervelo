@@ -16,6 +16,7 @@ insert_permissions:
         - started_at
         - completed_at
         - status
+        - client_mutation_id
 select_permissions:
   - role: user
     permission:
@@ -28,6 +29,7 @@ select_permissions:
         - started_at
         - completed_at
         - status
+        - client_mutation_id
         - created_at
         - updated_at
       filter: *a1

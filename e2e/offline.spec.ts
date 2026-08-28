@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { captureEvidence } from "./support/evidence";
 
 async function loginPreview(page: import("@playwright/test").Page) {
   await page.goto("/login");
@@ -20,7 +21,9 @@ async function loginPreview(page: import("@playwright/test").Page) {
 }
 
 async function waitBoot(page: import("@playwright/test").Page) {
-  await expect(page.locator("body")).toHaveAttribute("data-offline-boot", "ready", { timeout: 10_000 });
+  await expect(page.locator("body")).toHaveAttribute("data-offline-boot", "ready", {
+    timeout: 10_000,
+  });
 }
 
 test.describe("offline", () => {
@@ -31,43 +34,40 @@ test.describe("offline", () => {
     await page.goto("/app/settings");
     await waitBoot(page);
     await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
-    await expect(page.getByText("Próximo treino disponível offline")).toBeVisible();
+    await expect(page.getByText("Registros deste aparelho disponíveis offline")).toBeVisible();
     await expect(page.getByRole("button", { name: "Sincronizar agora" })).toBeVisible();
     await expect(page.getByText("O Tervelo mantém os dados necessários")).toBeVisible();
   });
 
-  test("reload recupera a sessão ativa sem duplicar o início", async ({ page }) => {
+  test("reload não recupera treino inventado", async ({ page }) => {
     await loginPreview(page);
     await page.goto("/app/today");
     await waitBoot(page);
-    await page.getByRole("button", { name: "Iniciar treino" }).click();
-    await page.getByRole("button", { name: "Pular por hoje" }).click();
-    await expect(page).toHaveURL(/\/app\/workout$/);
-    await page.getByRole("button", { name: "Começar exercício" }).click();
-    await expect(page.getByRole("heading", { name: "Supino Reto" })).toBeVisible();
-    await page.getByRole("button", { name: "Registrar aquecimento" }).click();
+    await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
     await page.reload();
     await waitBoot(page);
-    await expect(page.getByRole("heading", { name: "Supino Reto" })).toBeVisible();
-    await page.goto("/app/today");
-    await waitBoot(page);
-    await expect(page.getByText("Treino em andamento")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Continuar treino" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Encerrar sessão" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Iniciar treino" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
+    await expect(page.getByText("Treino em andamento")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Continuar treino" })).toHaveCount(0);
   });
 
-  test("captura Light/Dark 390", async ({ page }) => {
-    const stamp = Date.now();
+  test("dados e sincronização funcionam nos dois temas", async ({ page }, testInfo) => {
     await loginPreview(page);
     await page.goto("/app/settings");
     await waitBoot(page);
-    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_settings_dark_390_${stamp}.png`, fullPage: true });
-    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "light"));
-    await page.goto("/app/settings");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_settings_light_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
+    await captureEvidence(page, testInfo, "sincronizacao_claro_390");
+
+    await page.evaluate(() => window.localStorage.setItem("tervelo-theme", "dark"));
+    await page.goto("/app/settings");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
+    await captureEvidence(page, testInfo, "sincronizacao_escuro_390");
+
     await page.goto("/app/today");
-    await page.screenshot({ path: `/tmp/cursor-artifacts/offline_today_light_390_${stamp}.png`, fullPage: true });
+    await expect(page.getByRole("heading", { name: "Nenhum treino prescrito" })).toBeVisible();
+    await captureEvidence(page, testInfo, "hoje_escuro_390");
   });
 });
