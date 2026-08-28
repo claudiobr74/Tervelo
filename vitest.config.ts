@@ -4,7 +4,12 @@ import path from "node:path";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts", "functions/**/*.test.ts"],
+    include: [
+      "src/**/*.test.ts",
+      "functions/**/*.test.ts",
+      "scripts/**/*.test.ts",
+      "scripts/**/*.test.mjs",
+    ],
   },
   resolve: {
     alias: {
