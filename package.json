@@ -16,6 +16,7 @@
     "metadata:generate": "tsx scripts/generate-hasura-metadata.ts",
     "nhost:up": "nhost up",
     "nhost:down": "nhost down",
+    "nhost:jwt": "bash scripts/generate-nhost-jwt.sh",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

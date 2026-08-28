@@ -171,7 +171,7 @@ Rate limit: token bucket em tabela `ai_rate_limits` ou equivalente na Function (
 - SMTP via `provider.smtp` (secrets no cloud, não no repo)
 - Hasura allowed roles alinhados
 
-Arquivo versionado. Secrets em `./.secrets` local (gitignored) e dashboard cloud. Todo `{{ secrets.X }}` no TOML precisa existir no Cloud — um nome ausente aborta o deploy com *invalid configuration* (foi o caso de `APP_URL` no CORS do Hasura).
+Arquivo versionado. Secrets em `./.secrets` local (gitignored) e dashboard cloud. Todo `{{ secrets.X }}` no TOML precisa existir no Cloud — um nome ausente aborta o deploy com *invalid configuration* (foi o caso de `APP_URL` no CORS do Hasura). JWT RS256: gerar com `npm run nhost:jwt` e colar o PEM completo no dashboard; chave privada placeholder faz o Auth sair com `exit 1` (Hasura pode continuar verde).
 
 ---
 

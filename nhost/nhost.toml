@@ -5,6 +5,8 @@ version = 'v2.48.10-ce'
 adminSecret = '{{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}'
 webhookSecret = '{{ secrets.NHOST_WEBHOOK_SECRET }}'
 
+# Auth assina com a privada (PKCS#8). Pública inválida derruba o Hasura;
+# privada inválida derruba só o Auth (UpdateError, exit 1). Gerar: npm run nhost:jwt
 [[hasura.jwtSecrets]]
 type = 'RS256'
 key = '{{ secrets.NHOST_JWT_PUBLIC_KEY }}'
