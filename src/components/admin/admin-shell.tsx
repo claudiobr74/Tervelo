@@ -83,15 +83,14 @@ function AdminNavLink({
       aria-label={pending ? `${label} — em breve` : undefined}
     >
       <FigmaIcon src={icon} alt="" size={18} className="shrink-0" />
-      <span className="min-w-0 truncate">{label}</span>
-      {pending ? (
-        <span
-          aria-hidden
-          className="ml-auto shrink-0 text-[9px] font-bold uppercase tracking-wide text-muted"
-        >
-          Em breve
-        </span>
-      ) : null}
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="truncate">{label}</span>
+        {pending ? (
+          <span aria-hidden className="text-[9px] font-bold uppercase tracking-wide text-muted">
+            Em breve
+          </span>
+        ) : null}
+      </span>
     </Link>
   );
 }
