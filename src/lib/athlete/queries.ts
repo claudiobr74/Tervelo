@@ -1,10 +1,10 @@
 export const ATHLETE_QUERIES = {
   catalog: `
     query AthleteCatalog {
-      canonical_exercises(order_by: { name_pt: asc }, limit: 400) {
+      canonical_exercises(order_by: { name_pt: asc }, limit: 2000) {
         id name_pt description movement_pattern_id
       }
-      exercise_aliases(limit: 800) { alias locale canonical_exercise_id }
+      exercise_aliases(limit: 4000) { alias locale canonical_exercise_id }
       movement_patterns(limit: 50) { id slug name_pt }
       exercise_muscles(limit: 1000) { exercise_id muscle_id role }
       muscles(limit: 200) { id name_pt }
@@ -76,7 +76,7 @@ export const ATHLETE_QUERIES = {
         id session_exercise_id set_index target_reps_min target_reps_max target_weight_kg target_reps_in_reserve
       }
       exercise_variants(limit: 400) { id canonical_exercise_id name_pt }
-      canonical_exercises(limit: 400) { id name_pt }
+      canonical_exercises(limit: 2000) { id name_pt }
     }
   `,
   insertProgram: `

@@ -49,7 +49,7 @@ export async function GET() {
 
 const insertSchema = z.object({
   namePt: z.string().trim().min(2).max(120),
-  description: z.string().trim().max(2_000).optional(),
+  description: z.string().trim().max(8_000).optional(),
   movementPatternId: z.string().uuid().optional(),
 });
 

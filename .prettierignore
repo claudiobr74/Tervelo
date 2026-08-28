@@ -1,4 +1,4 @@
-node_modules
+nhost/seeds/default/003_gifdotreino_exercises.sql
 .next
 coverage
 playwright-report

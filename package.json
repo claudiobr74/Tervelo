@@ -21,6 +21,7 @@
     "catalog:gifs:probe": "node scripts/gifdotreino-downloader/download_gifdotreino.mjs --limit 5",
     "catalog:gifs:headed": "node scripts/gifdotreino-downloader/download_gifdotreino.mjs --browser --headed --limit 5",
     "catalog:gifs:debug": "node scripts/gifdotreino-downloader/download_gifdotreino.mjs --browser --headed --slow 250 --limit 5",
+    "catalog:descriptions": "node scripts/gifdotreino-downloader/fetch_descriptions.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

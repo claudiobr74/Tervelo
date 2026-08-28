@@ -56,7 +56,7 @@ export function AdminExercisesScreen() {
   return (
     <AdminShell
       title="Biblioteca de Exercícios"
-      subtitle="Catálogo canônico no Nhost. Sem seed, a lista fica vazia."
+      subtitle="Catálogo canônico no Nhost. Nomes e descrições entram pelo seed da biblioteca."
       active="Exercícios"
     >
       <div className="flex flex-col gap-4">
@@ -142,7 +142,7 @@ export function AdminExercisesScreen() {
           {selected ? (
             <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
               <h2 className="text-xl font-extrabold">{selected.namePt}</h2>
-              <p className="mt-2 text-sm text-muted">
+              <p className="mt-2 whitespace-pre-wrap text-sm text-muted">
                 {selected.description || "Sem descrição no banco."}
               </p>
               <p className="mt-3 text-sm">

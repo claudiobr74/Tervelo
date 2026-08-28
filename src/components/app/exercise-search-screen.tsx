@@ -216,9 +216,12 @@ export function ExerciseSearchScreen() {
               </span>
             ) : null}
             <div className="flex flex-col gap-2 text-xs text-muted">
+              {selected.description ? (
+                <p className="whitespace-pre-wrap text-sm text-foreground">{selected.description}</p>
+              ) : null}
               <p>
                 <span className="font-bold text-foreground">Músculo Principal: </span>
-                {selected.primaryMuscle}
+                {selected.primaryMuscle || "—"}
               </p>
               <p>
                 <span className="font-bold text-foreground">Secundários: </span>

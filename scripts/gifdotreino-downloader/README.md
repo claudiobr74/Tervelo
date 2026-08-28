@@ -38,6 +38,9 @@ npm run catalog:gifs:probe
 
 # 3. Biblioteca completa (~960 GIFs, ~3 GB)
 npm run catalog:gifs
+
+# 4. Nomes + descrições → seed SQL
+npm run catalog:descriptions
 ```
 
 Playwright (validação do modal **Visualizar**):

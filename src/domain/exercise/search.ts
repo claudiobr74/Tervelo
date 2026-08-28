@@ -5,6 +5,7 @@ export type ExerciseSearchFilter = "muscle" | "equipment" | "pattern" | "favorit
 export type CatalogExercise = {
   id: string;
   namePt: string;
+  description?: string;
   primaryMuscle: string;
   secondaryMuscles: string[];
   equipmentName: string;
@@ -38,6 +39,7 @@ export function searchCatalogExercises(
     if (aliasHits.has(exercise.id)) return true;
     const haystack = [
       exercise.namePt,
+      exercise.description ?? "",
       exercise.primaryMuscle,
       ...exercise.secondaryMuscles,
       exercise.equipmentName,

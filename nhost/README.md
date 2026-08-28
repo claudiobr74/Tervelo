@@ -37,6 +37,8 @@ Em **pré-visualização local** (e Preview Vercel sem Nhost cloud) o botão **D
 - `migrations/default/` — schema
 - `metadata/` — permissions Hasura (matriz em `src/lib/auth/permission-matrix.ts`)
 - `seeds/default/001_catalog.sql` — músculos, categorias, padrões
+- `seeds/default/002_exercises_equipment.sql` — catálogo mínimo (2 exercícios)
+- `seeds/default/003_gifdotreino_exercises.sql` — nomes + descrições da biblioteca Gif do Treino (autorizada)
 - `emails/pt/` — templates Auth
 
 Regenerar YAML público:
@@ -46,6 +48,8 @@ npm run metadata:generate
 ```
 
 Este ambiente de cloud **não tem Docker**; `nhost up` fica para a máquina do operador.
+
+Seeds **não** sobem sozinhos para o Nhost Cloud. Depois de `001` e `002`, aplicar `003_gifdotreino_exercises.sql` com `npm exec nhost -- seed apply` ou `psql -f` (o SQL Editor pode recusar o arquivo de 2,5 MB).
 
 ## Deploy no Nhost Cloud
 
