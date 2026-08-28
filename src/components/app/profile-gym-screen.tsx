@@ -83,6 +83,9 @@ export function ProfileGymScreen() {
       <Link href="/app/plates" className="text-sm font-semibold text-brand">
         Abrir montagem da barra
       </Link>
+      <Link href="/app/equipment" className="text-sm font-semibold text-brand">
+        Catálogo de equipamentos
+      </Link>
     </ProfileSubpageShell>
   );
 }

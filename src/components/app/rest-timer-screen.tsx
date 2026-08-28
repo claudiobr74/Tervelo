@@ -26,13 +26,13 @@ import {
   tickTimer,
   useLiveSession,
 } from "@/lib/training/live-session";
-import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { getBoundWorkout } from "@/lib/training/bound-workout";
 
 export function RestTimerScreen() {
   const router = useRouter();
   const live = useLiveSession();
   const [now, setNow] = useState(() => Date.now());
-  const session = PREVIEW_WORKOUT;
+  const session = getBoundWorkout();
   const timer = live.timer ? deserializeTimer(live.timer) : null;
   const remaining = timer ? remainingSeconds(timer, new Date(now)) : 0;
   const duration = timer?.durationSeconds ?? 1;

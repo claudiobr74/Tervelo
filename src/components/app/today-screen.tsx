@@ -14,6 +14,7 @@ import { useAthleteStateStore } from "@/lib/athlete-state/session-store";
 import { useLongitudinal } from "@/lib/longitudinal/preview-store";
 import { useOnboardingDraft } from "@/components/onboarding/onboarding-provider";
 import { useLiveSession } from "@/lib/training/live-session";
+import { useAthleteTraining } from "@/lib/training/use-athlete-training";
 import { useNutritionOffline } from "@/lib/nutrition/offline-store";
 import { RecoveredSessionCard } from "@/components/app/recovered-session-card";
 import { SyncStatusIndicator } from "@/components/app/sync-status-indicator";
@@ -26,6 +27,7 @@ export function TodayScreen({ sessionName = null }: { sessionName?: string | nul
   const nutrition = useNutritionOffline();
   const { draft } = useOnboardingDraft();
   const longitudinal = useLongitudinal();
+  const training = useAthleteTraining();
   const checkinDone = athlete.preWorkout?.status === "completed";
   const checkinSkipped = athlete.preWorkout?.status === "skipped";
 
@@ -81,10 +83,36 @@ export function TodayScreen({ sessionName = null }: { sessionName?: string | nul
             ) : null}
           </div>
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold text-foreground">Nenhum treino prescrito</h2>
-            <p className="text-[13px] text-muted">
-              Quando houver um plano para hoje, ele aparece aqui.
-            </p>
+            {training.workout ? (
+              <>
+                <h2 className="text-xl font-bold text-foreground">{training.workout.title}</h2>
+                <p className="text-[13px] text-muted">
+                  {training.workout.exercises.length} exercícios
+                  {training.workout.focus ? ` · ${training.workout.focus}` : ""}
+                </p>
+                <Link
+                  href={`/app/workout?session=${training.workout.id}`}
+                  className="mt-2 flex h-12 items-center justify-center rounded-[var(--radius-lg)] bg-brand text-sm font-bold text-on-brand"
+                >
+                  Abrir treino de hoje
+                </Link>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-bold text-foreground">Nenhum treino prescrito</h2>
+                <p className="text-[13px] text-muted">
+                  Quando houver um plano para hoje, ele aparece aqui.
+                </p>
+                <div className="mt-2 flex gap-3">
+                  <Link href="/app/plan" className="text-sm font-semibold text-brand">
+                    Montar plano
+                  </Link>
+                  <Link href="/app/calendar" className="text-sm font-semibold text-brand">
+                    Calendário
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
           {athlete.todayAdjustment ? (
             <Link href="/app/coach/ajuste" className="text-center text-sm font-semibold text-brand">

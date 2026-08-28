@@ -8,7 +8,8 @@ import {
   type CatalogExercise,
   type ExerciseSearchFilter,
 } from "@/domain/exercise/search";
-import { PREVIEW_EXERCISES } from "@/lib/catalog/preview-catalog";
+import { useAdminQuery } from "@/lib/admin/use-admin-query";
+import { EmptyPanel } from "@/components/ui/empty-panel";
 
 const FILTERS: { id: ExerciseSearchFilter; label: string }[] = [
   { id: "muscle", label: "Grupo muscular" },
@@ -78,6 +79,7 @@ function withFavorites(exercises: CatalogExercise[], ids: string[]): CatalogExer
 }
 
 export function ExerciseSearchScreen() {
+  const catalogQuery = useAdminQuery<{ exercises: CatalogExercise[] }>("/api/me/catalog");
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<ExerciseSearchFilter>("muscle");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -87,8 +89,8 @@ export function ExerciseSearchScreen() {
     getServerFavorites,
   );
   const catalog = useMemo(
-    () => withFavorites(PREVIEW_EXERCISES, storedFavorites),
-    [storedFavorites],
+    () => withFavorites(catalogQuery.data?.exercises ?? [], storedFavorites),
+    [catalogQuery.data?.exercises, storedFavorites],
   );
   const results = searchCatalogExercises(catalog, query, filter);
   const selected = results.find((item) => item.id === selectedId) ?? results[0];
@@ -139,9 +141,23 @@ export function ExerciseSearchScreen() {
       </div>
       <div className="flex flex-col gap-4 px-6 pb-6">
         <p className="text-[13px] font-bold uppercase text-muted">Resultados da busca</p>
+        {catalogQuery.loading ? <p className="text-sm text-muted">Consultando o catálogo no banco…</p> : null}
+        {catalogQuery.error ? (
+          <EmptyPanel title="Banco indisponível" body="A busca só lista exercícios gravados." />
+        ) : null}
+        {!catalogQuery.loading && !catalogQuery.error && catalog.length === 0 ? (
+          <EmptyPanel
+            title="Catálogo vazio"
+            body="O admin grava exercícios na biblioteca. Esta busca não preenche movimento inventado."
+          />
+        ) : null}
         <div className="flex flex-col gap-2.5">
           {results.length === 0 ? (
-            <p className="text-sm text-muted">Nenhum exercício encontrado para esta busca.</p>
+            query ? (
+              <p className="text-sm text-muted">Nenhum exercício encontrado para esta busca.</p>
+            ) : catalog.length > 0 ? (
+              <p className="text-sm text-muted">Digite para filtrar o catálogo gravado.</p>
+            ) : null
           ) : (
             results.map((exercise) => (
               <div

@@ -89,5 +89,16 @@ test.describe("perfil do atleta", () => {
     await expect(
       page.getByRole("heading", { name: /Caixa vazia|Banco indisponível|Notificações/ }),
     ).toBeVisible();
+    await page.goto("/app/profile");
+    await page.getByRole("link", { name: "Plano de treino" }).click();
+    await expect(page).toHaveURL(/\/app\/plan/);
+    await expect(page.getByRole("heading", { name: "Plano de treino" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Gravar sessão" })).toBeVisible();
+
+    await page.goto("/app/profile");
+    await page.getByRole("link", { name: "Calendário" }).click();
+    await expect(page).toHaveURL(/\/app\/calendar/);
+    await expect(page.getByRole("heading", { name: "Calendário" })).toBeVisible();
+    await expect(page.getByText("Em breve")).toHaveCount(0);
   });
 });

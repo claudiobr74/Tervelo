@@ -32,7 +32,7 @@ import {
 import { isWebBluetoothSupported } from "./bluetooth";
 import { WebBluetoothHeartRateProvider } from "./web-bluetooth-provider";
 import { getLiveSession, subscribeLiveSession } from "@/lib/training/live-session";
-import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { getBoundWorkout } from "@/lib/training/bound-workout";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
 
 export type HeartRateRuntimeState = {
@@ -119,10 +119,10 @@ function ensureProvider(): WebBluetoothHeartRateProvider {
         justConnected: false,
       });
       if (!capturing || !capturingSessionId) return;
-      const hasWork = hasSessionWork(PREVIEW_WORKOUT);
-      const done = !hasWork || isSessionComplete(PREVIEW_WORKOUT, live.recorded);
-      const exercise = done ? null : currentExercise(PREVIEW_WORKOUT, live.recorded);
-      const set = done ? null : currentSet(PREVIEW_WORKOUT, live.recorded);
+      const hasWork = hasSessionWork(getBoundWorkout());
+      const done = !hasWork || isSessionComplete(getBoundWorkout(), live.recorded);
+      const exercise = done ? null : currentExercise(getBoundWorkout(), live.recorded);
+      const set = done ? null : currentSet(getBoundWorkout(), live.recorded);
       appendHeartRateSample({
         id: crypto.randomUUID(),
         recordedAt: recordedAt.toISOString(),
@@ -176,16 +176,16 @@ function onLiveChange() {
   const exercise =
     live.status === "idle" ||
     live.status === "completed" ||
-    !hasSessionWork(PREVIEW_WORKOUT) ||
-    isSessionComplete(PREVIEW_WORKOUT, live.recorded)
+    !hasSessionWork(getBoundWorkout()) ||
+    isSessionComplete(getBoundWorkout(), live.recorded)
       ? null
-      : currentExercise(PREVIEW_WORKOUT, live.recorded);
+      : currentExercise(getBoundWorkout(), live.recorded);
 
   if (live.status === "active" && live.startedAt && capturingSessionId !== live.startedAt) {
     capturingSessionId = live.startedAt;
     beginHeartRateCapture({
       userId: currentOfflineUserId(),
-      trainingSessionId: PREVIEW_WORKOUT.id,
+      trainingSessionId: getBoundWorkout().id,
       startedAt: live.startedAt,
     });
   }

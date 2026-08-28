@@ -10,6 +10,6 @@ describe("dados de demonstração", () => {
   });
 
   it("catálogo de exercícios continua disponível só no Nhost local", () => {
-    expect(typeof catalogDemoEnabled()).toBe("boolean");
+    expect(catalogDemoEnabled()).toBe(false);
   });
 });

@@ -28,7 +28,7 @@ import {
   stepReps,
   useLiveSession,
 } from "@/lib/training/live-session";
-import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { getBoundWorkout } from "@/lib/training/bound-workout";
 import { EmptyPanel } from "@/components/ui/empty-panel";
 import { SYNC_COPY } from "@/domain/offline";
 
@@ -184,7 +184,7 @@ function DropList({
 export function ExerciseExecutionScreen() {
   const router = useRouter();
   const live = useLiveSession();
-  const session = PREVIEW_WORKOUT;
+  const session = getBoundWorkout();
   const idle = live.status === "idle" || !hasSessionWork(session);
 
   useEffect(() => {

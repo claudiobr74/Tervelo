@@ -1,30 +1,30 @@
 import "server-only";
 
-import {
-  PREVIEW_EQUIPMENT,
-  PREVIEW_EXERCISES,
-  previewGymInventory,
-} from "@/lib/catalog/preview-catalog";
 import { isLocalNhost } from "@/lib/auth/local-preview";
-import { catalogDemoEnabled } from "@/lib/demo-data";
 import type { CatalogExercise } from "@/domain/exercise/search";
 import type { CatalogEquipment, PreviewGymInventory } from "@/lib/catalog/preview-catalog";
 
 /**
- * Sem `nhost up`, devolve o catálogo de pré-visualização (mesmo conteúdo do seed).
- * Com Nhost remoto, os documents em `src/graphql` entram no cliente gerado (Phase 5+)
- * e o catálogo de demonstração deixa de ser servido.
+ * Catálogo de produto vem de `/api/me/catalog` (Hasura). Sem banco, lista vazia.
  */
 export function getCatalogExercises(): CatalogExercise[] {
-  return catalogDemoEnabled() ? PREVIEW_EXERCISES : [];
+  return [];
 }
 
 export function getCatalogEquipment(): CatalogEquipment[] {
-  return catalogDemoEnabled() ? PREVIEW_EQUIPMENT : [];
+  return [];
 }
 
 export function getPreviewInventory(): PreviewGymInventory {
-  return previewGymInventory();
+  return {
+    id: "",
+    name: "",
+    registeredPercent: 0,
+    plates: [],
+    bars: [],
+    dumbbells: { mode: "range", minKg: 0, maxKg: 0, incrementKg: 0 },
+    chestEquipment: [],
+  };
 }
 
 export function usesLocalCatalog(): boolean {

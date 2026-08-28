@@ -2,11 +2,11 @@ import Link from "next/link";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 
 const TABS = [
-  { href: "/app/today", label: "Hoje", icon: "/icons/nav/hoje.svg", enabled: true },
-  { href: "/app/workout", label: "Treino", icon: "/icons/nav/treino.svg", enabled: true },
-  { href: "/app/progress", label: "Evolução", icon: "/icons/nav/evolucao.svg", enabled: true },
-  { href: "/app/coach", label: "Coach", icon: "/icons/nav/coach.svg", enabled: true },
-  { href: "/app/profile", label: "Mais", icon: "/icons/nav/mais.svg", enabled: true },
+  { href: "/app/today", label: "Hoje", icon: "/icons/nav/hoje.svg" },
+  { href: "/app/workout", label: "Treino", icon: "/icons/nav/treino.svg" },
+  { href: "/app/progress", label: "Evolução", icon: "/icons/nav/evolucao.svg" },
+  { href: "/app/coach", label: "Coach", icon: "/icons/nav/coach.svg" },
+  { href: "/app/profile", label: "Mais", icon: "/icons/nav/mais.svg" },
 ] as const;
 
 export function AthleteBottomNav({ active }: { active?: (typeof TABS)[number]["label"] }) {
@@ -20,26 +20,6 @@ export function AthleteBottomNav({ active }: { active?: (typeof TABS)[number]["l
         const className = `flex w-16 flex-col items-center gap-1 ${
           selected ? "text-brand" : "text-tertiary"
         }`;
-        const inner = (
-          <>
-            <FigmaIcon src={tab.icon} alt="" size={22} />
-            <span className={`text-[11px] ${selected ? "font-semibold" : "font-normal"}`}>
-              {tab.label}
-            </span>
-          </>
-        );
-        if (!tab.enabled) {
-          return (
-            <span
-              key={tab.label}
-              className={`${className} opacity-70`}
-              aria-disabled="true"
-              title="Em breve"
-            >
-              {inner}
-            </span>
-          );
-        }
         return (
           <Link
             key={tab.label}
@@ -47,7 +27,10 @@ export function AthleteBottomNav({ active }: { active?: (typeof TABS)[number]["l
             className={className}
             aria-current={selected ? "page" : undefined}
           >
-            {inner}
+            <FigmaIcon src={tab.icon} alt="" size={22} />
+            <span className={`text-[11px] ${selected ? "font-semibold" : "font-normal"}`}>
+              {tab.label}
+            </span>
           </Link>
         );
       })}

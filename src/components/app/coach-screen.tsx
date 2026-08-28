@@ -7,20 +7,21 @@ import { EmptyPanel } from "@/components/ui/empty-panel";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
   COACH_SUGGESTIONS,
-  coachReplyForPrompt,
   type CoachPreviewMessage,
 } from "@/domain/ai/coach-preview";
-import { liveCoachFacts } from "@/lib/ai/live-facts";
+import { getAthleteStateStore } from "@/lib/athlete-state/session-store";
 import { useSyncStatus } from "@/components/app/sync-status-indicator";
 import { SYNC_COPY } from "@/domain/offline";
+import { adminRequest } from "@/lib/admin/http";
 
 export function CoachScreen() {
   const sync = useSyncStatus();
   const [thread, setThread] = useState<CoachPreviewMessage[]>([]);
+  const [busy, setBusy] = useState(false);
 
-  function ask(prompt: string) {
+  async function ask(prompt: string) {
     const athlete: CoachPreviewMessage = {
-      id: `q-${prompt}`,
+      id: `q-${prompt}-${thread.length}`,
       role: "athlete",
       body: prompt,
     };
@@ -36,7 +37,29 @@ export function CoachScreen() {
       ]);
       return;
     }
-    const reply = coachReplyForPrompt(prompt, liveCoachFacts());
+    setBusy(true);
+    const reason = getAthleteStateStore().todayAdjustment?.whyChanged ?? undefined;
+    const result = await adminRequest<{ reply: CoachPreviewMessage; source: string }>(
+      "/api/me/coach",
+      {
+        method: "POST",
+        body: JSON.stringify({ prompt, sessionChangeReason: reason }),
+      },
+    );
+    setBusy(false);
+    if (!result.ok) {
+      setThread((current) => [
+        ...current,
+        athlete,
+        {
+          id: `err-${current.length}`,
+          role: "coach",
+          body: "Não consegui consultar o banco agora. UNKNOWN — não vou inventar.",
+        },
+      ]);
+      return;
+    }
+    const reply = result.data.reply;
     setThread((current) => [
       ...current,
       athlete,
@@ -64,8 +87,7 @@ export function CoachScreen() {
           <p className="text-xs text-muted">{SYNC_COPY.coachAnalysisWhenOnline}</p>
         ) : (
           <p className="text-xs text-muted">
-            Respostas usam só os dados deste aparelho. A orquestração no servidor ainda não está
-            ligada.
+            As respostas usam treinos, medidas e check-ins gravados. Sem fato, o coach admite UNKNOWN.
           </p>
         )}
       </header>
@@ -75,7 +97,8 @@ export function CoachScreen() {
           <button
             key={label}
             type="button"
-            onClick={() => ask(label)}
+            onClick={() => void ask(label)}
+            disabled={busy}
             className="rounded-full border border-border bg-surface px-3.5 py-2 text-[11px] font-bold text-brand"
           >
             {label}

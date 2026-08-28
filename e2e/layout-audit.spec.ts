@@ -32,6 +32,9 @@ test.describe("layout do app", () => {
       "/app/profile/privacidade",
       "/app/profile/notificacoes",
       "/app/settings",
+      "/app/plan",
+      "/app/calendar",
+      "/app/equipment",
     ]) {
       await page.goto(path);
       await expect(page.locator("h1").first()).toBeVisible();

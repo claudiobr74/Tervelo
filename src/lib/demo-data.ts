@@ -1,11 +1,9 @@
-import { isLocalNhost } from "@/lib/auth/local-preview";
-
 /**
- * Catálogo de exercícios/equipamentos de exemplo, só sem backend.
+ * Catálogo de exercícios/equipamentos só entra pelo banco.
  * Não inclui pessoa, treino prescrito, medida nem refeição.
  */
 export function catalogDemoEnabled(): boolean {
-  return isLocalNhost();
+  return false;
 }
 
 /**

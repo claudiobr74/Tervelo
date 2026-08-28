@@ -3,6 +3,7 @@ import { loginPathWithNext, resolvePostLoginPath } from "@/lib/auth/return-path"
 export const PUBLIC_PREFIXES = [
   "/login",
   "/signup",
+  "/forgot-password",
   "/termos",
   "/privacidade",
   "/api/health",

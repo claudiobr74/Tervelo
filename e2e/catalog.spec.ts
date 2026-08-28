@@ -8,25 +8,23 @@ async function loginPreview(page: import("@playwright/test").Page) {
   await expect(page).toHaveURL(/\/onboarding\/perfil/);
 }
 
-test("busca de exercícios começa neutra e filtra puxadas", async ({ page }) => {
+test("busca de exercícios não inventa catálogo sem banco", async ({ page }) => {
   await loginPreview(page);
   await page.goto("/app/exercises");
   await expect(page.getByRole("heading", { name: "Exercícios", level: 1 })).toBeVisible();
   await expect(page.getByLabel("Buscar exercício")).toHaveValue("");
-  await page.getByLabel("Buscar exercício").fill("pux");
-  await expect(page.getByText("Puxada Alta Aberta").first()).toBeVisible();
-  await expect(page.getByText("Puxada Neutra")).toBeVisible();
-  await page.getByLabel("Buscar exercício").fill("supino");
-  await expect(page.getByText("Supino Reto com Barra").first()).toBeVisible();
-  await expect(page.getByText("Puxada Neutra")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: /Catálogo vazio|Banco indisponível/ })).toBeVisible();
+  await expect(page.getByText("Puxada Alta Aberta")).toHaveCount(0);
 });
 
-test("calculadora monta 100 kg com barra 20 kg", async ({ page }) => {
+test("calculadora não monta barra com inventário inventado", async ({ page }) => {
   await loginPreview(page);
   await page.goto("/app/plates");
   await expect(page.getByRole("heading", { name: "Montagem da Barra" })).toBeVisible();
-  await expect(page.getByText("40 kg por lado").first()).toBeVisible();
-  await expect(page.getByRole("button", { name: "Confirmar carga" })).toBeEnabled();
+  await expect(page.getByText("40 kg por lado")).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: /Nenhuma academia|Banco indisponível/ }),
+  ).toBeVisible();
 });
 
 test("admin sem papel volta para a home", async ({ page }) => {
@@ -59,6 +57,5 @@ test("login e busca funcionam no tema claro", async ({ page }) => {
   await loginPreview(page);
   await page.goto("/app/exercises");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await page.getByLabel("Buscar exercício").fill("pux");
-  await expect(page.getByText("Puxada Alta Aberta").first()).toBeVisible();
+  await expect(page.getByText("Puxada Alta Aberta")).toHaveCount(0);
 });
