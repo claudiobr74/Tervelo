@@ -8,20 +8,28 @@ object_relationships:
 insert_permissions:
   - role: user
     permission:
-      check: &a1
+      check: &a3
         gym:
           owner_user_id:
             _eq: X-Hasura-User-Id
-      columns: &a4
+      columns: &a1
         - gym_id
         - bar_kind
         - actual_weight_kg
         - name
         - quantity
+  - role: admin
+    permission:
+      check: &a2 {}
+      columns: *a1
+  - role: super_admin
+    permission:
+      check: *a2
+      columns: *a1
 select_permissions:
   - role: user
     permission:
-      columns: &a2
+      columns: &a4
         - id
         - gym_id
         - bar_kind
@@ -29,25 +37,41 @@ select_permissions:
         - name
         - quantity
         - created_at
-      filter: *a1
+      filter: *a3
       limit: 200
   - role: admin
     permission:
-      columns: *a2
-      filter: &a3 {}
+      columns: *a4
+      filter: *a2
       limit: 200
   - role: super_admin
     permission:
-      columns: *a2
-      filter: *a3
+      columns: *a4
+      filter: *a2
       limit: 500
 update_permissions:
   - role: user
     permission:
-      filter: *a1
-      check: *a1
-      columns: *a4
+      filter: *a3
+      check: *a3
+      columns: *a1
+  - role: admin
+    permission:
+      filter: *a2
+      check: *a2
+      columns: *a1
+  - role: super_admin
+    permission:
+      filter: *a2
+      check: *a2
+      columns: *a1
 delete_permissions:
   - role: user
     permission:
-      filter: *a1
+      filter: *a3
+  - role: admin
+    permission:
+      filter: *a2
+  - role: super_admin
+    permission:
+      filter: *a2

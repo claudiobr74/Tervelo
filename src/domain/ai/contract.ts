@@ -78,6 +78,6 @@ export const DEFAULT_AI_ADMIN_TAB: AiAdminTabId = "behavior";
 
 export const AI_CONTRACT_PREVIEW = {
   slug: "default-athlete-coach",
-  version: "v3.2",
-  stateLabel: "Rascunho local",
+  version: "sem versão",
+  stateLabel: "sem versão no banco",
 } as const;

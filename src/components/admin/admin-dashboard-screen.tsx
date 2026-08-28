@@ -1,21 +1,34 @@
 "use client";
 
 import { AdminShell } from "@/components/admin/admin-shell";
-import { EmptyPanel } from "@/components/ui/empty-panel";
+import { AdminStatusPanel } from "@/components/admin/admin-status-panel";
+import { useAdminQuery } from "@/lib/admin/use-admin-query";
 
-const EMPTY_KPIS = [
-  { label: "Usuários Ativos", value: "0" },
-  { label: "Novos esta Semana", value: "0" },
-  { label: "Aderência Média", value: "—" },
-  { label: "Treinos Realizados Hoje", value: "0" },
-] as const;
+type Overview = {
+  activeUsers: number;
+  newThisWeek: number;
+  workoutsToday: number;
+  adherencePercent: number | null;
+  connected: boolean;
+};
 
 export function AdminDashboardScreen() {
+  const { loading, data, error } = useAdminQuery<Overview>("/api/admin/overview");
+  const kpis = [
+    { label: "Usuários Ativos", value: data ? String(data.activeUsers) : "—" },
+    { label: "Novos esta Semana", value: data ? String(data.newThisWeek) : "—" },
+    {
+      label: "Aderência Média",
+      value: data?.adherencePercent == null ? "—" : `${data.adherencePercent}%`,
+    },
+    { label: "Treinos Realizados Hoje", value: data ? String(data.workoutsToday) : "—" },
+  ];
+
   return (
     <AdminShell active="Dashboard" title="Dashboard">
       <div className="flex flex-col gap-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {EMPTY_KPIS.map((kpi) => (
+          {kpis.map((kpi) => (
             <article
               key={kpi.label}
               className="flex min-w-0 flex-col gap-3 rounded-[var(--radius-xl)] border border-border bg-surface p-5"
@@ -25,21 +38,12 @@ export function AdminDashboardScreen() {
             </article>
           ))}
         </div>
-
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(16rem,24rem)]">
-          <EmptyPanel
-            title="Usuários Ativos ao Longo do Tempo"
-            body="Sem contas reais, o gráfico fica vazio. Números de academia fictícia não entram aqui."
-          />
-          <EmptyPanel
-            title="Custos de API Inteligência Artificial"
-            body="Os custos só aparecem com uso real. Nada é preenchido com valores de exemplo."
-          />
-        </div>
-
-        <EmptyPanel
-          title="Últimos alertas do sistema"
-          body="Não há alertas nem cadastros inventados. Quando houver eventos reais, eles listam aqui."
+        <AdminStatusPanel
+          loading={loading}
+          error={error}
+          empty={Boolean(data && data.activeUsers === 0 && data.workoutsToday === 0)}
+          emptyTitle="Sem movimento no banco"
+          emptyBody="Quando houver contas e treinos reais, os totais sobem aqui. Aderência usa sessões completed da semana."
         />
       </div>
     </AdminShell>

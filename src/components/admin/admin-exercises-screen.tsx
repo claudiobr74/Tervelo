@@ -3,163 +3,155 @@
 import { useMemo, useState } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { searchCatalogExercises } from "@/domain/exercise/search";
-import { PREVIEW_EXERCISES } from "@/lib/catalog/preview-catalog";
+import { AdminStatusPanel } from "@/components/admin/admin-status-panel";
+import { adminRequest } from "@/lib/admin/http";
+import { useAdminQuery } from "@/lib/admin/use-admin-query";
+
+type Exercise = {
+  id: string;
+  namePt: string;
+  description: string | null;
+  movementPatternId: string | null;
+  movementPattern: string;
+  aliases: string[];
+};
+type Pattern = { id: string; slug: string; name_pt: string };
 
 export function AdminExercisesScreen() {
+  const { loading, data, error, reload } = useAdminQuery<{
+    exercises: Exercise[];
+    patterns: Pattern[];
+  }>("/api/admin/exercises");
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState("ex-supino-reto");
+  const [namePt, setNamePt] = useState("");
+  const [patternId, setPatternId] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const list = useMemo(() => {
-    const adminList = PREVIEW_EXERCISES.filter((item) =>
-      [
-        "ex-supino-reto",
-        "ex-agachamento",
-        "ex-puxada-alta",
-        "ex-desenvolvimento",
-        "ex-elevacao-pelvica",
-        "ex-rosca-w",
-      ].includes(item.id),
+    const needle = query.trim().toLocaleLowerCase("pt-BR");
+    return (data?.exercises ?? []).filter(
+      (item) =>
+        !needle ||
+        item.namePt.toLocaleLowerCase("pt-BR").includes(needle) ||
+        item.aliases.some((alias) => alias.toLocaleLowerCase("pt-BR").includes(needle)),
     );
-    return searchCatalogExercises(adminList.length ? adminList : PREVIEW_EXERCISES, query);
-  }, [query]);
+  }, [data, query]);
   const selected = list.find((item) => item.id === selectedId) ?? list[0];
+
+  async function addExercise() {
+    setMessage(null);
+    const result = await adminRequest("/api/admin/exercises", {
+      method: "POST",
+      body: JSON.stringify({ namePt, movementPatternId: patternId || undefined }),
+    });
+    if (!result.ok) {
+      setMessage("Não gravou o exercício no banco.");
+      return;
+    }
+    setNamePt("");
+    await reload();
+  }
 
   return (
     <AdminShell
       title="Biblioteca de Exercícios"
-      subtitle="Padrões de movimento, variações e aparelhos canônicos — sem duplicar fabricante."
+      subtitle="Catálogo canônico no Nhost. Sem seed, a lista fica vazia."
       active="Exercícios"
     >
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col flex-wrap gap-3 xl:flex-row xl:items-center">
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3 text-muted">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
             <FigmaIcon src="/icons/admin/search.svg" alt="" size={16} />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Buscar exercício ou aparelho..."
+              placeholder="Buscar exercício..."
               className="min-w-0 flex-1 bg-transparent text-sm outline-none"
             />
           </div>
           <span className="text-sm font-semibold text-brand">
-            {PREVIEW_EXERCISES.length} exercícios cadastrados
+            {data?.exercises.length ?? 0} exercícios no banco
           </span>
+        </div>
+        <form
+          className="flex flex-wrap items-end gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void addExercise();
+          }}
+        >
+          <label className="text-sm font-semibold">
+            Novo exercício
+            <input
+              value={namePt}
+              onChange={(event) => setNamePt(event.target.value)}
+              className="mt-1 block rounded-[var(--radius-md)] border border-border bg-background px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="text-sm font-semibold">
+            Padrão
+            <select
+              value={patternId}
+              onChange={(event) => setPatternId(event.target.value)}
+              className="mt-1 block rounded-[var(--radius-md)] border border-border bg-background px-3 py-2 text-sm"
+            >
+              <option value="">Sem padrão</option>
+              {(data?.patterns ?? []).map((pattern) => (
+                <option key={pattern.id} value={pattern.id}>
+                  {pattern.name_pt}
+                </option>
+              ))}
+            </select>
+          </label>
           <button
-            type="button"
-            disabled
-            title="Cadastro de exercício em breve"
-            className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-lg)] bg-brand px-4 text-sm font-bold text-on-brand opacity-60"
+            type="submit"
+            className="h-11 rounded-[var(--radius-md)] bg-brand px-4 text-sm font-bold text-on-brand"
           >
-            <FigmaIcon src="/icons/admin/plus.svg" alt="" size={14} />
             Adicionar exercício
           </button>
-        </div>
-        <div className="flex flex-wrap gap-2 text-sm">
-          {[
-            "Grupo muscular: Todos",
-            "Equipamento",
-            "Padrão de movimento",
-            "Unilateral/Bilateral",
-            "Nível",
-            "Peso livre/Máquina",
-          ].map((label, index) => (
-            <span
-              key={label}
-              className={`rounded-full border px-3 py-1.5 ${
-                index === 0 ? "border-brand bg-brand-soft text-brand" : "border-border text-muted"
-              }`}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
+        </form>
+        {message ? <p className="text-sm text-error">{message}</p> : null}
+        <AdminStatusPanel
+          loading={loading}
+          error={error}
+          empty={!loading && !error && list.length === 0}
+          emptyTitle="Catálogo vazio"
+          emptyBody="Nenhum canonical_exercises no banco para esta sessão."
+        />
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div className="flex flex-col gap-2">
-            {list.map((exercise) => {
-              const active = exercise.id === selected?.id;
-              return (
-                <button
-                  key={exercise.id}
-                  type="button"
-                  onClick={() => setSelectedId(exercise.id)}
-                  className={`flex items-center gap-3 rounded-[var(--radius-lg)] border p-3 text-left ${
-                    active ? "border-brand bg-surface" : "border-border bg-surface"
-                  }`}
-                >
-                  <span className="relative size-12 shrink-0 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
-                    {exercise.imageSrc ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={exercise.imageSrc}
-                        alt=""
-                        width={48}
-                        height={48}
-                        className="size-full object-cover"
-                      />
-                    ) : null}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold">{exercise.namePt}</p>
-                    <div className="mt-1 flex gap-2 text-xs">
-                      <span className="text-brand">{exercise.primaryMuscle}</span>
-                      <span className="text-muted">{exercise.movementPattern}</span>
-                    </div>
-                  </div>
-                  <p className="max-w-[7rem] shrink-0 truncate text-xs text-muted">
-                    {exercise.equipmentName}
-                  </p>
-                </button>
-              );
-            })}
+            {list.map((exercise) => (
+              <button
+                key={exercise.id}
+                type="button"
+                onClick={() => setSelectedId(exercise.id)}
+                className={`rounded-[var(--radius-lg)] border p-3 text-left ${
+                  exercise.id === selected?.id
+                    ? "border-brand bg-surface"
+                    : "border-border bg-surface"
+                }`}
+              >
+                <p className="text-sm font-bold">{exercise.namePt}</p>
+                <p className="text-xs text-muted">
+                  {exercise.movementPattern || "Padrão não informado"}
+                </p>
+              </button>
+            ))}
           </div>
           {selected ? (
-            <article className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-              <div>
-                <h2 className="text-xl font-extrabold">{selected.namePt}</h2>
-                <p className="text-[11px] font-semibold uppercase text-muted">
-                  Exercício canônico → Variação → Equipamento
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <span className="relative h-32 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/catalog/detail-photo.webp"
-                    alt=""
-                    width={320}
-                    height={128}
-                    className="size-full object-cover"
-                  />
-                </span>
-                <span className="relative h-32 overflow-clip rounded-[var(--radius-md)] bg-surface-secondary">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={selected.imageSrc ?? "/catalog/thumb-supino.webp"}
-                    alt=""
-                    width={320}
-                    height={128}
-                    className="size-full object-cover"
-                  />
-                </span>
-              </div>
-              <div className="flex gap-4 text-sm font-semibold">
-                {["Execução", "Ajustes", "Erros", "Alternativas"].map((tab, index) => (
-                  <span key={tab} className={index === 0 ? "text-brand" : "text-muted"}>
-                    {tab}
-                  </span>
-                ))}
-              </div>
-              <p className="text-sm text-muted">
-                <span className="font-bold text-foreground">Músculo Principal: </span>
-                {selected.primaryMuscle}
+            <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+              <h2 className="text-xl font-extrabold">{selected.namePt}</h2>
+              <p className="mt-2 text-sm text-muted">
+                {selected.description || "Sem descrição no banco."}
               </p>
-              <p className="text-sm text-muted">
-                <span className="font-bold text-foreground">Secundários: </span>
-                {selected.secondaryMuscles.join(", ")}
+              <p className="mt-3 text-sm">
+                <span className="font-bold">Padrão: </span>
+                {selected.movementPattern || "—"}
               </p>
-              <p className="text-sm leading-5 text-muted">
-                Um canônico no catálogo. Fabricantes ficam em modelos de equipamento, não em
-                exercícios duplicados.
+              <p className="mt-2 text-sm">
+                <span className="font-bold">Apelidos: </span>
+                {selected.aliases.join(", ") || "—"}
               </p>
             </article>
           ) : null}

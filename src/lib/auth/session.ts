@@ -4,6 +4,7 @@ import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
 import {
   parseSessionCookie,
   sessionHasAdminAccess,
+  sessionHasSuperAdminAccess,
   type StoredAppSession,
 } from "@/lib/auth/session-cookie";
 
@@ -16,5 +17,11 @@ export function isOnboardingCompleteCookie(raw: string | undefined | null): bool
   return raw === "done";
 }
 
-export { parseSessionCookie, sessionHasAdminAccess, NHOST_SESSION_COOKIE, ONBOARDING_COOKIE };
+export {
+  parseSessionCookie,
+  sessionHasAdminAccess,
+  sessionHasSuperAdminAccess,
+  NHOST_SESSION_COOKIE,
+  ONBOARDING_COOKIE,
+};
 export type { StoredAppSession };

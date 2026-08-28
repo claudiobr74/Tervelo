@@ -12,7 +12,14 @@ const DEFAULT_BUTTON_CLASS =
 const BLOCK_BUTTON_CLASS =
   "flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] border border-border text-sm font-bold text-error";
 
-export function LogoutButton({ variant = "default" }: { variant?: "default" | "block" }) {
+const SIDEBAR_BUTTON_CLASS =
+  "flex h-11 w-full items-center justify-center rounded-[var(--radius-md)] border border-border text-sm font-semibold text-foreground";
+
+export function LogoutButton({
+  variant = "default",
+}: {
+  variant?: "default" | "block" | "sidebar";
+}) {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
 
@@ -64,7 +71,13 @@ export function LogoutButton({ variant = "default" }: { variant?: "default" | "b
     <button
       type="button"
       onClick={() => void logout({ abandon: false })}
-      className={variant === "block" ? BLOCK_BUTTON_CLASS : DEFAULT_BUTTON_CLASS}
+      className={
+        variant === "block"
+          ? BLOCK_BUTTON_CLASS
+          : variant === "sidebar"
+            ? SIDEBAR_BUTTON_CLASS
+            : DEFAULT_BUTTON_CLASS
+      }
     >
       Sair da conta
     </button>

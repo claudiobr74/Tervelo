@@ -1,4 +1,4 @@
-import { hasAdminAccess, rolesFromAccessTokenPayload } from "@/lib/auth/roles";
+import { hasAdminAccess, hasSuperAdminAccess, rolesFromAccessTokenPayload } from "@/lib/auth/roles";
 import { verifyAccessToken } from "@/lib/auth/jwt";
 
 export type StoredAppSession = {
@@ -29,4 +29,14 @@ export async function sessionHasAdminAccess(session: StoredAppSession | null): P
   const payload = await verifyAccessToken(session.accessToken);
   if (!payload) return false;
   return hasAdminAccess(rolesFromAccessTokenPayload(payload));
+}
+
+export async function sessionHasSuperAdminAccess(
+  session: StoredAppSession | null,
+): Promise<boolean> {
+  if (!session) return false;
+  if (session.preview) return false;
+  const payload = await verifyAccessToken(session.accessToken);
+  if (!payload) return false;
+  return hasSuperAdminAccess(rolesFromAccessTokenPayload(payload));
 }

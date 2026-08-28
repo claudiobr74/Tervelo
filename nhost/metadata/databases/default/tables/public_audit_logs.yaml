@@ -1,6 +1,17 @@
 table:
   name: audit_logs
   schema: public
+insert_permissions:
+  - role: super_admin
+    permission:
+      check: &a1 {}
+      set:
+        actor_user_id: x-hasura-user-id
+      columns:
+        - action
+        - entity_type
+        - entity_id
+        - payload
 select_permissions:
   - role: super_admin
     permission:
@@ -12,5 +23,5 @@ select_permissions:
         - entity_id
         - payload
         - created_at
-      filter: {}
+      filter: *a1
       limit: 200

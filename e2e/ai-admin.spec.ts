@@ -19,8 +19,8 @@ test("admin escolhe o agente de IA no contrato", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Contrato da Inteligência Artificial" }),
   ).toBeVisible();
-  await expect(page.getByText("Rascunho local")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Testar versão" })).toBeDisabled();
+  await expect(page.getByText(/sem versão no banco|v\d+/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Testar versão" })).toBeEnabled();
   await expect(page.getByRole("radio", { name: "Orquestrador" })).toBeChecked();
   await page.getByRole("radio", { name: "Recuperação" }).click();
   await expect(page.getByRole("radio", { name: "Recuperação" })).toBeChecked();
@@ -45,6 +45,11 @@ test("admin escolhe o agente de IA no contrato", async ({ page }) => {
   await expect(page.getByText("Não fabricar dados ausentes")).toBeVisible();
   await page.getByRole("tab", { name: "Testes" }).click();
   await expect(page.getByText("31. O check-in diário foi superinterpretado?")).toBeVisible();
+  await page.getByRole("tab", { name: /Treinamento/ }).click();
+  await expect(page).toHaveURL(/\/admin\/ai/);
+  await expect(page.getByRole("heading", { name: "Heurísticas de treino" })).toBeVisible();
+  await page.getByRole("button", { name: "Testar versão" }).click();
+  await expect(page.getByText(/Contrato válido|não inventa|Não testou/)).toBeVisible();
 });
 
 test("contrato de IA no tema claro", async ({ page }) => {
