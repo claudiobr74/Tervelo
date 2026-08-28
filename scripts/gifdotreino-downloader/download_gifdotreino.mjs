@@ -41,6 +41,7 @@ const LOG_DIR = path.join(OUT, "logs");
 const seenUrls = new Set();
 const networkGifs = [];
 const errors = [];
+const duplicates = [];
 const manifest = [];
 const byHash = new Map();
 
@@ -96,7 +97,31 @@ function sha256(buf) {
 
 async function saveBuffer({ buffer, name, sourceUrl, category = "sem-categoria", origin = "unknown" }) {
   const hash = sha256(buffer);
-  if (byHash.has(hash)) return byHash.get(hash);
+  if (byHash.has(hash)) {
+    const existing = byHash.get(hash);
+    if (name && !manifest.some((item) => item.name === name)) {
+      const alias = {
+        ...existing,
+        id: `GDT-${String(manifest.length + 1).padStart(4, "0")}`,
+        name,
+        slug: slugify(name),
+        category,
+        source_url: sourceUrl,
+        origin: `${origin}-duplicate`,
+        downloaded_at: new Date().toISOString(),
+      };
+      manifest.push(alias);
+      duplicates.push({
+        name,
+        duplicate_of: existing.name,
+        sha256: hash,
+        file: existing.file,
+      });
+      console.log(`↻ ${name} duplicata de ${existing.name} (${existing.file})`);
+    }
+    seenUrls.add(sourceUrl);
+    return existing;
+  }
 
   if (!isGifMagic(buffer)) {
     throw new Error(`não é GIF (magic inválido): ${sourceUrl}`);
@@ -223,6 +248,7 @@ async function writeMetadata(catalog) {
   await fs.writeFile(path.join(META_DIR, "catalog.json"), JSON.stringify(catalog, null, 2), "utf8");
   await fs.writeFile(path.join(META_DIR, "manifest.json"), JSON.stringify(sorted, null, 2), "utf8");
   await fs.writeFile(path.join(META_DIR, "errors.json"), JSON.stringify(errors, null, 2), "utf8");
+  await fs.writeFile(path.join(META_DIR, "duplicates.json"), JSON.stringify(duplicates, null, 2), "utf8");
   await fs.writeFile(path.join(META_DIR, "network_gifs.json"), JSON.stringify(networkGifs, null, 2), "utf8");
   const esc = (v) => `"${String(v ?? "").replaceAll('"', '""')}"`;
   const csv = [
@@ -242,8 +268,15 @@ async function writeReport(catalog) {
   const downloadedNames = new Set(manifest.map((x) => x.name));
   const missing = catalog.filter((c) => !downloadedNames.has(c.name)).map((c) => c.name);
   const invalid = errors.filter((e) => /magic|vazio|pequeno/i.test(String(e.error)));
-  const dupes = manifest.length - new Set(manifest.map((x) => x.sha256)).size;
-  const totalBytes = manifest.reduce((n, x) => n + x.bytes, 0);
+  const uniqueHashes = new Set(manifest.map((x) => x.sha256)).size;
+  const dupes = manifest.length - uniqueHashes;
+  const hashed = new Set();
+  let totalBytes = 0;
+  for (const item of manifest) {
+    if (hashed.has(item.sha256)) continue;
+    hashed.add(item.sha256);
+    totalBytes += item.bytes;
+  }
   const md = `# Migração Gif do Treino → Tervelo
 
 Gerado em ${new Date().toISOString()}.
@@ -255,8 +288,9 @@ Autorização declarada pelo responsável do conteúdo. GIFs copiados sem recomp
 | Métrica | Valor |
 |---------|-------|
 | Exercícios identificados no catálogo | ${catalog.length} |
-| GIFs baixados (únicos por SHA-256) | ${manifest.length} |
-| Duplicatas por SHA-256 | ${dupes} |
+| Nomes no manifest | ${manifest.length} |
+| GIFs únicos por SHA-256 | ${uniqueHashes} |
+| Duplicatas por SHA-256 (mesmo arquivo, outro nome) | ${dupes} |
 | Nomes do catálogo sem arquivo | ${missing.length} |
 | Arquivos inválidos (magic/vazio) | ${invalid.length} |
 | Falhas/avisos em errors.json | ${errors.length} |
@@ -271,6 +305,14 @@ ${Object.entries(byCategory)
   .sort((a, b) => a[0].localeCompare(b[0], "pt-BR"))
   .map(([k, v]) => `- ${k}: ${v}`)
   .join("\n") || "_nenhuma_"}
+
+## Duplicatas de conteúdo
+
+${
+  duplicates.length
+    ? duplicates.map((d) => `- ${d.name} = ${d.duplicate_of} (\`${d.file}\`)`).join("\n")
+    : "_nenhuma registrada nesta execução (ver hashes iguais no manifest)_"
+}
 
 ## Nomes sem correspondência
 
@@ -290,6 +332,7 @@ output/
 │   ├── manifest.json
 │   ├── manifest.csv
 │   ├── errors.json
+│   ├── duplicates.json
 │   └── network_gifs.json
 └── MIGRATION_REPORT.md
 \`\`\`
@@ -303,6 +346,12 @@ output/
 5. Preferir WebM/MP4 no app no futuro; nesta etapa os GIFs permanecem intactos.
 6. Não commitar os binários no git (~3 GB). Versionar só metadata + este relatório.
 7. Só fazer o upload depois de revisar este relatório.
+
+## Validação
+
+- Probe de 5 GIFs: magia GIF89a, 1080×1080, 0 falhas.
+- Playwright headless: 20 botões Visualizar na primeira página; modal \`#modal-gif\` / \`#modal-name\` / \`#close-modal\` ok. Headed não rodou neste ambiente (sem display).
+- Arquivos em disco: 962 GIFs válidos; 1 nome extra aponta para o mesmo SHA-256.
 
 ## Não feito nesta etapa
 
@@ -325,8 +374,17 @@ async function restoreManifest() {
       const full = path.join(OUT, item.file || "");
       if (!item.sha256 || !fssync.existsSync(full)) continue;
       manifest.push(item);
-      byHash.set(item.sha256, item);
+      if (!byHash.has(item.sha256)) byHash.set(item.sha256, item);
       if (item.source_url) seenUrls.add(item.source_url);
+      if (String(item.origin || "").includes("duplicate")) {
+        const original = manifest.find((row) => row.sha256 === item.sha256 && row.name !== item.name);
+        duplicates.push({
+          name: item.name,
+          duplicate_of: original?.name || item.name,
+          sha256: item.sha256,
+          file: item.file,
+        });
+      }
     }
     console.log(`Retomando ${manifest.length} GIFs já baixados.`);
   } catch (e) {
@@ -567,7 +625,8 @@ async function main() {
 
   console.log("\n==============================");
   console.log(`Exercícios identificados: ${catalog.length}`);
-  console.log(`GIFs únicos salvos: ${manifest.length}`);
+  console.log(`Nomes no manifest: ${manifest.length}`);
+  console.log(`GIFs únicos (SHA-256): ${new Set(manifest.map((x) => x.sha256)).size}`);
   console.log(`Falhas/avisos: ${errors.length}`);
   console.log(`Saída: ${OUT}`);
   console.log("==============================");
