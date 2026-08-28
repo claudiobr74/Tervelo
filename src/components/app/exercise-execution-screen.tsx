@@ -12,6 +12,7 @@ import {
   currentSet,
   dropOrdinal,
   groupPartners,
+  hasSessionWork,
   isSessionComplete,
   warmupOrdinal,
   warmupSets,
@@ -184,7 +185,7 @@ export function ExerciseExecutionScreen() {
   const router = useRouter();
   const live = useLiveSession();
   const session = PREVIEW_WORKOUT;
-  const idle = live.status === "idle";
+  const idle = live.status === "idle" || !hasSessionWork(session);
 
   useEffect(() => {
     if (idle) return;

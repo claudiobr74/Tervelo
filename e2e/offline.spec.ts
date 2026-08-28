@@ -34,7 +34,7 @@ test.describe("offline", () => {
     await page.goto("/app/settings");
     await waitBoot(page);
     await expect(page.getByRole("heading", { name: "Dados e sincronização" })).toBeVisible();
-    await expect(page.getByText("Próximo treino disponível offline")).toBeVisible();
+    await expect(page.getByText("Registros deste aparelho disponíveis offline")).toBeVisible();
     await expect(page.getByRole("button", { name: "Sincronizar agora" })).toBeVisible();
     await expect(page.getByText("O Tervelo mantém os dados necessários")).toBeVisible();
   });

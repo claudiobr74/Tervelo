@@ -17,6 +17,7 @@ import { enqueueSetResult, type QueuedSetResult } from "@/domain/training/offlin
 import {
   currentExercise,
   currentSet,
+  hasSessionWork,
   isSessionComplete,
   restSecondsAfter,
   type RecordedSet,
@@ -69,9 +70,9 @@ const IDLE: LiveSessionState = {
   completedAt: null,
   currentSetStartedAt: null,
   events: [],
-  loadKg: 80,
-  reps: 8,
-  rir: 2,
+  loadKg: 0,
+  reps: 0,
+  rir: 0,
   boundSetId: null,
   queue: [],
   syncSessionId: null,
@@ -158,9 +159,11 @@ function hydrate() {
 
 function withCurrentInputs(state: LiveSessionState): LiveSessionState {
   if (state.status !== "active" && state.status !== "resting") return state;
-  if (isSessionComplete(PREVIEW_WORKOUT, state.recorded)) return state;
+  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, state.recorded)) {
+    return state;
+  }
   const set = currentSet(PREVIEW_WORKOUT, state.recorded);
-  if (state.boundSetId === set.id) return state;
+  if (!set || state.boundSetId === set.id) return state;
   return { ...state, ...inputsFromSet(set) };
 }
 
@@ -198,8 +201,14 @@ export function startWorkout(): LiveSessionState {
   if (cached.status === "active" || cached.status === "resting") {
     return cached;
   }
+  if (!hasSessionWork(PREVIEW_WORKOUT)) {
+    return cached;
+  }
   const firstExercise = currentExercise(PREVIEW_WORKOUT, []);
   const first = currentSet(PREVIEW_WORKOUT, []);
+  if (!firstExercise || !first) {
+    return cached;
+  }
   const at = new Date().toISOString();
   const syncSessionId = crypto.randomUUID();
   enqueueSync({
@@ -281,10 +290,13 @@ export function endActiveSession(): LiveSessionState {
 }
 
 function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelineEvent[] {
-  if (isSessionComplete(PREVIEW_WORKOUT, recorded)) return [];
+  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, recorded)) {
+    return [];
+  }
   const previous = recorded.at(-1);
   const exercise = currentExercise(PREVIEW_WORKOUT, recorded);
   const set = currentSet(PREVIEW_WORKOUT, recorded);
+  if (!exercise || !set) return [];
   const events: WorkoutTimelineEvent[] = [];
   if (previous && previous.sessionExerciseId !== exercise.id) {
     events.push({
@@ -302,12 +314,16 @@ function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelin
 export function recordCurrentSet(): AfterRecord {
   hydrate();
   const session = PREVIEW_WORKOUT;
-  if (isSessionComplete(session, cached.recorded)) {
+  if (!hasSessionWork(session) || isSessionComplete(session, cached.recorded)) {
     persist(completeSession(cached));
     return "summary";
   }
   const exercise = currentExercise(session, cached.recorded);
   const set = currentSet(session, cached.recorded);
+  if (!exercise || !set) {
+    persist(completeSession(cached));
+    return "summary";
+  }
   const performedAt = new Date().toISOString();
   const recorded: RecordedSet = {
     setId: set.id,
@@ -421,7 +437,7 @@ export function skipRest(): AfterRecord {
   const restDone: WorkoutTimelineEvent = { type: "REST_COMPLETED", at };
   if (cached.timer) {
     const skipped = skipRestTimer(deserializeTimer(cached.timer), new Date());
-    if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
+    if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
       persist(
         completeSession({
           ...cached,
@@ -457,7 +473,7 @@ export function skipRest(): AfterRecord {
 export function beginNextSet(): AfterRecord {
   hydrate();
   const at = new Date().toISOString();
-  if (isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
+  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
     persist(completeSession(cached));
     return "summary";
   }

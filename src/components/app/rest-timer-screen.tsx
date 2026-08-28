@@ -12,6 +12,7 @@ import {
   currentSet,
   formatKg,
   formatTimer,
+  hasSessionWork,
   isSessionComplete,
   workingSetOrdinal,
 } from "@/domain/training/session";
@@ -43,7 +44,7 @@ export function RestTimerScreen() {
   const endAt = live.timer?.expectedEndAt ?? null;
 
   useEffect(() => {
-    if (live.status === "idle") {
+    if (live.status === "idle" || !hasSessionWork(session)) {
       router.replace("/app/today");
       return;
     }
@@ -67,12 +68,13 @@ export function RestTimerScreen() {
   }, [running, endAt]);
 
   const nextSet = useMemo(() => {
-    if (isSessionComplete(session, live.recorded)) return null;
+    if (!hasSessionWork(session) || isSessionComplete(session, live.recorded)) return null;
     return currentSet(session, live.recorded);
   }, [live.recorded, session]);
-  const nextExercise = isSessionComplete(session, live.recorded)
-    ? session.exercises.at(-1)
-    : currentExercise(session, live.recorded);
+  const nextExercise =
+    !hasSessionWork(session) || isSessionComplete(session, live.recorded)
+      ? session.exercises.at(-1)
+      : currentExercise(session, live.recorded);
   const ordinal = nextExercise && nextSet ? workingSetOrdinal(nextExercise, nextSet) : null;
   const lastExercise = live.recorded.at(-1)
     ? session.exercises.find((item) => item.id === live.recorded.at(-1)?.sessionExerciseId)

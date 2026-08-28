@@ -4,7 +4,12 @@ import { useSyncExternalStore } from "react";
 import { sampleValidity } from "@/domain/heart-rate/parse-measurement";
 import { sessionStats } from "@/domain/heart-rate/metrics";
 import type { HeartRateStatus } from "@/domain/heart-rate/types";
-import { currentExercise, currentSet, isSessionComplete } from "@/domain/training/session";
+import {
+  currentExercise,
+  currentSet,
+  hasSessionWork,
+  isSessionComplete,
+} from "@/domain/training/session";
 import {
   getHeartRateEnabled,
   setHeartRateEnabled,
@@ -114,12 +119,10 @@ function ensureProvider(): WebBluetoothHeartRateProvider {
         justConnected: false,
       });
       if (!capturing || !capturingSessionId) return;
-      const exercise = isSessionComplete(PREVIEW_WORKOUT, live.recorded)
-        ? null
-        : currentExercise(PREVIEW_WORKOUT, live.recorded);
-      const set = isSessionComplete(PREVIEW_WORKOUT, live.recorded)
-        ? null
-        : currentSet(PREVIEW_WORKOUT, live.recorded);
+      const hasWork = hasSessionWork(PREVIEW_WORKOUT);
+      const done = !hasWork || isSessionComplete(PREVIEW_WORKOUT, live.recorded);
+      const exercise = done ? null : currentExercise(PREVIEW_WORKOUT, live.recorded);
+      const set = done ? null : currentSet(PREVIEW_WORKOUT, live.recorded);
       appendHeartRateSample({
         id: crypto.randomUUID(),
         recordedAt: recordedAt.toISOString(),
@@ -173,6 +176,7 @@ function onLiveChange() {
   const exercise =
     live.status === "idle" ||
     live.status === "completed" ||
+    !hasSessionWork(PREVIEW_WORKOUT) ||
     isSessionComplete(PREVIEW_WORKOUT, live.recorded)
       ? null
       : currentExercise(PREVIEW_WORKOUT, live.recorded);

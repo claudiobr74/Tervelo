@@ -7,14 +7,14 @@ import { expandDumbbellWeights } from "@/domain/gym/dumbbells";
 import { plateColorClass } from "@/domain/plates/calculate";
 
 const GROUPS = [
-  { id: "chest", label: "Peito", count: 12 },
-  { id: "back", label: "Costas", count: 10 },
-  { id: "shoulders", label: "Ombros", count: 8 },
-  { id: "biceps", label: "Bíceps", count: 6 },
-  { id: "triceps", label: "Tríceps", count: 6 },
-  { id: "quads", label: "Quadríceps", count: 9 },
-  { id: "hams", label: "Posterior", count: 7 },
-  { id: "glutes", label: "Glúteos", count: 5 },
+  { id: "chest", label: "Peito" },
+  { id: "back", label: "Costas" },
+  { id: "shoulders", label: "Ombros" },
+  { id: "biceps", label: "Bíceps" },
+  { id: "triceps", label: "Tríceps" },
+  { id: "quads", label: "Quadríceps" },
+  { id: "hams", label: "Posterior" },
+  { id: "glutes", label: "Glúteos" },
 ] as const;
 
 export function AdminInventoryScreen() {
@@ -66,7 +66,11 @@ export function AdminInventoryScreen() {
                 }`}
               >
                 <span>{item.label}</span>
-                <span className="text-xs">{item.count} selecionados</span>
+                <span className="text-xs">
+                  {item.id === "chest"
+                    ? `${chest.filter((row) => row.selected).length} selecionados`
+                    : "—"}
+                </span>
               </button>
             ))}
           </div>

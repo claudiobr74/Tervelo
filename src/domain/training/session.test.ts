@@ -7,6 +7,8 @@ import {
   currentSet,
   flattenSession,
   formatTimer,
+  hasSessionWork,
+  isSessionComplete,
   restSecondsAfter,
   volumeKg,
   type RecordedSet,
@@ -340,5 +342,12 @@ describe("fila offline de resultados", () => {
     });
     const flushed = await flushSetResultQueue(queued, async () => undefined);
     expect(flushed[0].status).toBe("synced");
+  });
+
+  it("sessão sem exercícios não inventa trabalho nem conclusão", () => {
+    const empty = { ...session, exercises: [] };
+    expect(hasSessionWork(empty)).toBe(false);
+    expect(isSessionComplete(empty, [])).toBe(false);
+    expect(flattenSession(empty)).toHaveLength(0);
   });
 });

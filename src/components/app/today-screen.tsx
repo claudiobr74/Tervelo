@@ -14,6 +14,7 @@ import { useAthleteStateStore } from "@/lib/athlete-state/session-store";
 import { useLongitudinal } from "@/lib/longitudinal/preview-store";
 import { useOnboardingDraft } from "@/components/onboarding/onboarding-provider";
 import { useLiveSession } from "@/lib/training/live-session";
+import { useNutritionOffline } from "@/lib/nutrition/offline-store";
 import { RecoveredSessionCard } from "@/components/app/recovered-session-card";
 import { SyncStatusIndicator } from "@/components/app/sync-status-indicator";
 
@@ -22,6 +23,7 @@ const WEIGHT_WINDOW_DAYS = 30;
 export function TodayScreen({ sessionName = null }: { sessionName?: string | null }) {
   const live = useLiveSession();
   const athlete = useAthleteStateStore();
+  const nutrition = useNutritionOffline();
   const { draft } = useOnboardingDraft();
   const longitudinal = useLongitudinal();
   const checkinDone = athlete.preWorkout?.status === "completed";
@@ -110,9 +112,7 @@ export function TodayScreen({ sessionName = null }: { sessionName?: string | nul
                 Check-in concluído
               </p>
             ) : checkinSkipped ? (
-              <p className="text-sm text-muted">
-                Sem informação aguda hoje. O treino segue normalmente.
-              </p>
+              <p className="text-sm text-muted">Sem informação aguda hoje.</p>
             ) : (
               <Link
                 href="/app/workout/checkin"
@@ -159,8 +159,23 @@ export function TodayScreen({ sessionName = null }: { sessionName?: string | nul
               <FigmaIcon src="/icons/flame.svg" alt="" size={14} className="text-brand" />
             </div>
             <div className="flex flex-col gap-1">
-              <p className="text-base font-bold text-foreground">—</p>
-              <p className="text-xs text-muted">Sem refeições registradas</p>
+              {nutrition.extraFluidMl > 0 ? (
+                <>
+                  <p className="text-base font-bold text-foreground">
+                    {(nutrition.extraFluidMl / 1000).toLocaleString("pt-BR", {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 1,
+                    })}{" "}
+                    L
+                  </p>
+                  <p className="text-xs text-muted">Água registrada hoje</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-base font-bold text-foreground">—</p>
+                  <p className="text-xs text-muted">Sem refeições registradas</p>
+                </>
+              )}
             </div>
           </Link>
           <Link

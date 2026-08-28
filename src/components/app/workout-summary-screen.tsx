@@ -10,6 +10,7 @@ import {
   completedExercises,
   completedWorkingSets,
   durationMinutes,
+  hasSessionWork,
   volumeKg,
 } from "@/domain/training/session";
 import { currentHeartRateDetails, useHeartRateRuntime } from "@/lib/heart-rate/runtime";
@@ -28,7 +29,9 @@ export function WorkoutSummaryScreen() {
   const endedAt = live.completedAt ?? new Date().toISOString();
   const startedAt = live.startedAt ?? endedAt;
   const volume = volumeKg(live.recorded);
-  const setsDone = completedWorkingSets(session, live.recorded);
+  const setsDone = hasSessionWork(session)
+    ? completedWorkingSets(session, live.recorded)
+    : live.recorded.filter((row) => row.methodKind !== "warmup").length;
   // Sem série registrada não há o que resumir: repetir o planejado como se fosse
   // realizado faria o resumo contradizer a própria mensagem.
   const minutes = setsDone > 0 ? durationMinutes(startedAt, endedAt) : 0;

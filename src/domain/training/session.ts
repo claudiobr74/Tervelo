@@ -167,8 +167,12 @@ export function findCursor(session: WorkoutSession, recorded: RecordedSet[]): Li
   return { ...indexesFor(session, items[flattenIndex]), flattenIndex };
 }
 
+export function hasSessionWork(session: WorkoutSession): boolean {
+  return flattenSession(session).length > 0;
+}
+
 export function isSessionComplete(session: WorkoutSession, recorded: RecordedSet[]): boolean {
-  const total = session.exercises.reduce((sum, exercise) => sum + exercise.sets.length, 0);
+  const total = flattenSession(session).length;
   return total > 0 && recorded.length >= total;
 }
 

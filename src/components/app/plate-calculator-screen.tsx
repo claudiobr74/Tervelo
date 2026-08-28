@@ -46,7 +46,7 @@ export function PlateCalculatorScreen() {
         </div>
         <div className="flex flex-col gap-1">
           <h1 className="text-[22px] font-extrabold text-foreground">Montagem da Barra</h1>
-          <p className="text-sm text-muted">Supino Reto</p>
+          <p className="text-sm text-muted">Calculadora de carga com o estoque de anilhas.</p>
         </div>
       </header>
       <div className="flex flex-col gap-5 px-6 pb-6">
