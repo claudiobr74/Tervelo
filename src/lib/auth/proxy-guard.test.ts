@@ -14,6 +14,7 @@ function context(overrides: Partial<AuthContext> = {}): AuthContext {
 describe("proxy guard", () => {
   it("rotas públicas incluem health, SW e manifest", () => {
     expect(isPublicPath("/")).toBe(true);
+    expect(isPublicPath("/forgot-password")).toBe(true);
     expect(isPublicPath("/login")).toBe(true);
     expect(isPublicPath("/api/health")).toBe(true);
     expect(isPublicPath("/sw.js")).toBe(true);

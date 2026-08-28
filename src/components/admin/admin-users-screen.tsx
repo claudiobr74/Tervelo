@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FigmaIcon } from "@/components/auth/figma-icon";
@@ -56,9 +57,10 @@ export function AdminUsersScreen() {
               <p className="w-[160px] shrink-0">Criado em</p>
             </div>
             {list.map((user) => (
-              <div
+              <Link
                 key={user.id}
-                className="flex min-w-[40rem] items-center gap-4 border-b border-border p-3 last:border-b-0"
+                href={`/admin/users/${user.id}`}
+                className="flex min-w-[40rem] items-center gap-4 border-b border-border p-3 last:border-b-0 hover:bg-surface-hover"
               >
                 <p className="min-w-0 flex-1 text-sm font-semibold">{user.name}</p>
                 <p className="w-[140px] shrink-0 text-[13px] text-muted">{user.goals[0] ?? "—"}</p>
@@ -68,7 +70,7 @@ export function AdminUsersScreen() {
                 <p className="w-[160px] shrink-0 text-[13px] text-muted">
                   {new Date(user.createdAt).toLocaleDateString("pt-BR")}
                 </p>
-              </div>
+              </Link>
             ))}
             <div className="bg-background-secondary p-3 text-[13px] text-muted">
               Mostrando {list.length} de {data?.length ?? 0} usuários

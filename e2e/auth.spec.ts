@@ -6,7 +6,7 @@ test("login mostra marca, entrar e criar conta", async ({ page }) => {
   await expect(page.getByText("Sua jornada para alta performance começa aqui.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Entrar" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Criar conta" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Google" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Google" })).toBeEnabled();
 });
 
 test("cadastro local abre o onboarding", async ({ page }) => {
@@ -25,10 +25,12 @@ test("onboarding sem sessão volta para login", async ({ page }) => {
   await expect(page).toHaveURL(/\/login/);
 });
 
-test("login local abre onboarding e Google permanece desabilitado", async ({ page }) => {
+test("login local abre onboarding e Google tenta o provedor de verdade", async ({ page }) => {
   await page.goto("/login");
-  await expect(page.getByRole("button", { name: "Google" })).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Apple" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Google" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Apple" })).toBeEnabled();
+  await page.getByRole("button", { name: "Google" }).click();
+  await expect(page.getByText(/precisa do Nhost|e-mail e senha/i)).toBeVisible();
   await page.getByLabel("E-mail").fill("lucas.atleta@gmail.com");
   await page.getByLabel("Senha").fill("senha12345");
   await page.getByRole("button", { name: "Entrar" }).click();
@@ -68,12 +70,13 @@ test("finalizar as cinco etapas abre o app mesmo sem backend Nhost", async ({ pa
   await expect(page.getByRole("heading", { name: /^Olá/ })).toBeVisible();
 });
 
-test("esqueci senha sem tela FIGMA_PENDING", async ({ page }) => {
+test("esqueci senha abre a tela real", async ({ page }) => {
   await page.goto("/login");
+  await page.getByRole("link", { name: "Esqueci minha senha" }).click();
+  await expect(page).toHaveURL(/\/forgot-password/);
   await page.getByLabel("E-mail").fill("lucas.atleta@gmail.com");
-  await page.getByRole("button", { name: "Esqueci minha senha" }).click();
+  await page.getByRole("button", { name: "Enviar instruções" }).click();
   await expect(page.getByText(/Se o e-mail existir/)).toBeVisible();
-  await expect(page).toHaveURL(/\/login/);
 });
 
 test("configurações do atleta permitem sair da conta", async ({ page }) => {

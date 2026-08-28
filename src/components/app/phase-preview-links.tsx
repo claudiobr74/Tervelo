@@ -105,6 +105,18 @@ export function PhasePreviewLinks({ hasSession }: { hasSession: boolean }) {
           Busca de exercícios
         </a>
         <a
+          href="/app/plan"
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-border px-5 text-sm font-semibold text-foreground"
+        >
+          Plano
+        </a>
+        <a
+          href="/app/calendar"
+          className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-border px-5 text-sm font-semibold text-foreground"
+        >
+          Calendário
+        </a>
+        <a
           href="/app/plates"
           className="inline-flex h-11 items-center rounded-[var(--radius-md)] border border-border px-5 text-sm font-semibold text-foreground"
         >

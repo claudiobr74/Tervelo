@@ -15,7 +15,7 @@ import {
 } from "@/domain/training/session";
 import { currentHeartRateDetails, useHeartRateRuntime } from "@/lib/heart-rate/runtime";
 import { useLiveSession } from "@/lib/training/live-session";
-import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { getBoundWorkout } from "@/lib/training/bound-workout";
 import { useState } from "react";
 import { useSyncStatus } from "@/components/app/sync-status-indicator";
 import { SYNC_COPY } from "@/domain/offline";
@@ -25,7 +25,7 @@ export function WorkoutSummaryScreen() {
   const runtime = useHeartRateRuntime();
   const sync = useSyncStatus();
   const [showHrDetails, setShowHrDetails] = useState(false);
-  const session = PREVIEW_WORKOUT;
+  const session = getBoundWorkout();
   const endedAt = live.completedAt ?? new Date().toISOString();
   const startedAt = live.startedAt ?? endedAt;
   const volume = volumeKg(live.recorded);

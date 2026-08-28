@@ -224,7 +224,7 @@ describe("copy de interface", () => {
     expect(connectionUiCopy("ONLINE_SYNCING")).toBe("Sincronizando...");
     expect(pendingCountCopy(3)).toBe("3 alterações aguardando sincronização");
     expect(coachUnavailableCopy()).toBe("Coach temporariamente indisponível offline.");
-    expect(SYNC_COPY.pendingAnalysis).toContain("orquestração no servidor ainda não gera");
+    expect(SYNC_COPY.pendingAnalysis).toContain("revisões gravadas");
     expect(FEATURE_CAPABILITY.remote_coach).toBe("ONLINE_REQUIRED");
     expect(recoveredSessionCopy("2026-08-26T21:07:00.000Z")).toMatch(
       /Você iniciou esta sessão às \d{2}:\d{2}\./,

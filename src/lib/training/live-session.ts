@@ -26,12 +26,12 @@ import {
 import { KV_KEYS, scheduleKvWrite } from "@/lib/offline/idb";
 import { enqueueSync } from "@/lib/offline/queue-store";
 import { currentOfflineUserId } from "@/lib/offline/user-scope";
-import { PREVIEW_WORKOUT } from "@/lib/training/preview-workout";
+import { getBoundWorkout, previewWorkout } from "@/lib/training/bound-workout";
 
 export const LIVE_SESSION_KEY = "tervelo-live-session";
 export const SET_RESULT_QUEUE_KEY = "tervelo-set-result-queue";
 
-export const previewWorkout = PREVIEW_WORKOUT;
+export { previewWorkout };
 
 export type LiveStatus = "idle" | "active" | "resting" | "completed";
 export type AfterRecord = "exercise" | "rest" | "summary";
@@ -159,10 +159,10 @@ function hydrate() {
 
 function withCurrentInputs(state: LiveSessionState): LiveSessionState {
   if (state.status !== "active" && state.status !== "resting") return state;
-  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, state.recorded)) {
+  if (!hasSessionWork(getBoundWorkout()) || isSessionComplete(getBoundWorkout(), state.recorded)) {
     return state;
   }
-  const set = currentSet(PREVIEW_WORKOUT, state.recorded);
+  const set = currentSet(getBoundWorkout(), state.recorded);
   if (!set || state.boundSetId === set.id) return state;
   return { ...state, ...inputsFromSet(set) };
 }
@@ -201,11 +201,11 @@ export function startWorkout(): LiveSessionState {
   if (cached.status === "active" || cached.status === "resting") {
     return cached;
   }
-  if (!hasSessionWork(PREVIEW_WORKOUT)) {
+  if (!hasSessionWork(getBoundWorkout())) {
     return cached;
   }
-  const firstExercise = currentExercise(PREVIEW_WORKOUT, []);
-  const first = currentSet(PREVIEW_WORKOUT, []);
+  const firstExercise = currentExercise(getBoundWorkout(), []);
+  const first = currentSet(getBoundWorkout(), []);
   if (!firstExercise || !first) {
     return cached;
   }
@@ -215,17 +215,17 @@ export function startWorkout(): LiveSessionState {
     id: syncSessionId,
     tipo: "SESSION_STARTED",
     entidade: "training_session",
-    entity_id: PREVIEW_WORKOUT.id,
+    entity_id: getBoundWorkout().id,
     client_mutation_id: syncSessionId,
     occurred_at: at,
     user_id: currentOfflineUserId(),
-    payload: { workoutId: PREVIEW_WORKOUT.id, programVersion: "preview-1" },
+    payload: { workoutId: getBoundWorkout().id, programVersion: "1" },
   });
   scheduleKvWrite(currentOfflineUserId(), KV_KEYS.prescriptionSnapshot, {
-    sessionId: PREVIEW_WORKOUT.id,
-    programVersion: "preview-1",
+    sessionId: getBoundWorkout().id,
+    programVersion: "1",
     frozenAt: at,
-    workout: PREVIEW_WORKOUT,
+    workout: getBoundWorkout(),
   });
   const next: LiveSessionState = {
     ...IDLE,
@@ -263,7 +263,7 @@ function completeSession(state: LiveSessionState): LiveSessionState {
     id: completeSyncId,
     tipo: "SESSION_COMPLETED",
     entidade: "training_session",
-    entity_id: PREVIEW_WORKOUT.id,
+    entity_id: getBoundWorkout().id,
     client_mutation_id: completeSyncId,
     occurred_at: at,
     user_id: currentOfflineUserId(),
@@ -290,12 +290,12 @@ export function endActiveSession(): LiveSessionState {
 }
 
 function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelineEvent[] {
-  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, recorded)) {
+  if (!hasSessionWork(getBoundWorkout()) || isSessionComplete(getBoundWorkout(), recorded)) {
     return [];
   }
   const previous = recorded.at(-1);
-  const exercise = currentExercise(PREVIEW_WORKOUT, recorded);
-  const set = currentSet(PREVIEW_WORKOUT, recorded);
+  const exercise = currentExercise(getBoundWorkout(), recorded);
+  const set = currentSet(getBoundWorkout(), recorded);
   if (!exercise || !set) return [];
   const events: WorkoutTimelineEvent[] = [];
   if (previous && previous.sessionExerciseId !== exercise.id) {
@@ -313,7 +313,7 @@ function startNextSetEvents(recorded: RecordedSet[], at: string): WorkoutTimelin
 
 export function recordCurrentSet(): AfterRecord {
   hydrate();
-  const session = PREVIEW_WORKOUT;
+  const session = getBoundWorkout();
   if (!hasSessionWork(session) || isSessionComplete(session, cached.recorded)) {
     persist(completeSession(cached));
     return "summary";
@@ -437,7 +437,7 @@ export function skipRest(): AfterRecord {
   const restDone: WorkoutTimelineEvent = { type: "REST_COMPLETED", at };
   if (cached.timer) {
     const skipped = skipRestTimer(deserializeTimer(cached.timer), new Date());
-    if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
+    if (!hasSessionWork(getBoundWorkout()) || isSessionComplete(getBoundWorkout(), cached.recorded)) {
       persist(
         completeSession({
           ...cached,
@@ -473,7 +473,7 @@ export function skipRest(): AfterRecord {
 export function beginNextSet(): AfterRecord {
   hydrate();
   const at = new Date().toISOString();
-  if (!hasSessionWork(PREVIEW_WORKOUT) || isSessionComplete(PREVIEW_WORKOUT, cached.recorded)) {
+  if (!hasSessionWork(getBoundWorkout()) || isSessionComplete(getBoundWorkout(), cached.recorded)) {
     persist(completeSession(cached));
     return "summary";
   }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
@@ -59,23 +60,28 @@ export function LoginForm() {
     }
   }
 
-  async function onForgotPassword() {
+  async function startOauth(provider: "google" | "apple") {
     setError(null);
     setInfo(null);
-    if (!isValidEmail(email)) {
-      setError("Informe o e-mail para redefinir a senha.");
+    const next = searchParams.get("next");
+    const response = await fetch("/api/auth/oauth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        provider,
+        redirectTo: next && next.startsWith("/") ? next : "/app/today",
+      }),
+    });
+    const body = (await response.json().catch(() => null)) as {
+      ok?: boolean;
+      error?: string;
+      redirect?: string;
+    } | null;
+    if (body?.ok && body.redirect) {
+      window.location.assign(body.redirect);
       return;
     }
-    try {
-      await fetch("/api/auth/password-reset", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
-      });
-    } catch {
-      // Resposta genérica mesmo em falha — não revela se a conta existe.
-    }
-    setInfo("Se o e-mail existir, enviaremos as instruções para redefinir a senha.");
+    setError(body?.error ?? "Não foi possível iniciar o login social.");
   }
 
   return (
@@ -111,13 +117,9 @@ export function LoginForm() {
             />
           </div>
           <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={onForgotPassword}
-              className="text-[13px] font-semibold text-brand"
-            >
+            <Link href="/forgot-password" className="text-[13px] font-semibold text-brand">
               Esqueci minha senha
-            </button>
+            </Link>
           </div>
         </div>
         {error ? <p className="text-sm text-error">{error}</p> : null}
@@ -136,18 +138,16 @@ export function LoginForm() {
           <div className="flex gap-3">
             <button
               type="button"
-              disabled
-              title="Login social entra quando o provedor Nhost estiver ligado (D-017)."
-              className="flex flex-1 items-center justify-center gap-2.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm font-semibold text-foreground opacity-60"
+              onClick={() => void startOauth("google")}
+              className="flex flex-1 items-center justify-center gap-2.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm font-semibold text-foreground"
             >
               <FigmaIcon src="/icons/google.svg" alt="" size={18} />
               Google
             </button>
             <button
               type="button"
-              disabled
-              title="Login social entra quando o provedor Nhost estiver ligado (D-017)."
-              className="flex flex-1 items-center justify-center gap-2.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm font-semibold text-foreground opacity-60"
+              onClick={() => void startOauth("apple")}
+              className="flex flex-1 items-center justify-center gap-2.5 rounded-[var(--radius-lg)] border border-border bg-surface p-3 text-sm font-semibold text-foreground"
             >
               <FigmaIcon src="/icons/apple.svg" alt="" size={18} />
               Apple
