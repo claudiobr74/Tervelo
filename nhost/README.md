@@ -45,3 +45,18 @@ npm run metadata:generate
 ```
 
 Este ambiente de cloud **não tem Docker**; `nhost up` fica para a máquina do operador.
+
+## Deploy no Nhost Cloud
+
+O GitHub usa `nhost/nhost.toml`. Qualquer `{{ secrets.NOME }}` **tem** de existir em Settings → Secrets; senão o deploy cai com *invalid configuration*.
+
+| Secret                         | Quem cria                         |
+| ------------------------------ | --------------------------------- |
+| `HASURA_GRAPHQL_ADMIN_SECRET`  | Nhost (projeto)                   |
+| `NHOST_WEBHOOK_SECRET`         | Nhost                             |
+| `GRAFANA_ADMIN_PASSWORD`       | Nhost                             |
+| `NHOST_JWT_KID`                | Operador (mesmo valor do `.secrets` local, ou par novo no Cloud) |
+| `NHOST_JWT_PUBLIC_KEY`         | Operador                          |
+| `NHOST_JWT_PRIVATE_KEY`        | Operador                          |
+
+Não referenciar secrets extras (`APP_URL`, SMTP, etc.) no TOML até estarem criados no dashboard. Conferir localmente: `cp .secrets.example .secrets && npm exec nhost -- config validate`.

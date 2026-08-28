@@ -41,7 +41,7 @@ O app é o frontend. Colocar **URLs da Vercel/localhost** no Nhost, não o contr
 | Client URL            | `http://localhost:3000` até ter domínio de produção; depois a URL canônica `https://…`                 |
 | Allowed redirect URLs | `http://localhost:3000` **e** a URL de Production (e Preview, se for usar e-mail de confirmação neles) |
 
-Hasura no git já usa `corsDomain = ['*']`. GraphQL a partir da Vercel não depende dessa lista.
+Hasura no git usa `corsDomain = ['*']` de propósito: um secret `APP_URL` no TOML quebra o deploy Nhost se não existir no dashboard. GraphQL a partir da Vercel não depende de uma lista fechada; o JWT e as permissions Hasura autorizam.
 
 ---
 

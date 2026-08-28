@@ -12,8 +12,8 @@ signingKey = '{{ secrets.NHOST_JWT_PRIVATE_KEY }}'
 kid = '{{ secrets.NHOST_JWT_KID }}'
 
 [hasura.settings]
-# Produção: sem console público, sem CORS aberto e sem detalhes internos no erro.
-corsDomain = ['{{ secrets.APP_URL }}']
+# `*` evita secret extra no Cloud (APP_URL quebrava o deploy). JWT + permissions autorizam.
+corsDomain = ['*']
 devMode = false
 enableAllowList = false
 enableConsole = false
