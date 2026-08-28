@@ -48,4 +48,6 @@ Ordem: migrations (`…_exercise_media`) → seeds `001` → `002` → `003` →
 npm run catalog:media-seed   # regenera 004 a partir do JSON
 ```
 
-Upload dos GIFs ao bucket `exercise-media` é passo seguinte; esta entrega já mostra os arquivos locais a quem tem a pasta `output/gifs`.
+Upload dos GIFs ao bucket `exercise-media` é o **Caminho 2** (preview/produção). Passo a passo: [COMO_VER_OS_GIFS.md](./COMO_VER_OS_GIFS.md).
+
+Nesta VM / no computador do operador, com `output/gifs` presente, o **Caminho 1** (`npm run dev`) já anima o GIF na ficha.

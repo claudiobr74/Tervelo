@@ -26,7 +26,7 @@ Settings → Environment Variables. **Production** e **Preview**.
 
 **Não** criar `NEXT_PUBLIC_` para admin secret, JWT private key, chaves de modelo.
 
-Sem essas duas, o Preview usa Nhost `local` (login de demonstração). Production **recusa** sessão `preview`.
+Sem essas duas, o Preview usa Nhost `local` (login de demonstração). Production **recusa** sessão `preview`. GIFs da biblioteca: no Preview eles só animam depois do upload ao bucket Nhost `exercise-media` — passo a passo em `scripts/gifdotreino-downloader/COMO_VER_OS_GIFS.md`. Opcional no servidor: `NHOST_ADMIN_SECRET` (nunca `NEXT_PUBLIC_`).
 
 Copiar do dashboard Nhost: [projeto `wqttndghxeybdppcfnol`](https://app.nhost.io/orgs/bddfkiusstbzrfulumvl/projects/wqttndghxeybdppcfnol).
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   loadAuthorizedExercises,
   presentCatalogExercises,
+  authorizedGifObjectKey,
   resolveAuthorizedGifFile,
 } from "./authorized-library";
 
@@ -16,6 +17,7 @@ describe("biblioteca autorizada em disco", () => {
     const presented = presentCatalogExercises([]);
     expect(presented).toHaveLength(963);
     expect(presented[0].imageSrc).toBe(`/api/catalog/gif/${first.slug}`);
+    expect(authorizedGifObjectKey(first.slug)).toBe(first.gif_file);
     const gif = resolveAuthorizedGifFile(first.slug);
     if (gif) {
       expect(gif.endsWith(".gif")).toBe(true);

@@ -23,6 +23,7 @@
     "catalog:gifs:debug": "node scripts/gifdotreino-downloader/download_gifdotreino.mjs --browser --headed --slow 250 --limit 5",
     "catalog:descriptions": "node scripts/gifdotreino-downloader/fetch_descriptions.mjs",
     "catalog:media-seed": "node scripts/gifdotreino-downloader/generate_media_seed.mjs",
+    "catalog:gifs:upload": "node scripts/gifdotreino-downloader/upload_gifs_to_nhost.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

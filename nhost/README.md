@@ -50,7 +50,7 @@ npm run metadata:generate
 
 Este ambiente de cloud **não tem Docker**; `nhost up` fica para a máquina do operador.
 
-Seeds **não** sobem sozinhos para o Nhost Cloud. Depois de `001` e `002`, aplicar `003_gifdotreino_exercises.sql` e `004_gifdotreino_media.sql` com `npm exec nhost -- seed apply` ou `psql -f` (o SQL Editor pode recusar o arquivo de 2,5 MB do `003`). A migration `20260828223000_exercise_media` precisa existir antes do `004`.
+Seeds **não** sobem sozinhos para o Nhost Cloud. Depois de `001` e `002`, aplicar `003_gifdotreino_exercises.sql` e `004_gifdotreino_media.sql` com `npm exec nhost -- seed apply` ou `psql -f` (o SQL Editor pode recusar o arquivo de 2,5 MB do `003`). A migration `20260828223000_exercise_media` precisa existir antes do `004`. GIFs no preview: [COMO_VER_OS_GIFS.md](../scripts/gifdotreino-downloader/COMO_VER_OS_GIFS.md).
 
 ## Deploy no Nhost Cloud
 

@@ -44,6 +44,10 @@ npm run catalog:descriptions
 
 # 5. Só o seed de mídia (object_key)
 npm run catalog:media-seed
+
+# 6. Upload ao Nhost (preview/produção) — ver COMO_VER_OS_GIFS.md
+npm run catalog:gifs:upload -- --limit 3
+npm run catalog:gifs:upload
 ```
 
 Playwright (validação do modal **Visualizar**):
@@ -98,7 +102,7 @@ Cada item do manifest:
 
 Como o atleta vê a biblioteca, e o que entra no banco: [LIBRARY.md](./LIBRARY.md).
 
-GIFs **não** vão no git. A API `/api/catalog/gif/[slug]` lê `output/gifs/` com sessão. Upload ao bucket `exercise-media` + `file_id` é o passo seguinte. Sem hotlink.
+GIFs **não** vão no git. A API `/api/catalog/gif/[slug]` lê `output/gifs/` com sessão e, se o arquivo não estiver no disco, busca no bucket Nhost `exercise-media`. Upload: `npm run catalog:gifs:upload`. Passo a passo: [COMO_VER_OS_GIFS.md](./COMO_VER_OS_GIFS.md). Sem hotlink.
 
 ## Observação
 

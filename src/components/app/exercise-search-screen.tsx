@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { FigmaIcon } from "@/components/auth/figma-icon";
 import { AthleteAppShell } from "@/components/app/athlete-shell";
+import { CatalogGif } from "@/components/catalog/catalog-gif";
+import { FigmaIcon } from "@/components/auth/figma-icon";
 import {
   searchCatalogExercises,
   type CatalogExercise,
@@ -195,16 +196,7 @@ export function ExerciseSearchScreen() {
             </div>
             <h2 className="text-lg font-extrabold text-foreground">{selected.namePt}</h2>
             {selected.imageSrc ? (
-              <span className="relative block aspect-square w-full overflow-clip rounded-[var(--radius-md)] bg-background">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={selected.imageSrc}
-                  alt={`Demonstração em movimento: ${selected.namePt}`}
-                  width={342}
-                  height={342}
-                  className="size-full object-contain"
-                />
-              </span>
+              <CatalogGif src={selected.imageSrc} name={selected.namePt} />
             ) : (
               <p className="text-sm text-muted">GIF ainda não disponível neste exercício.</p>
             )}

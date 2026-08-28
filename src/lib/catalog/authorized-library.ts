@@ -57,11 +57,16 @@ export function presentAdminExercises(nhost: AdminLibraryExercise[]): AdminLibra
   return mergeAdminLibrary(nhost, library);
 }
 
-export function resolveAuthorizedGifFile(slug: string): string | null {
+export function authorizedGifObjectKey(slug: string): string | null {
   if (!isSafeGifSlug(slug)) return null;
   const row = loadAuthorizedExercises().find((item) => item.slug === slug);
-  if (!row?.gif_file) return null;
-  const full = confinedGifPath(GIF_ROOT, row.gif_file);
+  return row?.gif_file || null;
+}
+
+export function resolveAuthorizedGifFile(slug: string): string | null {
+  const objectKey = authorizedGifObjectKey(slug);
+  if (!objectKey) return null;
+  const full = confinedGifPath(GIF_ROOT, objectKey);
   if (!full) return null;
   return fs.existsSync(full) ? full : null;
 }

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { FigmaIcon } from "@/components/auth/figma-icon";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminStatusPanel } from "@/components/admin/admin-status-panel";
+import { CatalogGif } from "@/components/catalog/catalog-gif";
 import { adminRequest } from "@/lib/admin/http";
 import { useAdminQuery } from "@/lib/admin/use-admin-query";
 
@@ -155,16 +156,9 @@ export function AdminExercisesScreen() {
             <article className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
               <h2 className="text-xl font-extrabold">{selected.namePt}</h2>
               {selected.imageSrc ? (
-                <span className="relative mt-4 block aspect-square w-full overflow-clip rounded-[var(--radius-md)] bg-background">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={selected.imageSrc}
-                    alt={`Demonstração em movimento: ${selected.namePt}`}
-                    width={480}
-                    height={480}
-                    className="size-full object-contain"
-                  />
-                </span>
+                <div className="mt-4">
+                  <CatalogGif src={selected.imageSrc} name={selected.namePt} size={480} />
+                </div>
               ) : null}
               <p className="mt-4 whitespace-pre-wrap text-sm text-muted">
                 {selected.description || "Sem descrição na ficha."}
