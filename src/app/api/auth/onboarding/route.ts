@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { ONBOARDING_COOKIE } from "@/lib/auth/onboarding";
 import { NHOST_SESSION_COOKIE } from "@/lib/nhost/config";
-import { parseSessionCookie } from "@/lib/auth/session-cookie";
+import { parseSessionCookie, sessionHasAdminAccess } from "@/lib/auth/session-cookie";
 import { clientKeyFromRequest, consumeRateLimit } from "@/lib/security/rate-limit";
 
 const bodySchema = z.object({ done: z.boolean() }).strip();
@@ -14,7 +14,12 @@ export async function GET() {
   if (!session) {
     return NextResponse.json({ ok: false, error: "unauthenticated" }, { status: 401 });
   }
-  return NextResponse.json({ ok: true, done: store.get(ONBOARDING_COOKIE)?.value === "done" });
+  const admin = await sessionHasAdminAccess(session);
+  return NextResponse.json({
+    ok: true,
+    done: store.get(ONBOARDING_COOKIE)?.value === "done",
+    admin,
+  });
 }
 
 export async function POST(request: Request) {

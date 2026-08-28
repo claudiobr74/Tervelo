@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
   AuthFooterLink,
@@ -19,6 +19,7 @@ import { getBrowserNhostClient } from "@/lib/nhost/browser";
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +42,7 @@ export function LoginForm() {
     try {
       if (isLocalNhost()) {
         await persistSession(previewSession({ email: email.trim() }));
-        router.push(await onboardingLandingPath());
+        router.push(await onboardingLandingPath(searchParams.get("next")));
         router.refresh();
         return;
       }
@@ -53,7 +54,7 @@ export function LoginForm() {
         return;
       }
       await persistSession(session);
-      router.push(await onboardingLandingPath());
+      router.push(await onboardingLandingPath(searchParams.get("next")));
       router.refresh();
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : "Não foi possível entrar.";

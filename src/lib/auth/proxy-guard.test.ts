@@ -53,6 +53,14 @@ describe("proxy guard", () => {
       "/app/today",
     );
     expect(resolveAuthRedirect("/login", context({ hasSession: true }))).toBe("/onboarding/perfil");
+    expect(resolveAuthRedirect("/login", context({ hasSession: true, adminAccess: true }))).toBe(
+      "/admin",
+    );
+  });
+
+  it("admin sem sessão preserva o destino no login", () => {
+    expect(resolveAuthRedirect("/admin", context())).toBe("/login?next=%2Fadmin");
+    expect(resolveAuthRedirect("/admin/users", context())).toBe("/login?next=%2Fadmin%2Fusers");
   });
 
   it("onboarding concluído não reabre o fluxo", () => {

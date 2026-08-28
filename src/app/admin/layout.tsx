@@ -9,7 +9,7 @@ import { sessionHasAdminAccess } from "@/lib/auth/session-cookie";
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const session = await getServerAppSession();
   if (!session) {
-    redirect("/login");
+    redirect("/login?next=/admin");
   }
   if (!(await sessionHasAdminAccess(session))) {
     redirect("/");

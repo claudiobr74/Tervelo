@@ -29,7 +29,7 @@ export async function verifyAccessToken(
   const issuer = nhostAuthIssuer();
   if (!issuer || !token || token === "preview") return null;
   try {
-    const { payload } = await jwtVerify(token, jwks(issuer));
+    const { payload } = await jwtVerify(token, jwks(issuer), { clockTolerance: 60 });
     return payload as Record<string, unknown>;
   } catch {
     return null;
